@@ -12,6 +12,7 @@ Authors: Souvik Das (Univ. of Florida)
 // Hardcoded configuration parameters
 double jet_pT_cut=40.;
 double jet_eta_cut=2.5;
+double jet_btag_cut=0.679;
 /////////////////////////////////////
 
 typedef std::map<double, int> JetList;
@@ -46,6 +47,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   int nJets;
   double jet_btagCSV[100], jet_btagCMVA[100];
   double jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
+  double eventWeight;
   
   // Retrieve variables
   tree->SetBranchAddress("evt", &evt);
@@ -95,6 +97,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   outtree->Branch("jetIndex_pTOrder", &jetIndex_pTOrder);
   outtree->Branch("jetIndex_CSVOrder", &jetIndex_CSVOrder);
   outtree->Branch("jetIndex_CMVAOrder", &jetIndex_CMVAOrder);
+  outtree->Branch("eventWeight", &eventWeight);
   
   // Loop over events
   int nEvents=tree->GetEntries();
@@ -104,13 +107,15 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     ++nCut0;
     tree->GetEvent(i);
     
+    eventWeight=puWeight;
+    
     if (trigger_HLT_HH4bDouble==1 || trigger_HLT_HH4bQuad==1)
     {
-      ++nCut1;
+      nCut1+=eventWeight;
       
       if (vType==-1)
       {
-        ++nCut2;
+        nCut2+=eventWeight;
         
         // Order the jets by pT, CSV, and CMVA
         JetList jetList_pTOrder;
@@ -120,7 +125,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         double ht=0;
         for (unsigned int j=0; j<(unsigned int)nJets; ++j)
         {
-          if (jet_pT[j]>jet_pT_cut && fabs(jet_eta[j])<jet_eta_cut) 
+          if (jet_pT[j]>jet_pT_cut && fabs(jet_eta[j])<jet_eta_cut && jet_btagCSV[j]>jet_btag_cut) 
           {
             ++nCJets;
             jetList_pTOrder[jet_pT[j]]=j;
@@ -158,7 +163,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         
         if (nCJets>=4)
         {
-          ++nCut3;
+          nCut3+=eventWeight;
           
           for (JetList::reverse_iterator iJet=jetList_pTOrder.rbegin(); iJet!=jetList_pTOrder.rend(); ++iJet)
           {
