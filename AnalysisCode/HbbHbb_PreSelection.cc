@@ -12,7 +12,7 @@ Authors: Souvik Das (Univ. of Florida)
 // Hardcoded configuration parameters
 double jet_pT_cut=40.;
 double jet_eta_cut=2.5;
-double jet_btag_cut=0.679;
+double jet_btag_cut=0.8;
 /////////////////////////////////////
 
 typedef std::map<double, int> JetList;
@@ -40,32 +40,31 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   // Book variables
   int run;
   int evt;
-  bool isData;
-  double trigger_HLT_HH4bDouble, trigger_HLT_HH4bQuad;
-  double vType;
-  double puWeight;
+  int isData;
+  float trigger_HLT_HH4bLowLumi;
+  float vType;
+  float puWeight;
   int nJets;
-  double jet_btagCSV[100], jet_btagCMVA[100];
-  double jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
-  double eventWeight;
+  float jet_btagCSV[100], jet_btagCMVA[100];
+  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
+  float eventWeight;
   
   // Retrieve variables
   tree->SetBranchAddress("evt", &evt);
   tree->SetBranchStatus("*", 0);
   tree->SetBranchStatus("evt", 1);
-  tree->SetBranchAddress("run", &run);                                tree->SetBranchStatus("run", 1);  
-  tree->SetBranchAddress("isData", &isData);                          tree->SetBranchStatus("isData", 1);
-  tree->SetBranchAddress("HLT_HH4bDouble", &trigger_HLT_HH4bDouble);  tree->SetBranchStatus("HLT_HH4bDouble", 1);
-  tree->SetBranchAddress("HLT_HH4bQuad", &trigger_HLT_HH4bQuad);      tree->SetBranchStatus("HLT_HH4bQuad", 1);
-  tree->SetBranchAddress("Vtype", &(vType));                          tree->SetBranchStatus("Vtype", 1); 
-  tree->SetBranchAddress("puWeight", &(puWeight));                    tree->SetBranchStatus("puWeight", 1); 
-  tree->SetBranchAddress("nJet", &(nJets));                           tree->SetBranchStatus("nJet", 1); 
-  tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));              tree->SetBranchStatus("Jet_btagCSV", 1); 
-  tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));            tree->SetBranchStatus("Jet_btagCMVA", 1); 
-  tree->SetBranchAddress("Jet_pt", &(jet_pT));                        tree->SetBranchStatus("Jet_pt", 1); 
-  tree->SetBranchAddress("Jet_eta", &(jet_eta));                      tree->SetBranchStatus("Jet_eta", 1); 
-  tree->SetBranchAddress("Jet_phi", &(jet_phi));                      tree->SetBranchStatus("Jet_phi", 1); 
-  tree->SetBranchAddress("Jet_mass", &(jet_mass));                    tree->SetBranchStatus("Jet_mass", 1);
+  tree->SetBranchAddress("run", &run);                                  tree->SetBranchStatus("run", 1);  
+  tree->SetBranchAddress("isData", &isData);                            tree->SetBranchStatus("isData", 1);
+  tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);  tree->SetBranchStatus("HLT_HH4bLowLumi", 1);
+  tree->SetBranchAddress("Vtype", &(vType));                            tree->SetBranchStatus("Vtype", 1); 
+  tree->SetBranchAddress("puWeight", &(puWeight));                      tree->SetBranchStatus("puWeight", 1); 
+  tree->SetBranchAddress("nJet", &(nJets));                             tree->SetBranchStatus("nJet", 1); 
+  tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));                tree->SetBranchStatus("Jet_btagCSV", 1); 
+  tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));              tree->SetBranchStatus("Jet_btagCMVA", 1);
+  tree->SetBranchAddress("Jet_pt", &(jet_pT));                          tree->SetBranchStatus("Jet_pt", 1); 
+  tree->SetBranchAddress("Jet_eta", &(jet_eta));                        tree->SetBranchStatus("Jet_eta", 1); 
+  tree->SetBranchAddress("Jet_phi", &(jet_phi));                        tree->SetBranchStatus("Jet_phi", 1); 
+  tree->SetBranchAddress("Jet_mass", &(jet_mass));                      tree->SetBranchStatus("Jet_mass", 1);
   
   TH1F *h_nJets=new TH1F("h_nJets", "h_nJets; # Cleaned PAT Jets; n", 10, 0., 10.);
   
@@ -109,7 +108,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     
     eventWeight=puWeight;
     
-    if (trigger_HLT_HH4bDouble==1 || trigger_HLT_HH4bQuad==1)
+    // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
+    
+    if (trigger_HLT_HH4bLowLumi==1)
     {
       nCut1+=eventWeight;
       
