@@ -112,9 +112,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0;
   for (int i=0; i<nEvents; ++i)
   {
-
-    
-	
+  
     ++nCut0;
     tree->GetEvent(i);
     
@@ -124,15 +122,13 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     if(nGenHiggsBoson==2)
     {
 
-	TLorentzVector H1,H2;
-	H1.SetPtEtaPhiM(GenHiggsBoson_pt[0],GenHiggsBoson_eta[0],GenHiggsBoson_phi[0],GenHiggsBoson_mass[0]);
-        H2.SetPtEtaPhiM(GenHiggsBoson_pt[1],GenHiggsBoson_eta[1],GenHiggsBoson_phi[1],GenHiggsBoson_mass[1]);
-        h_GenX_mass->Fill((H1+H2).M(), eventWeight);
-
+      TLorentzVector H1,H2;
+      H1.SetPtEtaPhiM(GenHiggsBoson_pt[0],GenHiggsBoson_eta[0],GenHiggsBoson_phi[0],GenHiggsBoson_mass[0]);
+      H2.SetPtEtaPhiM(GenHiggsBoson_pt[1],GenHiggsBoson_eta[1],GenHiggsBoson_phi[1],GenHiggsBoson_mass[1]);
+      h_GenX_mass->Fill((H1+H2).M(), eventWeight);
     }	
     
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
-    
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     
     if (trigger_HLT_HH4bLowLumi==1)
