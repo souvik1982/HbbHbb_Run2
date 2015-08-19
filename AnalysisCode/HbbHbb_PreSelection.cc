@@ -8,6 +8,7 @@ Authors: Souvik Das (Univ. of Florida)
 #include <TTree.h>
 #include <TChain.h>
 #include <iostream>
+#include "TLorentzVector.h"
 
 // Hardcoded configuration parameters
 double jet_pT_cut=40.;
@@ -47,7 +48,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   int nJets;
   float jet_btagCSV[100], jet_btagCMVA[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
+  float GenHiggsBoson_pt[2], GenHiggsBoson_eta[2], GenHiggsBoson_phi[2], GenHiggsBoson_mass[2];
   float eventWeight;
+  int nGenHiggsBoson;	
   
   // Retrieve variables
   tree->SetBranchAddress("evt", &evt);
@@ -65,6 +68,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                        tree->SetBranchStatus("Jet_eta", 1); 
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                        tree->SetBranchStatus("Jet_phi", 1); 
   tree->SetBranchAddress("Jet_mass", &(jet_mass));                      tree->SetBranchStatus("Jet_mass", 1);
+  tree->SetBranchAddress("GenHiggsBoson_pt", &(GenHiggsBoson_pt));  tree->SetBranchStatus("GenHiggsBoson_pt",1);
+  tree->SetBranchAddress("GenHiggsBoson_eta", &(GenHiggsBoson_eta));  tree->SetBranchStatus("GenHiggsBoson_eta",1);
+  tree->SetBranchAddress("GenHiggsBoson_phi", &(GenHiggsBoson_phi));  tree->SetBranchStatus("GenHiggsBoson_phi",1);
+  tree->SetBranchAddress("GenHiggsBoson_mass", &(GenHiggsBoson_mass));  tree->SetBranchStatus("GenHiggsBoson_mass",1);
+  tree->SetBranchAddress("nGenHiggsBoson", &(nGenHiggsBoson));  tree->SetBranchStatus("nGenHiggsBoson",1);
   
   TH1F *h_nJets=new TH1F("h_nJets", "h_nJets; # Cleaned PAT Jets; n", 10, 0., 10.);
   
@@ -76,6 +84,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   TH1F *h_pTOrder_JetCSV_2=new TH1F("h_pTOrder_JetCSV_2", "; pT Ordered Jet CSV 2 (GeV); Events", 50, 0., 1.);
   TH1F *h_pTOrder_JetCSV_3=new TH1F("h_pTOrder_JetCSV_3", "; pT Ordered Jet CSV 3 (GeV); Events", 50, 0., 1.);
   TH1F *h_pTOrder_JetCSV_4=new TH1F("h_pTOrder_JetCSV_4", "; pT Ordered Jet CSV 4 (GeV); Events", 50, 0., 1.);
+  TH1F *h_GenX_mass = new TH1F("h_GenX_mass"," ; m_{X}^{GEN} (GeV); Events", 1800, 200, 2000);	
   
   TH1F *h_Cuts=new TH1F("h_Cuts", "Cut flow", 16, 0, 16);
   TAxis *a_Cuts=h_Cuts->GetXaxis();
@@ -103,10 +112,26 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0;
   for (int i=0; i<nEvents; ++i)
   {
+
+    
+	
     ++nCut0;
     tree->GetEvent(i);
     
     eventWeight=puWeight;
+
+
+    if(nGenHiggsBoson==2)
+    {
+
+	TLorentzVector H1,H2;
+	H1.SetPtEtaPhiM(GenHiggsBoson_pt[0],GenHiggsBoson_eta[0],GenHiggsBoson_phi[0],GenHiggsBoson_mass[0]);
+        H2.SetPtEtaPhiM(GenHiggsBoson_pt[1],GenHiggsBoson_eta[1],GenHiggsBoson_phi[1],GenHiggsBoson_mass[1]);
+        h_GenX_mass->Fill((H1+H2).M(), eventWeight);
+
+    }	
+    
+    // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     
@@ -224,6 +249,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   h_pTOrder_JetCSV_2->Write();
   h_pTOrder_JetCSV_3->Write();
   h_pTOrder_JetCSV_4->Write();
+  h_GenX_mass->Write();
   h_Cuts->Write();
   tFile->Write();
   tFile->Close();
