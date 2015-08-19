@@ -1,7 +1,7 @@
-/*---------------------------------------------/
+/*----------------------------------------------------------------/
 Analysis Code for X->HH->bbbb searches in CMS
-Authors: Souvik Das (Univ. of Florida) Caterina Vernieri (FNAL)
-/---------------------------------------------*/
+Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
+/----------------------------------------------------------------*/
 
 #include <TH1F.h>
 #include <TFile.h>
@@ -68,9 +68,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                        tree->SetBranchStatus("Jet_eta", 1); 
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                        tree->SetBranchStatus("Jet_phi", 1); 
   tree->SetBranchAddress("Jet_mass", &(jet_mass));                      tree->SetBranchStatus("Jet_mass", 1);
-  tree->SetBranchAddress("GenHiggsBoson_pt", &(GenHiggsBoson_pt));  tree->SetBranchStatus("GenHiggsBoson_pt",1);
-  tree->SetBranchAddress("GenHiggsBoson_eta", &(GenHiggsBoson_eta));  tree->SetBranchStatus("GenHiggsBoson_eta",1);
-  tree->SetBranchAddress("GenHiggsBoson_phi", &(GenHiggsBoson_phi));  tree->SetBranchStatus("GenHiggsBoson_phi",1);
+  tree->SetBranchAddress("GenHiggsBoson_pt", &(GenHiggsBoson_pt));      tree->SetBranchStatus("GenHiggsBoson_pt",1);
+  tree->SetBranchAddress("GenHiggsBoson_eta", &(GenHiggsBoson_eta));    tree->SetBranchStatus("GenHiggsBoson_eta",1);
+  tree->SetBranchAddress("GenHiggsBoson_phi", &(GenHiggsBoson_phi));    tree->SetBranchStatus("GenHiggsBoson_phi",1);
   tree->SetBranchAddress("GenHiggsBoson_mass", &(GenHiggsBoson_mass));  tree->SetBranchStatus("GenHiggsBoson_mass",1);
   tree->SetBranchAddress("nGenHiggsBoson", &(nGenHiggsBoson));  tree->SetBranchStatus("nGenHiggsBoson",1);
   
@@ -112,12 +112,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0;
   for (int i=0; i<nEvents; ++i)
   {
-  
     ++nCut0;
     tree->GetEvent(i);
     
     eventWeight=puWeight;
-
 
     if(nGenHiggsBoson==2)
     {
