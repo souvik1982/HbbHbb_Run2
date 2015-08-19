@@ -1,6 +1,6 @@
 /*---------------------------------------------/
 Analysis Code for X->HH->bbbb searches in CMS
-Authors: Souvik Das (Univ. of Florida)
+Authors: Souvik Das (Univ. of Florida) Caterina Vernieri (FNAL)
 /---------------------------------------------*/
 
 #include <TH1F.h>
