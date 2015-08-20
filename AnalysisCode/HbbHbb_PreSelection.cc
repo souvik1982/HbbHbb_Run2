@@ -10,6 +10,8 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 #include <iostream>
 #include "TLorentzVector.h"
 
+double pi=3.14159265358979;
+
 // Hardcoded configuration parameters
 double jet_pT_cut=40.;
 double jet_eta_cut=2.5;
@@ -48,31 +50,41 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   int nJets;
   float jet_btagCSV[100], jet_btagCMVA[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
-  float GenHiggsBoson_pt[2], GenHiggsBoson_eta[2], GenHiggsBoson_phi[2], GenHiggsBoson_mass[2];
-  float eventWeight;
   int nGenHiggsBoson;	
+  float genHiggsBoson_pT[100], genHiggsBoson_eta[100], genHiggsBoson_phi[100], genHiggsBoson_mass[100];
+  float eventWeight;
+  int nGenBQuarkFromH;
+  float genBQuarkFromH_pT[100], genBQuarkFromH_eta[100], genBQuarkFromH_phi[100], genBQuarkFromH_mass[100];
+  float met_pT, met_phi;
   
   // Retrieve variables
   tree->SetBranchAddress("evt", &evt);
   tree->SetBranchStatus("*", 0);
   tree->SetBranchStatus("evt", 1);
-  tree->SetBranchAddress("run", &run);                                  tree->SetBranchStatus("run", 1);  
-  tree->SetBranchAddress("isData", &isData);                            tree->SetBranchStatus("isData", 1);
-  tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);  tree->SetBranchStatus("HLT_HH4bLowLumi", 1);
-  tree->SetBranchAddress("Vtype", &(vType));                            tree->SetBranchStatus("Vtype", 1); 
-  tree->SetBranchAddress("puWeight", &(puWeight));                      tree->SetBranchStatus("puWeight", 1); 
-  tree->SetBranchAddress("nJet", &(nJets));                             tree->SetBranchStatus("nJet", 1); 
-  tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));                tree->SetBranchStatus("Jet_btagCSV", 1); 
-  tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));              tree->SetBranchStatus("Jet_btagCMVA", 1);
-  tree->SetBranchAddress("Jet_pt", &(jet_pT));                          tree->SetBranchStatus("Jet_pt", 1); 
-  tree->SetBranchAddress("Jet_eta", &(jet_eta));                        tree->SetBranchStatus("Jet_eta", 1); 
-  tree->SetBranchAddress("Jet_phi", &(jet_phi));                        tree->SetBranchStatus("Jet_phi", 1); 
-  tree->SetBranchAddress("Jet_mass", &(jet_mass));                      tree->SetBranchStatus("Jet_mass", 1);
-  tree->SetBranchAddress("GenHiggsBoson_pt", &(GenHiggsBoson_pt));      tree->SetBranchStatus("GenHiggsBoson_pt",1);
-  tree->SetBranchAddress("GenHiggsBoson_eta", &(GenHiggsBoson_eta));    tree->SetBranchStatus("GenHiggsBoson_eta",1);
-  tree->SetBranchAddress("GenHiggsBoson_phi", &(GenHiggsBoson_phi));    tree->SetBranchStatus("GenHiggsBoson_phi",1);
-  tree->SetBranchAddress("GenHiggsBoson_mass", &(GenHiggsBoson_mass));  tree->SetBranchStatus("GenHiggsBoson_mass",1);
-  tree->SetBranchAddress("nGenHiggsBoson", &(nGenHiggsBoson));  tree->SetBranchStatus("nGenHiggsBoson",1);
+  tree->SetBranchAddress("run", &run);                                   tree->SetBranchStatus("run", 1);  
+  tree->SetBranchAddress("isData", &isData);                             tree->SetBranchStatus("isData", 1);
+  tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);   tree->SetBranchStatus("HLT_HH4bLowLumi", 1);
+  tree->SetBranchAddress("Vtype", &(vType));                             tree->SetBranchStatus("Vtype", 1); 
+  tree->SetBranchAddress("puWeight", &(puWeight));                       tree->SetBranchStatus("puWeight", 1); 
+  tree->SetBranchAddress("nJet", &(nJets));                              tree->SetBranchStatus("nJet", 1); 
+  tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));                 tree->SetBranchStatus("Jet_btagCSV", 1); 
+  tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));               tree->SetBranchStatus("Jet_btagCMVA", 1);
+  tree->SetBranchAddress("Jet_pt", &(jet_pT));                           tree->SetBranchStatus("Jet_pt", 1); 
+  tree->SetBranchAddress("Jet_eta", &(jet_eta));                         tree->SetBranchStatus("Jet_eta", 1); 
+  tree->SetBranchAddress("Jet_phi", &(jet_phi));                         tree->SetBranchStatus("Jet_phi", 1); 
+  tree->SetBranchAddress("Jet_mass", &(jet_mass));                       tree->SetBranchStatus("Jet_mass", 1);
+  tree->SetBranchAddress("nGenHiggsBoson", &(nGenHiggsBoson));           tree->SetBranchStatus("nGenHiggsBoson",1);
+  tree->SetBranchAddress("GenHiggsBoson_pt", &(genHiggsBoson_pT));       tree->SetBranchStatus("GenHiggsBoson_pt",1);
+  tree->SetBranchAddress("GenHiggsBoson_eta", &(genHiggsBoson_eta));     tree->SetBranchStatus("GenHiggsBoson_eta",1);
+  tree->SetBranchAddress("GenHiggsBoson_phi", &(genHiggsBoson_phi));     tree->SetBranchStatus("GenHiggsBoson_phi",1);
+  tree->SetBranchAddress("GenHiggsBoson_mass", &(genHiggsBoson_mass));   tree->SetBranchStatus("GenHiggsBoson_mass",1);
+  tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         tree->SetBranchStatus("nGenBQuarkFromH",1);
+  tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     tree->SetBranchStatus("GenBQuarkFromH_pt", 1);
+  tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   tree->SetBranchStatus("GenBQuarkFromH_eta", 1);
+  tree->SetBranchAddress("GenBQuarkFromH_phi", &(genBQuarkFromH_phi));   tree->SetBranchStatus("GenBQuarkFromH_phi", 1);
+  tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass)); tree->SetBranchStatus("GenBQuarkFromH_mass", 1);
+  tree->SetBranchAddress("met_pt", &(met_pT));                           tree->SetBranchStatus("met_pt", 1);
+  tree->SetBranchAddress("met_phi", &(met_phi));                         tree->SetBranchStatus("met_phi", 1);
   
   TH1F *h_nJets=new TH1F("h_nJets", "h_nJets; # Cleaned PAT Jets; n", 10, 0., 10.);
   
@@ -84,7 +96,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   TH1F *h_pTOrder_JetCSV_2=new TH1F("h_pTOrder_JetCSV_2", "; pT Ordered Jet CSV 2 (GeV); Events", 50, 0., 1.);
   TH1F *h_pTOrder_JetCSV_3=new TH1F("h_pTOrder_JetCSV_3", "; pT Ordered Jet CSV 3 (GeV); Events", 50, 0., 1.);
   TH1F *h_pTOrder_JetCSV_4=new TH1F("h_pTOrder_JetCSV_4", "; pT Ordered Jet CSV 4 (GeV); Events", 50, 0., 1.);
-  TH1F *h_GenX_mass = new TH1F("h_GenX_mass"," ; m_{X}^{GEN} (GeV); Events", 1800, 200, 2000);	
+  
+  TH1F *h_GenX_mass=new TH1F("h_GenX_mass","; m_{X}^{GEN} (GeV); Events", 1800, 200, 2000);
+  
+  TH1F *h_MET=new TH1F("h_MET", "; MET (GeV); Events", 50, 0., 500.);
+  TH1F *h_MET_phi=new TH1F("h_MET_phi", "; #phi_{MET} (GeV)", 50, -pi, pi);
   
   TH1F *h_Cuts=new TH1F("h_Cuts", "Cut flow", 16, 0, 16);
   TAxis *a_Cuts=h_Cuts->GetXaxis();
@@ -119,16 +135,17 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
 
     if(nGenHiggsBoson==2)
     {
-
-      TLorentzVector H1,H2;
-      H1.SetPtEtaPhiM(GenHiggsBoson_pt[0],GenHiggsBoson_eta[0],GenHiggsBoson_phi[0],GenHiggsBoson_mass[0]);
-      H2.SetPtEtaPhiM(GenHiggsBoson_pt[1],GenHiggsBoson_eta[1],GenHiggsBoson_phi[1],GenHiggsBoson_mass[1]);
-      h_GenX_mass->Fill((H1+H2).M(), eventWeight);
-    }	
+      TLorentzVector gen_H1,gen_H2;
+      gen_H1.SetPtEtaPhiM(genHiggsBoson_pT[0], genHiggsBoson_eta[0], genHiggsBoson_phi[0], genHiggsBoson_mass[0]);
+      gen_H2.SetPtEtaPhiM(genHiggsBoson_pT[1], genHiggsBoson_eta[1], genHiggsBoson_phi[1], genHiggsBoson_mass[1]);
+      h_GenX_mass->Fill((gen_H1+gen_H2).M(), eventWeight);
+    }
+    
+    h_MET->Fill(met_pT, eventWeight);
+    h_MET_phi->Fill(met_phi, eventWeight);	
     
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
-    
     if (trigger_HLT_HH4bLowLumi==1)
     {
       nCut1+=eventWeight;
@@ -244,6 +261,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   h_pTOrder_JetCSV_3->Write();
   h_pTOrder_JetCSV_4->Write();
   h_GenX_mass->Write();
+  h_MET->Write();
+  h_MET_phi->Write();
   h_Cuts->Write();
   tFile->Write();
   tFile->Close();
