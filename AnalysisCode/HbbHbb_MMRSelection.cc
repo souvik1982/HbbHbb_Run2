@@ -81,11 +81,11 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
   
   // Book variables
-  double eventWeight;
+  float eventWeight;
   int nJets, nGenBQuarkFromH;
-  double jet_btagCSV[100], jet_btagCMVA[100];
-  double jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
-  double genBQuarkFromH_pT[100],genBQuarkFromH_eta[100],genBQuarkFromH_phi[100],genBQuarkFromH_mass[100];
+  float jet_btagCSV[100], jet_btagCMVA[100];
+  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
+  float genBQuarkFromH_pT[100],genBQuarkFromH_eta[100],genBQuarkFromH_phi[100],genBQuarkFromH_mass[100];
   std::vector<unsigned int> *jetIndex_pTOrder=0;
   
   // Retrieve variables
@@ -109,13 +109,13 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   TH1F *h_H1_pT=new TH1F("h_H1_pT", "H1 p_{T}; p_{T} (GeV/c)", 50, 0., 800.);
   TH1F *h_H2_mass=new TH1F("h_H2_mass", "H2 mass; mass (GeV)", 50, 50., 200.);
   TH1F *h_H2_pT=new TH1F("h_H2_pT", "H2 p_{T}; p_{T} (GeV/c)", 50, 0., 800.);
-  TH1F *h_mX_SR=new TH1F("h_mX_SR", "h_mX_SR", 200, 0., 2000.); h_mX_SR->Sumw2();
-  TH1F *h_mX_SR_purity0 = new TH1F("h_mX_SR_purity0","; m_{X} (GeV)" , 200, 0., 2000.);
-  TH1F *h_mX_SR_purity1 = new TH1F("h_mX_SR_purity1","; m_{X} (GeV)" , 200, 0., 2000.);
-  TH1F *h_mX_SR_purity2 = new TH1F("h_mX_SR_purity2","; m_{X} (GeV)" , 200, 0., 2000.);
-  TH1F *h_mX_SR_purity3 = new TH1F("h_mX_SR_purity3","; m_{X} (GeV)" , 200, 0., 2000.);
-  TH1F *h_mX_SR_purity4 = new TH1F("h_mX_SR_purity4","; m_{X} (GeV)" , 200, 0., 2000.);
-  TH1F *h_mX_SR_purity5 = new TH1F("h_mX_SR_purity5","; m_{X} (GeV)" , 200, 0., 2000.);
+  TH1F *h_mX_SR=new TH1F("h_mX_SR", "; m_{X} (GeV)", 200, 0., 2000.);                          h_mX_SR->Sumw2();
+  TH1F *h_mX_SR_purity0 = new TH1F("h_mX_SR_purity0","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity0->Sumw2();
+  TH1F *h_mX_SR_purity1 = new TH1F("h_mX_SR_purity1","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity1->Sumw2();
+  TH1F *h_mX_SR_purity2 = new TH1F("h_mX_SR_purity2","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity2->Sumw2();
+  TH1F *h_mX_SR_purity3 = new TH1F("h_mX_SR_purity3","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity3->Sumw2();
+  TH1F *h_mX_SR_purity4 = new TH1F("h_mX_SR_purity4","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity4->Sumw2();
+  TH1F *h_mX_SR_purity5 = new TH1F("h_mX_SR_purity5","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity5->Sumw2();
   
   // Get the h_Cuts histogram
   std::string histfilename="Histograms_"+sample+".root";
@@ -145,7 +145,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
         if (k!=j)
         {
           unsigned int k_jetIndex=jetIndex_pTOrder->at(k);
-          jet2_p4=fillTLorentzVector(jet_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k], jet_mass[k_jetIndex]);
+          jet2_p4=fillTLorentzVector(jet_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k_jetIndex], jet_mass[k_jetIndex]);
           for (unsigned int l=0; l<jetIndex_pTOrder->size(); ++l)
           {
             if (l!=j && l!=k)
@@ -185,7 +185,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
 
     if (foundHH)
     {
-	    nCut4+=eventWeight;
+      nCut4+=eventWeight;
 	    
       TLorentzVector jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
 	    TLorentzVector jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
