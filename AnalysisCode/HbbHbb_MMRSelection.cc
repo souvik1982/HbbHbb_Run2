@@ -1,4 +1,5 @@
 #include <TH1F.h>
+#include <TH2F.h>
 #include <TFile.h>
 #include <TTree.h>
 #include <TChain.h>
@@ -110,12 +111,13 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   TH1F *h_H2_mass=new TH1F("h_H2_mass", "H2 mass; mass (GeV)", 50, 50., 200.);
   TH1F *h_H2_pT=new TH1F("h_H2_pT", "H2 p_{T}; p_{T} (GeV/c)", 50, 0., 800.);
   TH1F *h_mX_SR=new TH1F("h_mX_SR", "; m_{X} (GeV)", 200, 0., 2000.);                          h_mX_SR->Sumw2();
-  TH1F *h_mX_SR_purity0 = new TH1F("h_mX_SR_purity0","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity0->Sumw2();
-  TH1F *h_mX_SR_purity1 = new TH1F("h_mX_SR_purity1","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity1->Sumw2();
-  TH1F *h_mX_SR_purity2 = new TH1F("h_mX_SR_purity2","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity2->Sumw2();
-  TH1F *h_mX_SR_purity3 = new TH1F("h_mX_SR_purity3","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity3->Sumw2();
-  TH1F *h_mX_SR_purity4 = new TH1F("h_mX_SR_purity4","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity4->Sumw2();
-  TH1F *h_mX_SR_purity5 = new TH1F("h_mX_SR_purity5","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity5->Sumw2();
+  TH1F *h_mX_SR_purity0 = new TH1F("h_mX_SR_purity0", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity0->Sumw2();
+  TH1F *h_mX_SR_purity1 = new TH1F("h_mX_SR_purity1", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity1->Sumw2();
+  TH1F *h_mX_SR_purity2 = new TH1F("h_mX_SR_purity2", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity2->Sumw2();
+  TH1F *h_mX_SR_purity3 = new TH1F("h_mX_SR_purity3", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity3->Sumw2();
+  TH1F *h_mX_SR_purity4 = new TH1F("h_mX_SR_purity4", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity4->Sumw2();
+  TH1F *h_mX_SR_purity5 = new TH1F("h_mX_SR_purity5", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity5->Sumw2();
+  TH2F *h_mH1_mH2_asym1 = new TH2F("h_mH1_mH2_asym1", "; m_{H1} (GeV); m_{H2} (GeV)", 50, 50., 200., 50, 50., 200.);
   
   // Get the h_Cuts histogram
   std::string histfilename="Histograms_"+sample+".root";
@@ -191,6 +193,13 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
 	    TLorentzVector jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
 	    TLorentzVector jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
 	    TLorentzVector jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
+      
+      // Fill mH1 vs mH2 asym before randomization
+      double pTH1=(jet1_p4+jet2_p4).Pt();
+      double pTH2=(jet3_p4+jet4_p4).Pt();
+      double mH1=(jet1_p4+jet2_p4).M();
+      double mH2=(jet3_p4+jet4_p4).M();
+      h_mH1_mH2_asym1->Fill((pTH1>pTH2)?mH1:mH2, (pTH1>pTH2)?mH2:mH1, eventWeight);
 
 	    // Randomization or ordering of which Higgs is which
 	    if (int((jet1_p4+jet2_p4).Pt()*100.) % 2 == 1) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} // swap if H pT is odd in second decimal place
@@ -254,6 +263,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   h_H1_pT->Write();
   h_H2_mass->Write();
   h_H2_pT->Write();
+  h_mH1_mH2_asym1->Write();
   h_mX_SR->Write();
   h_mX_SR_purity5->Write();
   h_mX_SR_purity0->Write();
