@@ -248,7 +248,7 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
         if (purity== 2) h_mX_SR_purity2->Fill(X_p4.M(), eventWeight);
         if (purity== 3) h_mX_SR_purity3->Fill(X_p4.M(), eventWeight);
         if (purity== 4) h_mX_SR_purity4->Fill(X_p4.M(), eventWeight);
-	    }
+      }
 
     }
 
