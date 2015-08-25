@@ -202,12 +202,12 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
       h_mH1_mH2_asym1->Fill((pTH1>pTH2)?mH1:mH2, (pTH1>pTH2)?mH2:mH1, eventWeight);
 
 	    // Randomization or ordering of which Higgs is which
-	    if (int((jet1_p4+jet2_p4).Pt()*100.) % 2 == 1) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} // swap if H pT is odd in second decimal place
+      if (int((jet1_p4+jet2_p4).Pt()*100.) % 2 == 1) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} // swap if H pT is odd in second decimal place
 
-	    jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
-	    jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
-	    jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
-	    jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
+      jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
+      jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
+      jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
+      jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
       
       // Check purity of jet selection here
       int purity=-3;
@@ -227,21 +227,21 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
         }
       }
 
-	    TLorentzVector H1_p4=jet1_p4+jet2_p4;
-	    TLorentzVector H2_p4=jet3_p4+jet4_p4;
-	    TLorentzVector X_p4=H1_p4+H2_p4;
+      TLorentzVector H1_p4=jet1_p4+jet2_p4;
+      TLorentzVector H2_p4=jet3_p4+jet4_p4;
+      TLorentzVector X_p4=H1_p4+H2_p4;
 
-	    h_H1_mass->Fill(H1_p4.M(), eventWeight);
-	    h_H1_pT->Fill(H1_p4.Pt(), eventWeight);
-	    h_H2_mass->Fill(H2_p4.M(), eventWeight);
-	    h_H2_pT->Fill(H2_p4.Pt(), eventWeight);
-	    
-	    int region=withinRegion(H1_p4.M(), H2_p4.M(), 17.5, 35., H_mass, H_mass);
-	    if (region==0) // SR
-	    {
-		    nCut5+=eventWeight;
+      h_H1_mass->Fill(H1_p4.M(), eventWeight);
+      h_H1_pT->Fill(H1_p4.Pt(), eventWeight);
+      h_H2_mass->Fill(H2_p4.M(), eventWeight);
+      h_H2_pT->Fill(H2_p4.Pt(), eventWeight);
 
-		    h_mX_SR->Fill(X_p4.M(), eventWeight);
+      int region=withinRegion(H1_p4.M(), H2_p4.M(), 17.5, 35., H_mass, H_mass);
+      if (region==0) // SR
+      {
+        nCut5+=eventWeight;
+
+        h_mX_SR->Fill(X_p4.M(), eventWeight);
         if (purity==-1) h_mX_SR_purity5->Fill(X_p4.M(), eventWeight);
         if (purity== 0) h_mX_SR_purity0->Fill(X_p4.M(), eventWeight);
         if (purity== 1) h_mX_SR_purity1->Fill(X_p4.M(), eventWeight);
