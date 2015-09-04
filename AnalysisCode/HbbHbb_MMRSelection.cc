@@ -8,8 +8,11 @@
 #include <iostream>
 #include <vector>
 
+#include "KinFitInterface.cc"
+
 double pi=3.14159265358979;
 double H_mass=125.;
+bool kinFit=true;
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
@@ -81,6 +84,8 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   tree->Add(inputfilename.c_str());
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
   
+  gSystem->Load("../libPhysicsToolsKinFitter.so");
+  
   // Book variables
   float eventWeight;
   int nJets, nGenBQuarkFromH;
@@ -134,8 +139,8 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
     
     bool foundHH=false;
     double m_diff_old=50.;
-    int H1jet1_i, H1jet2_i;
-    int H2jet1_i, H2jet2_i;
+    int H1jet1_i=-1, H1jet2_i=-1;
+    int H2jet1_i=-1, H2jet2_i=-1;
   
     for (unsigned int j=0; j<jetIndex_pTOrder->size(); ++j)
     {
@@ -240,6 +245,13 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
 	    if (region==0) // SR
 	    {
 		    nCut5+=eventWeight;
+        
+        // Do the kinematic constraint
+        if (kinFit)
+        {
+          double chi2=constrainHH(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+          X_p4=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
+        }
 
 		    h_mX_SR->Fill(X_p4.M(), eventWeight);
         if (purity==-1) h_mX_SR_purity5->Fill(X_p4.M(), eventWeight);
