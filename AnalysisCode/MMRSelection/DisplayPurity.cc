@@ -81,7 +81,7 @@ void DisplayPurityForFile(TFile *file, float xmin, float xmax, int rebin)
 
 void DisplayPurity()
 {
-  TFile *f_Radion260GeV=new TFile("Histograms_Radion260GeV.root");
+  /*TFile *f_Radion260GeV=new TFile("Histograms_Radion260GeV.root");
   TFile *f_Radion270GeV=new TFile("Histograms_Radion270GeV.root");
   TFile *f_Radion300GeV=new TFile("Histograms_Radion300GeV.root");
   TFile *f_Radion350GeV=new TFile("Histograms_Radion350GeV.root");
@@ -92,10 +92,10 @@ void DisplayPurity()
   TFile *f_Radion600GeV=new TFile("Histograms_Radion600GeV.root");
   TFile *f_Radion650GeV=new TFile("Histograms_Radion650GeV.root");
   TFile *f_Radion700GeV=new TFile("Histograms_Radion700GeV.root");
-  TFile *f_Radion800GeV=new TFile("Histograms_Radion800GeV.root");
+  TFile *f_Radion800GeV=new TFile("Histograms_Radion800GeV.root");*/
   TFile *f_Radion900GeV=new TFile("Histograms_Radion900GeV.root");
 
-  DisplayPurityForFile(f_Radion260GeV, 200, 1500, 1);
+  /*DisplayPurityForFile(f_Radion260GeV, 200, 1500, 1);
   DisplayPurityForFile(f_Radion270GeV, 200, 1500, 1);
   DisplayPurityForFile(f_Radion300GeV, 200, 1500, 1);
   DisplayPurityForFile(f_Radion350GeV, 200, 1500, 1);
@@ -106,6 +106,6 @@ void DisplayPurity()
   DisplayPurityForFile(f_Radion600GeV, 200, 1500, 1);
   DisplayPurityForFile(f_Radion650GeV, 200, 1500, 1);
   DisplayPurityForFile(f_Radion700GeV, 200, 1500, 1);
-  DisplayPurityForFile(f_Radion800GeV, 200, 1500, 1);
+  DisplayPurityForFile(f_Radion800GeV, 200, 1500, 1);*/
   DisplayPurityForFile(f_Radion900GeV, 200, 1500, 1);
 }

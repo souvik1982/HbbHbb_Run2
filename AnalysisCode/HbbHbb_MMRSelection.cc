@@ -4,6 +4,7 @@
 #include <TTree.h>
 #include <TChain.h>
 #include <TSystem.h>
+#include <TROOT.h>
 #include <TLorentzVector.h>
 #include <iostream>
 #include <vector>
@@ -12,7 +13,8 @@
 
 double pi=3.14159265358979;
 double H_mass=125.;
-bool kinFit=true;
+
+// gSystem->Load("libPhysicsToolsKinFitter.so");
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
@@ -79,12 +81,12 @@ int withinRegion(double mH1, double mH2, double r1=15., double r2=30., double mH
 
 void HbbHbb_MMRSelection(std::string type, std::string sample)
 {
+  gSystem->Load("libPhysicsToolsKinFitter.so");
+  
   std::string inputfilename="../PreSelected_"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
-  
-  gSystem->Load("../libPhysicsToolsKinFitter.so");
   
   // Book variables
   float eventWeight;
@@ -115,14 +117,23 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   TH1F *h_H1_pT=new TH1F("h_H1_pT", "H1 p_{T}; p_{T} (GeV/c)", 50, 0., 800.);
   TH1F *h_H2_mass=new TH1F("h_H2_mass", "H2 mass; mass (GeV)", 50, 50., 200.);
   TH1F *h_H2_pT=new TH1F("h_H2_pT", "H2 p_{T}; p_{T} (GeV/c)", 50, 0., 800.);
-  TH1F *h_mX_SR=new TH1F("h_mX_SR", "; m_{X} (GeV)", 200, 0., 2000.);                          h_mX_SR->Sumw2();
+  TH2F *h_mH1_mH2_asym1 = new TH2F("h_mH1_mH2_asym1", "; m_{H1} (GeV); m_{H2} (GeV)", 50, 50., 200., 50, 50., 200.);
+  
+  TH1F *h_mX_SR         = new TH1F("h_mX_SR", "; m_{X} (GeV)", 200, 0., 2000.);          h_mX_SR->Sumw2();
   TH1F *h_mX_SR_purity0 = new TH1F("h_mX_SR_purity0", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity0->Sumw2();
   TH1F *h_mX_SR_purity1 = new TH1F("h_mX_SR_purity1", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity1->Sumw2();
   TH1F *h_mX_SR_purity2 = new TH1F("h_mX_SR_purity2", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity2->Sumw2();
   TH1F *h_mX_SR_purity3 = new TH1F("h_mX_SR_purity3", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity3->Sumw2();
   TH1F *h_mX_SR_purity4 = new TH1F("h_mX_SR_purity4", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity4->Sumw2();
   TH1F *h_mX_SR_purity5 = new TH1F("h_mX_SR_purity5", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_purity5->Sumw2();
-  TH2F *h_mH1_mH2_asym1 = new TH2F("h_mH1_mH2_asym1", "; m_{H1} (GeV); m_{H2} (GeV)", 50, 50., 200., 50, 50., 200.);
+  
+  TH1F *h_mX_SR_kinFit         = new TH1F("h_mX_SR_kinFit", "; m_{X} (GeV)", 200, 0., 2000.);          h_mX_SR_kinFit->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity0 = new TH1F("h_mX_SR_kinFit_purity0", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_kinFit_purity0->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity1 = new TH1F("h_mX_SR_kinFit_purity1", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_kinFit_purity1->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity2 = new TH1F("h_mX_SR_kinFit_purity2", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_kinFit_purity2->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity3 = new TH1F("h_mX_SR_kinFit_purity3", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_kinFit_purity3->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity4 = new TH1F("h_mX_SR_kinFit_purity4", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_kinFit_purity4->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity5 = new TH1F("h_mX_SR_kinFit_purity5", "; m_{X} (GeV)", 200, 0., 2000.);  h_mX_SR_kinFit_purity5->Sumw2();
   
   // Get the h_Cuts histogram
   std::string histfilename="Histograms_"+sample+".root";
@@ -246,20 +257,24 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
 	    {
 		    nCut5+=eventWeight;
         
-        // Do the kinematic constraint
-        if (kinFit)
-        {
-          double chi2=constrainHH(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
-          X_p4=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
-        }
-
-		    h_mX_SR->Fill(X_p4.M(), eventWeight);
+        h_mX_SR->Fill(X_p4.M(), eventWeight);
         if (purity==-1) h_mX_SR_purity5->Fill(X_p4.M(), eventWeight);
         if (purity== 0) h_mX_SR_purity0->Fill(X_p4.M(), eventWeight);
         if (purity== 1) h_mX_SR_purity1->Fill(X_p4.M(), eventWeight);
         if (purity== 2) h_mX_SR_purity2->Fill(X_p4.M(), eventWeight);
         if (purity== 3) h_mX_SR_purity3->Fill(X_p4.M(), eventWeight);
         if (purity== 4) h_mX_SR_purity4->Fill(X_p4.M(), eventWeight);
+        
+        // Do the kinematic constraint
+        double chi2=constrainHH(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        X_p4=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
+		    h_mX_SR_kinFit->Fill(X_p4.M(), eventWeight);
+        if (purity==-1) h_mX_SR_kinFit_purity5->Fill(X_p4.M(), eventWeight);
+        if (purity== 0) h_mX_SR_kinFit_purity0->Fill(X_p4.M(), eventWeight);
+        if (purity== 1) h_mX_SR_kinFit_purity1->Fill(X_p4.M(), eventWeight);
+        if (purity== 2) h_mX_SR_kinFit_purity2->Fill(X_p4.M(), eventWeight);
+        if (purity== 3) h_mX_SR_kinFit_purity3->Fill(X_p4.M(), eventWeight);
+        if (purity== 4) h_mX_SR_kinFit_purity4->Fill(X_p4.M(), eventWeight);
 	    }
 
     }
@@ -283,6 +298,13 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   h_mX_SR_purity2->Write();
   h_mX_SR_purity3->Write();
   h_mX_SR_purity4->Write();
+  h_mX_SR_kinFit->Write();        
+  h_mX_SR_kinFit_purity0->Write();
+  h_mX_SR_kinFit_purity1->Write();
+  h_mX_SR_kinFit_purity2->Write();
+  h_mX_SR_kinFit_purity3->Write();
+  h_mX_SR_kinFit_purity4->Write();
+  h_mX_SR_kinFit_purity5->Write();
   h_Cuts.Write();
 
   tFile2->Write();
@@ -294,5 +316,24 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   std::cout<<"Number of matched events "<<nCutGen<<std::endl;
   std::cout<<"Number of events in SR = "<<nCut5<<std::endl;
   std::cout<<"========================"<<std::endl;
-
+  
+  delete h_H1_mass;
+  delete h_H1_pT;
+  delete h_H2_mass;
+  delete h_H2_pT;
+  delete h_mH1_mH2_asym1;
+  delete h_mX_SR;
+  delete h_mX_SR_purity5;
+  delete h_mX_SR_purity0;
+  delete h_mX_SR_purity1;
+  delete h_mX_SR_purity2;
+  delete h_mX_SR_purity3;
+  delete h_mX_SR_purity4;
+  delete h_mX_SR_kinFit;
+  delete h_mX_SR_kinFit_purity0;
+  delete h_mX_SR_kinFit_purity1;
+  delete h_mX_SR_kinFit_purity2;
+  delete h_mX_SR_kinFit_purity3;
+  delete h_mX_SR_kinFit_purity4;
+  delete h_mX_SR_kinFit_purity5;
 }
