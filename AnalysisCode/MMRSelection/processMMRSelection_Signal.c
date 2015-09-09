@@ -1,5 +1,5 @@
 {
-  gSystem->Load("../libPhysicsToolsKinFitter.so");
+  gSystem->Load("../libPhysicsToolsKinFitter.dylib");
   gROOT->LoadMacro("../HbbHbb_MMRSelection.cc++");
   HbbHbb_MMRSelection("Signal", "Radion260GeV");
   HbbHbb_MMRSelection("Signal", "Radion270GeV");
