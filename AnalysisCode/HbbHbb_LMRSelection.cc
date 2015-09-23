@@ -6,6 +6,8 @@
 #include <TLorentzVector.h>
 #include <iostream>
 #include <vector>
+//#include "kinFit4b.h"
+#include "TH2F.h"
 
 double pi=3.14159265358979;
 double H_mass=125.;
@@ -39,7 +41,10 @@ int withinRegion(double mH1, double mH2, double r1=15., double r2=30., double mH
 
 void HbbHbb_LMRSelection(std::string sample)
 {
-  std::string inputfilename="../PreSelected_"+sample+".root";
+
+  gSystem->Load("libPhysicsToolsKinFitter.so");
+  gSystem->Load("/uscms_data/d3/cvernier/4b/HbbHbb_Run2/AnalysisCode/kinFit4b_h.so"); 	
+  std::string inputfilename="PreSelected_"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
@@ -77,6 +82,9 @@ void HbbHbb_LMRSelection(std::string sample)
   TH1F *h_mX_SR=new TH1F("h_mX_SR", "h_mX_SR", 200, 0., 2000.); h_mX_SR->Sumw2();
   TH1F *h_Xmass_right = new TH1F("h_Xmass_right"," h_Xmass right" , 100, 0., 1000.);
   TH1F *h_Xmass_wrong = new TH1F("h_Xmass_wrong"," h_Xmass wrong" , 100, 0., 1000.);
+  TH1F *h_mX_SR_KinFit = new TH1F("h_mX_SR_KinFit","h_mX_SR_KinFit",100, 0., 1000.);
+  TH2F *h_mX_SR_KinFit_chi = new TH2F("h_mX_SR_KinFit_chi","h_mX_SR_KinFit_chi",100, 0., 1000., 100, 0.,1000.);
+  TH1F *h_chi_SR_KinFit = new TH1F("h_chi_SR_KinFit","h_chi_SR_KinFit",100, 0., 1000.); 	
   
   
   // Get the h_Cuts histogram
@@ -93,6 +101,7 @@ void HbbHbb_LMRSelection(std::string sample)
     tree->GetEvent(i);
     
     bool foundHH=false;
+    bool match = false;	
     double m_diff_old=50.;
     int H1jet1_i, H1jet2_i;
     int H2jet1_i, H2jet2_i;
@@ -100,7 +109,7 @@ void HbbHbb_LMRSelection(std::string sample)
     TLorentzVector hb[4];
     for(int i=0; i<4; i++)
     {	
-    hb[i].SetPtEtaPhiM(GenBQuarkFromH_pt[i], GenBQuarkFromH_eta[i], GenBQuarkFromH_phi[i], GenBQuarkFromH_mass[i]); 
+    hb[i].SetPtEtaPhiM(genBQuarkFromH_pT[i], genBQuarkFromH_eta[i], genBQuarkFromH_phi[i], genBQuarkFromH_mass[i]); 
     }
 
     for (unsigned int j=0; j<jetIndex_pTOrder->size(); ++j)
@@ -216,11 +225,9 @@ void HbbHbb_LMRSelection(std::string sample)
 	    h_H2_pT->Fill(H2_p4.Pt(), eventWeight);
 	    if(match)  {
 		    h_Xmass_right->Fill((H1_p4+H2_p4).M(), eventWeight);
-		    matched=1;
 	    }
 	    else {
 		    h_Xmass_wrong->Fill((H1_p4+H2_p4).M(), eventWeight);
-		    matched=0;
 	    }
 
 
@@ -231,7 +238,13 @@ void HbbHbb_LMRSelection(std::string sample)
 		    nCut5+=eventWeight;
 
 		    h_mX_SR->Fill(X_p4.M(), eventWeight);
-	    }
+		    double chi=-999;
+
+	            TLorentzVector X_chi2_p4=H4b::Xchi2(jet1_p4, jet2_p4, jet3_p4, jet4_p4,chi,H_mass);
+		    h_mX_SR_KinFit->Fill(X_chi2_p4.M(), eventWeight);
+		    h_mX_SR_KinFit_chi->Fill(X_chi2_p4.M(),chi, eventWeight);
+		    h_chi_SR_KinFit->Fill(chi, eventWeight);
+	}	
 
     }
 
@@ -242,6 +255,9 @@ void HbbHbb_LMRSelection(std::string sample)
 
   TFile *tFile2=new TFile(histfilename.c_str(), "UPDATE");
   tFile2->Delete("h_Cuts;1");
+  h_mX_SR_KinFit->Write();
+  h_mX_SR_KinFit_chi->Write();
+  h_chi_SR_KinFit->Write();
   h_H1_mass->Write();
   h_H1_pT->Write();
   h_H2_mass->Write();
