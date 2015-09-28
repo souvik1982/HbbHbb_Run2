@@ -162,13 +162,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         double ht=0;
         for (unsigned int j=0; j<(unsigned int)nJets; ++j)
         {
-          if (jet_pT[j]>jet_pT_cut && fabs(jet_eta[j])<jet_eta_cut && jet_btagCSV[j]>jet_btag_cut) 
-          {
-            ++nCJets;
-            jetList_pTOrder[jet_pT[j]]=j;
-            jetList_CSVOrder[jet_btagCSV[j]]=j;
-            jetList_CMVAOrder[jet_btagCMVA[j]]=j;
-          }
+          if (jet_pT[j]>jet_pT_cut && fabs(jet_eta[j])<jet_eta_cut && jet_btagCSV[j]>jet_btag_cut) ++nCJets;
+          jetList_pTOrder[jet_pT[j]]=j;
+          jetList_CSVOrder[jet_btagCSV[j]]=j;
+          jetList_CMVAOrder[jet_btagCMVA[j]]=j;
         }
         h_nJets->Fill(nCJets);
         
