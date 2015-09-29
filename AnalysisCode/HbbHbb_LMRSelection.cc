@@ -76,7 +76,7 @@ int withinRegion(double mH1, double mH2, double r1=15., double r2=30., double mH
 
 void HbbHbb_LMRSelection(std::string type, std::string sample)
 {
-  std::string inputfilename="../PreSelected_"+sample+".root";
+  std::string inputfilename="PreSelected_"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
@@ -118,16 +118,18 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
   TH1F *h_mX_SR_purity4 = new TH1F("h_mX_SR_purity4","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity4->Sumw2();
   TH1F *h_mX_SR_purity5 = new TH1F("h_mX_SR_purity5","; m_{X} (GeV)" , 200, 0., 2000.);  h_mX_SR_purity5->Sumw2();
   TH2F *h_mH1_mH2_asym1 = new TH2F("h_mH1_mH2_asym1", "; m_{H1} (GeV); m_{H2} (GeV)", 50, 50., 200., 50, 50., 200.);
+  TH1F *h_Wcand =new TH1F("h_Wcand","; m(jj) (GeV)", 200, 0., 2000.); 
+  TH1F *h_Tcand =new TH1F("h_Tcand","; m(jjj) (GeV)", 200, 0., 2000.); 	
   
   // Get the h_Cuts histogram
   std::string histfilename="Histograms_"+sample+".root";
-  gSystem->Exec(("cp ../"+histfilename+" "+histfilename).c_str());
-  TFile *tFile1=new TFile(("../"+histfilename).c_str(), "READ");
+  gSystem->Exec(("cp "+histfilename+" "+histfilename).c_str());
+  TFile *tFile1=new TFile((histfilename).c_str(), "READ");
   TH1F h_Cuts=*((TH1F*)((TH1F*)tFile1->Get("h_Cuts"))->Clone("h_Cuts"));
   tFile1->Close();
   
   // Event loop
-  double nCut4=0, nCut5=0, nCutGen=0;
+  double nCut4=0, nCut5=0, nCutGen=0, nCut6=0, nCut7=0;
   for (int i=0; i<tree->GetEntries(); ++i)
   {
     tree->GetEvent(i);
@@ -168,87 +170,133 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
                   double deltaR2=jet3_p4.DeltaR(jet4_p4);
                   
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
-                  if (m_diff<m_diff_old && ((diJet2_p4.M()<160. && diJet2_p4.M()>90.) && (diJet1_p4.M()<160. && diJet1_p4.M()>90.)))
-                  {
-                    H1jet1_i=j_jetIndex;
-                    H1jet2_i=k_jetIndex;
-                    H2jet1_i=l_jetIndex;
-                    H2jet2_i=m_jetIndex;
-                    m_diff_old=m_diff;
-                    foundHH=true;
-                  }
-                } // Conditions on 4th jet
-              } // Loop over 4th jet
-            } // Conditions on 3rd jet
-          } // Loop over 3rd jet
-        } // Conditions on 2nd jet
+		  if (m_diff<m_diff_old && ((diJet2_p4.M()<160. && diJet2_p4.M()>90.) && (diJet1_p4.M()<160. && diJet1_p4.M()>90.)))
+		  {
+			  H1jet1_i=j_jetIndex;
+			  H1jet2_i=k_jetIndex;
+			  H2jet1_i=l_jetIndex;
+			  H2jet2_i=m_jetIndex;
+			  m_diff_old=m_diff;
+			  foundHH=true;
+
+		  }
+		} // Conditions on 4th jet
+	      } // Loop over 4th jet
+	    } // Conditions on 3rd jet
+	  } // Loop over 3rd jet
+	} // Conditions on 2nd jet
       } // Loop over 2nd jet
     } // Loop over 1st jet
 
     if (foundHH)
     {
-      nCut4+=eventWeight;
-	    
-      TLorentzVector jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
-      TLorentzVector jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);
-      TLorentzVector jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);
-      TLorentzVector jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
-      
-      // Fill mH1 vs mH2 asym before randomization
-      double pTH1=(jet1_p4+jet2_p4).Pt();
-      double pTH2=(jet3_p4+jet4_p4).Pt();
-      double mH1=(jet1_p4+jet2_p4).M();
-      double mH2=(jet3_p4+jet4_p4).M();
-      h_mH1_mH2_asym1->Fill((pTH1>pTH2)?mH1:mH2, (pTH1>pTH2)?mH2:mH1, eventWeight);
+	    nCut4+=eventWeight;
+	    bool foundTT=false;	
+	    TLorentzVector jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
+	    TLorentzVector jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);
+	    TLorentzVector jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);
+	    TLorentzVector jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
+
+	    // Fill mH1 vs mH2 asym before randomization
+	    double pTH1=(jet1_p4+jet2_p4).Pt();
+	    double pTH2=(jet3_p4+jet4_p4).Pt();
+	    double mH1=(jet1_p4+jet2_p4).M();
+	    double mH2=(jet3_p4+jet4_p4).M();
+	    TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
+            TLorentzVector diJet2_p4=jet3_p4+jet4_p4;	
+
+	    for (unsigned int n=0; n<nJets; ++n)
+                          {
+                                  if (n!=H1jet1_i && n!=H1jet2_i && n!=H2jet1_i && n!=H2jet2_i && jet_pT[n]>20. && fabs(jet_eta[n])<2.5)
+                                  {
+                                          TLorentzVector dijet_W1, dijet_T1;
+                                          TLorentzVector jet5_p4=fillTLorentzVector(jet_pT[n], jet_eta[n], jet_phi[n], jet_mass[n]);
+                                          if(jet5_p4.DeltaR(diJet1_p4)<jet5_p4.DeltaR(diJet2_p4)){
+
+                                                  if(jet_btagCSV[H1jet1_i]>jet_btagCSV[H1jet2_i]) {
+                                                          dijet_W1 = jet2_p4+jet5_p4;
+                                                          dijet_T1 = dijet_W1 +jet1_p4;
+                                                  }
+                                                  else{
+                                                          dijet_W1 = jet1_p4+jet5_p4;
+                                                          dijet_T1 = dijet_W1 +jet2_p4;
+
+                                                  }
+                                          }else{
+                                                  if(jet_btagCSV[H2jet1_i]>jet_btagCSV[H2jet2_i]){
+                                                          dijet_W1 = jet4_p4+jet5_p4;
+                                                          dijet_T1 = dijet_W1+ jet3_p4;
+                                                  }
+                                                  else{
+                                                          dijet_W1 = jet3_p4+jet5_p4;
+                                                          dijet_T1 = dijet_W1+ jet4_p4;
+                                                  }
+                                          }
+
+                                                  h_Wcand->Fill(dijet_W1.M());
+                                                  h_Tcand->Fill((dijet_T1).M());
+
+
+                                                  if((((dijet_W1.M() < 90 && dijet_W1.M() > 70.) && ((dijet_T1).M()> 150. && (dijet_T1).M() < 180.))))  foundTT=true;
+                                  }
+                          }
+			
+
+
+
+	    h_mH1_mH2_asym1->Fill((pTH1>pTH2)?mH1:mH2, (pTH1>pTH2)?mH2:mH1, eventWeight);
 
 	    // Randomization or ordering of which Higgs is which
-      if (int((jet1_p4+jet2_p4).Pt()*100.) % 2 == 1) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} // swap if H pT is odd in second decimal place
+	    if (int((jet1_p4+jet2_p4).Pt()*100.) % 2 == 1) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} // swap if H pT is odd in second decimal place
 
-      jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
-      jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
-      jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
-      jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
-      
-      // Check purity of jet selection here
-      int purity=-3;
-      if (type=="Signal")
-      {
-        if (nGenBQuarkFromH==4)
-        {
-          TLorentzVector b1_p4=fillTLorentzVector(genBQuarkFromH_pT[0], genBQuarkFromH_eta[0], genBQuarkFromH_phi[0], genBQuarkFromH_mass[0]);
-          TLorentzVector b2_p4=fillTLorentzVector(genBQuarkFromH_pT[1], genBQuarkFromH_eta[1], genBQuarkFromH_phi[1], genBQuarkFromH_mass[1]);
-          TLorentzVector b3_p4=fillTLorentzVector(genBQuarkFromH_pT[2], genBQuarkFromH_eta[2], genBQuarkFromH_phi[2], genBQuarkFromH_mass[2]);
-          TLorentzVector b4_p4=fillTLorentzVector(genBQuarkFromH_pT[3], genBQuarkFromH_eta[3], genBQuarkFromH_phi[3], genBQuarkFromH_mass[3]);
-          purity=purityTest(jet1_p4, jet2_p4, jet3_p4, jet4_p4, b1_p4, b2_p4, b3_p4, b4_p4);
-        }
-        else
-        {
-          std::cout<<"ERROR: This is a signal sample without 4 gen b from H."<<std::endl;
-        }
-      }
+	    jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
+	    jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
+	    jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
+	    jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
 
-      TLorentzVector H1_p4=jet1_p4+jet2_p4;
-      TLorentzVector H2_p4=jet3_p4+jet4_p4;
-      TLorentzVector X_p4=H1_p4+H2_p4;
+	    // Check purity of jet selection here
+	    int purity=-3;
+	    if (type=="Signal")
+	    {
+		    if (nGenBQuarkFromH==4)
+		    {
+			    TLorentzVector b1_p4=fillTLorentzVector(genBQuarkFromH_pT[0], genBQuarkFromH_eta[0], genBQuarkFromH_phi[0], genBQuarkFromH_mass[0]);
+			    TLorentzVector b2_p4=fillTLorentzVector(genBQuarkFromH_pT[1], genBQuarkFromH_eta[1], genBQuarkFromH_phi[1], genBQuarkFromH_mass[1]);
+			    TLorentzVector b3_p4=fillTLorentzVector(genBQuarkFromH_pT[2], genBQuarkFromH_eta[2], genBQuarkFromH_phi[2], genBQuarkFromH_mass[2]);
+			    TLorentzVector b4_p4=fillTLorentzVector(genBQuarkFromH_pT[3], genBQuarkFromH_eta[3], genBQuarkFromH_phi[3], genBQuarkFromH_mass[3]);
+			    purity=purityTest(jet1_p4, jet2_p4, jet3_p4, jet4_p4, b1_p4, b2_p4, b3_p4, b4_p4);
+		    }
+		    else
+		    {
+			    std::cout<<"ERROR: This is a signal sample without 4 gen b from H."<<std::endl;
+		    }
+	    }
 
-      h_H1_mass->Fill(H1_p4.M(), eventWeight);
-      h_H1_pT->Fill(H1_p4.Pt(), eventWeight);
-      h_H2_mass->Fill(H2_p4.M(), eventWeight);
-      h_H2_pT->Fill(H2_p4.Pt(), eventWeight);
+	    TLorentzVector H1_p4=jet1_p4+jet2_p4;
+	    TLorentzVector H2_p4=jet3_p4+jet4_p4;
+	    TLorentzVector X_p4=H1_p4+H2_p4;
 
-      int region=withinRegion(H1_p4.M(), H2_p4.M(), 17.5, 35., H_mass, H_mass);
-      if (region==0) // SR
-      {
-        nCut5+=eventWeight;
+	    h_H1_mass->Fill(H1_p4.M(), eventWeight);
+	    h_H1_pT->Fill(H1_p4.Pt(), eventWeight);
+	    h_H2_mass->Fill(H2_p4.M(), eventWeight);
+	    h_H2_pT->Fill(H2_p4.Pt(), eventWeight);
 
-        h_mX_SR->Fill(X_p4.M(), eventWeight);
-        if (purity==-1) h_mX_SR_purity5->Fill(X_p4.M(), eventWeight);
-        if (purity== 0) h_mX_SR_purity0->Fill(X_p4.M(), eventWeight);
-        if (purity== 1) h_mX_SR_purity1->Fill(X_p4.M(), eventWeight);
-        if (purity== 2) h_mX_SR_purity2->Fill(X_p4.M(), eventWeight);
-        if (purity== 3) h_mX_SR_purity3->Fill(X_p4.M(), eventWeight);
-        if (purity== 4) h_mX_SR_purity4->Fill(X_p4.M(), eventWeight);
-      }
+	    int region=withinRegion(H1_p4.M(), H2_p4.M(), 17.5, 35., H_mass, H_mass);
+	    if (region==0) // SR
+	    {
+		    nCut5+=eventWeight;
+
+		    h_mX_SR->Fill(X_p4.M(), eventWeight);
+		    if (purity==-1) h_mX_SR_purity5->Fill(X_p4.M(), eventWeight);
+		    if (purity== 0) h_mX_SR_purity0->Fill(X_p4.M(), eventWeight);
+		    if (purity== 1) h_mX_SR_purity1->Fill(X_p4.M(), eventWeight);
+		    if (purity== 2) h_mX_SR_purity2->Fill(X_p4.M(), eventWeight);
+		    if (purity== 3) h_mX_SR_purity3->Fill(X_p4.M(), eventWeight);
+		    if (purity== 4) h_mX_SR_purity4->Fill(X_p4.M(), eventWeight);
+	    }
+	    if(!foundTT) nCut6+=eventWeight;	
+	    if(region==0 && !foundTT)  nCut7+=eventWeight;
+
 
     }
 
@@ -271,6 +319,8 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
   h_mX_SR_purity2->Write();
   h_mX_SR_purity3->Write();
   h_mX_SR_purity4->Write();
+  h_Wcand->Write();
+  h_Tcand->Write();		
   h_Cuts.Write();
 
   tFile2->Write();
@@ -281,6 +331,8 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
   std::cout<<"Number of events after finding HH candidate (btag && pT>40 GeV && |eta|<2.5)  = "<<nCut4<<std::endl;
   std::cout<<"Number of matched events "<<nCutGen<<std::endl;
   std::cout<<"Number of events in SR = "<<nCut5<<std::endl;
+  std::cout<<"Number of events passing ttbar veto  = "<<nCut6<<std::endl;	
+  std::cout<<"Number of events passing ttbar veto  in SR= "<<nCut7<<std::endl;	
   std::cout<<"========================"<<std::endl;
 
 }
