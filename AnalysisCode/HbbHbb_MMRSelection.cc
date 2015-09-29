@@ -83,7 +83,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
 {
   gSystem->Load("libPhysicsToolsKinFitter.so");
   
-  std::string inputfilename="../PreSelected_"+sample+".root";
+  std::string inputfilename="PreSelected_"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
@@ -137,8 +137,8 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   
   // Get the h_Cuts histogram
   std::string histfilename="Histograms_"+sample+".root";
-  gSystem->Exec(("cp ../"+histfilename+" "+histfilename).c_str());
-  TFile *tFile1=new TFile(("../"+histfilename).c_str(), "READ");
+  gSystem->Exec(("cp "+histfilename+" "+histfilename).c_str());
+  TFile *tFile1=new TFile((histfilename).c_str(), "READ");
   TH1F h_Cuts=*((TH1F*)((TH1F*)tFile1->Get("h_Cuts"))->Clone("h_Cuts"));
   tFile1->Close();
   
