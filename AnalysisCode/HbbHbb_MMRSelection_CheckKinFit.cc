@@ -6,6 +6,7 @@
 #include <TSystem.h>
 #include <TROOT.h>
 #include <TLorentzVector.h>
+#include <TRandom3.h>
 #include <iostream>
 #include <vector>
 
@@ -13,6 +14,8 @@
 
 double pi=3.14159265358979;
 double H_mass=125.;
+
+TRandom3 *r3=new TRandom3();
 
 // gSystem->Load("libPhysicsToolsKinFitter.so");
 
@@ -79,7 +82,22 @@ int withinRegion(double mH1, double mH2, double r1=15., double r2=30., double mH
   return ret;
 }
 
-void HbbHbb_MMRSelection(std::string type, std::string sample)
+TLorentzVector gaussianSmear(TLorentzVector a, double smear=5)
+{
+  double pT=a.Pt();
+  double eta=a.Eta();
+  double phi=a.Phi();
+  double mass=a.M();
+
+  double newpT=pT+r3->Gaus(0, smear);
+
+  std::cout<<"Old pT = "<<pT<<", new pT = "<<newpT<<std::endl;
+
+  TLorentzVector b=fillTLorentzVector(newpT, eta, phi, mass);
+  return b;
+}
+
+void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
 {
   gSystem->Load("libPhysicsToolsKinFitter.so");
   
@@ -134,6 +152,8 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   TH1F *h_mX_SR_kinFit_purity3 = new TH1F("h_mX_SR_kinFit_purity3", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_kinFit_purity3->Sumw2();
   TH1F *h_mX_SR_kinFit_purity4 = new TH1F("h_mX_SR_kinFit_purity4", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_kinFit_purity4->Sumw2();
   TH1F *h_mX_SR_kinFit_purity5 = new TH1F("h_mX_SR_kinFit_purity5", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_kinFit_purity5->Sumw2();
+
+  TH1F *h_mX_genForKinFitCheck = new TH1F("h_mX_genForKinFitCheck", "", 2000, 0., 2000.); h_mX_genForKinFitCheck->Sumw2();
   
   // Get the h_Cuts histogram
   std::string histfilename="Histograms_"+sample+".root";
@@ -204,11 +224,11 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
     if (foundHH)
     {
       nCut4+=eventWeight;
-	    
+      
       TLorentzVector jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
-	    TLorentzVector jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
-	    TLorentzVector jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
-	    TLorentzVector jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
+      TLorentzVector jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
+      TLorentzVector jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
+      TLorentzVector jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
       
       // Fill mH1 vs mH2 asym before randomization
       double pTH1=(jet1_p4+jet2_p4).Pt();
@@ -217,13 +237,13 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
       double mH2=(jet3_p4+jet4_p4).M();
       h_mH1_mH2_asym1->Fill((pTH1>pTH2)?mH1:mH2, (pTH1>pTH2)?mH2:mH1, eventWeight);
 
-	    // Randomization or ordering of which Higgs is which
-	    if (int((jet1_p4+jet2_p4).Pt()*100.) % 2 == 1) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} // swap if H pT is odd in second decimal place
+      // Randomization or ordering of which Higgs is which
+      if (int((jet1_p4+jet2_p4).Pt()*100.) % 2 == 1) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} // swap if H pT is odd in second decimal place
 
-	    jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
-	    jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
-	    jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
-	    jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
+      jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
+      jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
+      jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
+      jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
       
       // Check purity of jet selection here
       int purity=-3;
@@ -236,6 +256,16 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
           TLorentzVector b3_p4=fillTLorentzVector(genBQuarkFromH_pT[2], genBQuarkFromH_eta[2], genBQuarkFromH_phi[2], genBQuarkFromH_mass[2]);
           TLorentzVector b4_p4=fillTLorentzVector(genBQuarkFromH_pT[3], genBQuarkFromH_eta[3], genBQuarkFromH_phi[3], genBQuarkFromH_mass[3]);
           purity=purityTest(jet1_p4, jet2_p4, jet3_p4, jet4_p4, b1_p4, b2_p4, b3_p4, b4_p4);
+
+          // Smear the generated 4 vector
+          TLorentzVector b1_smeared_p4=gaussianSmear(b1_p4);
+          TLorentzVector b2_smeared_p4=gaussianSmear(b2_p4);
+          TLorentzVector b3_smeared_p4=gaussianSmear(b3_p4);
+          TLorentzVector b4_smeared_p4=gaussianSmear(b4_p4);
+          double chi2=constrainHH_check(&b1_smeared_p4, &b2_smeared_p4, &b3_smeared_p4, &b4_smeared_p4);
+          double mX_genForKinFitCheck=(b1_smeared_p4+b2_smeared_p4+b3_smeared_p4+b4_smeared_p4).M();
+          h_mX_genForKinFitCheck->Fill(mX_genForKinFitCheck, eventWeight);
+
         }
         else
         {
@@ -256,6 +286,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
       if (region==0) // SR
       {
         nCut5+=eventWeight;
+        
         h_mX_SR->Fill(X_p4.M(), eventWeight);
         if (purity==-1) h_mX_SR_purity5->Fill(X_p4.M(), eventWeight);
         if (purity== 0) h_mX_SR_purity0->Fill(X_p4.M(), eventWeight);
@@ -263,7 +294,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
         if (purity== 2) h_mX_SR_purity2->Fill(X_p4.M(), eventWeight);
         if (purity== 3) h_mX_SR_purity3->Fill(X_p4.M(), eventWeight);
         if (purity== 4) h_mX_SR_purity4->Fill(X_p4.M(), eventWeight);
-      
+        
         // Do the kinematic constraint
         double chi2=constrainHH(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
         X_p4=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
@@ -275,7 +306,9 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
         if (purity== 3) h_mX_SR_kinFit_purity3->Fill(X_p4.M(), eventWeight);
         if (purity== 4) h_mX_SR_kinFit_purity4->Fill(X_p4.M(), eventWeight);
       }
+
     }
+
   } // Event loop
 
   h_Cuts.Fill(9, nCut4); // HH Candidates
@@ -302,6 +335,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   h_mX_SR_kinFit_purity3->Write();
   h_mX_SR_kinFit_purity4->Write();
   h_mX_SR_kinFit_purity5->Write();
+  h_mX_genForKinFitCheck->Write();
   h_Cuts.Write();
 
   tFile2->Write();

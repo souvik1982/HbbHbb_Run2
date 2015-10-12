@@ -151,3 +151,70 @@ double constrainHH(TLorentzVector *j1, TLorentzVector *j2, TLorentzVector *j3, T
   
   return 0;
 }
+
+double constrainHH_check(TLorentzVector *j1, TLorentzVector *j2, TLorentzVector *j3, TLorentzVector *j4, double mass1=125, double mass2=125)
+{
+  gSystem->Load("libPhysicsToolsKinFitter.so");
+  
+  // Covariance matrices of the four jets
+  TMatrixD m1(3,3);
+  TMatrixD m2(3,3);
+  TMatrixD m3(3,3);
+  TMatrixD m4(3,3);
+  m1.Zero();
+  m2.Zero();
+  m3.Zero();
+  m4.Zero();
+  
+  // Dependence of the covariance matrix on Et and eta
+  m1(0,0) = 5;
+  m2(0,0) = 5;
+  m3(0,0) = 5;
+  m4(0,0) = 5;
+  
+  TFitParticleEtEtaPhi *jet1 = new TFitParticleEtEtaPhi(j1, &m1);
+  TFitParticleEtEtaPhi *jet2 = new TFitParticleEtEtaPhi(j2, &m2);
+  TFitParticleEtEtaPhi *jet3 = new TFitParticleEtEtaPhi(j3, &m3);
+  TFitParticleEtEtaPhi *jet4 = new TFitParticleEtEtaPhi(j4, &m4);
+  
+  // Constrain jet1 and jet2 to one H, and jet3 and jet4 to another
+  TFitConstraintM *massConstraint1 = new TFitConstraintM("massConstraint1", "massConstraint1", 0, 0, mass1);
+  massConstraint1->addParticles1(jet1, jet2);
+  
+  TFitConstraintM *massConstraint2 = new TFitConstraintM("massConstraint2", "massConstraint2", 0, 0, mass2);
+  massConstraint2->addParticles1(jet3, jet4);
+  
+  // Call the fitter
+  TKinFitter *fitter = new TKinFitter("fitter", "fitter");
+  fitter->addMeasParticle(jet1);
+  fitter->addMeasParticle(jet2);
+  fitter->addMeasParticle(jet3);
+  fitter->addMeasParticle(jet4);
+  fitter->addConstraint(massConstraint1);
+  fitter->addConstraint(massConstraint2);
+  
+  //Set convergence criteria
+  fitter->setMaxNbIter(30);
+  fitter->setMaxDeltaS(1e-2);
+  fitter->setMaxF(1e-1);
+  fitter->setVerbosity(3);
+  
+  // Fit
+  fitter->fit();
+  
+  // Return and quit
+  *j1 = TLorentzVector(*(fitter->get4Vec(0)));
+  *j2 = TLorentzVector(*(fitter->get4Vec(1)));
+  *j3 = TLorentzVector(*(fitter->get4Vec(2)));
+  *j4 = TLorentzVector(*(fitter->get4Vec(3)));
+  
+  delete jet1;
+  delete jet2;
+  delete jet3;
+  delete jet4;
+  delete massConstraint1;
+  delete massConstraint2;
+  delete fitter;
+  
+  return 0;
+}
