@@ -175,12 +175,12 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
           {
             ++nCJets;
             jetList_pTOrder[jet_pT[j]]=j;
-            jetList_CSVOrder[jet_btagCSV[j]]=j;
-            jetList_CMVAOrder[jet_btagCMVA[j]]=j;
+            if (jet_btagCSV[j]>0) jetList_CSVOrder[jet_btagCSV[j]]=j;
+            if (jet_btagCMVA[j]>0) jetList_CMVAOrder[jet_btagCMVA[j]]=j;
           }
           jetList_allJets_pTOrder[jet_pT[j]]=j;
-          jetList_allJets_CSVOrder[jet_btagCSV[j]]=j;
-          jetList_allJets_CMVAOrder[jet_btagCMVA[j]]=j;
+          if (jet_btagCSV[j]>0) jetList_allJets_CSVOrder[jet_btagCSV[j]]=j;
+          if (jet_btagCMVA[j]>0) jetList_allJets_CMVAOrder[jet_btagCMVA[j]]=j;
         }
         h_nJets->Fill(nCJets);
         
@@ -255,7 +255,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         jetIndex_allJets_pTOrder.clear();
         jetIndex_allJets_CSVOrder.clear();
         jetIndex_allJets_CMVAOrder.clear();
-        
+
         
       } // vType==-1
     } // Trigger
