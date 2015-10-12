@@ -243,20 +243,20 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
         }
       }
 
-	    TLorentzVector H1_p4=jet1_p4+jet2_p4;
-	    TLorentzVector H2_p4=jet3_p4+jet4_p4;
-	    TLorentzVector X_p4=H1_p4+H2_p4;
+      TLorentzVector H1_p4=jet1_p4+jet2_p4;
+      TLorentzVector H2_p4=jet3_p4+jet4_p4;
+      TLorentzVector X_p4=H1_p4+H2_p4;
 
-	    h_H1_mass->Fill(H1_p4.M(), eventWeight);
-	    h_H1_pT->Fill(H1_p4.Pt(), eventWeight);
-	    h_H2_mass->Fill(H2_p4.M(), eventWeight);
-	    h_H2_pT->Fill(H2_p4.Pt(), eventWeight);
-	    
-	    int region=withinRegion(H1_p4.M(), H2_p4.M(), 17.5, 35., H_mass, H_mass);
-	    if (region==0) // SR
-	    {
-		    nCut5+=eventWeight;
-        
+      h_H1_mass->Fill(H1_p4.M(), eventWeight);
+      h_H1_pT->Fill(H1_p4.Pt(), eventWeight);
+      h_H2_mass->Fill(H2_p4.M(), eventWeight);
+      h_H2_pT->Fill(H2_p4.Pt(), eventWeight);
+
+      int region=withinRegion(H1_p4.M(), H2_p4.M(), 17.5, 35., H_mass, H_mass);
+      if (region==0) // SR
+      {
+        nCut5+=eventWeight;
+  
         h_mX_SR->Fill(X_p4.M(), eventWeight);
         if (purity==-1) h_mX_SR_purity5->Fill(X_p4.M(), eventWeight);
         if (purity== 0) h_mX_SR_purity0->Fill(X_p4.M(), eventWeight);
@@ -264,21 +264,19 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
         if (purity== 2) h_mX_SR_purity2->Fill(X_p4.M(), eventWeight);
         if (purity== 3) h_mX_SR_purity3->Fill(X_p4.M(), eventWeight);
         if (purity== 4) h_mX_SR_purity4->Fill(X_p4.M(), eventWeight);
-        
+      
         // Do the kinematic constraint
         double chi2=constrainHH(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
         X_p4=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
-		    h_mX_SR_kinFit->Fill(X_p4.M(), eventWeight);
+        h_mX_SR_kinFit->Fill(X_p4.M(), eventWeight);
         if (purity==-1) h_mX_SR_kinFit_purity5->Fill(X_p4.M(), eventWeight);
         if (purity== 0) h_mX_SR_kinFit_purity0->Fill(X_p4.M(), eventWeight);
         if (purity== 1) h_mX_SR_kinFit_purity1->Fill(X_p4.M(), eventWeight);
         if (purity== 2) h_mX_SR_kinFit_purity2->Fill(X_p4.M(), eventWeight);
         if (purity== 3) h_mX_SR_kinFit_purity3->Fill(X_p4.M(), eventWeight);
         if (purity== 4) h_mX_SR_kinFit_purity4->Fill(X_p4.M(), eventWeight);
-	    }
-
+      }
     }
-
   } // Event loop
 
   h_Cuts.Fill(9, nCut4); // HH Candidates
