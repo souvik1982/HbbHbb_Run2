@@ -118,9 +118,15 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::vector<unsigned int> jetIndex_pTOrder;
   std::vector<unsigned int> jetIndex_CSVOrder;
   std::vector<unsigned int> jetIndex_CMVAOrder;
+  std::vector<unsigned int> jetIndex_allJets_pTOrder;
+  std::vector<unsigned int> jetIndex_allJets_CSVOrder;
+  std::vector<unsigned int> jetIndex_allJets_CMVAOrder;
   outtree->Branch("jetIndex_pTOrder", &jetIndex_pTOrder);
   outtree->Branch("jetIndex_CSVOrder", &jetIndex_CSVOrder);
   outtree->Branch("jetIndex_CMVAOrder", &jetIndex_CMVAOrder);
+  outtree->Branch("jetIndex_allJets_pTOrder", &jetIndex_allJets_pTOrder);
+  outtree->Branch("jetIndex_allJets_CSVOrder", &jetIndex_allJets_CSVOrder);
+  outtree->Branch("jetIndex_allJets_CMVAOrder", &jetIndex_allJets_CMVAOrder);
   outtree->Branch("eventWeight", &eventWeight);
   
   // Loop over events
@@ -158,14 +164,23 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         JetList jetList_pTOrder;
         JetList jetList_CSVOrder;
         JetList jetList_CMVAOrder;
+        JetList jetList_allJets_pTOrder;
+        JetList jetList_allJets_CSVOrder;
+        JetList jetList_allJets_CMVAOrder;
         int nCJets=0;
         double ht=0;
         for (unsigned int j=0; j<(unsigned int)nJets; ++j)
         {
-          if (jet_pT[j]>jet_pT_cut && fabs(jet_eta[j])<jet_eta_cut && jet_btagCSV[j]>jet_btag_cut) ++nCJets;
-          jetList_pTOrder[jet_pT[j]]=j;
-          jetList_CSVOrder[jet_btagCSV[j]]=j;
-          jetList_CMVAOrder[jet_btagCMVA[j]]=j;
+          if (jet_pT[j]>jet_pT_cut && fabs(jet_eta[j])<jet_eta_cut && jet_btagCSV[j]>jet_btag_cut) 
+          {
+            ++nCJets;
+            jetList_pTOrder[jet_pT[j]]=j;
+            jetList_CSVOrder[jet_btagCSV[j]]=j;
+            jetList_CMVAOrder[jet_btagCMVA[j]]=j;
+          }
+          jetList_allJets_pTOrder[jet_pT[j]]=j;
+          jetList_allJets_CSVOrder[jet_btagCSV[j]]=j;
+          jetList_allJets_CMVAOrder[jet_btagCMVA[j]]=j;
         }
         h_nJets->Fill(nCJets);
         
@@ -214,6 +229,21 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
             jetIndex_CMVAOrder.push_back(iJet->second);
           }
           
+          for (JetList::reverse_iterator iJet=jetList_allJets_pTOrder.rbegin(); iJet!=jetList_allJets_pTOrder.rend(); ++iJet)
+          {
+            jetIndex_allJets_pTOrder.push_back(iJet->second);
+          }
+          
+          for (JetList::reverse_iterator iJet=jetList_allJets_CSVOrder.rbegin(); iJet!=jetList_allJets_CSVOrder.rend(); ++iJet)
+          {
+            jetIndex_allJets_CSVOrder.push_back(iJet->second);
+          }
+          
+          for (JetList::reverse_iterator iJet=jetList_allJets_CMVAOrder.rbegin(); iJet!=jetList_allJets_CMVAOrder.rend(); ++iJet)
+          {
+            jetIndex_allJets_CMVAOrder.push_back(iJet->second);
+          }
+          
           // Write out tree
           outtree->Fill();
           
@@ -222,6 +252,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         jetIndex_pTOrder.clear();
         jetIndex_CSVOrder.clear();
         jetIndex_CMVAOrder.clear();
+        jetIndex_allJets_pTOrder.clear();
+        jetIndex_allJets_CSVOrder.clear();
+        jetIndex_allJets_CMVAOrder.clear();
+        
         
       } // vType==-1
     } // Trigger
