@@ -170,16 +170,26 @@ void Display_eta_ResolutionForFile(std::vector<TFile*> *v)
   TH1D *h_RMS_jet_eta_res_vs_eta=RMSY(h_jet_eta_res_vs_eta);
   h_RMS_jet_eta_res_vs_eta->GetYaxis()->SetRangeUser(0, 0.1);
   h_RMS_jet_eta_res_vs_eta->GetYaxis()->SetTitle("Jet #sigma(#eta^{reco} - #eta^{gen})");
-  h_RMS_jet_eta_res_vs_eta->GetYaxis()->SetTitleOffset(1.2);
+  h_RMS_jet_eta_res_vs_eta->GetYaxis()->SetTitleOffset(1.6);
   TF1 *f3=new TF1("f3", "pol1", 0, 2.5);
   h_RMS_jet_eta_res_vs_eta->Fit(f3, "R");
   
-  TCanvas *c_eta_Resolution=new TCanvas("c_eta_Resolution", "c_eta_Resolution", 1400, 700);
-  c_eta_Resolution->Divide(2,1);
+  // Also create the bias distribution
+  TH1D *h_MEAN_jet_eta_res_vs_eta=MEANY(h_jet_eta_res_vs_eta);
+  h_MEAN_jet_eta_res_vs_eta->GetYaxis()->SetRangeUser(-0.01, 0.01);
+  h_MEAN_jet_eta_res_vs_eta->GetYaxis()->SetTitle("Jet <(#eta^{reco} - #eta^{gen}>");
+  h_MEAN_jet_eta_res_vs_eta->GetYaxis()->SetTitleOffset(1.6);
+  TF1 *f_MEAN_jet_eta_res_vs_eta=new TF1("f_MEAN_jet_eta_res_vs_eta", "pol1", 0, 2.5);
+  h_MEAN_jet_eta_res_vs_eta->Fit(f_MEAN_jet_eta_res_vs_eta, "R");
+  
+  TCanvas *c_eta_Resolution=new TCanvas("c_eta_Resolution", "c_eta_Resolution", 2100, 700);
+  c_eta_Resolution->Divide(3,1);
   c_eta_Resolution->cd(1);
   h_jet_eta_res_vs_eta->Draw("colz");
   c_eta_Resolution->cd(2);
   h_RMS_jet_eta_res_vs_eta->Draw();
+  c_eta_Resolution->cd(3);
+  h_MEAN_jet_eta_res_vs_eta->Draw();
   c_eta_Resolution->SaveAs("c_eta_Resolution.png");
 }
 
@@ -198,12 +208,22 @@ void Display_phi_ResolutionForFile(std::vector<TFile*> *v)
   TF1 *f4=new TF1("f4", "pol1", 0, 2.5);
   h_RMS_jet_phi_res_vs_eta->Fit(f4, "R");
   
-  TCanvas *c_phi_Resolution=new TCanvas("c_phi_Resolution", "c_phi_Resolution", 1400, 700);
-  c_phi_Resolution->Divide(2,1);
+  // Also create the bias distribution
+  TH1D *h_MEAN_jet_phi_res_vs_eta=MEANY(h_jet_phi_res_vs_eta);
+  h_MEAN_jet_phi_res_vs_eta->GetYaxis()->SetRangeUser(-0.01, 0.01);
+  h_MEAN_jet_phi_res_vs_eta->GetYaxis()->SetTitle("Jet <(#phi^{reco} - #phi^{gen}>");
+  h_MEAN_jet_phi_res_vs_eta->GetYaxis()->SetTitleOffset(1.6);
+  TF1 *f_MEAN_jet_phi_res_vs_eta=new TF1("f_MEAN_jet_phi_res_vs_eta", "pol1", 0, 2.5);
+  h_MEAN_jet_phi_res_vs_eta->Fit(f_MEAN_jet_phi_res_vs_eta, "R");
+  
+  TCanvas *c_phi_Resolution=new TCanvas("c_phi_Resolution", "c_phi_Resolution", 2100, 700);
+  c_phi_Resolution->Divide(3,1);
   c_phi_Resolution->cd(1);
   h_jet_phi_res_vs_eta->Draw("colz");
   c_phi_Resolution->cd(2);
   h_RMS_jet_phi_res_vs_eta->Draw();
+  c_phi_Resolution->cd(3);
+  h_MEAN_jet_phi_res_vs_eta->Draw();
   c_phi_Resolution->SaveAs("c_phi_Resolution.png");
 } 
 
@@ -229,9 +249,9 @@ void DisplayKinFit()
   gStyle->SetOptFit();
   
   
-  // Display_pT_Resolution(&v_files);
-  // Display_eta_ResolutionForFile(&v_files);
-  // Display_phi_ResolutionForFile(&v_files);
+  Display_pT_Resolution(&v_files);
+  Display_eta_ResolutionForFile(&v_files);
+  Display_phi_ResolutionForFile(&v_files);
   
   
   std::vector <double> mean, mean_diff, sigma, sigma_kinFit;
@@ -254,6 +274,7 @@ void DisplayKinFit()
   }
   
   TGraph *g_KinFit_meanDiff=new TGraph(v_files.size()-4, &(mean.at(0)), &(mean_diff.at(0)));
+  g_KinFit_meanDiff->GetYaxis()->SetRangeUser(0, 50);
   g_KinFit_meanDiff->GetXaxis()->SetLimits(500, 1000);
   g_KinFit_meanDiff->SetTitle("; m_{X} w/o KinFit (GeV); m_{X}^{KinFit} - m_{X} (GeV)"); 
   TGraph *g_KinFit_sigma=new TGraph(v_files.size()-4, &(mean.at(0)), &(sigma.at(0)));
@@ -266,12 +287,14 @@ void DisplayKinFit()
   TF1 *f_g_0=new TF1("f_g_0", "pol1", 250, 950);
   g_KinFit_meanDiff->Fit(f_g_0, "R");
   c_meanDiff->SaveAs("c_meanDiff.png");
+  c_meanDiff->SaveAs("c_meanDiff.root");
   TCanvas *c_sigma=new TCanvas("c_sigma", "c_sigma", 700, 700);
   g_KinFit_sigma->SetMarkerColor(kBlue);
   g_KinFit_sigma_KinFit->SetMarkerColor(kRed);
   g_KinFit_sigma->Draw("A*");
   g_KinFit_sigma_KinFit->Draw("* same");
   c_sigma->SaveAs("c_sigma.png");
+  c_sigma->SaveAs("c_sigma.root");
   
   TCanvas *c_KinFit=new TCanvas("c_KinFit", "c_KinFit", 700, 700);
   // DisplayKinFitForFile(v_files.at(0), 260);
