@@ -12,4 +12,3 @@ root -l -b -q 'HbbHbb_PreSelection.cc++("/Users/souvik/HbbHbb_Run2/13TeV/V12", "
 root -l -b -q 'HbbHbb_PreSelection.cc++("/Users/souvik/HbbHbb_Run2/13TeV/V12", "Radion800GeV")'
 root -l -b -q 'HbbHbb_PreSelection.cc++("/Users/souvik/HbbHbb_Run2/13TeV/V12", "Radion900GeV")'
 
-say "Pre selection of signal Monte Carlo done."
