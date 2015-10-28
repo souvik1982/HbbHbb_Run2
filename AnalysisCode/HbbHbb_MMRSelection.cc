@@ -256,7 +256,6 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
       if (region==0) // SR
       {
         nCut5+=eventWeight;
-        
         h_mX_SR->Fill(X_p4.M(), eventWeight);
         if (purity==-1) h_mX_SR_purity5->Fill(X_p4.M(), eventWeight);
         if (purity== 0) h_mX_SR_purity0->Fill(X_p4.M(), eventWeight);
@@ -264,7 +263,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
         if (purity== 2) h_mX_SR_purity2->Fill(X_p4.M(), eventWeight);
         if (purity== 3) h_mX_SR_purity3->Fill(X_p4.M(), eventWeight);
         if (purity== 4) h_mX_SR_purity4->Fill(X_p4.M(), eventWeight);
-        
+      
         // Do the kinematic constraint
         double chi2=constrainHH(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
         X_p4=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
@@ -276,9 +275,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
         if (purity== 3) h_mX_SR_kinFit_purity3->Fill(X_p4.M(), eventWeight);
         if (purity== 4) h_mX_SR_kinFit_purity4->Fill(X_p4.M(), eventWeight);
       }
-
     }
-
   } // Event loop
 
   h_Cuts.Fill(9, nCut4); // HH Candidates
