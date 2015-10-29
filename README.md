@@ -1,4 +1,4 @@
-<h1> Resonant Higgs pair production decaying to 4 bottom quarks at the LHC </h1>
+<h1> Resonant Higgs pair production in LHC Run II </h1>
 
 <img height="30%" width="30%" src="http://home.fnal.gov/~souvik/HH/HbbHbb.png"/>
 
