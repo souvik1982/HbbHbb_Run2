@@ -85,15 +85,15 @@ double ErrEt_Signal(double ET, double eta)
   return sigmapT*sigmapT;
 }
 
-double ErrEta_Signal(double eta)
+double ErrEta_Signal(double ET)
 {
-  double sigmaEta=0.0011*eta + 0.053;
+  double sigmaEta=0.0226 + (3.27/ET) + (-6.49/(ET*ET));
   return sigmaEta*sigmaEta;
 }
 
-double ErrPhi_Signal(double eta)
+double ErrPhi_Signal(double ET)
 {
-  double sigmaPhi=0.0016*eta + 0.055;
+  double sigmaPhi=0.0291 + (2.49/ET) + (19.4/(ET*ET));
   return sigmaPhi*sigmaPhi;
 }
 
@@ -311,20 +311,20 @@ double constrainHH_signalMeasurement(TLorentzVector *j1, TLorentzVector *j2, TLo
   
   // Dependence of the covariance matrix on Et and eta
   m1(0,0) = ErrEt_Signal(j1->Et(), j1->Eta());
-  m1(1,1) = ErrEta_Signal(j1->Eta());
-  m1(2,2) = ErrPhi_Signal(j1->Eta());
+  m1(1,1) = ErrEta_Signal(j1->Et());
+  m1(2,2) = ErrPhi_Signal(j1->Et());
   
   m2(0,0) = ErrEt_Signal(j2->Et(), j2->Eta());
-  m2(1,1) = ErrEta_Signal(j2->Eta());
-  m2(2,2) = ErrPhi_Signal(j2->Eta());
+  m2(1,1) = ErrEta_Signal(j2->Et());
+  m2(2,2) = ErrPhi_Signal(j2->Et());
   
   m3(0,0) = ErrEt_Signal(j3->Et(), j3->Eta());
-  m3(1,1) = ErrEta_Signal(j3->Eta());
-  m3(2,2) = ErrPhi_Signal(j3->Eta());
+  m3(1,1) = ErrEta_Signal(j3->Et());
+  m3(2,2) = ErrPhi_Signal(j3->Et());
   
   m4(0,0) = ErrEt_Signal(j4->Et(), j4->Eta());
-  m4(1,1) = ErrEta_Signal(j4->Eta());
-  m4(2,2) = ErrPhi_Signal(j4->Eta());
+  m4(1,1) = ErrEta_Signal(j4->Et());
+  m4(2,2) = ErrPhi_Signal(j4->Et());
   
   // Correct the jet energies for bias
   biasEt_signal(j1);
