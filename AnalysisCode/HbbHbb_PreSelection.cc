@@ -55,6 +55,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float eventWeight;
   int nGenBQuarkFromH;
   float genBQuarkFromH_pT[100], genBQuarkFromH_eta[100], genBQuarkFromH_phi[100], genBQuarkFromH_mass[100];
+  float jet_MCpT[100], jet_MCeta[100], jet_MCphi[100], jet_MCmass[100];
   float met_pT, met_phi;
   
   // Retrieve variables
@@ -73,6 +74,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                         tree->SetBranchStatus("Jet_eta", 1); 
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                         tree->SetBranchStatus("Jet_phi", 1); 
   tree->SetBranchAddress("Jet_mass", &(jet_mass));                       tree->SetBranchStatus("Jet_mass", 1);
+  tree->SetBranchAddress("Jet_mcPt", &(jet_MCpT));                       tree->SetBranchStatus("Jet_mcPt", 1);
+  tree->SetBranchAddress("Jet_mcEta", &(jet_MCeta));                     tree->SetBranchStatus("Jet_mcEta", 1);
+  tree->SetBranchAddress("Jet_mcPhi", &(jet_MCphi));                     tree->SetBranchStatus("Jet_mcPhi", 1);
+  tree->SetBranchAddress("Jet_mcM", &(jet_MCmass));                      tree->SetBranchStatus("Jet_mcM", 1);
   tree->SetBranchAddress("nGenHiggsBoson", &(nGenHiggsBoson));           tree->SetBranchStatus("nGenHiggsBoson",1);
   tree->SetBranchAddress("GenHiggsBoson_pt", &(genHiggsBoson_pT));       tree->SetBranchStatus("GenHiggsBoson_pt",1);
   tree->SetBranchAddress("GenHiggsBoson_eta", &(genHiggsBoson_eta));     tree->SetBranchStatus("GenHiggsBoson_eta",1);
@@ -137,7 +142,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     ++nCut0;
     tree->GetEvent(i);
     
-    eventWeight=puWeight;
+    if (isData==1) eventWeight=1;
+    else eventWeight=puWeight;
     
     if(nGenHiggsBoson==2)
     {
@@ -300,7 +306,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::cout<<"Wrote output file "<<histfilename<<std::endl;
   
   std::cout<<"=== Cut Efficiencies === "<<std::endl;
-  if (isData==false) std::cout<<"Initial number of events = "<<nInitial<<std::endl;
+  if (isData==0) std::cout<<"Initial number of events = "<<nInitial<<std::endl;
   std::cout<<"Number of events at the end of step 2 = "<<nCut0<<std::endl;
   std::cout<<"Number of events after trigger = "<<nCut1<<std::endl;
   std::cout<<"Number of events after Vtype==-1 = "<<nCut2<<std::endl;

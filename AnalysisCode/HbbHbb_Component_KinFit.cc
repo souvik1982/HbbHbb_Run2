@@ -326,12 +326,6 @@ double constrainHH_signalMeasurement(TLorentzVector *j1, TLorentzVector *j2, TLo
   m4(1,1) = ErrEta_Signal(j4->Et());
   m4(2,2) = ErrPhi_Signal(j4->Et());
   
-  // Correct the jet energies for bias
-  biasEt_signal(j1);
-  biasEt_signal(j2);
-  biasEt_signal(j3);
-  biasEt_signal(j4);
-  
   TFitParticleEtEtaPhi *jet1 = new TFitParticleEtEtaPhi(j1, &m1);
   TFitParticleEtEtaPhi *jet2 = new TFitParticleEtEtaPhi(j2, &m2);
   TFitParticleEtEtaPhi *jet3 = new TFitParticleEtEtaPhi(j3, &m3);

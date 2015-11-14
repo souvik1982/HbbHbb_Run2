@@ -1,6 +1,7 @@
 #include <TH1F.h>
 #include <TH2F.h>
 #include <TH3F.h>
+#include <TF1.h>
 #include <TFile.h>
 #include <TTree.h>
 #include <TChain.h>
@@ -11,14 +12,13 @@
 #include <iostream>
 #include <vector>
 
-#include "KinFitInterface.cc"
+#include "HbbHbb_Component_Purity.cc"
+#include "HbbHbb_Component_KinFit.cc"
 
 double pi=3.14159265358979;
 double H_mass=125.;
 
 TRandom3 *r3=new TRandom3();
-
-// gSystem->Load("libPhysicsToolsKinFitter.so");
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
@@ -91,6 +91,39 @@ TLorentzVector gaussianSmear(TLorentzVector a, double smear=5)
   return b;
 }
 
+Double_t asymmetricGaussian(Double_t *x, Double_t *par)
+{
+  double ret;
+  if (x[0]<par[0])
+  {
+    ret=exp(-0.5*pow((x[0]-par[0])/par[1], 2));
+  }
+  else
+  {
+    ret=exp(-0.5*pow((x[0]-par[0])/par[2], 2));
+  }
+  return ret;
+} 
+
+TLorentzVector asymmetricGaussianSmear(TLorentzVector a, double sigma1=5, double sigma2=5)
+{
+  double pT=a.Pt();
+  double eta=a.Eta();
+  double phi=a.Phi();
+  double mass=a.M();
+  
+  TF1 *f_asymGauss=new TF1("f_xgauss", asymmetricGaussian, -sigma1*3, sigma2*3, 3);
+  f_asymGauss->SetParameter(0, 0);
+  f_asymGauss->SetParameter(1, sigma1);
+  f_asymGauss->SetParameter(2, sigma2);
+
+  double newpT=pT+f_asymGauss->GetRandom();
+  
+  TLorentzVector b=fillTLorentzVector(newpT, eta, phi, mass);
+  return b;
+}
+  
+
 void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
 {
   gSystem->Load("libPhysicsToolsKinFitter.so");
@@ -105,6 +138,7 @@ void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
   int nJets, nGenBQuarkFromH;
   float jet_btagCSV[100], jet_btagCMVA[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
+  float jet_MCpT[100], jet_MCeta[100], jet_MCphi[100], jet_MCmass[100];
   float genBQuarkFromH_pT[100],genBQuarkFromH_eta[100],genBQuarkFromH_phi[100],genBQuarkFromH_mass[100];
   std::vector<unsigned int> *jetIndex_pTOrder=0;
   
@@ -116,7 +150,11 @@ void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                    
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                  
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                  
-  tree->SetBranchAddress("Jet_mass", &(jet_mass));                
+  tree->SetBranchAddress("Jet_mass", &(jet_mass)); 
+  tree->SetBranchAddress("Jet_mcPt", &(jet_MCpT));  
+  tree->SetBranchAddress("Jet_mcEta", &(jet_MCeta));
+  tree->SetBranchAddress("Jet_mcPhi", &(jet_MCphi));
+  tree->SetBranchAddress("Jet_mcM", &(jet_MCmass));
   tree->SetBranchAddress("jetIndex_pTOrder", &(jetIndex_pTOrder));
   tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     
@@ -167,10 +205,14 @@ void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
   TH1F *h_H2_pT_kinFit=new TH1F("h_H2_pT_kinFit", "; H p_{T} after KinFit (GeV/c)", 50, 0., 800.);
   
   // New histograms
-  TH2F *h_jet_pT_res_vs_pT_eta_0_1p4 = new TH2F("h_jet_pT_res_vs_pT_eta_0_1p4", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{MC}) (GeV)", 100, 0., 1000., 100, -200., 200.);
-  TH2F *h_jet_pT_res_vs_pT_eta_1p4_2p5 = new TH2F("h_jet_pT_res_vs_pT_eta_1p4_2p5", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{MC}) (GeV)", 100, 0., 1000., 100, -200., 200.);
-  TH3F *h_jet_pTres_vs_etares_vs_pT=new TH3F("h_jet_pTres_vs_etares_vs_pT", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{MC}) (GeV); Jet (#eta^{reco} - #eta^{gen})", 100, 0., 1000., 100, -200., 200., 100, -2.5, 2.5);
-  TH3F *h_jet_pTres_vs_phires_vs_pT=new TH3F("h_jet_pTres_vs_phires_vs_pT", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{MC}) (GeV); Jet (#phi^{reco} - #phi^{gen})", 100, 0., 1000., 100, -200., 200., 100, -3.14, 3.14);
+  TH2F *h_jet_pT_res_vs_pT_eta_0_1p4 = new TH2F("h_jet_pT_res_vs_pT_eta_0_1p4", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{part}) (GeV)", 100, 0., 1000., 100, -200., 200.);
+  TH2F *h_jet_pT_res_vs_pT_eta_1p4_2p5 = new TH2F("h_jet_pT_res_vs_pT_eta_1p4_2p5", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{part}) (GeV)", 100, 0., 1000., 100, -200., 200.);
+  TH3F *h_jet_pTres_vs_etares_vs_pT=new TH3F("h_jet_pTres_vs_etares_vs_pT", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{part}) (GeV); Jet (#eta^{reco} - #eta^{part})", 100, 0., 1000., 100, -200., 200., 100, -2.5, 2.5);
+  TH3F *h_jet_pTres_vs_phires_vs_pT=new TH3F("h_jet_pTres_vs_phires_vs_pT", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{part}) (GeV); Jet (#phi^{reco} - #phi^{part})", 100, 0., 1000., 100, -200., 200., 100, -3.14, 3.14);
+  
+  TH2F *h_recopT_minus_partpT_vs_recopT = new TH2F("h_recopT_minus_partpT_vs_recopT", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{part}) (GeV)", 100, 0., 1000., 100, -200., 200.);
+  TH2F *h_recopT_minus_genpT_vs_recopT = new TH2F("h_recopT_minus_genpT_vs_recopT", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{gen}) (GeV)", 100, 0., 1000., 100, -200., 200.);
+  TH2F *h_genpT_minus_partpT_vs_recopT = new TH2F("h_genpT_minus_partpT_vs_recopT", "; p_{T}^{reco} (GeV); Jet (p_{T}^{gen} - p_{T}^{part}) (GeV)", 100, 0., 1000., 100, -200., 200.);
   
   // Check histogram
   TH2F *h_jet_pT_res_vs_pT_eta_0_1p4_Corrected = new TH2F("h_jet_pT_res_vs_pT_eta_0_1p4_Corrected", "h_jet_pT_res_vs_pT_eta_0_1p4_Corrected", 100, 0., 1000., 100, -200., 200.);
@@ -273,6 +315,11 @@ void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
       jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
       jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
       
+      TLorentzVector jet1_MC_p4=fillTLorentzVector(jet_MCpT[H1jet1_i], jet_MCeta[H1jet1_i], jet_MCphi[H1jet1_i], jet_MCmass[H1jet1_i]);
+      TLorentzVector jet2_MC_p4=fillTLorentzVector(jet_MCpT[H1jet2_i], jet_MCeta[H1jet2_i], jet_MCphi[H1jet2_i], jet_MCmass[H1jet2_i]);    
+      TLorentzVector jet3_MC_p4=fillTLorentzVector(jet_MCpT[H2jet1_i], jet_MCeta[H2jet1_i], jet_MCphi[H2jet1_i], jet_MCmass[H2jet1_i]);    
+      TLorentzVector jet4_MC_p4=fillTLorentzVector(jet_MCpT[H2jet2_i], jet_MCeta[H2jet2_i], jet_MCphi[H2jet2_i], jet_MCmass[H2jet2_i]);
+      
       // Check purity of jet selection here
       int purity=-3;
       double mX_genForKinFitCheck=0;
@@ -285,6 +332,7 @@ void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
           TLorentzVector b3_p4=fillTLorentzVector(genBQuarkFromH_pT[2], genBQuarkFromH_eta[2], genBQuarkFromH_phi[2], genBQuarkFromH_mass[2]);
           TLorentzVector b4_p4=fillTLorentzVector(genBQuarkFromH_pT[3], genBQuarkFromH_eta[3], genBQuarkFromH_phi[3], genBQuarkFromH_mass[3]);
           TLorentzVector j[4]={jet1_p4, jet2_p4, jet3_p4, jet4_p4};
+          TLorentzVector j_MC[4]={jet1_MC_p4, jet2_MC_p4, jet3_MC_p4, jet4_MC_p4};
           TLorentzVector b[4]={b1_p4,   b2_p4,   b3_p4,   b4_p4};
           int jMatchedbindex[4]={-1, -1, -1, -1};
           purity=purityTest(j, b, jMatchedbindex);
@@ -303,6 +351,10 @@ void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
               
               h_jet_pTres_vs_etares_vs_pT->Fill(j[ijet].Pt(), res_pT, res_eta, eventWeight);
               h_jet_pTres_vs_phires_vs_pT->Fill(j[ijet].Pt(), res_pT, res_phi, eventWeight);
+              
+              h_recopT_minus_partpT_vs_recopT->Fill(j[ijet].Pt(), j[ijet].Pt() - b[jMatchedbindex[ijet]].Pt(), eventWeight);
+              if (j_MC[ijet].Pt()>0) h_recopT_minus_genpT_vs_recopT->Fill(j[ijet].Pt(), j[ijet].Pt() - j_MC[ijet].Pt(), eventWeight);
+              if (j_MC[ijet].Pt()>0) h_genpT_minus_partpT_vs_recopT->Fill(j[ijet].Pt(), j_MC[ijet].Pt() - b[jMatchedbindex[ijet]].Pt(), eventWeight);
               
               // New histograms
               if (fabs(j[ijet].Eta())<1.4)
@@ -329,10 +381,10 @@ void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
           }
 
           // Smear the generated 4 vector
-          TLorentzVector b1_smeared_p4=gaussianSmear(b1_p4);
-          TLorentzVector b2_smeared_p4=gaussianSmear(b2_p4);
-          TLorentzVector b3_smeared_p4=gaussianSmear(b3_p4);
-          TLorentzVector b4_smeared_p4=gaussianSmear(b4_p4);
+          TLorentzVector b1_smeared_p4=asymmetricGaussianSmear(b1_p4, 5, 25);
+          TLorentzVector b2_smeared_p4=asymmetricGaussianSmear(b2_p4, 5, 25);
+          TLorentzVector b3_smeared_p4=asymmetricGaussianSmear(b3_p4, 5, 25);
+          TLorentzVector b4_smeared_p4=asymmetricGaussianSmear(b4_p4, 5, 25);
           double chi2=constrainHH(&b1_smeared_p4, &b2_smeared_p4, &b3_smeared_p4, &b4_smeared_p4);
           mX_genForKinFitCheck=(b1_smeared_p4+b2_smeared_p4+b3_smeared_p4+b4_smeared_p4).M();
 
@@ -459,6 +511,9 @@ void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
   h_jet_pT_res_vs_pT_eta_1p4_2p5->Write();
   h_jet_pT_res_vs_pT_eta_0_1p4_Corrected->Write();
   h_jet_pT_res_vs_pT_eta_1p4_2p5_Corrected->Write();
+  h_recopT_minus_partpT_vs_recopT->Write();
+  h_recopT_minus_genpT_vs_recopT->Write();
+  h_genpT_minus_partpT_vs_recopT->Write();
   h_mX_genForKinFitCheck->Write();
   h_H1_mass_biasCorrected->Write();
   h_jet_pT_diff->Write();
@@ -474,6 +529,7 @@ void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
   std::cout<<"Number of matched events "<<nCutGen<<std::endl;
   std::cout<<"Number of events in SR = "<<nCut5<<std::endl;
   std::cout<<"========================"<<std::endl;
+  
   
   delete h_H1_mass;
   delete h_H1_pT;
@@ -518,7 +574,9 @@ void HbbHbb_MMRSelection_CheckKinFit(std::string type, std::string sample)
   delete h_jet_pT_res_vs_pT_eta_1p4_2p5;
   delete h_jet_pT_res_vs_pT_eta_0_1p4_Corrected;
   delete h_jet_pT_res_vs_pT_eta_1p4_2p5_Corrected;
-  
+  delete h_recopT_minus_partpT_vs_recopT;
+  delete h_recopT_minus_genpT_vs_recopT;
+  delete h_genpT_minus_partpT_vs_recopT;
   delete h_jet_pT_diff;
   delete h_H_dR;
 }
