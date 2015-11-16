@@ -12,6 +12,8 @@
 
 #include <iostream>
 
+#include "../TDRStyle.h"
+
 bool first=true;
 
 TH1D* RMSY(TH2F *h)
@@ -50,37 +52,46 @@ void Display_pT_Resolution(std::vector<TFile*> *v)
     h_jet_pT_res_vs_pT_eta_0_1p4->Add((TH2F*)v->at(i)->Get("h_jet_pT_res_vs_pT_eta_0_1p4"));
     h_jet_pT_res_vs_pT_eta_1p4_2p5->Add((TH2F*)v->at(i)->Get("h_jet_pT_res_vs_pT_eta_1p4_2p5"));
   }
-  h_jet_pT_res_vs_pT_eta_0_1p4->RebinX(1);
+  h_jet_pT_res_vs_pT_eta_0_1p4->RebinX(2);
+  h_jet_pT_res_vs_pT_eta_0_1p4->RebinY(2);
   h_jet_pT_res_vs_pT_eta_0_1p4->GetXaxis()->SetRangeUser(0, 800);
-  TH1D *h_RMS_jet_pT_res_vs_pT_eta_0_1p4=RMSY(h_jet_pT_res_vs_pT_eta_0_1p4);
-  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->SetTitle("; Jet p_{T}^{reco} (GeV); Jet #sigma(p_{T}^{reco} - p_{T}^{parton}) (GeV)");
-  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetTitleSize(0.03);
-  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetTitleOffset(1.6);
-  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetXaxis()->SetTitleOffset(1.2);
-  TF1 *f1=new TF1("f1", "pol1", 0, 600);
-  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->Fit(f1, "R");
   
-  h_jet_pT_res_vs_pT_eta_1p4_2p5->GetXaxis()->SetRangeUser(0, 800);
-  TH1D *h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5=RMSY(h_jet_pT_res_vs_pT_eta_1p4_2p5);
-  TF1 *f2=new TF1("f2", "pol1", 0, 350);
-  h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->Fit(f2, "R");
-  
-  // Also create the bias distributions
   TH1D *h_MEAN_jet_pT_res_vs_pT_eta_0_1p4=MEANY(h_jet_pT_res_vs_pT_eta_0_1p4);
-  h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->SetTitle("; Jet p_{T}^{reco} (GeV); Jet <(p_{T}^{reco} - p_{T}^{parton})> (GeV)");
-  h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetTitleSize(0.03);
+  h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet <(p_{T}^{reco} - p_{T}^{parton})> (GeV)");
+  h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetRangeUser(-20, 100);
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetTitleOffset(1.6);
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetXaxis()->SetTitleOffset(1.2);
-  TF1 *f_MEAN_jet_pT_res_vs_pT_eta_0_1p4=new TF1("f_MEAN_jet_pT_res_vs_pT_eta_0_1p4", "pol1", 0, 700);
+  TF1 *f_MEAN_jet_pT_res_vs_pT_eta_0_1p4=new TF1("f_MEAN_jet_pT_res_vs_pT_eta_0_1p4", "pol2", 40, 600);
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->Fit(f_MEAN_jet_pT_res_vs_pT_eta_0_1p4, "R");
   
+  TH1D *h_RMS_jet_pT_res_vs_pT_eta_0_1p4=RMSY(h_jet_pT_res_vs_pT_eta_0_1p4);
+  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet #sigma(p_{T}^{reco} - p_{T}^{parton}) (GeV)");
+  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetRangeUser(0, 70);
+  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetTitleOffset(1.6);
+  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetXaxis()->SetTitleOffset(1.2);
+  TF1 *f_RMS_jet_pT_res_vs_pT_eta_0_1p4=new TF1("f_RMS_jet_pT_res_vs_pT_eta_0_1p4", "pol1", 40, 600);
+  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->Fit(f_RMS_jet_pT_res_vs_pT_eta_0_1p4, "R");
+  
+  h_jet_pT_res_vs_pT_eta_1p4_2p5->RebinX(2);
+  h_jet_pT_res_vs_pT_eta_1p4_2p5->RebinY(2);
+  h_jet_pT_res_vs_pT_eta_1p4_2p5->GetXaxis()->SetRangeUser(0, 500);
+  
   TH1D *h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5=MEANY(h_jet_pT_res_vs_pT_eta_1p4_2p5);
-  h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->SetTitle("; Jet p_{T}^{reco} (GeV); Jet <(p_{T}^{reco} - p_{T}^{parton})> (GeV)");
-  h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetTitleSize(0.03);
+  h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet <(p_{T}^{reco} - p_{T}^{parton})> (GeV)");
+  h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetRangeUser(-20, 100);
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetTitleOffset(1.6);
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetXaxis()->SetTitleOffset(1.2);
-  TF1 *f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5=new TF1("f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5", "pol1", 0, 700);
+  TF1 *f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5=new TF1("f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5", "pol2", 40, 420);
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->Fit(f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5, "R");
+  
+  TH1D *h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5=RMSY(h_jet_pT_res_vs_pT_eta_1p4_2p5);
+  h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet #sigma(p_{T}^{reco} - p_{T}^{parton}) (GeV)");
+  h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetRangeUser(0, 70);
+  h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetTitleOffset(1.6);
+  h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->GetXaxis()->SetTitleOffset(1.2);
+  TF1 *f_RMS_jet_pT_res_vs_pT_eta_1p4_2p5=new TF1("f_RMS_jet_pT_res_vs_pT_eta_1p4_2p5", "pol1", 40, 420);
+  h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->Fit(f_RMS_jet_pT_res_vs_pT_eta_1p4_2p5, "R");
+  
   
   TCanvas *c_pT_Resolution_eta_0_1p4=new TCanvas("c_pT_Resolution_eta_0_1p4", "c_pT_Resolution_eta_0_1p4", 2100, 700);
   c_pT_Resolution_eta_0_1p4->Divide(3,1);
@@ -111,18 +122,26 @@ void Display_eta_ResolutionForFile(std::vector<TFile*> *v)
   {
     h_jet_eta_res_vs_pT->Add((TH2F*)v->at(i)->Get("h_jet_eta_res_vs_pT"));
   }
+  h_jet_eta_res_vs_pT->RebinX(2);
   h_jet_eta_res_vs_pT->GetYaxis()->SetRangeUser(-1, 1);
   h_jet_eta_res_vs_pT->GetXaxis()->SetRangeUser(0, 800);
-  h_jet_eta_res_vs_pT->RebinX(2);
-  TH1D *h_RMS_jet_eta_res_vs_pT=RMSY(h_jet_eta_res_vs_pT);
-  h_RMS_jet_eta_res_vs_pT->GetYaxis()->SetRangeUser(0, 0.1);
-  h_RMS_jet_eta_res_vs_pT->GetYaxis()->SetTitle("Jet #sigma(#eta^{reco} - #eta^{parton})");
-  h_RMS_jet_eta_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
+  h_jet_eta_res_vs_pT->SetTitle("; b Jet p_{T}^{reco}; b Jet (#eta^{reco} - #eta^{parton})");
+  h_jet_eta_res_vs_pT->GetXaxis()->SetTitleOffset(1.4);
+  h_jet_eta_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
   
   TH1D *h_MEAN_jet_eta_res_vs_pT=MEANY(h_jet_eta_res_vs_pT);
   h_MEAN_jet_eta_res_vs_pT->GetYaxis()->SetRangeUser(-0.1, 0.1);
-  h_MEAN_jet_eta_res_vs_pT->GetYaxis()->SetTitle("Jet <(#eta^{reco} - #eta^{parton}>");
+  h_MEAN_jet_eta_res_vs_pT->SetTitle("; b Jet p_{T}^{reco}; b Jet <(#eta^{reco} - #eta^{parton})>");
   h_MEAN_jet_eta_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
+  TF1 *f_MEAN_jet_eta_res_vs_pT=new TF1("f_MEAN_jet_eta_res_vs_pT", "pol0", 40, 600);
+  h_MEAN_jet_eta_res_vs_pT->Fit(f_MEAN_jet_eta_res_vs_pT, "R");
+  
+  TH1D *h_RMS_jet_eta_res_vs_pT=RMSY(h_jet_eta_res_vs_pT);
+  h_RMS_jet_eta_res_vs_pT->GetYaxis()->SetRangeUser(0, 0.1);
+  h_RMS_jet_eta_res_vs_pT->SetTitle("; b Jet p_{T}^{reco}; b Jet #sigma(#eta^{reco} - #eta^{parton})");
+  h_RMS_jet_eta_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
+  TF1 *f_RMS_jet_eta_res_vs_pT=new TF1("f_RMS_jet_eta_res_vs_pT", "[0]+[1]/x", 40, 600);
+  h_RMS_jet_eta_res_vs_pT->Fit(f_RMS_jet_eta_res_vs_pT, "R");
   
   TCanvas *c_eta_Resolution_pT=new TCanvas("c_eta_Resolution_pT", "c_eta_Resolution_pT", 2100, 700);
   c_eta_Resolution_pT->Divide(3,1);
@@ -134,70 +153,47 @@ void Display_eta_ResolutionForFile(std::vector<TFile*> *v)
   h_RMS_jet_eta_res_vs_pT->Draw();
   c_eta_Resolution_pT->SaveAs("c_eta_Resolution_pT.png");
 
-  TH2F *h_jet_eta_res_vs_eta = (TH2F*)v->at(0)->Get("h_jet_eta_res_vs_eta");
-  for (unsigned int i=1; i<v->size(); ++i)
-  {
-    h_jet_eta_res_vs_eta->Add((TH2F*)v->at(i)->Get("h_jet_eta_res_vs_eta"));
-  }
-  h_jet_eta_res_vs_eta->RebinX(1);
-  TH1D *h_RMS_jet_eta_res_vs_eta=RMSY(h_jet_eta_res_vs_eta);
-  h_RMS_jet_eta_res_vs_eta->GetYaxis()->SetRangeUser(0, 0.1);
-  h_RMS_jet_eta_res_vs_eta->GetYaxis()->SetTitle("Jet #sigma(#eta^{reco} - #eta^{parton})");
-  h_RMS_jet_eta_res_vs_eta->GetYaxis()->SetTitleOffset(1.6);
-  TF1 *f3=new TF1("f3", "pol1", 0, 2.5);
-  h_RMS_jet_eta_res_vs_eta->Fit(f3, "R");
-  
-  // Also create the bias distribution
-  TH1D *h_MEAN_jet_eta_res_vs_eta=MEANY(h_jet_eta_res_vs_eta);
-  h_MEAN_jet_eta_res_vs_eta->GetYaxis()->SetRangeUser(-0.01, 0.01);
-  h_MEAN_jet_eta_res_vs_eta->GetYaxis()->SetTitle("Jet <(#eta^{reco} - #eta^{parton}>");
-  h_MEAN_jet_eta_res_vs_eta->GetYaxis()->SetTitleOffset(1.6);
-  TF1 *f_MEAN_jet_eta_res_vs_eta=new TF1("f_MEAN_jet_eta_res_vs_eta", "pol1", 0, 2.5);
-  h_MEAN_jet_eta_res_vs_eta->Fit(f_MEAN_jet_eta_res_vs_eta, "R");
-  
-  TCanvas *c_eta_Resolution=new TCanvas("c_eta_Resolution", "c_eta_Resolution", 2100, 700);
-  c_eta_Resolution->Divide(3,1);
-  c_eta_Resolution->cd(1);
-  h_jet_eta_res_vs_eta->Draw("colz");
-  c_eta_Resolution->cd(2);
-  h_MEAN_jet_eta_res_vs_eta->Draw();
-  c_eta_Resolution->cd(3);
-  h_RMS_jet_eta_res_vs_eta->Draw();
-  c_eta_Resolution->SaveAs("c_eta_Resolution.png");
 }
 
 void Display_phi_ResolutionForFile(std::vector<TFile*> *v)
 {
-  TH2F *h_jet_phi_res_vs_eta = (TH2F*)v->at(0)->Get("h_jet_phi_res_vs_eta");
+  TH2F *h_jet_phi_res_vs_pT = (TH2F*)v->at(0)->Get("h_jet_phi_res_vs_pT");
   for (unsigned int i=1; i<v->size(); ++i)
   {
-    h_jet_phi_res_vs_eta->Add((TH2F*)v->at(i)->Get("h_jet_phi_res_vs_eta"));
+    h_jet_phi_res_vs_pT->Add((TH2F*)v->at(i)->Get("h_jet_phi_res_vs_pT"));
   }
-  h_jet_phi_res_vs_eta->RebinX(1);
-  TH1D *h_RMS_jet_phi_res_vs_eta=RMSY(h_jet_phi_res_vs_eta);
-  h_RMS_jet_phi_res_vs_eta->GetYaxis()->SetRangeUser(0, 0.1);
-  h_RMS_jet_phi_res_vs_eta->GetYaxis()->SetTitle("Jet #sigma(#phi^{reco} - #phi^{gen})");
-  h_RMS_jet_phi_res_vs_eta->GetYaxis()->SetTitleOffset(1.2);
-  TF1 *f4=new TF1("f4", "pol1", 0, 2.5);
-  h_RMS_jet_phi_res_vs_eta->Fit(f4, "R");
+  h_jet_phi_res_vs_pT->RebinX(2);
+  h_jet_phi_res_vs_pT->GetYaxis()->SetRangeUser(-1, 1);
+  h_jet_phi_res_vs_pT->GetXaxis()->SetRangeUser(0, 800);
+  h_jet_phi_res_vs_pT->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet (#phi^{reco} - #phi^{parton})");
+  h_jet_phi_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
+  h_jet_phi_res_vs_pT->GetXaxis()->SetTitleOffset(1.2);
   
-  // Also create the bias distribution
-  TH1D *h_MEAN_jet_phi_res_vs_eta=MEANY(h_jet_phi_res_vs_eta);
-  h_MEAN_jet_phi_res_vs_eta->GetYaxis()->SetRangeUser(-0.01, 0.01);
-  h_MEAN_jet_phi_res_vs_eta->GetYaxis()->SetTitle("Jet <(#phi^{reco} - #phi^{gen}>");
-  h_MEAN_jet_phi_res_vs_eta->GetYaxis()->SetTitleOffset(1.6);
-  TF1 *f_MEAN_jet_phi_res_vs_eta=new TF1("f_MEAN_jet_phi_res_vs_eta", "pol1", 0, 2.5);
-  h_MEAN_jet_phi_res_vs_eta->Fit(f_MEAN_jet_phi_res_vs_eta, "R");
+  TH1D *h_MEAN_jet_phi_res_vs_pT=MEANY(h_jet_phi_res_vs_pT);
+  h_MEAN_jet_phi_res_vs_pT->GetYaxis()->SetRangeUser(-0.1, 0.1);
+  h_MEAN_jet_phi_res_vs_pT->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet <(#phi^{reco} - #phi^{parton})>");
+  h_MEAN_jet_phi_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
+  h_MEAN_jet_phi_res_vs_pT->GetXaxis()->SetTitleOffset(1.2);
+  TF1 *f_MEAN_jet_phi_res_vs_pT=new TF1("f_MEAN_jet_phi_res_vs_pT", "pol0", 40, 600);
+  h_MEAN_jet_phi_res_vs_pT->Fit(f_MEAN_jet_phi_res_vs_pT, "R");
   
-  TCanvas *c_phi_Resolution=new TCanvas("c_phi_Resolution", "c_phi_Resolution", 2100, 700);
-  c_phi_Resolution->Divide(3,1);
-  c_phi_Resolution->cd(1);
-  h_jet_phi_res_vs_eta->Draw("colz");
-  c_phi_Resolution->cd(2);
-  h_RMS_jet_phi_res_vs_eta->Draw();
-  c_phi_Resolution->cd(3);
-  h_MEAN_jet_phi_res_vs_eta->Draw();
-  c_phi_Resolution->SaveAs("c_phi_Resolution.png");
+  TH1D *h_RMS_jet_phi_res_vs_pT=RMSY(h_jet_phi_res_vs_pT);
+  h_RMS_jet_phi_res_vs_pT->GetYaxis()->SetRangeUser(0, 0.15);
+  h_RMS_jet_phi_res_vs_pT->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet #sigma(#phi^{reco} - #phi^{parton})");
+  h_RMS_jet_phi_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
+  h_RMS_jet_phi_res_vs_pT->GetXaxis()->SetTitleOffset(1.2);
+  TF1 *f_RMS_jet_phi_res_vs_pT=new TF1("f_RMS_jet_phi_res_vs_pT", "[0] + [1]/x", 40, 600);
+  h_RMS_jet_phi_res_vs_pT->Fit(f_RMS_jet_phi_res_vs_pT, "R");
+  
+  TCanvas *c_phi_Resolution_pT=new TCanvas("c_phi_Resolution_pT", "c_phi_Resolution_pT", 2100, 700);
+  c_phi_Resolution_pT->Divide(3,1);
+  c_phi_Resolution_pT->cd(1);
+  h_jet_phi_res_vs_pT->Draw("colz");
+  c_phi_Resolution_pT->cd(2);
+  h_MEAN_jet_phi_res_vs_pT->Draw();
+  c_phi_Resolution_pT->cd(3);
+  h_RMS_jet_phi_res_vs_pT->Draw();
+  c_phi_Resolution_pT->SaveAs("c_phi_Resolution_pT.png");
 } 
 
 void DisplayResolutionBias()
@@ -210,9 +206,15 @@ void DisplayResolutionBias()
   v_files.push_back(new TFile("ResolutionHistograms_Graviton600GeV.root"));
   v_files.push_back(new TFile("ResolutionHistograms_Graviton800GeV.root"));
   
-  gROOT->SetStyle("Plain");
+  /*gROOT->SetStyle("Plain");
   gStyle->SetOptStat(0);
-  gStyle->SetOptFit();
+  gStyle->SetOptFit();*/
+  
+  TStyle *myStyle=setTDRStyle();
+  myStyle->cd();
+  myStyle->SetOptTitle(0);
+  myStyle->SetOptStat(0);
+  myStyle->SetOptFit();
   
   Display_pT_Resolution(&v_files);
   Display_eta_ResolutionForFile(&v_files);
