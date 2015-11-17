@@ -8,6 +8,9 @@
 #include <iostream>
 #include <vector>
 
+#include "HbbHbb_Component_SignalPurity.cc"
+#include "HbbHbb_Component_KinFit.cc"
+
 double pi=3.14159265358979;
 double H_mass=125.;
 
@@ -17,42 +20,6 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   jet_p4.SetPtEtaPhiM(pT, eta, phi, M);
   return jet_p4;
 }
-
-int purityTest(TLorentzVector j1, TLorentzVector j2, TLorentzVector j3, TLorentzVector j4,
-               TLorentzVector b1, TLorentzVector b2, TLorentzVector b3, TLorentzVector b4)
-{
-  int purity=-2; // reflects how many jets are matched. 
-  // If -1, that means multiple b were matched most clsely to the same j
-  
-  TLorentzVector j[4]={j1, j2, j3, j4};
-  TLorentzVector b[4]={b1, b2, b3, b4};
-  
-  double jMatchedbindex[4]={-1, -1, -1, -1};
-  int nMatches=0;
-  for (unsigned int i_j=0; i_j<4; ++i_j)
-  {
-    double mindR=0.4;
-    for (unsigned int i_b=0; i_b<4; ++i_b)
-    {
-      double dR=j[i_j].DeltaR(b[i_b]);
-      if (dR<mindR)
-      {
-        mindR=dR;
-        jMatchedbindex[i_j]=i_b;
-      } 
-    }
-    if (jMatchedbindex[i_j]!=-1) // Match has happened
-    {
-      for (unsigned int i_i_j=0; i_i_j<i_j; ++i_i_j)
-      {
-        if (jMatchedbindex[i_j]==jMatchedbindex[i_i_j]) return -1;
-      }
-      ++nMatches;
-    }
-  }
-  
-  return nMatches;
-} 
 
 int withinRegion(double mH1, double mH2, double r1=15., double r2=30., double mH1_c=H_mass, double mH2_c=H_mass)
 {
@@ -170,21 +137,20 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
                   double deltaR2=jet3_p4.DeltaR(jet4_p4);
                   
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
-		  if (m_diff<m_diff_old && ((diJet2_p4.M()<160. && diJet2_p4.M()>90.) && (diJet1_p4.M()<160. && diJet1_p4.M()>90.)))
-		  {
-			  H1jet1_i=j_jetIndex;
-			  H1jet2_i=k_jetIndex;
-			  H2jet1_i=l_jetIndex;
-			  H2jet2_i=m_jetIndex;
-			  m_diff_old=m_diff;
-			  foundHH=true;
-
-		  }
-		} // Conditions on 4th jet
-	      } // Loop over 4th jet
-	    } // Conditions on 3rd jet
-	  } // Loop over 3rd jet
-	} // Conditions on 2nd jet
+		              if (m_diff<m_diff_old && ((diJet2_p4.M()<160. && diJet2_p4.M()>90.) && (diJet1_p4.M()<160. && diJet1_p4.M()>90.)))
+		              {
+			              H1jet1_i=j_jetIndex;
+			              H1jet2_i=k_jetIndex;
+			              H2jet1_i=l_jetIndex;
+			              H2jet2_i=m_jetIndex;
+			              m_diff_old=m_diff;
+			              foundHH=true;
+		              }
+                } // Conditions on 4th jet
+              } // Loop over 4th jet
+            } // Conditions on 3rd jet
+          } // Loop over 3rd jet
+        } // Conditions on 2nd jet
       } // Loop over 2nd jet
     } // Loop over 1st jet
 
@@ -203,7 +169,7 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
 	    double mH1=(jet1_p4+jet2_p4).M();
 	    double mH2=(jet3_p4+jet4_p4).M();
 	    TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
-            TLorentzVector diJet2_p4=jet3_p4+jet4_p4;	
+      TLorentzVector diJet2_p4=jet3_p4+jet4_p4;	
 
 	    for (unsigned int n=0; n<nJets; ++n)
                           {
