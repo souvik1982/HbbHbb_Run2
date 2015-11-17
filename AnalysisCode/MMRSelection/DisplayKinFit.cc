@@ -146,6 +146,10 @@ void DisplayKinFit()
     TH1F *h_mX_SR_biasCorrected=(TH1F*)v_files.at(i)->Get("h_mX_SR_biasCorrected");
     TH1F *h_mX_SR_kinFit=(TH1F*)v_files.at(i)->Get("h_mX_SR_kinFit");
     
+    h_mX_SR->Rebin(10);
+    h_mX_SR_biasCorrected->Rebin(10);
+    h_mX_SR_kinFit->Rebin(10);
+    
     TF1 *f_mX_SR=new TF1("f_mX_SR", "gaus", h_mX_SR->GetMean()-(2*h_mX_SR->GetRMS()), h_mX_SR->GetMean()+(2*h_mX_SR->GetRMS()));
     f_mX_SR->SetParLimits(1, h_mX_SR->GetMean()-(3*h_mX_SR->GetRMS()), h_mX_SR->GetMean()+(3*h_mX_SR->GetRMS()));
     f_mX_SR->SetParLimits(2, 0, 3*h_mX_SR->GetRMS());
@@ -185,6 +189,10 @@ void DisplayKinFit()
     sigma.push_back(f_mX_SR->GetParameter(2)/mean_gen.at(i));
     sigma_biasCorrected.push_back(f_mX_SR_biasCorrected->GetParameter(2)/mean_gen.at(i));
     sigma_kinFit.push_back(f_mX_SR_kinFit->GetParameter(2)/mean_gen.at(i));
+    
+    delete h_mX_SR;
+    delete h_mX_SR_biasCorrected;
+    delete h_mX_SR_kinFit;
   }
   
   TCanvas *c_KinFit=new TCanvas("c_KinFit", "c_KinFit", 1000, 700);
