@@ -55,6 +55,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float eventWeight;
   int nGenBQuarkFromH;
   float genBQuarkFromH_pT[100], genBQuarkFromH_eta[100], genBQuarkFromH_phi[100], genBQuarkFromH_mass[100];
+  float jet_MCpT[100], jet_MCeta[100], jet_MCphi[100], jet_MCmass[100];
   float met_pT, met_phi;
   
   // Retrieve variables
@@ -73,6 +74,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                         tree->SetBranchStatus("Jet_eta", 1); 
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                         tree->SetBranchStatus("Jet_phi", 1); 
   tree->SetBranchAddress("Jet_mass", &(jet_mass));                       tree->SetBranchStatus("Jet_mass", 1);
+  tree->SetBranchAddress("Jet_mcPt", &(jet_MCpT));                       tree->SetBranchStatus("Jet_mcPt", 1);
+  tree->SetBranchAddress("Jet_mcEta", &(jet_MCeta));                     tree->SetBranchStatus("Jet_mcEta", 1);
+  tree->SetBranchAddress("Jet_mcPhi", &(jet_MCphi));                     tree->SetBranchStatus("Jet_mcPhi", 1);
+  tree->SetBranchAddress("Jet_mcM", &(jet_MCmass));                      tree->SetBranchStatus("Jet_mcM", 1);
   tree->SetBranchAddress("nGenHiggsBoson", &(nGenHiggsBoson));           tree->SetBranchStatus("nGenHiggsBoson",1);
   tree->SetBranchAddress("GenHiggsBoson_pt", &(genHiggsBoson_pT));       tree->SetBranchStatus("GenHiggsBoson_pt",1);
   tree->SetBranchAddress("GenHiggsBoson_eta", &(genHiggsBoson_eta));     tree->SetBranchStatus("GenHiggsBoson_eta",1);
@@ -118,9 +123,15 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::vector<unsigned int> jetIndex_pTOrder;
   std::vector<unsigned int> jetIndex_CSVOrder;
   std::vector<unsigned int> jetIndex_CMVAOrder;
+  std::vector<unsigned int> jetIndex_allJets_pTOrder;
+  std::vector<unsigned int> jetIndex_allJets_CSVOrder;
+  std::vector<unsigned int> jetIndex_allJets_CMVAOrder;
   outtree->Branch("jetIndex_pTOrder", &jetIndex_pTOrder);
   outtree->Branch("jetIndex_CSVOrder", &jetIndex_CSVOrder);
   outtree->Branch("jetIndex_CMVAOrder", &jetIndex_CMVAOrder);
+  outtree->Branch("jetIndex_allJets_pTOrder", &jetIndex_allJets_pTOrder);
+  outtree->Branch("jetIndex_allJets_CSVOrder", &jetIndex_allJets_CSVOrder);
+  outtree->Branch("jetIndex_allJets_CMVAOrder", &jetIndex_allJets_CMVAOrder);
   outtree->Branch("eventWeight", &eventWeight);
   
   // Loop over events
@@ -131,8 +142,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     ++nCut0;
     tree->GetEvent(i);
     
-    eventWeight=puWeight;
-
+    if (isData==1) eventWeight=1;
+    else eventWeight=puWeight;
+    
     if(nGenHiggsBoson==2)
     {
       TLorentzVector gen_H1,gen_H2;
@@ -158,6 +170,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         JetList jetList_pTOrder;
         JetList jetList_CSVOrder;
         JetList jetList_CMVAOrder;
+        JetList jetList_allJets_pTOrder;
+        JetList jetList_allJets_CSVOrder;
+        JetList jetList_allJets_CMVAOrder;
         int nCJets=0;
         double ht=0;
         for (unsigned int j=0; j<(unsigned int)nJets; ++j)
@@ -166,9 +181,12 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
           {
             ++nCJets;
             jetList_pTOrder[jet_pT[j]]=j;
-            jetList_CSVOrder[jet_btagCSV[j]]=j;
-            jetList_CMVAOrder[jet_btagCMVA[j]]=j;
+            if (jet_btagCSV[j]>0) jetList_CSVOrder[jet_btagCSV[j]]=j;
+            if (jet_btagCMVA[j]>0) jetList_CMVAOrder[jet_btagCMVA[j]]=j;
           }
+          jetList_allJets_pTOrder[jet_pT[j]]=j;
+          if (jet_btagCSV[j]>0) jetList_allJets_CSVOrder[jet_btagCSV[j]]=j;
+          if (jet_btagCMVA[j]>0) jetList_allJets_CMVAOrder[jet_btagCMVA[j]]=j;
         }
         h_nJets->Fill(nCJets);
         
@@ -217,6 +235,21 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
             jetIndex_CMVAOrder.push_back(iJet->second);
           }
           
+          for (JetList::reverse_iterator iJet=jetList_allJets_pTOrder.rbegin(); iJet!=jetList_allJets_pTOrder.rend(); ++iJet)
+          {
+            jetIndex_allJets_pTOrder.push_back(iJet->second);
+          }
+          
+          for (JetList::reverse_iterator iJet=jetList_allJets_CSVOrder.rbegin(); iJet!=jetList_allJets_CSVOrder.rend(); ++iJet)
+          {
+            jetIndex_allJets_CSVOrder.push_back(iJet->second);
+          }
+          
+          for (JetList::reverse_iterator iJet=jetList_allJets_CMVAOrder.rbegin(); iJet!=jetList_allJets_CMVAOrder.rend(); ++iJet)
+          {
+            jetIndex_allJets_CMVAOrder.push_back(iJet->second);
+          }
+          
           // Write out tree
           outtree->Fill();
           
@@ -225,6 +258,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         jetIndex_pTOrder.clear();
         jetIndex_CSVOrder.clear();
         jetIndex_CMVAOrder.clear();
+        jetIndex_allJets_pTOrder.clear();
+        jetIndex_allJets_CSVOrder.clear();
+        jetIndex_allJets_CMVAOrder.clear();
+
         
       } // vType==-1
     } // Trigger
@@ -269,7 +306,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::cout<<"Wrote output file "<<histfilename<<std::endl;
   
   std::cout<<"=== Cut Efficiencies === "<<std::endl;
-  if (isData==false) std::cout<<"Initial number of events = "<<nInitial<<std::endl;
+  if (isData==0) std::cout<<"Initial number of events = "<<nInitial<<std::endl;
   std::cout<<"Number of events at the end of step 2 = "<<nCut0<<std::endl;
   std::cout<<"Number of events after trigger = "<<nCut1<<std::endl;
   std::cout<<"Number of events after Vtype==-1 = "<<nCut2<<std::endl;

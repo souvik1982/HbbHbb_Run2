@@ -1,0 +1,10 @@
+{
+  gSystem->Load("../libPhysicsToolsKinFitter.so");
+  gROOT->LoadMacro("../HbbHbb_MeasureResolutionBias.cc++");
+  HbbHbb_MeasureResolutionBias("Graviton260GeV");
+  HbbHbb_MeasureResolutionBias("Graviton270GeV");
+  HbbHbb_MeasureResolutionBias("Graviton300GeV");
+  HbbHbb_MeasureResolutionBias("Graviton400GeV");
+  HbbHbb_MeasureResolutionBias("Graviton600GeV");
+  HbbHbb_MeasureResolutionBias("Graviton800GeV");
+}
