@@ -87,7 +87,7 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   
 }
 
-void Display_mH_ForFile(TFile *f)
+void Display_mH1_ForFile(TFile *f)
 {
   TH1F *h_H1_mass=(TH1F*)f->Get("h_H1_mass");
   TH1F *h_H1_mass_biasCorrected=(TH1F*)f->Get("h_H1_mass_biasCorrected");
@@ -106,12 +106,37 @@ void Display_mH_ForFile(TFile *f)
   h_H1_mass_biasCorrected->Draw("");
   h_H1_mass->Draw("same");
   
-  TLegend *leg=new TLegend(0.6, 0.89, 0.89, 0.6);
-  leg->AddEntry(h_H1_mass, ("#bar{x}="+ftoa(f_H1_mass->GetParameter(1))+", #sigma="+ftoa(f_H1_mass->GetParameter(2))).c_str());
-  leg->AddEntry(h_H1_mass_biasCorrected, ("#bar{x}="+ftoa(f_H1_mass_biasCorrected->GetParameter(1))+", #sigma="+ftoa(f_H1_mass_biasCorrected->GetParameter(2))).c_str());
+  TLegend *leg=new TLegend(0.57, 0.89, 0.89, 0.75);
+  leg->AddEntry(h_H1_mass, ("Nominal #bar{x}="+ftoa(f_H1_mass->GetParameter(1))+", #sigma="+ftoa(f_H1_mass->GetParameter(2))).c_str());
+  leg->AddEntry(h_H1_mass_biasCorrected, ("Bias Corr. #bar{x}="+ftoa(f_H1_mass_biasCorrected->GetParameter(1))+", #sigma="+ftoa(f_H1_mass_biasCorrected->GetParameter(2))).c_str());
   leg->SetLineColor(0);
   leg->Draw();
+}
+
+void Display_mH2_ForFile(TFile *f)
+{
+  TH1F *h_H2_mass=(TH1F*)f->Get("h_H2_mass");
+  TH1F *h_H2_mass_biasCorrected=(TH1F*)f->Get("h_H2_mass_biasCorrected");
   
+  TF1 *f_H2_mass=new TF1("f_H2_mass", "gaus", h_H2_mass->GetMean()-1*h_H2_mass->GetRMS(), h_H2_mass->GetMean()+1*h_H2_mass->GetRMS());
+  TF1 *f_H2_mass_biasCorrected=new TF1("f_H2_mass_biasCorrected", "gaus", h_H2_mass_biasCorrected->GetMean()-1*h_H2_mass_biasCorrected->GetRMS(), h_H2_mass_biasCorrected->GetMean()+1*h_H2_mass_biasCorrected->GetRMS());
+  
+  h_H2_mass->Fit(f_H2_mass, "R");
+  h_H2_mass_biasCorrected->Fit(f_H2_mass_biasCorrected, "R");
+  
+  h_H2_mass->SetLineColor(kBlue);
+  f_H2_mass->SetLineColor(kBlue);
+  h_H2_mass_biasCorrected->SetLineColor(kRed);
+  f_H2_mass_biasCorrected->SetLineColor(kRed);
+  
+  h_H2_mass_biasCorrected->Draw("");
+  h_H2_mass->Draw("same");
+  
+  TLegend *leg=new TLegend(0.57, 0.89, 0.89, 0.75);
+  leg->AddEntry(h_H2_mass, ("Nominal #bar{x}="+ftoa(f_H2_mass->GetParameter(1))+", #sigma="+ftoa(f_H2_mass->GetParameter(2))).c_str());
+  leg->AddEntry(h_H2_mass_biasCorrected, ("Bias Corr. #bar{x}="+ftoa(f_H2_mass_biasCorrected->GetParameter(1))+", #sigma="+ftoa(f_H2_mass_biasCorrected->GetParameter(2))).c_str());
+  leg->SetLineColor(0);
+  leg->Draw();
 } 
 
 void DisplayKinFit()
@@ -135,7 +160,6 @@ void DisplayKinFit()
   myStyle->cd();
   myStyle->SetOptTitle(0);
   myStyle->SetOptStat(0);
-  // myStyle->SetOptFit();
   
   std::vector <double> mean, meanDiff_biasCorrected, meanDiff_kinFit, sigma, sigma_biasCorrected, sigma_kinFit;
   int dontwant=3;
@@ -195,6 +219,19 @@ void DisplayKinFit()
     delete h_mX_SR_kinFit;
   }
   
+  for (unsigned int i=2; i<v_files.size(); ++i)
+  {
+    TCanvas *c_mH1=new TCanvas("c_mH1", "c_mH1", 700, 700);
+    Display_mH1_ForFile(v_files.at(i));
+    c_mH1->SaveAs(("c_mH1_"+itoa(mean_gen.at(i))+".png").c_str());
+    delete c_mH1;
+    
+    TCanvas *c_mH2=new TCanvas("c_mH2", "c_mH2", 700, 700);
+    Display_mH2_ForFile(v_files.at(i));
+    c_mH2->SaveAs(("c_mH2_"+itoa(mean_gen.at(i))+".png").c_str());
+    delete c_mH2;
+  }
+   
   TCanvas *c_KinFit=new TCanvas("c_KinFit", "c_KinFit", 1000, 700);
   for (unsigned int i=2; i<v_files.size(); ++i)
   {
