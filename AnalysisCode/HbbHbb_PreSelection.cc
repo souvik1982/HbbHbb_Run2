@@ -14,6 +14,7 @@ double pi=3.14159265358979;
 
 // Hardcoded configuration parameters
 double jet_pT_cut=40.;
+double jet_pT_ttbar_cut=20.;
 double jet_eta_cut=2.5;
 double jet_btag_cut=0.8;
 /////////////////////////////////////
@@ -177,16 +178,19 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         double ht=0;
         for (unsigned int j=0; j<(unsigned int)nJets; ++j)
         {
-          if (jet_pT[j]>jet_pT_cut && fabs(jet_eta[j])<jet_eta_cut && jet_btagCSV[j]>jet_btag_cut) 
+          if (jet_pT[j]>jet_pT_cut && fabs(jet_eta[j])<jet_eta_cut) 
           {
-            ++nCJets;
-            jetList_pTOrder[jet_pT[j]]=j;
-            if (jet_btagCSV[j]>0) jetList_CSVOrder[jet_btagCSV[j]]=j;
-            if (jet_btagCMVA[j]>0) jetList_CMVAOrder[jet_btagCMVA[j]]=j;
+            if (jet_btagCSV[j]>jet_btag_cut)
+            {
+              ++nCJets;
+              jetList_pTOrder[jet_pT[j]]=j;
+              if (jet_btagCSV[j]>0) jetList_CSVOrder[jet_btagCSV[j]]=j;
+              if (jet_btagCMVA[j]>0) jetList_CMVAOrder[jet_btagCMVA[j]]=j;
+            }
+            jetList_allJets_pTOrder[jet_pT[j]]=j;
+            if (jet_btagCSV[j]>0) jetList_allJets_CSVOrder[jet_btagCSV[j]]=j;
+            if (jet_btagCMVA[j]>0) jetList_allJets_CMVAOrder[jet_btagCMVA[j]]=j;
           }
-          jetList_allJets_pTOrder[jet_pT[j]]=j;
-          if (jet_btagCSV[j]>0) jetList_allJets_CSVOrder[jet_btagCSV[j]]=j;
-          if (jet_btagCMVA[j]>0) jetList_allJets_CMVAOrder[jet_btagCMVA[j]]=j;
         }
         h_nJets->Fill(nCJets);
         
