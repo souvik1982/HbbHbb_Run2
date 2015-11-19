@@ -46,7 +46,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   int isData;
   float trigger_HLT_HH4bLowLumi;
   float vType;
-  float puWeight;
+  float puWeight, genWeight;
   int nJets;
   float jet_btagCSV[100], jet_btagCMVA[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
@@ -67,6 +67,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);   tree->SetBranchStatus("HLT_HH4bLowLumi", 1);
   tree->SetBranchAddress("Vtype", &(vType));                             tree->SetBranchStatus("Vtype", 1); 
   tree->SetBranchAddress("puWeight", &(puWeight));                       tree->SetBranchStatus("puWeight", 1); 
+  tree->SetBranchAddress("genWeight", &(genWeight));                     tree->SetBranchStatus("genWeight", 1);
   tree->SetBranchAddress("nJet", &(nJets));                              tree->SetBranchStatus("nJet", 1); 
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));                 tree->SetBranchStatus("Jet_btagCSV", 1); 
   tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));               tree->SetBranchStatus("Jet_btagCMVA", 1);
@@ -143,7 +144,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     tree->GetEvent(i);
     
     if (isData==1) eventWeight=1;
-    else eventWeight=puWeight;
+    else eventWeight=puWeight*genWeight/fabs(genWeight);
     
     if(nGenHiggsBoson==2)
     {
@@ -216,7 +217,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
           }
         }
         
-        if (nCJets>=4)
+        if (nCJets>=2)
         {
           nCut3+=eventWeight;
           
