@@ -206,10 +206,6 @@ void DisplayResolutionBias()
   v_files.push_back(new TFile("ResolutionHistograms_Graviton600GeV.root"));
   v_files.push_back(new TFile("ResolutionHistograms_Graviton800GeV.root"));
   
-  /*gROOT->SetStyle("Plain");
-  gStyle->SetOptStat(0);
-  gStyle->SetOptFit();*/
-  
   TStyle *myStyle=setTDRStyle();
   myStyle->cd();
   myStyle->SetOptTitle(0);

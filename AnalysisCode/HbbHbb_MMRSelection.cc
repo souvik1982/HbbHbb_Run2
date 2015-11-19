@@ -201,14 +201,14 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
       h_mH1_mH2_asym->Fill((pTH1>pTH2)?mH1:mH2, (pTH1>pTH2)?mH2:mH1, eventWeight);
       
       // Apply bias correction
-      biasEt_signal(&jet1_p4);
-      biasEt_signal(&jet2_p4);
-      biasEt_signal(&jet3_p4);
-      biasEt_signal(&jet4_p4);
+      TLorentzVector jet1_p4_biasCorrected=biasEt_signal(jet1_p4);
+      TLorentzVector jet2_p4_biasCorrected=biasEt_signal(jet2_p4);
+      TLorentzVector jet3_p4_biasCorrected=biasEt_signal(jet3_p4);
+      TLorentzVector jet4_p4_biasCorrected=biasEt_signal(jet4_p4);
       
       // Fill histograms after bias correction
-      TLorentzVector H1_p4_biasCorrected=jet1_p4+jet2_p4;
-      TLorentzVector H2_p4_biasCorrected=jet3_p4+jet4_p4;
+      TLorentzVector H1_p4_biasCorrected=jet1_p4_biasCorrected+jet2_p4_biasCorrected;
+      TLorentzVector H2_p4_biasCorrected=jet3_p4_biasCorrected+jet4_p4_biasCorrected;
       TLorentzVector X_p4_biasCorrected=H1_p4_biasCorrected+H2_p4_biasCorrected;
       pTH1=H1_p4_biasCorrected.Pt();
       pTH2=H2_p4_biasCorrected.Pt();
@@ -230,7 +230,10 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
           TLorentzVector b2_p4=fillTLorentzVector(genBQuarkFromH_pT[1], genBQuarkFromH_eta[1], genBQuarkFromH_phi[1], genBQuarkFromH_mass[1]);
           TLorentzVector b3_p4=fillTLorentzVector(genBQuarkFromH_pT[2], genBQuarkFromH_eta[2], genBQuarkFromH_phi[2], genBQuarkFromH_mass[2]);
           TLorentzVector b4_p4=fillTLorentzVector(genBQuarkFromH_pT[3], genBQuarkFromH_eta[3], genBQuarkFromH_phi[3], genBQuarkFromH_mass[3]);
-          purity=purityTest(jet1_p4, jet2_p4, jet3_p4, jet4_p4, b1_p4, b2_p4, b3_p4, b4_p4);
+          TLorentzVector j[4]={jet1_p4_biasCorrected, jet2_p4_biasCorrected, jet3_p4_biasCorrected, jet4_p4_biasCorrected};
+          TLorentzVector b[4]={b1_p4,   b2_p4,   b3_p4,   b4_p4};
+          int jMatchedbindex[4]={-1, -1, -1, -1};
+          purity=purityTest(j, b, jMatchedbindex);
         }
         else
         {

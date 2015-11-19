@@ -73,48 +73,48 @@ double ErrEt_2012(double ET, double eta)
 
 double ErrEt_Signal(double ET, double eta)
 {
-  double sigmapT;
+  double sigmapT=0;
   if (fabs(eta)<1.4)
   {
-    sigmapT=0.043*ET + 17.78;
+    sigmapT = 18.5 + 0.042 * ET;
   }
   else
   {
-    sigmapT=0.041*ET + 18.0;
+    sigmapT = 18 + 0.037 * ET;
   }
   return sigmapT*sigmapT;
 }
 
 double ErrEta_Signal(double ET)
 {
-  double sigmaEta=0.0226 + (3.27/ET) + (-6.49/(ET*ET));
+  double sigmaEta = 0.024 + (2.91/ET);
   return sigmaEta*sigmaEta;
 }
 
 double ErrPhi_Signal(double ET)
 {
-  double sigmaPhi=0.0291 + (2.49/ET) + (19.4/(ET*ET));
+  double sigmaPhi=0.029 + (2.71/ET);
   return sigmaPhi*sigmaPhi;
 }
 
-void biasEt_signal(TLorentzVector *j)
+TLorentzVector biasEt_signal(TLorentzVector j)
 {
-  double pT=j->Pt();
-  double eta=j->Eta();
-  double phi=j->Phi();
-  double m=j->M();
-  
+  double pT=j.Pt();
+  double eta=j.Eta();
   double newpT=-1;
   if (fabs(eta)<1.4)
   {
-    newpT = pT - (- 18 + 0.089*pT);
+    newpT = pT - (-14.6 + 0.016*pT + 0.00016*pT*pT);
   }
   else
   {
-    newpT = pT - (- 18.2 + 0.085*pT);
+    newpT = pT - (-12.6 - 0.0039*pT + 0.00024*pT*pT);
   }
   
-  j->SetPtEtaPhiM(newpT, eta, phi, m);
+  TLorentzVector jNew;
+  jNew.SetPtEtaPhiM(newpT, eta, j.Phi(), j.M());
+  
+  return jNew;
 }
 
 /*void print(TKinFitter *fitter)
@@ -136,7 +136,7 @@ void biasEt_signal(TLorentzVector *j)
   std::cout << "-> F                             : " << fitter->getF() << std::endl;
   std::cout << "=============================================" << std ::endl;
 }*/
-
+/*
 double constrainHH(TLorentzVector *j1, TLorentzVector *j2, TLorentzVector *j3, TLorentzVector *j4, double mass1=125, double mass2=125)
 {
   gSystem->Load("libPhysicsToolsKinFitter.so");
@@ -296,6 +296,7 @@ double constrainHH_check(TLorentzVector *j1, TLorentzVector *j2, TLorentzVector 
   
   return chi2;
 }
+*/
 
 double constrainHH_signalMeasurement(TLorentzVector *j1, TLorentzVector *j2, TLorentzVector *j3, TLorentzVector *j4, double mass1=125, double mass2=125)
 {
@@ -326,10 +327,16 @@ double constrainHH_signalMeasurement(TLorentzVector *j1, TLorentzVector *j2, TLo
   m4(1,1) = ErrEta_Signal(j4->Et());
   m4(2,2) = ErrPhi_Signal(j4->Et());
   
-  TFitParticleEtEtaPhi *jet1 = new TFitParticleEtEtaPhi(j1, &m1);
-  TFitParticleEtEtaPhi *jet2 = new TFitParticleEtEtaPhi(j2, &m2);
-  TFitParticleEtEtaPhi *jet3 = new TFitParticleEtEtaPhi(j3, &m3);
-  TFitParticleEtEtaPhi *jet4 = new TFitParticleEtEtaPhi(j4, &m4);
+  // Correct the jet energies for bias
+  TLorentzVector j1_new=biasEt_signal(*j1);
+  TLorentzVector j2_new=biasEt_signal(*j2);
+  TLorentzVector j3_new=biasEt_signal(*j3);
+  TLorentzVector j4_new=biasEt_signal(*j4);
+  
+  TFitParticleEtEtaPhi *jet1 = new TFitParticleEtEtaPhi(&j1_new, &m1);
+  TFitParticleEtEtaPhi *jet2 = new TFitParticleEtEtaPhi(&j2_new, &m2);
+  TFitParticleEtEtaPhi *jet3 = new TFitParticleEtEtaPhi(&j3_new, &m3);
+  TFitParticleEtEtaPhi *jet4 = new TFitParticleEtEtaPhi(&j4_new, &m4);
   
   // Constrain jet1 and jet2 to one H, and jet3 and jet4 to another
   TFitConstraintM *massConstraint1 = new TFitConstraintM("massConstraint1", "massConstraint1", 0, 0, mass1);
@@ -376,7 +383,7 @@ double constrainHH_signalMeasurement(TLorentzVector *j1, TLorentzVector *j2, TLo
   return chi2;
 }
 
-
+/*
 double constrainHH_signalMeasurement_ET(TLorentzVector *j1, TLorentzVector *j2, TLorentzVector *j3, TLorentzVector *j4, double mass1=125, double mass2=125)
 {
   // std::cout<<"Am in constrainHH_signalMeasurement_ET"<<std::endl;
@@ -390,12 +397,10 @@ double constrainHH_signalMeasurement_ET(TLorentzVector *j1, TLorentzVector *j2, 
   TMatrixD m4(1,1);
   
   // caterina
-  /*
   TMatrixD m1(3,3);
   TMatrixD m2(3,3);
   TMatrixD m3(3,3);
   TMatrixD m4(3,3);
-  */
   
   m1.Zero();
   m2.Zero();
@@ -463,3 +468,4 @@ double constrainHH_signalMeasurement_ET(TLorentzVector *j1, TLorentzVector *j2, 
   
   return chi2;
 }
+*/
