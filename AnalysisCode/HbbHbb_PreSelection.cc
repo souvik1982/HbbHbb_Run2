@@ -219,7 +219,22 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         fillHistogramsFromJetList(jetList_Central_pTOrder, v_pTOrder_JetpT, puWeight);
         fillHistogramsFromJetList(jetList_CentralpT40_CSVOrder, v_CSVOrder_JetCSV, puWeight);
         
-        if (nCbJets>=2)
+        // A non-symmetric CSV cut
+        /*if (jetList_CentralpT40_CSVOrder.size()>=4)
+        {
+          if (jet_btagCSV[1highestCSVjet]>0.9)
+          {
+            if (jet_btagCSV[2highestCSVjet]>0.8)
+            {
+              if (jet_btagCSV[3highestCSVjet]>0.8)
+              {
+                // keep event
+              }
+            }
+          }
+        }*/
+        
+        if (nCbJets>=3)
         {
           nCut3+=eventWeight;
           
