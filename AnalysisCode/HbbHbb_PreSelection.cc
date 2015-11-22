@@ -16,7 +16,7 @@ double pi=3.14159265358979;
 double jet_pT_cut=40.;
 double jet_pT_ttbar_cut=20.;
 double jet_eta_cut=2.5;
-double jet_btag_cut=0.8;
+double jet_btag_cut=0.6;
 /////////////////////////////////////
 
 typedef std::map<double, int> JetList;
@@ -111,7 +111,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("met_pt", &(met_pT));                           tree->SetBranchStatus("met_pt", 1);
   tree->SetBranchAddress("met_phi", &(met_phi));                         tree->SetBranchStatus("met_phi", 1);
   
-  TH1F *h_nCbJets=new TH1F("h_nCbJets", "; # Cleaned PAT Jets with |#eta|<2.5, p_{T} > 40 GeV, CSV > 0.8; Events", 10, 0., 10.);
+  TH1F *h_nCbJets=new TH1F("h_nCbJets", "; # Cleaned PAT Jets with |#eta|<2.5, p_{T} > 40 GeV, CSV > 0.6; Events", 10, 0., 10.);
   
   TH1F *h_pTOrder_JetpT_1=new TH1F("h_pTOrder_JetpT_1", "; Jet pT 1 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 800.);
   TH1F *h_pTOrder_JetpT_2=new TH1F("h_pTOrder_JetpT_2", "; Jet pT 2 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 500.);

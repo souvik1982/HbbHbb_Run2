@@ -140,7 +140,7 @@ void DisplayJetProperties()
   DisplayHistogram_forFile(f_data, "h_CSVOrder_JetCSV_1", kBlack);
   DisplayHistogram_forFile(f_ttbar, "h_CSVOrder_JetCSV_1", kRed);
   leg->Draw();
-  line=new TArrow(0.898, 0.8, 0.898, 0); line->SetLineWidth(2);
+  line=new TArrow(0.6, 0.8, 0.6, 0); line->SetLineWidth(2);
   line->Draw();
   c_CSVOrder_JetCSV_1->SaveAs("c_CSVOrder_JetCSV_1.png");
   
@@ -154,7 +154,7 @@ void DisplayJetProperties()
   DisplayHistogram_forFile(f_data, "h_CSVOrder_JetCSV_2", kBlack);
   DisplayHistogram_forFile(f_ttbar, "h_CSVOrder_JetCSV_2", kRed);
   leg->Draw();
-  line=new TArrow(0.898, 0.4, 0.898, 0); line->SetLineWidth(2);
+  line=new TArrow(0.6, 0.4, 0.6, 0); line->SetLineWidth(2);
   line->Draw();
   c_CSVOrder_JetCSV_2->SaveAs("c_CSVOrder_JetCSV_2.png");
   
@@ -168,7 +168,7 @@ void DisplayJetProperties()
   DisplayHistogram_forFile(f_data, "h_CSVOrder_JetCSV_3", kBlack);
   DisplayHistogram_forFile(f_ttbar, "h_CSVOrder_JetCSV_3", kRed);
   leg->Draw();
-  line=new TArrow(0.898, 0.1, 0.898, 0); line->SetLineWidth(2);
+  line=new TArrow(0.6, 0.1, 0.6, 0); line->SetLineWidth(2);
   line->Draw();
   c_CSVOrder_JetCSV_3->SaveAs("c_CSVOrder_JetCSV_3.png");
   
@@ -182,9 +182,23 @@ void DisplayJetProperties()
   }
   DisplayHistogram_forFile(f_ttbar, "h_CSVOrder_JetCSV_4", kRed);
   leg->Draw();
-  line=new TArrow(0.898, 0.05, 0.898, 0); line->SetLineWidth(2);
+  line=new TArrow(0.6, 0.1, 0.6, 0); line->SetLineWidth(2);
   line->Draw();
   c_CSVOrder_JetCSV_4->SaveAs("c_CSVOrder_JetCSV_4.png");
+  
+  // Plot the nCbJets distribution
+  first=true;
+  TCanvas *c_nCbJets=new TCanvas("c_nCbJets", "c_nCbJets", 700, 700);
+  DisplayHistogram_forFile(f_data, "h_nCbJets", kBlack);
+  for (unsigned int i=0; i<v_files.size(); ++i)
+  {
+    DisplayHistogram_forFile(v_files.at(i), "h_nCbJets", v_colors.at(i));
+  }
+  DisplayHistogram_forFile(f_ttbar, "h_nCbJets", kRed);
+  leg->Draw();
+  line=new TArrow(4, 0.05, 4, 0); line->SetLineWidth(2);
+  line->Draw();
+  c_nCbJets->SaveAs("c_nCbJets.png");
   
 }
   
