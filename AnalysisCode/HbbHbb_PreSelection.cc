@@ -123,7 +123,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   TH1F *h_CSVOrder_JetCSV_3=new TH1F("h_CSVOrder_JetCSV_3", "; Jet CSV 3 for jets with |#eta|<2.5, p_{T} > 40 GeV; Events", 50, 0., 1.);
   TH1F *h_CSVOrder_JetCSV_4=new TH1F("h_CSVOrder_JetCSV_4", "; Jet CSV 4 for jets with |#eta|<2.5, p_{T} > 40 GeV; Events", 50, 0., 1.);
   
-  TH1F *h_GenX_mass=new TH1F("h_GenX_mass","; m_{X}^{GEN} (GeV); Events", 1800, 200, 2000);
+  TH1F *h_GenX_mass=new TH1F("h_GenX_mass", "; m_{X}^{GEN} (GeV); Events", 1800, 200, 2000);
+  TH1F *h_dR_genHbb=new TH1F("h_dR_genHbb", "; #Delta R(b#bar{b}}; Events", 1000, 0., 5.);
   
   TH1F *h_MET=new TH1F("h_MET", "; MET (GeV); Events", 50, 0., 500.);
   TH1F *h_MET_phi=new TH1F("h_MET_phi", "; #phi_{MET} (GeV)", 50, -pi, pi);
@@ -162,12 +163,20 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     if (isData==1) eventWeight=1;
     else eventWeight=puWeight*genWeight/fabs(genWeight);
     
-    if(nGenHiggsBoson==2)
+    if (nGenHiggsBoson==2)
     {
       TLorentzVector gen_H1,gen_H2;
       gen_H1.SetPtEtaPhiM(genHiggsBoson_pT[0], genHiggsBoson_eta[0], genHiggsBoson_phi[0], genHiggsBoson_mass[0]);
       gen_H2.SetPtEtaPhiM(genHiggsBoson_pT[1], genHiggsBoson_eta[1], genHiggsBoson_phi[1], genHiggsBoson_mass[1]);
       h_GenX_mass->Fill((gen_H1+gen_H2).M(), eventWeight);
+    }
+    
+    if (nGenBQuarkFromH==4)
+    {
+      TLorentzVector gen_H1_b, gen_H1_bbar;
+      gen_H1_b.SetPtEtaPhiM(genBQuarkFromH_pT[0], genBQuarkFromH_eta[0], genBQuarkFromH_phi[0], genBQuarkFromH_mass[0]);
+      gen_H1_bbar.SetPtEtaPhiM(genBQuarkFromH_pT[1], genBQuarkFromH_eta[1], genBQuarkFromH_phi[1], genBQuarkFromH_mass[1]);
+      h_dR_genHbb->Fill(gen_H1_b.DeltaR(gen_H1_bbar), eventWeight);
     }
     
     h_MET->Fill(met_pT, eventWeight);
@@ -289,6 +298,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   h_CSVOrder_JetCSV_3->Write();
   h_CSVOrder_JetCSV_4->Write();
   h_GenX_mass->Write();
+  h_dR_genHbb->Write();
   h_MET->Write();
   h_MET_phi->Write();
   h_Cuts->Write();
@@ -318,6 +328,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   delete h_CSVOrder_JetCSV_3;
   delete h_CSVOrder_JetCSV_4;
   delete h_GenX_mass;
+  delete h_dR_genHbb;
   delete h_MET;
   delete h_MET_phi;
   delete h_Cuts;

@@ -49,9 +49,9 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   h_mX_SR_biasCorrected->Rebin(10);
   h_mX_SR_kinFit->Rebin(10);
   
-  h_mX_SR->GetXaxis()->SetRangeUser(200, 1100);
-  h_mX_SR_biasCorrected->GetXaxis()->SetRangeUser(200, 1100);
-  h_mX_SR_kinFit->GetXaxis()->SetRangeUser(200, 1100);
+  h_mX_SR->GetXaxis()->SetRangeUser(200, 1400);
+  h_mX_SR_biasCorrected->GetXaxis()->SetRangeUser(200, 1400);
+  h_mX_SR_kinFit->GetXaxis()->SetRangeUser(200, 1400);
   
   h_mX_SR->SetLineWidth(2);
   h_mX_SR_biasCorrected->SetLineWidth(2);
@@ -137,7 +137,35 @@ void Display_mH2_ForFile(TFile *f)
   leg->AddEntry(h_H2_mass_biasCorrected, ("Bias Corr. #bar{x}="+ftoa(f_H2_mass_biasCorrected->GetParameter(1))+", #sigma="+ftoa(f_H2_mass_biasCorrected->GetParameter(2))).c_str());
   leg->SetLineColor(0);
   leg->Draw();
-} 
+}
+
+void DisplayXpT_ForFile(TFile *f)
+{
+  TH1F *h_HH_balance=(TH1F*)f->Get("h_HH_balance");
+  TH1F *h_HH_balance_biasCorrected=(TH1F*)f->Get("h_HH_balance_biasCorrected");
+  TH1F *h_HH_balance_kinFit=(TH1F*)f->Get("h_HH_balance_kinFit");
+  
+  h_HH_balance->SetLineColor(kBlue);
+  h_HH_balance_biasCorrected->SetLineColor(kGreen+1);
+  h_HH_balance_kinFit->SetLineColor(kRed);
+  
+  h_HH_balance_kinFit->Rebin(5);
+  h_HH_balance->Rebin(5);
+  h_HH_balance_biasCorrected->Rebin(5);
+  
+  h_HH_balance_kinFit->SetMaximum(h_HH_balance_kinFit->GetMaximum()*1.5);
+  h_HH_balance_kinFit->Draw("hist");
+  h_HH_balance->Draw("hist same");
+  // h_HH_balance_biasCorrected->Draw("hist same");
+  h_HH_balance_kinFit->Draw("hist same");
+  
+  TLegend *leg=new TLegend(0.57, 0.89, 0.89, 0.75);
+  leg->AddEntry(h_HH_balance, "Nominal balance");
+  // leg->AddEntry(h_HH_balance_biasCorrected, "Bias corrected balance");
+  leg->AddEntry(h_HH_balance_kinFit, "Kinematic fit balance");
+  leg->SetLineColor(0);
+  leg->Draw();
+}
 
 void DisplayKinFit()
 {
@@ -149,11 +177,11 @@ void DisplayKinFit()
   v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
-  // v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton1600GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton2000GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton3000GeV.root"));
-  std::vector <double> mean_gen={260, 270, 300, 400, 600, 800, 1000}; // , 1200, 1600, 2000, 3000};
+  std::vector <double> mean_gen={260, 270, 300, 400, 600, 800, 1000, 1200}; // , 1200, 1600, 2000, 3000};
   
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();
@@ -161,7 +189,7 @@ void DisplayKinFit()
   myStyle->SetOptTitle(0);
   myStyle->SetOptStat(0);
   
-  std::vector <double> mean, meanDiff_biasCorrected, meanDiff_kinFit, sigma, sigma_biasCorrected, sigma_kinFit;
+  /*std::vector <double> mean, meanDiff_biasCorrected, meanDiff_kinFit, sigma, sigma_biasCorrected, sigma_kinFit;
   int dontwant=3;
   std::cout<<"Fitting peaks"<<std::endl;
   for (unsigned int i=dontwant; i<v_files.size(); ++i)
@@ -241,7 +269,7 @@ void DisplayKinFit()
   
   TGraph *g_mean=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(mean.at(0)));
   g_mean->GetYaxis()->SetRangeUser(-100, 100);
-  g_mean->GetXaxis()->SetLimits(300, 1100);
+  g_mean->GetXaxis()->SetLimits(300, 1300);
   g_mean->SetTitle("; m_{X}^{gen} (GeV); m_{X}^{KinFit} - m_{X} (GeV)");
   g_mean->SetMarkerColor(kBlue);
   TGraph *g_meanDiff_biasCorrected = new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(meanDiff_biasCorrected.at(0)));
@@ -252,7 +280,7 @@ void DisplayKinFit()
   g_mean->Draw("A*");
   g_meanDiff_biasCorrected->Draw("SAME*");
   g_meanDiff_kinFit->Draw("SAME*");
-  TF1 *f_meanDiff_kinFit=new TF1("f_meanDiff_kinFit", "pol1", 400, 1000);
+  TF1 *f_meanDiff_kinFit=new TF1("f_meanDiff_kinFit", "pol1", 400, 1200);
   f_meanDiff_kinFit->SetLineColor(kRed); f_meanDiff_kinFit->SetLineWidth(1); f_meanDiff_kinFit->SetLineStyle(7);
   g_meanDiff_kinFit->Fit(f_meanDiff_kinFit, "R");
   TLegend *leg=new TLegend(0.5, 0.7, 0.89, 0.89);
@@ -286,6 +314,15 @@ void DisplayKinFit()
   leg->AddEntry(g_sigma_kinFit, "kinematic fitted resolution", "p");
   leg->Draw();
   c_sigma->SaveAs("c_sigma.png");
-  c_sigma->SaveAs("c_sigma.root");
+  c_sigma->SaveAs("c_sigma.root");*/
+  
+  // Display jet pT balance
+  for (unsigned int i=2; i<v_files.size(); ++i)
+  {
+    TCanvas *c_HH_balance=new TCanvas("c_HH_balance", "c_HH_balance", 700, 700);
+    DisplayXpT_ForFile(v_files.at(i));
+    c_HH_balance->SaveAs(("c_HH_balance_"+itoa(mean_gen.at(i))+".png").c_str());
+    delete c_HH_balance;
+  }
   
 }
