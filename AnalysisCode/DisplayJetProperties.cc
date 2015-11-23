@@ -45,9 +45,13 @@ void DisplayJetProperties()
   v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton1600GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton2000GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton3000GeV.root"));
   TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
-  std::vector <double> mean_gen={300, 400, 600, 800, 1000};
+  std::vector <double> mean_gen={300, 400, 600, 800, 1000, 1200, 1600, 2000, 3000};
   std::vector<int> v_colors = {kGreen, kGreen+2, kOrange, kOrange+2, kMagenta, kMagenta+2, kBlue, kBlue+2, kCyan, kCyan+2};
   
   gROOT->SetStyle("Plain");
@@ -74,7 +78,7 @@ void DisplayJetProperties()
   DisplayHistogram_forFile(f_data, "h_pTOrder_JetpT_1", kBlack);
   DisplayHistogram_forFile(f_ttbar, "h_pTOrder_JetpT_1", kRed);
   leg->Draw();
-  TArrow *line=new TArrow(40., 0.14, 40., 0); line->SetLineWidth(2);
+  TArrow *line=new TArrow(40., 0.14, 40., 0); line->SetLineWidth(3);
   line->Draw();
   c_pTOrder_JetpT_1->SaveAs("c_pTOrder_JetpT_1.png");
   
@@ -140,7 +144,7 @@ void DisplayJetProperties()
   DisplayHistogram_forFile(f_data, "h_CSVOrder_JetCSV_1", kBlack);
   DisplayHistogram_forFile(f_ttbar, "h_CSVOrder_JetCSV_1", kRed);
   leg->Draw();
-  line=new TArrow(0.6, 0.8, 0.6, 0); line->SetLineWidth(2);
+  line=new TArrow(0.6, 0.8, 0.6, 0); line->SetLineWidth(3);
   line->Draw();
   c_CSVOrder_JetCSV_1->SaveAs("c_CSVOrder_JetCSV_1.png");
   
@@ -154,7 +158,7 @@ void DisplayJetProperties()
   DisplayHistogram_forFile(f_data, "h_CSVOrder_JetCSV_2", kBlack);
   DisplayHistogram_forFile(f_ttbar, "h_CSVOrder_JetCSV_2", kRed);
   leg->Draw();
-  line=new TArrow(0.6, 0.4, 0.6, 0); line->SetLineWidth(2);
+  line=new TArrow(0.6, 0.4, 0.6, 0); line->SetLineWidth(3);
   line->Draw();
   c_CSVOrder_JetCSV_2->SaveAs("c_CSVOrder_JetCSV_2.png");
   
@@ -168,7 +172,7 @@ void DisplayJetProperties()
   DisplayHistogram_forFile(f_data, "h_CSVOrder_JetCSV_3", kBlack);
   DisplayHistogram_forFile(f_ttbar, "h_CSVOrder_JetCSV_3", kRed);
   leg->Draw();
-  line=new TArrow(0.6, 0.1, 0.6, 0); line->SetLineWidth(2);
+  line=new TArrow(0.6, 0.1, 0.6, 0); line->SetLineWidth(3);
   line->Draw();
   c_CSVOrder_JetCSV_3->SaveAs("c_CSVOrder_JetCSV_3.png");
   
@@ -182,9 +186,10 @@ void DisplayJetProperties()
   }
   DisplayHistogram_forFile(f_ttbar, "h_CSVOrder_JetCSV_4", kRed);
   leg->Draw();
-  line=new TArrow(0.6, 0.1, 0.6, 0); line->SetLineWidth(2);
+  line=new TArrow(0.6, 0.1, 0.6, 0); line->SetLineWidth(3);
   line->Draw();
   c_CSVOrder_JetCSV_4->SaveAs("c_CSVOrder_JetCSV_4.png");
+  
   
   // Plot the nCbJets distribution
   first=true;
@@ -196,9 +201,32 @@ void DisplayJetProperties()
   }
   DisplayHistogram_forFile(f_ttbar, "h_nCbJets", kRed);
   leg->Draw();
-  line=new TArrow(4, 0.05, 4, 0); line->SetLineWidth(2);
+  line=new TArrow(4, 0.5, 4, 0); line->SetLineWidth(3);
   line->Draw();
   c_nCbJets->SaveAs("c_nCbJets.png");
+  
+  
+  // Plot the dR distribution between gen b quarks from a Higgs
+  first=true;
+  TCanvas *c_dR_genHbb=new TCanvas("c_dR_genHbb", "c_dR_genHbb", 700, 700);
+  for (unsigned int i=v_files.size()-1; i>0; --i)
+  {
+    ((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->Rebin(2);
+    ((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->GetXaxis()->SetRangeUser(0, 2.);
+    DisplayHistogram_forFile(v_files.at(i), "h_dR_genHbb", v_colors.at(i));
+    int binx0=((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->FindBin(0.);
+    int binx1=((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->FindBin(0.4);
+    int binx2=((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->FindBin(2.0);
+    double integral1 = ((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->Integral(binx0, binx2);
+    double integral2 = ((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->Integral(binx1, binx2);
+    std::cout<<"mX = "<<mean_gen.at(i)<<", % of events with dR > 0.4 = "<<integral2/integral1*100.<<"%"<<std::endl;
+  }
+  leg->Draw();
+  line=new TArrow(0.4, 0.12, 0.4, 0); line->SetLineWidth(3);
+  line->Draw();
+  TArrow *line1=new TArrow(1.5, 0.12, 1.5, 0); line1->SetLineWidth(3);
+  line1->Draw();
+  c_dR_genHbb->SaveAs("c_dR_genHbb.png");
   
 }
   
