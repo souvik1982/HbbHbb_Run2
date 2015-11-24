@@ -13,10 +13,10 @@ This takes the Heppy ntuple files as input and extracts the branches required fo
 
 This is run with the scripts: <br/>
 <ul>
- <li> processPreSelection_Graviton.sh </li>
- <li> processPreSelection_ttbar.sh </li>
- <li> processPreSelection_QCD_HT.sh </li>
- <li> processPreSelection_Data.sh </li>
+ <li> <pre> source processPreSelection_Graviton.sh </pre> </li>
+ <li> <pre> source processPreSelection_ttbar.sh </pre> </li>
+ <li> <pre> source processPreSelection_QCD_HT.sh </pre> </li>
+ <li> <pre> source processPreSelection_Data.sh </pre> </li>
 </ul>
 
 <h3> HbbHbb_MMRSelection.cc </h3>
@@ -25,7 +25,7 @@ This takes ntuples produced by HbbHbb_PreSelection.cc. It contains our Medium Ma
 
 We operate it from within the MMRSelection directory with the commands:
 <ul>
-  <li> MMRSelection/processMMRSelection_Graviton.c </li>
+  <li> <pre> MMRSelection/root -l processMMRSelection_Graviton.c </pre> </li>
 </ul>
 
 <h3> HbbHbb_LMRSelection.cc </h3>
