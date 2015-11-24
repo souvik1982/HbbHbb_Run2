@@ -224,8 +224,6 @@ void DisplayJetProperties()
   leg->Draw();
   line=new TArrow(0.4, 0.12, 0.4, 0); line->SetLineWidth(3);
   line->Draw();
-  TArrow *line1=new TArrow(1.5, 0.12, 1.5, 0); line1->SetLineWidth(3);
-  line1->Draw();
   c_dR_genHbb->SaveAs("c_dR_genHbb.png");
   
 }

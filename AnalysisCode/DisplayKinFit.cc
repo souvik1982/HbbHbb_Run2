@@ -264,7 +264,7 @@ void DisplayKinFit()
   }
    
   TCanvas *c_KinFit=new TCanvas("c_KinFit", "c_KinFit", 1000, 700);
-  for (unsigned int i=2; i<v_files.size(); ++i)
+  for (unsigned int i=3; i<v_files.size(); ++i)
   {
     DisplayKinFitForFile(v_files.at(i), mean_gen.at(i));
   }
@@ -283,7 +283,7 @@ void DisplayKinFit()
   g_mean->Draw("A*");
   g_meanDiff_biasCorrected->Draw("SAME*");
   g_meanDiff_kinFit->Draw("SAME*");
-  TF1 *f_meanDiff_kinFit=new TF1("f_meanDiff_kinFit", "pol1", 400, 1200);
+  TF1 *f_meanDiff_kinFit=new TF1("f_meanDiff_kinFit", "pol0", 400, 1200);
   f_meanDiff_kinFit->SetLineColor(kRed); f_meanDiff_kinFit->SetLineWidth(1); f_meanDiff_kinFit->SetLineStyle(7);
   g_meanDiff_kinFit->Fit(f_meanDiff_kinFit, "R");
   TLegend *leg=new TLegend(0.5, 0.7, 0.89, 0.89);
