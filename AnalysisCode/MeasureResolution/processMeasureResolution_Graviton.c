@@ -7,4 +7,6 @@
   HbbHbb_MeasureResolutionBias("Graviton400GeV");
   HbbHbb_MeasureResolutionBias("Graviton600GeV");
   HbbHbb_MeasureResolutionBias("Graviton800GeV");
+  HbbHbb_MeasureResolutionBias("Graviton1000GeV");
+  HbbHbb_MeasureResolutionBias("Graviton1200GeV");
 }
