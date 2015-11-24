@@ -69,9 +69,30 @@ Works on the Histograms files output by HbbHbb_MeasureResolutionBias.cc. Plots t
 
 <h3> DisplayKinFit.cc </h3>
 
+This displays the results of the kinematic fit. It works on the output of HbbHbb_MMRSelection.cc and HbbHbb_LMRSelection.cc. It can be run from the MMR or LMR area:
+
+<pre>
+root -l -b -q MMRSelection/../DisplayKinFit.c++
+root -l -b -q LMRSelection/../DisplayKinFit.c++
+</pre>
+
 <h3> DisplayPurity.cc </h3>
 
+Displays the purity of our event selection criteria. It works on the output of HbbHbb_MMRSelection.cc and HbbHbb_LMRSelection.cc. It can be run from the MMR or LMR area:
+
+<pre>
+root -l -b -q MMRSelection/../DisplayPurity.c++
+root -l -b -q LMRSelection/../DisplayPurity.c++
+</pre>
+
 <h3> DisplaymH1vsmH2.cc </h3>
+
+Displays mH1 vs mH2 plots, that informs our event selection criteria. It works on the output of HbbHbb_MMRSelection.cc and HbbHbb_LMRSelection.cc. It can be run from the MMR or LMR area:
+
+<pre>
+root -l -b -q MMRSelection/../DisplaymH1vsmH2.c++
+root -l -b -q LMRSelection/../DisplaymH1vsmH2.c++
+</pre>
 
 
 
