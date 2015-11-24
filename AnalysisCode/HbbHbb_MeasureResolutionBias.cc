@@ -92,7 +92,7 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
   float jet_MCpT[100], jet_MCeta[100], jet_MCphi[100], jet_MCmass[100];
   float genBQuarkFromH_pT[100],genBQuarkFromH_eta[100],genBQuarkFromH_phi[100],genBQuarkFromH_mass[100];
-  std::vector<unsigned int> *jetIndex_pTOrder=0;
+  std::vector<unsigned int> *jetIndex_CentralpT40btag_pTOrder=0;
   
   // Retrieve variables
   tree->SetBranchAddress("eventWeight", &(eventWeight));                
@@ -107,7 +107,7 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
   tree->SetBranchAddress("Jet_mcEta", &(jet_MCeta));
   tree->SetBranchAddress("Jet_mcPhi", &(jet_MCphi));
   tree->SetBranchAddress("Jet_mcM", &(jet_MCmass));
-  tree->SetBranchAddress("jetIndex_pTOrder", &(jetIndex_pTOrder));
+  tree->SetBranchAddress("jetIndex_CentralpT40btag_pTOrder", &(jetIndex_CentralpT40btag_pTOrder));
   tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   
@@ -116,7 +116,7 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
 
   // Book histograms
   TH2F *h_jet_pT_res_vs_pT = new TH2F("h_jet_pT_res_vs_pT", "; p_{T}^{reco} (GeV); b Jet p_{T}^{reco} - p_{T}^{part} (GeV)", 100, 0., 1000., 100, -200., 200.);
-  TH2F *h_jet_pT_res_vs_pT_eta_0_1p4 = new TH2F("h_jet_pT_res_vs_pT_eta_0_1p4", "; p_{T}^{reco} (GeV); b Jet p_{T}^{reco} - p_{T}^{part} (GeV)", 100, 0., 1000., 100, -200., 200.);
+  TH2F *h_jet_pT_res_vs_pT_eta_0_1p4 = new TH2F("h_jet_pT_res_vs_pT_eta_0_1p4", "; p_{T}^{reco} (GeV); b Jet p_{T}^{reco} - p_{T}^{part} (GeV)", 100, 0., 1000., 200, -400., 400.);
   TH2F *h_jet_pT_res_vs_pT_eta_1p4_2p5 = new TH2F("h_jet_pT_res_vs_pT_eta_1p4_2p5", "; p_{T}^{reco} (GeV); Jet p_{T}^{reco} - p_{T}^{part} (GeV)", 100, 0., 1000., 100, -200., 200.);
   TH2F *h_jet_pT_res_vs_eta = new TH2F("h_jet_pT_res_vs_eta", "; #eta; b Jet p_{T}^{reco} - p_{T}^{part}", 100, 0., 2.5, 100, -200., 200.);
   TH2F *h_jet_eta_res_vs_pT = new TH2F("h_jet_eta_res_vs_pT", "; p_{T}; b Jet #eta^{reco} - #eta^{part}", 100, 0., 1000., 100, -2.5, 2.5);                    
@@ -144,28 +144,28 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
     
-    for (unsigned int j=0; j<jetIndex_pTOrder->size(); ++j)
+    for (unsigned int j=0; j<jetIndex_CentralpT40btag_pTOrder->size(); ++j)
     {
-      unsigned int j_jetIndex=jetIndex_pTOrder->at(j);
+      unsigned int j_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(j);
       TLorentzVector jet1_p4, jet2_p4, jet3_p4, jet4_p4;
       jet1_p4=fillTLorentzVector(jet_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
-      for (unsigned int k=0; k<jetIndex_pTOrder->size(); ++k)
+      for (unsigned int k=0; k<jetIndex_CentralpT40btag_pTOrder->size(); ++k)
       {
         if (k!=j)
         {
-          unsigned int k_jetIndex=jetIndex_pTOrder->at(k);
+          unsigned int k_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(k);
           jet2_p4=fillTLorentzVector(jet_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k_jetIndex], jet_mass[k_jetIndex]);
-          for (unsigned int l=0; l<jetIndex_pTOrder->size(); ++l)
+          for (unsigned int l=0; l<jetIndex_CentralpT40btag_pTOrder->size(); ++l)
           {
             if (l!=j && l!=k)
             {
-              unsigned int l_jetIndex=jetIndex_pTOrder->at(l);
+              unsigned int l_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(l);
               jet3_p4=fillTLorentzVector(jet_pT[l_jetIndex], jet_eta[l_jetIndex], jet_phi[l_jetIndex], jet_mass[l_jetIndex]);
-              for (unsigned int m=0; m<jetIndex_pTOrder->size(); ++m)
+              for (unsigned int m=0; m<jetIndex_CentralpT40btag_pTOrder->size(); ++m)
               {
                 if (m!=j && m!=k && m!=l)
                 {
-                  unsigned int m_jetIndex=jetIndex_pTOrder->at(m);
+                  unsigned int m_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(m);
                   jet4_p4=fillTLorentzVector(jet_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
                    
                   TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
@@ -258,14 +258,14 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
         }
         
         // Smear the generated 4 vector
-        TLorentzVector b1_smeared_p4=asymmetricGaussianSmear(b1_p4, 5, 25);
+        /*TLorentzVector b1_smeared_p4=asymmetricGaussianSmear(b1_p4, 5, 25);
         TLorentzVector b2_smeared_p4=asymmetricGaussianSmear(b2_p4, 5, 25);
         TLorentzVector b3_smeared_p4=asymmetricGaussianSmear(b3_p4, 5, 25);
         TLorentzVector b4_smeared_p4=asymmetricGaussianSmear(b4_p4, 5, 25);
-        double chi2=constrainHH(&b1_smeared_p4, &b2_smeared_p4, &b3_smeared_p4, &b4_smeared_p4);
+        double chi2=constrainHH_check(&b1_smeared_p4, &b2_smeared_p4, &b3_smeared_p4, &b4_smeared_p4);
         mX_genForKinFitCheck=(b1_smeared_p4+b2_smeared_p4+b3_smeared_p4+b4_smeared_p4).M();
         
-        h_mX_genForKinFitCheck->Fill(mX_genForKinFitCheck, eventWeight);
+        h_mX_genForKinFitCheck->Fill(mX_genForKinFitCheck, eventWeight);*/
       }
       else
       {

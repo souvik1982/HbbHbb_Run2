@@ -54,34 +54,34 @@ void Display_pT_Resolution(std::vector<TFile*> *v)
   }
   h_jet_pT_res_vs_pT_eta_0_1p4->RebinX(2);
   h_jet_pT_res_vs_pT_eta_0_1p4->RebinY(2);
-  h_jet_pT_res_vs_pT_eta_0_1p4->GetXaxis()->SetRangeUser(0, 800);
+  h_jet_pT_res_vs_pT_eta_0_1p4->GetXaxis()->SetRangeUser(0, 1000);
   
   TH1D *h_MEAN_jet_pT_res_vs_pT_eta_0_1p4=MEANY(h_jet_pT_res_vs_pT_eta_0_1p4);
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet <(p_{T}^{reco} - p_{T}^{parton})> (GeV)");
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetRangeUser(-20, 100);
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetTitleOffset(1.6);
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetXaxis()->SetTitleOffset(1.2);
-  TF1 *f_MEAN_jet_pT_res_vs_pT_eta_0_1p4=new TF1("f_MEAN_jet_pT_res_vs_pT_eta_0_1p4", "pol2", 40, 600);
+  TF1 *f_MEAN_jet_pT_res_vs_pT_eta_0_1p4=new TF1("f_MEAN_jet_pT_res_vs_pT_eta_0_1p4", "pol2", 40, 750);
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->Fit(f_MEAN_jet_pT_res_vs_pT_eta_0_1p4, "R");
   
   TH1D *h_RMS_jet_pT_res_vs_pT_eta_0_1p4=RMSY(h_jet_pT_res_vs_pT_eta_0_1p4);
   h_RMS_jet_pT_res_vs_pT_eta_0_1p4->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet #sigma(p_{T}^{reco} - p_{T}^{parton}) (GeV)");
-  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetRangeUser(0, 70);
+  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetRangeUser(0, 100);
   h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetTitleOffset(1.6);
   h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetXaxis()->SetTitleOffset(1.2);
-  TF1 *f_RMS_jet_pT_res_vs_pT_eta_0_1p4=new TF1("f_RMS_jet_pT_res_vs_pT_eta_0_1p4", "pol1", 40, 600);
+  TF1 *f_RMS_jet_pT_res_vs_pT_eta_0_1p4=new TF1("f_RMS_jet_pT_res_vs_pT_eta_0_1p4", "pol2", 40, 750);
   h_RMS_jet_pT_res_vs_pT_eta_0_1p4->Fit(f_RMS_jet_pT_res_vs_pT_eta_0_1p4, "R");
   
   h_jet_pT_res_vs_pT_eta_1p4_2p5->RebinX(2);
   h_jet_pT_res_vs_pT_eta_1p4_2p5->RebinY(2);
-  h_jet_pT_res_vs_pT_eta_1p4_2p5->GetXaxis()->SetRangeUser(0, 500);
+  h_jet_pT_res_vs_pT_eta_1p4_2p5->GetXaxis()->SetRangeUser(0, 800);
   
   TH1D *h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5=MEANY(h_jet_pT_res_vs_pT_eta_1p4_2p5);
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet <(p_{T}^{reco} - p_{T}^{parton})> (GeV)");
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetRangeUser(-20, 100);
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetTitleOffset(1.6);
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetXaxis()->SetTitleOffset(1.2);
-  TF1 *f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5=new TF1("f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5", "pol2", 40, 420);
+  TF1 *f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5=new TF1("f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5", "pol2", 40, 550);
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->Fit(f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5, "R");
   
   TH1D *h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5=RMSY(h_jet_pT_res_vs_pT_eta_1p4_2p5);
@@ -89,7 +89,7 @@ void Display_pT_Resolution(std::vector<TFile*> *v)
   h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetRangeUser(0, 70);
   h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetTitleOffset(1.6);
   h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->GetXaxis()->SetTitleOffset(1.2);
-  TF1 *f_RMS_jet_pT_res_vs_pT_eta_1p4_2p5=new TF1("f_RMS_jet_pT_res_vs_pT_eta_1p4_2p5", "pol1", 40, 420);
+  TF1 *f_RMS_jet_pT_res_vs_pT_eta_1p4_2p5=new TF1("f_RMS_jet_pT_res_vs_pT_eta_1p4_2p5", "pol1", 40, 550);
   h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->Fit(f_RMS_jet_pT_res_vs_pT_eta_1p4_2p5, "R");
   
   
@@ -133,14 +133,14 @@ void Display_eta_ResolutionForFile(std::vector<TFile*> *v)
   h_MEAN_jet_eta_res_vs_pT->GetYaxis()->SetRangeUser(-0.1, 0.1);
   h_MEAN_jet_eta_res_vs_pT->SetTitle("; b Jet p_{T}^{reco}; b Jet <(#eta^{reco} - #eta^{parton})>");
   h_MEAN_jet_eta_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
-  TF1 *f_MEAN_jet_eta_res_vs_pT=new TF1("f_MEAN_jet_eta_res_vs_pT", "pol0", 40, 600);
+  TF1 *f_MEAN_jet_eta_res_vs_pT=new TF1("f_MEAN_jet_eta_res_vs_pT", "pol0", 40, 700);
   h_MEAN_jet_eta_res_vs_pT->Fit(f_MEAN_jet_eta_res_vs_pT, "R");
   
   TH1D *h_RMS_jet_eta_res_vs_pT=RMSY(h_jet_eta_res_vs_pT);
   h_RMS_jet_eta_res_vs_pT->GetYaxis()->SetRangeUser(0, 0.1);
   h_RMS_jet_eta_res_vs_pT->SetTitle("; b Jet p_{T}^{reco}; b Jet #sigma(#eta^{reco} - #eta^{parton})");
   h_RMS_jet_eta_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
-  TF1 *f_RMS_jet_eta_res_vs_pT=new TF1("f_RMS_jet_eta_res_vs_pT", "[0]+[1]/x", 40, 600);
+  TF1 *f_RMS_jet_eta_res_vs_pT=new TF1("f_RMS_jet_eta_res_vs_pT", "[0]+[1]/x+[2]/(sqrt(x))", 40, 700);
   h_RMS_jet_eta_res_vs_pT->Fit(f_RMS_jet_eta_res_vs_pT, "R");
   
   TCanvas *c_eta_Resolution_pT=new TCanvas("c_eta_Resolution_pT", "c_eta_Resolution_pT", 2100, 700);
@@ -174,7 +174,7 @@ void Display_phi_ResolutionForFile(std::vector<TFile*> *v)
   h_MEAN_jet_phi_res_vs_pT->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet <(#phi^{reco} - #phi^{parton})>");
   h_MEAN_jet_phi_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
   h_MEAN_jet_phi_res_vs_pT->GetXaxis()->SetTitleOffset(1.2);
-  TF1 *f_MEAN_jet_phi_res_vs_pT=new TF1("f_MEAN_jet_phi_res_vs_pT", "pol0", 40, 600);
+  TF1 *f_MEAN_jet_phi_res_vs_pT=new TF1("f_MEAN_jet_phi_res_vs_pT", "pol0", 40, 700);
   h_MEAN_jet_phi_res_vs_pT->Fit(f_MEAN_jet_phi_res_vs_pT, "R");
   
   TH1D *h_RMS_jet_phi_res_vs_pT=RMSY(h_jet_phi_res_vs_pT);
@@ -182,7 +182,7 @@ void Display_phi_ResolutionForFile(std::vector<TFile*> *v)
   h_RMS_jet_phi_res_vs_pT->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet #sigma(#phi^{reco} - #phi^{parton})");
   h_RMS_jet_phi_res_vs_pT->GetYaxis()->SetTitleOffset(1.6);
   h_RMS_jet_phi_res_vs_pT->GetXaxis()->SetTitleOffset(1.2);
-  TF1 *f_RMS_jet_phi_res_vs_pT=new TF1("f_RMS_jet_phi_res_vs_pT", "[0] + [1]/x", 40, 600);
+  TF1 *f_RMS_jet_phi_res_vs_pT=new TF1("f_RMS_jet_phi_res_vs_pT", "[0] + [1]/x + [2]/(sqrt(x))", 40, 700);
   h_RMS_jet_phi_res_vs_pT->Fit(f_RMS_jet_phi_res_vs_pT, "R");
   
   TCanvas *c_phi_Resolution_pT=new TCanvas("c_phi_Resolution_pT", "c_phi_Resolution_pT", 2100, 700);
@@ -205,6 +205,8 @@ void DisplayResolutionBias()
   v_files.push_back(new TFile("ResolutionHistograms_Graviton400GeV.root"));
   v_files.push_back(new TFile("ResolutionHistograms_Graviton600GeV.root"));
   v_files.push_back(new TFile("ResolutionHistograms_Graviton800GeV.root"));
+  v_files.push_back(new TFile("ResolutionHistograms_Graviton1000GeV.root"));
+  v_files.push_back(new TFile("ResolutionHistograms_Graviton1200GeV.root"));
   
   TStyle *myStyle=setTDRStyle();
   myStyle->cd();

@@ -49,9 +49,9 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   h_mX_SR_biasCorrected->Rebin(10);
   h_mX_SR_kinFit->Rebin(10);
   
-  h_mX_SR->GetXaxis()->SetRangeUser(200, 1100);
-  h_mX_SR_biasCorrected->GetXaxis()->SetRangeUser(200, 1100);
-  h_mX_SR_kinFit->GetXaxis()->SetRangeUser(200, 1100);
+  h_mX_SR->GetXaxis()->SetRangeUser(200, 1400);
+  h_mX_SR_biasCorrected->GetXaxis()->SetRangeUser(200, 1400);
+  h_mX_SR_kinFit->GetXaxis()->SetRangeUser(200, 1400);
   
   h_mX_SR->SetLineWidth(2);
   h_mX_SR_biasCorrected->SetLineWidth(2);
@@ -137,7 +137,38 @@ void Display_mH2_ForFile(TFile *f)
   leg->AddEntry(h_H2_mass_biasCorrected, ("Bias Corr. #bar{x}="+ftoa(f_H2_mass_biasCorrected->GetParameter(1))+", #sigma="+ftoa(f_H2_mass_biasCorrected->GetParameter(2))).c_str());
   leg->SetLineColor(0);
   leg->Draw();
-} 
+}
+
+void DisplayXpT_ForFile(TFile *f)
+{
+  TH1F *h_HH_balance=(TH1F*)f->Get("h_HH_balance");
+  TH1F *h_HH_balance_biasCorrected=(TH1F*)f->Get("h_HH_balance_biasCorrected");
+  TH1F *h_HH_balance_kinFit=(TH1F*)f->Get("h_HH_balance_kinFit");
+  
+  h_HH_balance->SetLineColor(kBlue);
+  h_HH_balance_biasCorrected->SetLineColor(kGreen+1);
+  h_HH_balance_kinFit->SetLineColor(kRed);
+  
+  h_HH_balance_kinFit->Rebin(5);
+  h_HH_balance->Rebin(5);
+  h_HH_balance_biasCorrected->Rebin(5);
+  
+  h_HH_balance->GetXaxis()->SetRangeUser(0, 100);
+  h_HH_balance_biasCorrected->GetXaxis()->SetRangeUser(0, 100);
+  h_HH_balance_kinFit->GetXaxis()->SetRangeUser(0, 100);
+  
+  h_HH_balance_kinFit->SetMaximum(h_HH_balance_kinFit->GetMaximum()*1.2);
+  h_HH_balance_kinFit->Draw("hist");
+  h_HH_balance->Draw("hist same");
+  // h_HH_balance_biasCorrected->Draw("hist same");
+  h_HH_balance_kinFit->Draw("hist same");
+  
+  TLegend *leg=new TLegend(0.4, 0.89, 0.89, 0.7);
+  leg->AddEntry(h_HH_balance, ("Nominal balance, #bar{x} = "+ftoa(h_HH_balance->GetMean())+", #sigma = "+ftoa(h_HH_balance->GetRMS())).c_str());
+  leg->AddEntry(h_HH_balance_kinFit, ("Kinematic fit balance, #bar{x} = "+ftoa(h_HH_balance_kinFit->GetMean())+", #sigma = "+ftoa(h_HH_balance_kinFit->GetRMS())).c_str());
+  leg->SetLineColor(0);
+  leg->Draw();
+}
 
 void DisplayKinFit()
 {
@@ -149,11 +180,11 @@ void DisplayKinFit()
   v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
-  // v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton1600GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton2000GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton3000GeV.root"));
-  std::vector <double> mean_gen={260, 270, 300, 400, 600, 800, 1000}; // , 1200, 1600, 2000, 3000};
+  std::vector <double> mean_gen={260, 270, 300, 400, 600, 800, 1000, 1200}; // , 1200, 1600, 2000, 3000};
   
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();
@@ -174,21 +205,21 @@ void DisplayKinFit()
     h_mX_SR_biasCorrected->Rebin(10);
     h_mX_SR_kinFit->Rebin(10);
     
-    TF1 *f_mX_SR=new TF1("f_mX_SR", "gaus", h_mX_SR->GetMean()-(2*h_mX_SR->GetRMS()), h_mX_SR->GetMean()+(2*h_mX_SR->GetRMS()));
+    TF1 *f_mX_SR=new TF1("f_mX_SR", "gaus", h_mX_SR->GetMean()-(1.5*h_mX_SR->GetRMS()), h_mX_SR->GetMean()+(1.5*h_mX_SR->GetRMS()));
     f_mX_SR->SetParLimits(1, h_mX_SR->GetMean()-(3*h_mX_SR->GetRMS()), h_mX_SR->GetMean()+(3*h_mX_SR->GetRMS()));
     f_mX_SR->SetParLimits(2, 0, 3*h_mX_SR->GetRMS());
     std::cout<<"Fitting: "<<mean_gen.at(i)<<" GeV"<<std::endl;
     h_mX_SR->Fit(f_mX_SR, "R");
     std::cout<<"=== ==="<<std::endl;
     
-    TF1 *f_mX_SR_biasCorrected=new TF1("f_mX_SR_biasCorrected", "gaus", h_mX_SR_biasCorrected->GetMean()-(2*h_mX_SR_biasCorrected->GetRMS()), h_mX_SR_biasCorrected->GetMean()+(2*h_mX_SR_biasCorrected->GetRMS()));
+    TF1 *f_mX_SR_biasCorrected=new TF1("f_mX_SR_biasCorrected", "gaus", h_mX_SR_biasCorrected->GetMean()-(1.5*h_mX_SR_biasCorrected->GetRMS()), h_mX_SR_biasCorrected->GetMean()+(1.5*h_mX_SR_biasCorrected->GetRMS()));
     f_mX_SR_biasCorrected->SetParLimits(1, h_mX_SR_biasCorrected->GetMean()-(3*h_mX_SR_biasCorrected->GetRMS()), h_mX_SR_biasCorrected->GetMean()+(3*h_mX_SR_biasCorrected->GetRMS()));
     f_mX_SR_biasCorrected->SetParLimits(2, 0, 3*h_mX_SR_biasCorrected->GetRMS());
     std::cout<<"Fitting: "<<mean_gen.at(i)<<" GeV, bias Corrected"<<std::endl;
     h_mX_SR_biasCorrected->Fit(f_mX_SR_biasCorrected, "R");
     std::cout<<"=== ==="<<std::endl;
     
-    TF1 *f_mX_SR_kinFit=new TF1("f_mX_SR_kinFit", "gaus", h_mX_SR_kinFit->GetMean()-(2*h_mX_SR_kinFit->GetRMS()), h_mX_SR_kinFit->GetMean()+(2*h_mX_SR_kinFit->GetRMS()));
+    TF1 *f_mX_SR_kinFit=new TF1("f_mX_SR_kinFit", "gaus", h_mX_SR_kinFit->GetMean()-(1.5*h_mX_SR_kinFit->GetRMS()), h_mX_SR_kinFit->GetMean()+(1.5*h_mX_SR_kinFit->GetRMS()));
     f_mX_SR_kinFit->SetParLimits(1, h_mX_SR_kinFit->GetMean()-(3*h_mX_SR_kinFit->GetRMS()), h_mX_SR_kinFit->GetMean()+(3*h_mX_SR_kinFit->GetRMS()));
     f_mX_SR_kinFit->SetParLimits(2, 0, 3*h_mX_SR_kinFit->GetRMS());
     std::cout<<"Fitting: "<<mean_gen.at(i)<<" GeV, KinFitted"<<std::endl;
@@ -233,7 +264,7 @@ void DisplayKinFit()
   }
    
   TCanvas *c_KinFit=new TCanvas("c_KinFit", "c_KinFit", 1000, 700);
-  for (unsigned int i=2; i<v_files.size(); ++i)
+  for (unsigned int i=3; i<v_files.size(); ++i)
   {
     DisplayKinFitForFile(v_files.at(i), mean_gen.at(i));
   }
@@ -241,7 +272,7 @@ void DisplayKinFit()
   
   TGraph *g_mean=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(mean.at(0)));
   g_mean->GetYaxis()->SetRangeUser(-100, 100);
-  g_mean->GetXaxis()->SetLimits(300, 1100);
+  g_mean->GetXaxis()->SetLimits(300, 1300);
   g_mean->SetTitle("; m_{X}^{gen} (GeV); m_{X}^{KinFit} - m_{X} (GeV)");
   g_mean->SetMarkerColor(kBlue);
   TGraph *g_meanDiff_biasCorrected = new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(meanDiff_biasCorrected.at(0)));
@@ -252,7 +283,7 @@ void DisplayKinFit()
   g_mean->Draw("A*");
   g_meanDiff_biasCorrected->Draw("SAME*");
   g_meanDiff_kinFit->Draw("SAME*");
-  TF1 *f_meanDiff_kinFit=new TF1("f_meanDiff_kinFit", "pol1", 400, 1000);
+  TF1 *f_meanDiff_kinFit=new TF1("f_meanDiff_kinFit", "pol0", 400, 1200);
   f_meanDiff_kinFit->SetLineColor(kRed); f_meanDiff_kinFit->SetLineWidth(1); f_meanDiff_kinFit->SetLineStyle(7);
   g_meanDiff_kinFit->Fit(f_meanDiff_kinFit, "R");
   TLegend *leg=new TLegend(0.5, 0.7, 0.89, 0.89);
@@ -268,7 +299,7 @@ void DisplayKinFit()
   TGraph *g_sigma=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(sigma.at(0)));
   g_sigma->SetTitle("; m_{X}^{gen} (GeV); #sigma(m_{X})/m_{X}");
   g_sigma->GetYaxis()->SetRangeUser(0., 0.08);
-  g_sigma->GetXaxis()->SetLimits(300, 1100);
+  g_sigma->GetXaxis()->SetLimits(300, 1300);
   TGraph *g_sigma_biasCorrected=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(sigma_biasCorrected.at(0)));
   TGraph *g_sigma_kinFit=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(sigma_kinFit.at(0)));
   TCanvas *c_sigma=new TCanvas("c_sigma", "c_sigma", 700, 700);
@@ -287,5 +318,14 @@ void DisplayKinFit()
   leg->Draw();
   c_sigma->SaveAs("c_sigma.png");
   c_sigma->SaveAs("c_sigma.root");
+  
+  // Display jet pT balance
+  for (unsigned int i=2; i<v_files.size(); ++i)
+  {
+    TCanvas *c_HH_balance=new TCanvas("c_HH_balance", "c_HH_balance", 700, 700);
+    DisplayXpT_ForFile(v_files.at(i));
+    c_HH_balance->SaveAs(("c_HH_balance_"+itoa(mean_gen.at(i))+".png").c_str());
+    delete c_HH_balance;
+  }
   
 }

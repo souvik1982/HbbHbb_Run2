@@ -64,11 +64,11 @@ void DisplaymH1vsmH2()
   v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
-  // v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton1600GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton2000GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton3000GeV.root"));
-  std::vector <double> mean_gen={260, 270, 300, 400, 600, 800, 1000};
+  std::vector <double> mean_gen={260, 270, 300, 400, 600, 800, 1000, 1200};
   
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();
