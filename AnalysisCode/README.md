@@ -12,12 +12,12 @@ this suite described below.
 This takes the Heppy ntuple files as input and extracts the branches required for this analysis. It also only keeps events with the basic preselection criteria: There has to be 3 or more jets with |eta| < 2.5, pT > 40 GeV, and btag-CSV > 0.6. This speeds up our analysis, especially when working with large data samples, considerably.
 
 This is run with the scripts: <br/>
-<ul>
- <li> <pre> source processPreSelection_Graviton.sh </pre> </li>
- <li> <pre> source processPreSelection_ttbar.sh </pre> </li>
- <li> <pre> source processPreSelection_QCD_HT.sh </pre> </li>
- <li> <pre> source processPreSelection_Data.sh </pre> </li>
-</ul>
+<pre> 
+ source processPreSelection_Graviton.sh
+ source processPreSelection_ttbar.sh
+ source processPreSelection_QCD_HT.sh
+ source processPreSelection_Data.sh 
+</pre>
 
 <h3> HbbHbb_MMRSelection.cc </h3>
 
