@@ -29,6 +29,8 @@ We operate it from within the MMRSelection directory with the commands:
 
 <h3> HbbHbb_LMRSelection.cc </h3>
 
+This contains our Low Mass Regime event selection criteria.
+
 We operate it from within the LMRSelection directory with the commands:
 <pre> LMRSelection/root -l processLMRSelection_Graviton.c </pre>
 
@@ -49,11 +51,21 @@ This contains the algorithm for doing the kinematic constraint on the dijet pair
 
 <h3> HbbHbb_Component_SignalPurity.cc </h3>
 
+This contains the algorithm that matches selected reconstructed HH candidate jets to the generator level b quarks from each Higgs. It returns an integer signifying the purity of the reconstructed sample. It is called by HbbHbb_MMRSelection.cc, HbbHbb_LMRSelection.cc and HbbHbb_MeasureResolutionBias.cc.
+
 <h2> 3. Fitting and Plotting Scripts </h2>
 
 <h3> DisplayJetProperties.cc </h3>
 
+Works on Histograms files output by HbbHbb_PreSelection.cc (can also work on output of HbbHbb_MMRSelection.cc, HbbHbb_LMRSelection.cc). Plots jet properties in our events for signal, ttbar, data, etc, like the pT of the first 4 highest pT jets with |eta| < 2.5. It must be run in the same directory where the Histogram files are.
+
+<pre> root -l -b -q DisplayJetProperties.cc++ </pre>
+
 <h3> MeasureResolution/DisplayResolutionBias.cc </h3>
+
+Works on the Histograms files output by HbbHbb_MeasureResolutionBias.cc. Plots the bias and resolution distributions of the relevant jets in the signal samples.
+
+<pre> root -l -b -q MeasureResolution/DisplayResolutionBias.cc++ </pre>
 
 <h3> DisplayKinFit.cc </h3>
 
