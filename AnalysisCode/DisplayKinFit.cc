@@ -87,7 +87,7 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   
 }
 
-void Display_mH1_ForFile(TFile *f)
+void Display_mH1_ForFile(TFile *f, double &mean_H1_biasCorrected, double &sigma_H1_biasCorrected)
 {
   TH1F *h_H1_mass=(TH1F*)f->Get("h_H1_mass");
   TH1F *h_H1_mass_biasCorrected=(TH1F*)f->Get("h_H1_mass_biasCorrected");
@@ -111,9 +111,12 @@ void Display_mH1_ForFile(TFile *f)
   leg->AddEntry(h_H1_mass_biasCorrected, ("Bias Corr. #bar{x}="+ftoa(f_H1_mass_biasCorrected->GetParameter(1))+", #sigma="+ftoa(f_H1_mass_biasCorrected->GetParameter(2))).c_str());
   leg->SetLineColor(0);
   leg->Draw();
+  
+  mean_H1_biasCorrected=f_H1_mass_biasCorrected->GetParameter(1);
+  sigma_H1_biasCorrected=f_H1_mass_biasCorrected->GetParameter(2);
 }
 
-void Display_mH2_ForFile(TFile *f)
+void Display_mH2_ForFile(TFile *f, double &mean_H2_biasCorrected, double &sigma_H2_biasCorrected)
 {
   TH1F *h_H2_mass=(TH1F*)f->Get("h_H2_mass");
   TH1F *h_H2_mass_biasCorrected=(TH1F*)f->Get("h_H2_mass_biasCorrected");
@@ -137,6 +140,9 @@ void Display_mH2_ForFile(TFile *f)
   leg->AddEntry(h_H2_mass_biasCorrected, ("Bias Corr. #bar{x}="+ftoa(f_H2_mass_biasCorrected->GetParameter(1))+", #sigma="+ftoa(f_H2_mass_biasCorrected->GetParameter(2))).c_str());
   leg->SetLineColor(0);
   leg->Draw();
+  
+  mean_H2_biasCorrected=f_H2_mass_biasCorrected->GetParameter(1);
+  sigma_H2_biasCorrected=f_H2_mass_biasCorrected->GetParameter(2);
 }
 
 void DisplayXpT_ForFile(TFile *f)
@@ -250,19 +256,54 @@ void DisplayKinFit()
     delete h_mX_SR_kinFit;
   }
   
-  for (unsigned int i=2; i<v_files.size(); ++i)
+  std::vector<double> v_mean_H1_biasCorrected, v_sigma_H1_biasCorrected;
+  std::vector<double> v_mean_H2_biasCorrected, v_sigma_H2_biasCorrected;
+  for (unsigned int i=dontwant; i<v_files.size(); ++i)
   {
     TCanvas *c_mH1=new TCanvas("c_mH1", "c_mH1", 700, 700);
-    Display_mH1_ForFile(v_files.at(i));
+    double mean_H1_biasCorrected, sigma_H1_biasCorrected;
+    Display_mH1_ForFile(v_files.at(i), mean_H1_biasCorrected, sigma_H1_biasCorrected);
     c_mH1->SaveAs(("c_mH1_"+itoa(mean_gen.at(i))+".png").c_str());
     delete c_mH1;
+    v_mean_H1_biasCorrected.push_back(mean_H1_biasCorrected);
+    v_sigma_H1_biasCorrected.push_back(sigma_H1_biasCorrected);
     
     TCanvas *c_mH2=new TCanvas("c_mH2", "c_mH2", 700, 700);
-    Display_mH2_ForFile(v_files.at(i));
+    double mean_H2_biasCorrected, sigma_H2_biasCorrected;
+    Display_mH2_ForFile(v_files.at(i), mean_H2_biasCorrected, sigma_H2_biasCorrected);
     c_mH2->SaveAs(("c_mH2_"+itoa(mean_gen.at(i))+".png").c_str());
     delete c_mH2;
+    v_mean_H2_biasCorrected.push_back(mean_H2_biasCorrected);
+    v_sigma_H2_biasCorrected.push_back(sigma_H2_biasCorrected);
   }
-   
+  TGraph *g_mean_H1_biasCorrected=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_mean_H1_biasCorrected.at(0)));
+  TGraph *g_sigma_H1_biasCorrected=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_sigma_H1_biasCorrected.at(0)));
+  TGraph *g_mean_H2_biasCorrected=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_mean_H2_biasCorrected.at(0)));
+  TGraph *g_sigma_H2_biasCorrected=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_sigma_H2_biasCorrected.at(0)));
+  g_mean_H1_biasCorrected->SetTitle("; m_{X}^{gen} (GeV); <m_{H1}>");
+  g_sigma_H1_biasCorrected->SetTitle("; m_{X}^{gen} (GeV); #sigma(m_{H1})");
+  g_mean_H2_biasCorrected->SetTitle("; m_{X}^{gen} (GeV); <m_{H2}>");
+  g_sigma_H2_biasCorrected->SetTitle("; m_{X}^{gen} (GeV); #sigma(m_{H1})");
+  TF1 *f_mean_H1_biasCorrected=new TF1("f_mean_H1_biasCorrected", "pol0", 400, 1200);
+  TF1 *f_sigma_H1_biasCorrected=new TF1("f_sigma_H1_biasCorrected", "pol0", 400, 1200);
+  TF1 *f_mean_H2_biasCorrected=new TF1("f_mean_H2_biasCorrected", "pol0", 400, 1200);
+  TF1 *f_sigma_H2_biasCorrected=new TF1("f_sigma_H2_biasCorrected", "pol0", 400, 1200);
+  g_mean_H1_biasCorrected->Fit(f_mean_H1_biasCorrected, "R");
+  g_sigma_H1_biasCorrected->Fit(f_sigma_H1_biasCorrected, "R");
+  g_mean_H2_biasCorrected->Fit(f_mean_H2_biasCorrected, "R");
+  g_sigma_H2_biasCorrected->Fit(f_sigma_H2_biasCorrected, "R");
+  TCanvas *c_H1H2_meanSigma=new TCanvas("c_H1H2_meanSigma", "c_H1H2_meanSigma", 700, 700);
+  c_H1H2_meanSigma->Divide(2,2);
+  c_H1H2_meanSigma->cd(1);
+  g_mean_H1_biasCorrected->Draw("A*");
+  c_H1H2_meanSigma->cd(2);
+  g_sigma_H1_biasCorrected->Draw("A*");
+  c_H1H2_meanSigma->cd(3);
+  g_mean_H2_biasCorrected->Draw("A*");
+  c_H1H2_meanSigma->cd(4);
+  g_sigma_H2_biasCorrected->Draw("A*");
+  c_H1H2_meanSigma->SaveAs("c_H1H2_meanSigma.png");
+  
   TCanvas *c_KinFit=new TCanvas("c_KinFit", "c_KinFit", 1000, 700);
   for (unsigned int i=3; i<v_files.size(); ++i)
   {
