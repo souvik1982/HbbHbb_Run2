@@ -7,29 +7,29 @@
 
 #include <iostream>
 
-double ErrEt_Signal(double ET, double eta)
+double ErrpT_Signal(double pT, double eta)
 {
   double sigmapT=0;
   if (fabs(eta)<1.4)
   {
-    sigmapT = 18.5 + 0.042 * ET;
+    sigmapT = 25 + 0.0017*pT + 0.00009*pT*pT;
   }
   else
   {
-    sigmapT = 18 + 0.037 * ET;
+    sigmapT = 19.9 + 0.045 * pT;
   }
   return sigmapT*sigmapT;
 }
 
-double ErrEta_Signal(double ET)
+double ErrEta_Signal(double pT)
 {
-  double sigmaEta = 0.024 + (2.91/ET);
+  double sigmaEta = 0.034 + (4.20/pT) + (-0.23/pow(pT,0.5));
   return sigmaEta*sigmaEta;
 }
 
-double ErrPhi_Signal(double ET)
+double ErrPhi_Signal(double pT)
 {
-  double sigmaPhi=0.029 + (2.71/ET);
+  double sigmaPhi = 0.043 + (4.76/pT) + (-0.35/pow(pT,0.5));
   return sigmaPhi*sigmaPhi;
 }
 
@@ -40,11 +40,11 @@ TLorentzVector biasEt_signal(TLorentzVector j)
   double newpT=-1;
   if (fabs(eta)<1.4)
   {
-    newpT = pT - (-14.6 + 0.016*pT + 0.00016*pT*pT);
+    newpT = pT - (-17.6 + 0.03*pT + 0.00009*pT*pT);
   }
   else
   {
-    newpT = pT - (-12.6 - 0.0039*pT + 0.00024*pT*pT);
+    newpT = pT - (-15.4 - 0.02*pT + 0.0001*pT*pT);
   }
   
   TLorentzVector jNew;
@@ -66,19 +66,19 @@ double constrainHH_signalMeasurement(TLorentzVector *j1, TLorentzVector *j2, TLo
   m4.Zero();
   
   // Dependence of the covariance matrix on Et and eta
-  m1(0,0) = ErrEt_Signal(j1->Et(), j1->Eta());
+  m1(0,0) = ErrpT_Signal(j1->Et(), j1->Eta());
   m1(1,1) = ErrEta_Signal(j1->Et());
   m1(2,2) = ErrPhi_Signal(j1->Et());
   
-  m2(0,0) = ErrEt_Signal(j2->Et(), j2->Eta());
+  m2(0,0) = ErrpT_Signal(j2->Et(), j2->Eta());
   m2(1,1) = ErrEta_Signal(j2->Et());
   m2(2,2) = ErrPhi_Signal(j2->Et());
   
-  m3(0,0) = ErrEt_Signal(j3->Et(), j3->Eta());
+  m3(0,0) = ErrpT_Signal(j3->Et(), j3->Eta());
   m3(1,1) = ErrEta_Signal(j3->Et());
   m3(2,2) = ErrPhi_Signal(j3->Et());
   
-  m4(0,0) = ErrEt_Signal(j4->Et(), j4->Eta());
+  m4(0,0) = ErrpT_Signal(j4->Et(), j4->Eta());
   m4(1,1) = ErrEta_Signal(j4->Et());
   m4(2,2) = ErrPhi_Signal(j4->Et());
   

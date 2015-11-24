@@ -116,7 +116,7 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
 
   // Book histograms
   TH2F *h_jet_pT_res_vs_pT = new TH2F("h_jet_pT_res_vs_pT", "; p_{T}^{reco} (GeV); b Jet p_{T}^{reco} - p_{T}^{part} (GeV)", 100, 0., 1000., 100, -200., 200.);
-  TH2F *h_jet_pT_res_vs_pT_eta_0_1p4 = new TH2F("h_jet_pT_res_vs_pT_eta_0_1p4", "; p_{T}^{reco} (GeV); b Jet p_{T}^{reco} - p_{T}^{part} (GeV)", 100, 0., 1000., 100, -200., 200.);
+  TH2F *h_jet_pT_res_vs_pT_eta_0_1p4 = new TH2F("h_jet_pT_res_vs_pT_eta_0_1p4", "; p_{T}^{reco} (GeV); b Jet p_{T}^{reco} - p_{T}^{part} (GeV)", 100, 0., 1000., 200, -400., 400.);
   TH2F *h_jet_pT_res_vs_pT_eta_1p4_2p5 = new TH2F("h_jet_pT_res_vs_pT_eta_1p4_2p5", "; p_{T}^{reco} (GeV); Jet p_{T}^{reco} - p_{T}^{part} (GeV)", 100, 0., 1000., 100, -200., 200.);
   TH2F *h_jet_pT_res_vs_eta = new TH2F("h_jet_pT_res_vs_eta", "; #eta; b Jet p_{T}^{reco} - p_{T}^{part}", 100, 0., 2.5, 100, -200., 200.);
   TH2F *h_jet_eta_res_vs_pT = new TH2F("h_jet_eta_res_vs_pT", "; p_{T}; b Jet #eta^{reco} - #eta^{part}", 100, 0., 1000., 100, -2.5, 2.5);                    
@@ -258,14 +258,14 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
         }
         
         // Smear the generated 4 vector
-        TLorentzVector b1_smeared_p4=asymmetricGaussianSmear(b1_p4, 5, 25);
+        /*TLorentzVector b1_smeared_p4=asymmetricGaussianSmear(b1_p4, 5, 25);
         TLorentzVector b2_smeared_p4=asymmetricGaussianSmear(b2_p4, 5, 25);
         TLorentzVector b3_smeared_p4=asymmetricGaussianSmear(b3_p4, 5, 25);
         TLorentzVector b4_smeared_p4=asymmetricGaussianSmear(b4_p4, 5, 25);
         double chi2=constrainHH_check(&b1_smeared_p4, &b2_smeared_p4, &b3_smeared_p4, &b4_smeared_p4);
         mX_genForKinFitCheck=(b1_smeared_p4+b2_smeared_p4+b3_smeared_p4+b4_smeared_p4).M();
         
-        h_mX_genForKinFitCheck->Fill(mX_genForKinFitCheck, eventWeight);
+        h_mX_genForKinFitCheck->Fill(mX_genForKinFitCheck, eventWeight);*/
       }
       else
       {
