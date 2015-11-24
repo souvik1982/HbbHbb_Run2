@@ -111,7 +111,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   
   // Get the h_Cuts histogram
   std::string histfilename="Histograms_"+sample+".root";
-  gSystem->Exec(("cp "+histfilename+" "+histfilename).c_str());
+  gSystem->Exec(("cp ../"+histfilename+" "+histfilename).c_str());
   TFile *tFile1=new TFile((histfilename).c_str(), "READ");
   TH1F h_Cuts=*((TH1F*)((TH1F*)tFile1->Get("h_Cuts"))->Clone("h_Cuts"));
   tFile1->Close();

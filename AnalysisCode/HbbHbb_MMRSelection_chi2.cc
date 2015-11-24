@@ -111,6 +111,8 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
   {
     tree->GetEvent(i);
     
+    if (jetIndex_CentralpT40btag_pTOrder->size()<4) continue; // Don't do this for 3 btag CR.
+    
     bool foundHH=false;
     double chi2_old=100;
     int H1jet1_i=-1, H1jet2_i=-1;
@@ -148,7 +150,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
                   double mH1=std::max(diJet1_p4.M(),diJet2_p4.M());
                   double mH2=std::min(diJet1_p4.M(),diJet2_p4.M());
                   
-                  double chi2=pow((mH1-mean_H1_mass)/sigma_H1_mass, 2)+pow((mH2-mean_H2_mass)/sigma_H2_mass, 2);
+                  double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   
                   if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
                   {
@@ -219,11 +221,13 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
       h_H2_pT_biasCorrected->Fill(pTH2_biasCorrected, eventWeight);
       h_mH1_mH2_asym_biasCorrected->Fill((pTH1_biasCorrected>pTH2_biasCorrected)?mH1_biasCorrected:mH2_biasCorrected, (pTH1_biasCorrected>pTH2_biasCorrected)?mH2_biasCorrected:mH1_biasCorrected, eventWeight);
       
+      /* // The correct place for this. But kinFit has to be speeded up.
       // Apply kinematic constraint
       // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
       double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
       h_kinFitchi2->Fill(kinFitchi2, eventWeight);
       TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
+      */
       
       // Check purity of jet selection here  // FIX THIS to check against kin fit reco jets.
       TLorentzVector b1_p4;
@@ -256,6 +260,12 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
       if (chi_biasCorrected<=1)                                                                        // Signal Region
       {
         nCut5+=eventWeight;
+        
+        // Apply kinematic constraint
+        // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
+        double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        h_kinFitchi2->Fill(kinFitchi2, eventWeight);
+        TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
         
         h_mX_SR->Fill(X_p4.M(), eventWeight);
         h_mX_SR_biasCorrected->Fill(X_p4_biasCorrected.M(), eventWeight);
@@ -302,9 +312,14 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
       }
       else if (1<chi_biasCorrected && chi_biasCorrected<2 && oppSign<0)                                   // Sideband Region
       {
+        // Apply kinematic constraint
+        // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
+        double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
+        
         h_mX_SB->Fill(X_p4.M(), eventWeight);
         h_mX_SB_biasCorrected->Fill(X_p4_biasCorrected.M(), eventWeight);
-        h_mX_SB_kinFit->Fill(X_p4_kinFit, eventWeight);
+        h_mX_SB_kinFit->Fill(X_p4_kinFit.M(), eventWeight);
       }
       
     }
