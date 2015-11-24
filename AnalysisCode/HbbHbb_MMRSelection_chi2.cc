@@ -72,6 +72,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
   TH2F *h_mH1_mH2_asym_biasCorrected = new TH2F("h_mH1_mH2_asym_biasCorrected", "; m_{H1} (GeV); m_{H2} (GeV)", 50, 50., 200., 50, 50., 200.);
   
   TH1F *h_GenX_pT = new TH1F("h_GenX_pT", "; (#vec{p}_{H1} + #vec{p}_{H2})_{T} GeV", 200, 0., 800.);
+  TH1F *h_kinFitchi2=new TH1F("h_kinFitchi2", "; Event 4 jet kinematic #chi^2", 200, 0., 10.);
   TH1F *h_chi=new TH1F("h_chi", "; HH #chi", 200, 0, 10);
   TH1F *h_chi_biasCorrected=new TH1F("h_chi_biasCorrected", "; HH #chi", 200, 0, 10);
   
@@ -221,6 +222,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
       // Apply kinematic constraint
       // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
       double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+      h_kinFitchi2->Fill(kinFitchi2, eventWeight);
       TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
       
       // Check purity of jet selection here  // FIX THIS to check against kin fit reco jets.
@@ -326,6 +328,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
   h_HH_balance_biasCorrected->Write();
   h_mH1_mH2_asym_biasCorrected->Write();
   h_GenX_pT->Write();
+  h_kinFitchi2->Write();
   h_chi->Write();
   h_chi_biasCorrected->Write();
   h_mX_SR->Write();
@@ -372,6 +375,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
   delete h_HH_balance_biasCorrected;
   delete h_mH1_mH2_asym_biasCorrected;
   delete h_GenX_pT;
+  delete h_kinFitchi2;
   delete h_chi;
   delete h_chi_biasCorrected;
   delete h_mX_SR;
