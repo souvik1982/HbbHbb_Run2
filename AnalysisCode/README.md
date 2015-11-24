@@ -5,7 +5,7 @@
 This package works on Heppy ntuples. There are two main sorts of programs in
 this suite described below.
 
-<h2> Analyzers </h2>
+<h2> 1. Analyzers </h2>
 
 <h3> HbbHbb_PreSelection.cc </h3>
 
@@ -36,7 +36,7 @@ We operate it from within the MMRSelection directory with the commands:
 
 <h3> HbbHbb_Component_SignalPurity.cc </h3>
 
-<h2> Fitting and Plotting Scripts </h2>
+<h2> 2. Fitting and Plotting Scripts </h2>
 
 <h3> DisplayJetProperties.cc </h3>
 
