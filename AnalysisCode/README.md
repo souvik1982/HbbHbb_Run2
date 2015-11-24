@@ -1,6 +1,6 @@
 <h1> Code structure of HbbHbb_Run2 </h1>
 
-- Souvik Das 2015 -
+Souvik Das, Nov 2015
 
 This package works on Heppy ntuples. There are two main sorts of programs in
 this suite described below.
@@ -25,7 +25,7 @@ This takes ntuples produced by HbbHbb_PreSelection.cc. It contains our Medium Ma
 
 We operate it from within the MMRSelection directory with the commands:
 <ul>
-  <li> processMMRSelection_Graviton.c </li>
+  <li> MMRSelection/processMMRSelection_Graviton.c </li>
 </ul>
 
 <h3> HbbHbb_LMRSelection.cc </h3>
