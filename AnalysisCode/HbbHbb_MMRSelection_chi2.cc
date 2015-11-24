@@ -57,19 +57,19 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));
 
   // Book histograms
-  TH1F *h_H1_mass = new TH1F("h_H1_mass", "H1 mass; mass (GeV)", 50, 50., 200.);
-  TH1F *h_H1_pT = new TH1F("h_H1_pT", "H1 p_{T}; p_{T} (GeV/c)", 50, 0., 800.);
-  TH1F *h_H2_mass = new TH1F("h_H2_mass", "H2 mass; mass (GeV)", 50, 50., 200.);
-  TH1F *h_H2_pT = new TH1F("h_H2_pT", "H2 p_{T}; p_{T} (GeV/c)", 50, 0., 800.);
+  TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 300, 0., 300.);
+  TH1F *h_H1_pT = new TH1F("h_H1_pT", "; H1 p_{T} (GeV/c)", 800, 0., 800.);
+  TH1F *h_H2_mass = new TH1F("h_H2_mass", "; m_{H2} (GeV)", 300, 0., 300.);
+  TH1F *h_H2_pT = new TH1F("h_H2_pT", "; H2 p_{T} (GeV/c)", 800, 0., 800.);
   TH1F *h_HH_balance = new TH1F("h_HH_balance", "; (#vec{p}_{H1} + #vec{p}_{H2} - #vec{p}_{X}^{gen})_{T} GeV", 200, 0, 200.);
-  TH2F *h_mH1_mH2_asym = new TH2F("h_mH1_mH2_asym", "; m_{H1} (GeV); m_{H2} (GeV)", 50, 50., 200., 50, 50., 200.);
+  TH2F *h_mH1_mH2_asym = new TH2F("h_mH1_mH2_asym", "; m_{H1} (GeV); m_{H2} (GeV)", 300, 0., 300., 300, 0., 300.);
   
-  TH1F *h_H1_mass_biasCorrected = new TH1F("h_H1_mass_biasCorrected", "H1 mass; mass (GeV)", 50, 50., 200.);
-  TH1F *h_H1_pT_biasCorrected = new TH1F("h_H1_pT_biasCorrected", "H1 p_{T}; p_{T} (GeV/c)", 50, 0., 800.);
-  TH1F *h_H2_mass_biasCorrected = new TH1F("h_H2_mass_biasCorrected", "H2 mass; mass (GeV)", 50, 50., 200.);
-  TH1F *h_H2_pT_biasCorrected = new TH1F("h_H2_pT_biasCorrected", "H2 p_{T}; p_{T} (GeV/c)", 50, 0., 800.);
+  TH1F *h_H1_mass_biasCorrected = new TH1F("h_H1_mass_biasCorrected", "; Bias Corrected m_{H1} (GeV)", 300, 0., 300.);
+  TH1F *h_H1_pT_biasCorrected = new TH1F("h_H1_pT_biasCorrected", "; H1 p_{T} (GeV/c)", 800, 0., 800.);
+  TH1F *h_H2_mass_biasCorrected = new TH1F("h_H2_mass_biasCorrected", "; Bias Corrected m_{H2} (GeV)", 800, 0., 400.);
+  TH1F *h_H2_pT_biasCorrected = new TH1F("h_H2_pT_biasCorrected", "; H2 p_{T} (GeV/c)", 300, 0., 300.);
   TH1F *h_HH_balance_biasCorrected = new TH1F("h_HH_balance_biasCorrected", "; (#vec{p}_{H1} + #vec{p}_{H2} - #vec{p}_{X}^{gen})_{T} GeV", 200, 0, 200.);
-  TH2F *h_mH1_mH2_asym_biasCorrected = new TH2F("h_mH1_mH2_asym_biasCorrected", "; m_{H1} (GeV); m_{H2} (GeV)", 50, 50., 200., 50, 50., 200.);
+  TH2F *h_mH1_mH2_asym_biasCorrected = new TH2F("h_mH1_mH2_asym_biasCorrected", "; m_{H1} (GeV); m_{H2} (GeV)", 300, 0., 300., 300, 0., 300.);
   
   TH1F *h_GenX_pT = new TH1F("h_GenX_pT", "; (#vec{p}_{H1} + #vec{p}_{H2})_{T} GeV", 200, 0., 800.);
   TH1F *h_kinFitchi2=new TH1F("h_kinFitchi2", "; Event 4 jet kinematic #chi^2", 200, 0., 10.);
@@ -114,7 +114,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
     if (jetIndex_CentralpT40btag_pTOrder->size()<4) continue; // Don't do this for 3 btag CR.
     
     bool foundHH=false;
-    double chi2_old=100;
+    double chi2_old=100.;
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
     for (unsigned int j=0; j<jetIndex_CentralpT40btag_pTOrder->size(); ++j)

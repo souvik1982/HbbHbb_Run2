@@ -47,6 +47,7 @@ void DisplayHistogram_forFile(TFile *file, std::string histogramName, int color)
   h->Scale(1./h->GetSumOfWeights());
   h->SetLineColor(color);
   h->SetLineWidth(2);
+  h->GetXaxis()->SetRangeUser(50, 200);
   if (first)
   {
     h->SetMaximum(h->GetMaximum()*1.2);

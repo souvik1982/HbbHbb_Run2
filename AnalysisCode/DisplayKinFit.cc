@@ -87,7 +87,7 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   
 }
 
-void Display_mH1_ForFile(TFile *f, double &mean_H1_biasCorrected, double &sigma_H1_biasCorrected)
+void Display_mH1_ForFile(TFile *f, double &mean_H1, double &sigma_H1)
 {
   TH1F *h_H1_mass=(TH1F*)f->Get("h_H1_mass");
   TH1F *h_H1_mass_biasCorrected=(TH1F*)f->Get("h_H1_mass_biasCorrected");
@@ -112,11 +112,11 @@ void Display_mH1_ForFile(TFile *f, double &mean_H1_biasCorrected, double &sigma_
   leg->SetLineColor(0);
   leg->Draw();
   
-  mean_H1_biasCorrected=f_H1_mass_biasCorrected->GetParameter(1);
-  sigma_H1_biasCorrected=f_H1_mass_biasCorrected->GetParameter(2);
+  mean_H1=f_H1_mass->GetParameter(1);
+  sigma_H1=f_H1_mass->GetParameter(2);
 }
 
-void Display_mH2_ForFile(TFile *f, double &mean_H2_biasCorrected, double &sigma_H2_biasCorrected)
+void Display_mH2_ForFile(TFile *f, double &mean_H2, double &sigma_H2)
 {
   TH1F *h_H2_mass=(TH1F*)f->Get("h_H2_mass");
   TH1F *h_H2_mass_biasCorrected=(TH1F*)f->Get("h_H2_mass_biasCorrected");
@@ -141,8 +141,8 @@ void Display_mH2_ForFile(TFile *f, double &mean_H2_biasCorrected, double &sigma_
   leg->SetLineColor(0);
   leg->Draw();
   
-  mean_H2_biasCorrected=f_H2_mass_biasCorrected->GetParameter(1);
-  sigma_H2_biasCorrected=f_H2_mass_biasCorrected->GetParameter(2);
+  mean_H2=f_H2_mass->GetParameter(1);
+  sigma_H2=f_H2_mass->GetParameter(2);
 }
 
 void DisplayXpT_ForFile(TFile *f)
