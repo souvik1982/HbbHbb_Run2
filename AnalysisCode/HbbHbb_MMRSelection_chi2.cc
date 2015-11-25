@@ -12,10 +12,17 @@
 #include "HbbHbb_Component_SignalPurity.cc"
 #include "HbbHbb_Component_KinFit.cc"
 
-double mean_H1_mass_=132;
-double sigma_H1_mass_=12;
-double mean_H2_mass_=128;
-double sigma_H2_mass_=13;
+double mean_H1_mass_=124;
+double sigma_H1_mass_=15; // 12;
+double mean_H2_mass_=117;
+double sigma_H2_mass_=20; // 13;
+
+/* to check against existing selection
+double mean_H1_mass_=125;
+double sigma_H1_mass_=17.5;
+double mean_H2_mass_=125;
+double sigma_H2_mass_=17.5;
+*/
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
@@ -66,15 +73,15 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
   
   TH1F *h_H1_mass_biasCorrected = new TH1F("h_H1_mass_biasCorrected", "; Bias Corrected m_{H1} (GeV)", 300, 0., 300.);
   TH1F *h_H1_pT_biasCorrected = new TH1F("h_H1_pT_biasCorrected", "; H1 p_{T} (GeV/c)", 800, 0., 800.);
-  TH1F *h_H2_mass_biasCorrected = new TH1F("h_H2_mass_biasCorrected", "; Bias Corrected m_{H2} (GeV)", 800, 0., 400.);
-  TH1F *h_H2_pT_biasCorrected = new TH1F("h_H2_pT_biasCorrected", "; H2 p_{T} (GeV/c)", 300, 0., 300.);
+  TH1F *h_H2_mass_biasCorrected = new TH1F("h_H2_mass_biasCorrected", "; Bias Corrected m_{H2} (GeV)", 300, 0., 300.);
+  TH1F *h_H2_pT_biasCorrected = new TH1F("h_H2_pT_biasCorrected", "; H2 p_{T} (GeV/c)", 800, 0., 800.);
   TH1F *h_HH_balance_biasCorrected = new TH1F("h_HH_balance_biasCorrected", "; (#vec{p}_{H1} + #vec{p}_{H2} - #vec{p}_{X}^{gen})_{T} GeV", 200, 0, 200.);
   TH2F *h_mH1_mH2_asym_biasCorrected = new TH2F("h_mH1_mH2_asym_biasCorrected", "; m_{H1} (GeV); m_{H2} (GeV)", 300, 0., 300., 300, 0., 300.);
   
   TH1F *h_GenX_pT = new TH1F("h_GenX_pT", "; (#vec{p}_{H1} + #vec{p}_{H2})_{T} GeV", 200, 0., 800.);
   TH1F *h_kinFitchi2=new TH1F("h_kinFitchi2", "; Event 4 jet kinematic #chi^2", 200, 0., 10.);
-  TH1F *h_chi=new TH1F("h_chi", "; HH #chi", 200, 0, 10);
-  TH1F *h_chi_biasCorrected=new TH1F("h_chi_biasCorrected", "; HH #chi", 200, 0, 10);
+  TH1F *h_chi=new TH1F("h_chi", "; HH #chi", 100, 0, 100);
+  TH1F *h_chi_biasCorrected=new TH1F("h_chi_biasCorrected", "; HH #chi", 100, 0, 100);
   
   TH1F *h_mX_SR         = new TH1F("h_mX_SR", "; m_{X} (GeV)", 2000, 0., 2000.);          h_mX_SR->Sumw2();
   TH1F *h_mX_SR_biasCorrected = new TH1F("h_mX_SR_biasCorrected", "; m_{X} (GeV)", 2000, 0., 2000.); h_mX_SR_biasCorrected->Sumw2();
@@ -114,7 +121,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
     if (jetIndex_CentralpT40btag_pTOrder->size()<4) continue; // Don't do this for 3 btag CR.
     
     bool foundHH=false;
-    double chi2_old=100.;
+    double chi2_old=200.;
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
     for (unsigned int j=0; j<jetIndex_CentralpT40btag_pTOrder->size(); ++j)
@@ -147,8 +154,8 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
                   double deltaR1=jet1_p4.DeltaR(jet2_p4);
                   double deltaR2=jet3_p4.DeltaR(jet4_p4);
                   
-                  double mH1=std::max(diJet1_p4.M(),diJet2_p4.M());
-                  double mH2=std::min(diJet1_p4.M(),diJet2_p4.M());
+                  double mH1=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet1_p4.M():diJet2_p4.M();
+                  double mH2=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet2_p4.M():diJet1_p4.M();
                   
                   double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   
@@ -173,7 +180,8 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
     {
       nCut4+=eventWeight;
       
-      h_chi->Fill(pow(chi2_old, 0.5), eventWeight);
+      double chi=pow(chi2_old, 0.5);
+      h_chi->Fill(chi, eventWeight);
 	    
       TLorentzVector jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
 	    TLorentzVector jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
@@ -202,6 +210,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
       h_mH1_mH2_asym->Fill((pTH1>pTH2)?mH1:mH2, (pTH1>pTH2)?mH2:mH1, eventWeight);
       
       // Apply bias correction
+      // It does not narrow the mH distributions, so we do not need this other than for seeing the distributions -- the kinematic fitter does this.
       TLorentzVector jet1_p4_biasCorrected=biasEt_signal(jet1_p4);
       TLorentzVector jet2_p4_biasCorrected=biasEt_signal(jet2_p4);
       TLorentzVector jet3_p4_biasCorrected=biasEt_signal(jet3_p4);
@@ -254,10 +263,8 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
         }
       }
       
-      double chi_biasCorrected=pow(pow((mH1_biasCorrected-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2_biasCorrected-mean_H2_mass_)/sigma_H2_mass_, 2), 0.5);
-      double oppSign=(mH1_biasCorrected-mean_H1_mass_)*(mH2_biasCorrected-mean_H2_mass_);
-      h_chi_biasCorrected->Fill(chi_biasCorrected, eventWeight);
-      if (chi_biasCorrected<=1)                                                                        // Signal Region
+      double oppSign=(mH1-mean_H1_mass_)*(mH2-mean_H2_mass_);
+      if (chi<=1)                                                                        // Signal Region
       {
         nCut5+=eventWeight;
         
@@ -310,7 +317,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
           h_HH_balance_kinFit->Fill((X_p4_kinFit - gen_X_p4).Pt(), eventWeight);
         } 
       }
-      else if (1<chi_biasCorrected && chi_biasCorrected<2 && oppSign<0)                                   // Sideband Region
+      else if (1<chi && chi<2 && oppSign<0)                                   // Sideband Region
       {
         // Apply kinematic constraint
         // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
@@ -373,7 +380,6 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
 
   std::cout<<"=== Cut Efficiencies === "<<std::endl;
   std::cout<<"Number of events after finding HH candidate (btag && pT>40 GeV && |eta|<2.5)  = "<<nCut4<<std::endl;
-  std::cout<<"Number of matched events "<<nCutGen<<std::endl;
   std::cout<<"Number of events in SR = "<<nCut5<<std::endl;
   std::cout<<"========================"<<std::endl;
   
