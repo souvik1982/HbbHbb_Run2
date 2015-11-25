@@ -95,6 +95,12 @@ void Display_mH1_ForFile(TFile *f, double &mean_H1, double &sigma_H1)
   TF1 *f_H1_mass=new TF1("f_H1_mass", "gaus", h_H1_mass->GetMean()-1*h_H1_mass->GetRMS(), h_H1_mass->GetMean()+1*h_H1_mass->GetRMS());
   TF1 *f_H1_mass_biasCorrected=new TF1("f_H1_mass_biasCorrected", "gaus", h_H1_mass_biasCorrected->GetMean()-1*h_H1_mass_biasCorrected->GetRMS(), h_H1_mass_biasCorrected->GetMean()+1*h_H1_mass_biasCorrected->GetRMS());
   
+  h_H1_mass->Rebin(2);
+  h_H1_mass_biasCorrected->Rebin(2);
+  
+  h_H1_mass->GetXaxis()->SetRangeUser(50, 200);
+  h_H1_mass_biasCorrected->GetXaxis()->SetRangeUser(50, 200);
+  
   h_H1_mass->Fit(f_H1_mass, "R");
   h_H1_mass_biasCorrected->Fit(f_H1_mass_biasCorrected, "R");
   
@@ -123,6 +129,12 @@ void Display_mH2_ForFile(TFile *f, double &mean_H2, double &sigma_H2)
   
   TF1 *f_H2_mass=new TF1("f_H2_mass", "gaus", h_H2_mass->GetMean()-1*h_H2_mass->GetRMS(), h_H2_mass->GetMean()+1*h_H2_mass->GetRMS());
   TF1 *f_H2_mass_biasCorrected=new TF1("f_H2_mass_biasCorrected", "gaus", h_H2_mass_biasCorrected->GetMean()-1*h_H2_mass_biasCorrected->GetRMS(), h_H2_mass_biasCorrected->GetMean()+1*h_H2_mass_biasCorrected->GetRMS());
+  
+  h_H2_mass->Rebin(2);
+  h_H2_mass_biasCorrected->Rebin(2);
+  
+  h_H2_mass->GetXaxis()->SetRangeUser(50, 200);
+  h_H2_mass_biasCorrected->GetXaxis()->SetRangeUser(50, 200);
   
   h_H2_mass->Fit(f_H2_mass, "R");
   h_H2_mass_biasCorrected->Fit(f_H2_mass_biasCorrected, "R");
@@ -256,52 +268,52 @@ void DisplayKinFit()
     delete h_mX_SR_kinFit;
   }
   
-  std::vector<double> v_mean_H1_biasCorrected, v_sigma_H1_biasCorrected;
-  std::vector<double> v_mean_H2_biasCorrected, v_sigma_H2_biasCorrected;
+  std::vector<double> v_mean_H1, v_sigma_H1;
+  std::vector<double> v_mean_H2, v_sigma_H2;
   for (unsigned int i=dontwant; i<v_files.size(); ++i)
   {
     TCanvas *c_mH1=new TCanvas("c_mH1", "c_mH1", 700, 700);
-    double mean_H1_biasCorrected, sigma_H1_biasCorrected;
-    Display_mH1_ForFile(v_files.at(i), mean_H1_biasCorrected, sigma_H1_biasCorrected);
+    double mean_H1, sigma_H1;
+    Display_mH1_ForFile(v_files.at(i), mean_H1, sigma_H1);
     c_mH1->SaveAs(("c_mH1_"+itoa(mean_gen.at(i))+".png").c_str());
     delete c_mH1;
-    v_mean_H1_biasCorrected.push_back(mean_H1_biasCorrected);
-    v_sigma_H1_biasCorrected.push_back(sigma_H1_biasCorrected);
+    v_mean_H1.push_back(mean_H1);
+    v_sigma_H1.push_back(sigma_H1);
     
     TCanvas *c_mH2=new TCanvas("c_mH2", "c_mH2", 700, 700);
-    double mean_H2_biasCorrected, sigma_H2_biasCorrected;
-    Display_mH2_ForFile(v_files.at(i), mean_H2_biasCorrected, sigma_H2_biasCorrected);
+    double mean_H2, sigma_H2;
+    Display_mH2_ForFile(v_files.at(i), mean_H2, sigma_H2);
     c_mH2->SaveAs(("c_mH2_"+itoa(mean_gen.at(i))+".png").c_str());
     delete c_mH2;
-    v_mean_H2_biasCorrected.push_back(mean_H2_biasCorrected);
-    v_sigma_H2_biasCorrected.push_back(sigma_H2_biasCorrected);
+    v_mean_H2.push_back(mean_H2);
+    v_sigma_H2.push_back(sigma_H2);
   }
-  TGraph *g_mean_H1_biasCorrected=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_mean_H1_biasCorrected.at(0)));
-  TGraph *g_sigma_H1_biasCorrected=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_sigma_H1_biasCorrected.at(0)));
-  TGraph *g_mean_H2_biasCorrected=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_mean_H2_biasCorrected.at(0)));
-  TGraph *g_sigma_H2_biasCorrected=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_sigma_H2_biasCorrected.at(0)));
-  g_mean_H1_biasCorrected->SetTitle("; m_{X}^{gen} (GeV); <m_{H1}>");
-  g_sigma_H1_biasCorrected->SetTitle("; m_{X}^{gen} (GeV); #sigma(m_{H1})");
-  g_mean_H2_biasCorrected->SetTitle("; m_{X}^{gen} (GeV); <m_{H2}>");
-  g_sigma_H2_biasCorrected->SetTitle("; m_{X}^{gen} (GeV); #sigma(m_{H1})");
-  TF1 *f_mean_H1_biasCorrected=new TF1("f_mean_H1_biasCorrected", "pol0", 400, 1200);
-  TF1 *f_sigma_H1_biasCorrected=new TF1("f_sigma_H1_biasCorrected", "pol0", 400, 1200);
-  TF1 *f_mean_H2_biasCorrected=new TF1("f_mean_H2_biasCorrected", "pol0", 400, 1200);
-  TF1 *f_sigma_H2_biasCorrected=new TF1("f_sigma_H2_biasCorrected", "pol0", 400, 1200);
-  g_mean_H1_biasCorrected->Fit(f_mean_H1_biasCorrected, "R");
-  g_sigma_H1_biasCorrected->Fit(f_sigma_H1_biasCorrected, "R");
-  g_mean_H2_biasCorrected->Fit(f_mean_H2_biasCorrected, "R");
-  g_sigma_H2_biasCorrected->Fit(f_sigma_H2_biasCorrected, "R");
+  TGraph *g_mean_H1=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_mean_H1.at(0)));
+  TGraph *g_sigma_H1=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_sigma_H1.at(0)));
+  TGraph *g_mean_H2=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_mean_H2.at(0)));
+  TGraph *g_sigma_H2=new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(v_sigma_H2.at(0)));
+  g_mean_H1->SetTitle("; m_{X}^{gen} (GeV); <m_{H1}>");
+  g_sigma_H1->SetTitle("; m_{X}^{gen} (GeV); #sigma(m_{H1})");
+  g_mean_H2->SetTitle("; m_{X}^{gen} (GeV); <m_{H2}>");
+  g_sigma_H2->SetTitle("; m_{X}^{gen} (GeV); #sigma(m_{H1})");
+  TF1 *f_mean_H1=new TF1("f_mean_H1", "pol0", 400, 1200);
+  TF1 *f_sigma_H1=new TF1("f_sigma_H1", "pol0", 400, 1200);
+  TF1 *f_mean_H2=new TF1("f_mean_H2", "pol0", 400, 1200);
+  TF1 *f_sigma_H2=new TF1("f_sigma_H2", "pol0", 400, 1200);
+  g_mean_H1->Fit(f_mean_H1, "R");
+  g_sigma_H1->Fit(f_sigma_H1, "R");
+  g_mean_H2->Fit(f_mean_H2, "R");
+  g_sigma_H2->Fit(f_sigma_H2, "R");
   TCanvas *c_H1H2_meanSigma=new TCanvas("c_H1H2_meanSigma", "c_H1H2_meanSigma", 700, 700);
   c_H1H2_meanSigma->Divide(2,2);
   c_H1H2_meanSigma->cd(1);
-  g_mean_H1_biasCorrected->Draw("A*");
+  g_mean_H1->Draw("A*");
   c_H1H2_meanSigma->cd(2);
-  g_sigma_H1_biasCorrected->Draw("A*");
+  g_sigma_H1->Draw("A*");
   c_H1H2_meanSigma->cd(3);
-  g_mean_H2_biasCorrected->Draw("A*");
+  g_mean_H2->Draw("A*");
   c_H1H2_meanSigma->cd(4);
-  g_sigma_H2_biasCorrected->Draw("A*");
+  g_sigma_H2->Draw("A*");
   c_H1H2_meanSigma->SaveAs("c_H1H2_meanSigma.png");
   
   TCanvas *c_KinFit=new TCanvas("c_KinFit", "c_KinFit", 1000, 700);
