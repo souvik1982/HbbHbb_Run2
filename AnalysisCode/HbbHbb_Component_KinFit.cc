@@ -1,5 +1,4 @@
 #include "PhysicsTools/KinFitter/interface/TFitConstraintM.h"
-#include "PhysicsTools/KinFitter/interface/TFitParticleEt.h"
 #include "PhysicsTools/KinFitter/interface/TFitParticleEtEtaPhi.h"
 #include "PhysicsTools/KinFitter/interface/TKinFitter.h"
 
