@@ -42,7 +42,7 @@ void DisplayBackground(){
    gROOT->SetStyle("Plain");
 
 
-  double totalLuminosity=1264; // /pb
+  double totalLuminosity=2190; // /pb
   
   double xsec_ttbar=831.76;
   double xsec_qcd[8]={27850000,1717000,351300,31630.,6802.,1206.,120.4,25.24};
@@ -153,7 +153,7 @@ void DisplayBackground(){
 
   std::cout<<" adding data "<<std::endl;
 
-  TFile * fData = new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
+  TFile * fData = new TFile("Histograms_BTagCSV_2015_Skim.root");
   TH1F* h_mX_SB_kinFitD=(TH1F*)fData->Get("h_mX_SB_kinFit");	
   h_mX_SB_kinFitD->Rebin(40);	
   h_mX_SB_kinFitD->SetMarkerStyle(20);
@@ -174,7 +174,7 @@ void DisplayBackground(){
   tPrel->SetTextColor(kBlack);
   tPrel->SetTextSize(0.04027386);
   tPrel->SetTextFont(42);	
-  tPrel->DrawLatex(0.09821429,0.9194523,"CMS Preliminary          (13 TeV)  1.2 fb^{-1}");
+  tPrel->DrawLatex(0.09821429,0.9194523,"CMS Preliminary          (13 TeV)  2.2 fb^{-1}");
 
 
 
