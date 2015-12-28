@@ -224,9 +224,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   a_Cuts->SetBinLabel(12, "SR");
   
   // Output tree in new file
-  std::string outfilename;
-  if (regressionFile=="") outfilename="PreSelected_"+sample+".root";
-  else outfilename="PreSelected_"+sample+"_regressed.root";
+  std::string outfilename="PreSelected_"+sample+".root";
   TFile *outfile=new TFile(outfilename.c_str(), "recreate");
   TTree *outtree=tree->CloneTree(0);
   float jet_regressed_pT[100];
@@ -414,9 +412,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   TH1F *h_Count=(TH1F*)file->Get("Count");
   double nInitial=h_Count->GetBinContent(1);
                   
-  std::string histfilename;
-  if (regressionFile=="") histfilename="Histograms_"+sample+".root";
-  else histfilename="Histograms_"+sample+"_regressed.root";
+  std::string histfilename="Histograms_"+sample+".root";
   TFile *tFile=new TFile(histfilename.c_str(), "RECREATE");
   h_Count->Write();
   h_nCbJets->Write();
