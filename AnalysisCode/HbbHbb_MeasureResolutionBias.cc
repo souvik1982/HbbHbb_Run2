@@ -92,6 +92,7 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
   float jet_MCpT[100], jet_MCeta[100], jet_MCphi[100], jet_MCmass[100];
   float genBQuarkFromH_pT[100],genBQuarkFromH_eta[100],genBQuarkFromH_phi[100],genBQuarkFromH_mass[100];
+  float jet_regressed_pT[100];
   std::vector<unsigned int> *jetIndex_CentralpT40btag_pTOrder=0;
   
   // Retrieve variables
@@ -107,6 +108,7 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
   tree->SetBranchAddress("Jet_mcEta", &(jet_MCeta));
   tree->SetBranchAddress("Jet_mcPhi", &(jet_MCphi));
   tree->SetBranchAddress("Jet_mcM", &(jet_MCmass));
+  tree->SetBranchAddress("Jet_regressed_pt", &(jet_regressed_pT));
   tree->SetBranchAddress("jetIndex_CentralpT40btag_pTOrder", &(jetIndex_CentralpT40btag_pTOrder));
   tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     
@@ -148,25 +150,25 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
     {
       unsigned int j_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(j);
       TLorentzVector jet1_p4, jet2_p4, jet3_p4, jet4_p4;
-      jet1_p4=fillTLorentzVector(jet_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
+      jet1_p4=fillTLorentzVector(jet_regressed_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
       for (unsigned int k=0; k<jetIndex_CentralpT40btag_pTOrder->size(); ++k)
       {
         if (k!=j)
         {
           unsigned int k_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(k);
-          jet2_p4=fillTLorentzVector(jet_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k_jetIndex], jet_mass[k_jetIndex]);
+          jet2_p4=fillTLorentzVector(jet_regressed_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k_jetIndex], jet_mass[k_jetIndex]);
           for (unsigned int l=0; l<jetIndex_CentralpT40btag_pTOrder->size(); ++l)
           {
             if (l!=j && l!=k)
             {
               unsigned int l_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(l);
-              jet3_p4=fillTLorentzVector(jet_pT[l_jetIndex], jet_eta[l_jetIndex], jet_phi[l_jetIndex], jet_mass[l_jetIndex]);
+              jet3_p4=fillTLorentzVector(jet_regressed_pT[l_jetIndex], jet_eta[l_jetIndex], jet_phi[l_jetIndex], jet_mass[l_jetIndex]);
               for (unsigned int m=0; m<jetIndex_CentralpT40btag_pTOrder->size(); ++m)
               {
                 if (m!=j && m!=k && m!=l)
                 {
                   unsigned int m_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(m);
-                  jet4_p4=fillTLorentzVector(jet_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
+                  jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
                    
                   TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
                   TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
@@ -196,10 +198,15 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
     {
       nCut4+=eventWeight;
       
-      TLorentzVector jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
-      TLorentzVector jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
-      TLorentzVector jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
-      TLorentzVector jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
+      TLorentzVector jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
+	    TLorentzVector jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
+	    TLorentzVector jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
+	    TLorentzVector jet4_p4=fillTLorentzVector(jet_regressed_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
+      
+      TLorentzVector jet1_p4_unregressed=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
+      TLorentzVector jet2_p4_unregressed=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
+      TLorentzVector jet3_p4_unregressed=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
+      TLorentzVector jet4_p4_unregressed=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
       
       TLorentzVector jet1_MC_p4=fillTLorentzVector(jet_MCpT[H1jet1_i], jet_MCeta[H1jet1_i], jet_MCphi[H1jet1_i], jet_MCmass[H1jet1_i]);
       TLorentzVector jet2_MC_p4=fillTLorentzVector(jet_MCpT[H1jet2_i], jet_MCeta[H1jet2_i], jet_MCphi[H1jet2_i], jet_MCmass[H1jet2_i]);    
