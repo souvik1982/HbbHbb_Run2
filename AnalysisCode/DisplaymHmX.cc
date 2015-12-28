@@ -17,7 +17,7 @@
 #include <TArrow.h>
 #include <TArc.h>
 
-#include "../TDRStyle.h"
+#include "TDRStyle.h"
 
 /*
 double mean_H1_mass_=124;
@@ -57,7 +57,7 @@ void DisplayHistogram_mH_forFile(TFile *file, std::string histogramName, int col
   h->Scale(1./h->GetSumOfWeights());
   h->SetLineColor(color);
   h->SetLineWidth(2);
-  h->Rebin(4);
+  h->Rebin(2);
   h->GetXaxis()->SetRangeUser(50, 200);
   if (first)
   {
