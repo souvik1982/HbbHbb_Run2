@@ -19,13 +19,20 @@
 
 #include "../TDRStyle.h"
 
+/*
 double mean_H1_mass_=124;
 double sigma_H1_mass_=15; // 12;
 double mean_H2_mass_=117;
 double sigma_H2_mass_=20; // 13;
+*/
 
 double chi_1=1;
 double chi_2=2;
+
+double mean_H1_mass_=125;
+double sigma_H1_mass_=17.5;
+double mean_H2_mass_=mean_H1_mass_;
+double sigma_H2_mass_=sigma_H1_mass_;
 
 double marg=19;
 
@@ -202,6 +209,7 @@ void DisplaymHmX()
   
   
   // Plot mX in SB region for Data and ttbar
+  /*
   first=true;
   double lumi=2150; // /pb
   double xsec_ttbar=831.76; // pb
@@ -230,7 +238,7 @@ void DisplaymHmX()
   int bin2=h_mX_SB_kinFit_data->FindBin(1600.);
   double nDataEvents=h_mX_SB_kinFit_data->Integral(bin1, bin2);
   double nttbarEvents=h_mX_SB_kinFit_ttbar->Integral(bin1, bin2);
-  std::cout<<"nttbarEvents/nDataEvents = "<<nttbarEvents<<"/"<<nDataEvents<<" = "<<nttbarEvents/nDataEvents<<std::endl;
+  std::cout<<"nttbarEvents/nDataEvents = "<<nttbarEvents<<"/"<<nDataEvents<<" = "<<nttbarEvents/nDataEvents<<std::endl;*/
   
   
 }    

@@ -109,8 +109,8 @@ void Display_mH1_ForFile(TFile *f, double &mean_H1, double &sigma_H1)
   h_H1_mass_biasCorrected->SetLineColor(kRed);
   f_H1_mass_biasCorrected->SetLineColor(kRed);
   
-  h_H1_mass_biasCorrected->Draw("");
-  h_H1_mass->Draw("same");
+  h_H1_mass->Draw("");
+  h_H1_mass_biasCorrected->Draw("same");
   
   TLegend *leg=new TLegend(0.57, 0.89, 0.89, 0.75);
   leg->AddEntry(h_H1_mass, ("Nominal #bar{x}="+ftoa(f_H1_mass->GetParameter(1))+", #sigma="+ftoa(f_H1_mass->GetParameter(2))).c_str());
@@ -144,8 +144,8 @@ void Display_mH2_ForFile(TFile *f, double &mean_H2, double &sigma_H2)
   h_H2_mass_biasCorrected->SetLineColor(kRed);
   f_H2_mass_biasCorrected->SetLineColor(kRed);
   
-  h_H2_mass_biasCorrected->Draw("");
-  h_H2_mass->Draw("same");
+  h_H2_mass->Draw("");
+  h_H2_mass_biasCorrected->Draw("same");
   
   TLegend *leg=new TLegend(0.57, 0.89, 0.89, 0.75);
   leg->AddEntry(h_H2_mass, ("Nominal #bar{x}="+ftoa(f_H2_mass->GetParameter(1))+", #sigma="+ftoa(f_H2_mass->GetParameter(2))).c_str());
