@@ -45,6 +45,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
   float jet_btagCSV[100], jet_btagCMVA[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
   float genBQuarkFromH_pT[100],genBQuarkFromH_eta[100],genBQuarkFromH_phi[100],genBQuarkFromH_mass[100];
+  float jet_regressed_pT[100];
   std::vector<unsigned int> *jetIndex_CentralpT40btag_pTOrder=0;
   
   // Retrieve variables

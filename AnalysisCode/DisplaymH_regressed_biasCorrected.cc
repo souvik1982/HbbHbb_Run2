@@ -43,6 +43,7 @@ void DisplayHistogram_mH_forFile(TFile *file, std::string histogramName, int col
   if (first)
   {
     h->SetMaximum(h->GetMaximum()*1.2);
+    h->SetMinimum(0);
     h->GetYaxis()->SetTitleOffset(1.6);
     h->Draw("");
     first=false;
@@ -89,6 +90,7 @@ void DisplaymH_regressed_biasCorrected()
     TLegend *leg=new TLegend(0.5, 0.7, 0.89, 0.89);
     leg->SetLineColor(0);
     leg->SetFillColor(0);
+    leg->AddEntry((TObject*)0, ("m_{X} = "+itoa(mean_gen.at(i))+" GeV").c_str(), "");
     first=true;
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass", kBlue, leg, "AK4");
     first=false;
