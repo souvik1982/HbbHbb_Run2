@@ -78,7 +78,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float puWeight, genWeight;
   int nJets;
   float jet_btagCSV[100], jet_btagCMVA[100];
-  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
+  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100];
   int nGenHiggsBoson;	
   float genHiggsBoson_pT[100], genHiggsBoson_eta[100], genHiggsBoson_phi[100], genHiggsBoson_mass[100];
   float eventWeight;
@@ -158,7 +158,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("nJet", &(nJets));                              tree->SetBranchStatus("nJet", 1); 
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));                 tree->SetBranchStatus("Jet_btagCSV", 1); 
   tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));               tree->SetBranchStatus("Jet_btagCMVA", 1);
-  tree->SetBranchAddress("Jet_pt", &(jet_pT));                           tree->SetBranchStatus("Jet_pt", 1); 
+  tree->SetBranchAddress("Jet_pt", &(jet_pT));                           tree->SetBranchStatus("Jet_pt", 1);
+  tree->SetBranchAddress("Jet_rawPt", &(jet_rawpT));                     tree->SetBranchStatus("Jet_rawPt", 1);
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                         tree->SetBranchStatus("Jet_eta", 1); 
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                         tree->SetBranchStatus("Jet_phi", 1); 
   tree->SetBranchAddress("Jet_mass", &(jet_mass));                       tree->SetBranchStatus("Jet_mass", 1);
@@ -247,23 +248,26 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     ++nCut0;
     tree->GetEvent(i);
     
-    if (isData==1) eventWeight=1;
-    else eventWeight=puWeight*genWeight/fabs(genWeight);
+    if (isData!=1) eventWeight=puWeight*genWeight/fabs(genWeight);
+    else eventWeight=1;
     
-    if (nGenHiggsBoson==2)
+    if (isData!=1)
     {
-      TLorentzVector gen_H1,gen_H2;
-      gen_H1.SetPtEtaPhiM(genHiggsBoson_pT[0], genHiggsBoson_eta[0], genHiggsBoson_phi[0], genHiggsBoson_mass[0]);
-      gen_H2.SetPtEtaPhiM(genHiggsBoson_pT[1], genHiggsBoson_eta[1], genHiggsBoson_phi[1], genHiggsBoson_mass[1]);
-      h_GenX_mass->Fill((gen_H1+gen_H2).M(), eventWeight);
-    }
+      if (nGenHiggsBoson==2)
+      {
+        TLorentzVector gen_H1,gen_H2;
+        gen_H1.SetPtEtaPhiM(genHiggsBoson_pT[0], genHiggsBoson_eta[0], genHiggsBoson_phi[0], genHiggsBoson_mass[0]);
+        gen_H2.SetPtEtaPhiM(genHiggsBoson_pT[1], genHiggsBoson_eta[1], genHiggsBoson_phi[1], genHiggsBoson_mass[1]);
+        h_GenX_mass->Fill((gen_H1+gen_H2).M(), eventWeight);
+      }
     
-    if (nGenBQuarkFromH==4)
-    {
-      TLorentzVector gen_H1_b, gen_H1_bbar;
-      gen_H1_b.SetPtEtaPhiM(genBQuarkFromH_pT[0], genBQuarkFromH_eta[0], genBQuarkFromH_phi[0], genBQuarkFromH_mass[0]);
-      gen_H1_bbar.SetPtEtaPhiM(genBQuarkFromH_pT[1], genBQuarkFromH_eta[1], genBQuarkFromH_phi[1], genBQuarkFromH_mass[1]);
-      h_dR_genHbb->Fill(gen_H1_b.DeltaR(gen_H1_bbar), eventWeight);
+      if (nGenBQuarkFromH==4)
+      {
+        TLorentzVector gen_H1_b, gen_H1_bbar;
+        gen_H1_b.SetPtEtaPhiM(genBQuarkFromH_pT[0], genBQuarkFromH_eta[0], genBQuarkFromH_phi[0], genBQuarkFromH_mass[0]);
+        gen_H1_bbar.SetPtEtaPhiM(genBQuarkFromH_pT[1], genBQuarkFromH_eta[1], genBQuarkFromH_phi[1], genBQuarkFromH_mass[1]);
+        h_dR_genHbb->Fill(gen_H1_b.DeltaR(gen_H1_bbar), eventWeight);
+      }
     }
     
     h_MET->Fill(met_pT, eventWeight);
@@ -350,7 +354,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
             {
               int jetIndex = jetIndex_CentralpT40btag_CSVOrder.at(j);
               this_Jet_pt = jet_pT[jetIndex];
-              this_Jet_corr = jet_corr[jetIndex];
+              
+              if (isData!=1) this_Jet_corr = jet_corr[jetIndex];
+              else this_Jet_corr = jet_pT[jetIndex]/jet_rawpT[jetIndex];
+              
               this_rho = rho;
               this_Jet_eta = jet_eta[jetIndex];
               
@@ -371,7 +378,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
               this_Jet_vtxNtrk = jet_vtxNtrk[jetIndex];
               this_Jet_vtx3deL = jet_vtx3deL[jetIndex];
               double regressedJetpT=(reader->EvaluateRegression("BDTG method"))[0];
-              // std::cout<<"Jet pT = "<<this_Jet_pt<<", corr = "<<this_Jet_corr<<", regressed pT = "<<regressedJetpT<<std::endl;
+              
+              //std::cout<<"Jet pT = "<<this_Jet_pt<<", corr = "<<this_Jet_corr<<", regressed pT = "<<regressedJetpT<<std::endl;
+              
               jet_regressed_pT[jetIndex]=regressedJetpT;
             }
           }

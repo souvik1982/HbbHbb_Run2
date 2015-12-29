@@ -223,6 +223,7 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
         TLorentzVector b3_p4=fillTLorentzVector(genBQuarkFromH_pT[2], genBQuarkFromH_eta[2], genBQuarkFromH_phi[2], genBQuarkFromH_mass[2]);
         TLorentzVector b4_p4=fillTLorentzVector(genBQuarkFromH_pT[3], genBQuarkFromH_eta[3], genBQuarkFromH_phi[3], genBQuarkFromH_mass[3]);
         TLorentzVector j[4]={jet1_p4, jet2_p4, jet3_p4, jet4_p4};
+        TLorentzVector j_un[4]={jet1_p4_unregressed, jet2_p4_unregressed, jet3_p4_unregressed, jet4_p4_unregressed};
         TLorentzVector j_MC[4]={jet1_MC_p4, jet2_MC_p4, jet3_MC_p4, jet4_MC_p4};
         TLorentzVector b[4]={b1_p4,   b2_p4,   b3_p4,   b4_p4};
         int jMatchedbindex[4]={-1, -1, -1, -1};
@@ -236,30 +237,30 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
             double res_eta=j[ijet].Eta() - b[jMatchedbindex[ijet]].Eta();
             double res_phi=j[ijet].Phi() - b[jMatchedbindex[ijet]].Phi();
             
-            h_jet_pT_res_vs_pT->Fill(j[ijet].Pt(), res_pT, eventWeight);
-            h_jet_pT_res_vs_eta->Fill(fabs(j[ijet].Eta()), res_pT, eventWeight);
+            h_jet_pT_res_vs_pT->Fill(j_un[ijet].Pt(), res_pT, eventWeight);
+            h_jet_pT_res_vs_eta->Fill(fabs(j_un[ijet].Eta()), res_pT, eventWeight);
             
-            h_jet_eta_res_vs_pT->Fill(j[ijet].Pt(), res_eta, eventWeight);
-            h_jet_eta_res_vs_eta->Fill(fabs(j[ijet].Eta()), res_eta, eventWeight);
+            h_jet_eta_res_vs_pT->Fill(j_un[ijet].Pt(), res_eta, eventWeight);
+            h_jet_eta_res_vs_eta->Fill(fabs(j_un[ijet].Eta()), res_eta, eventWeight);
             
-            h_jet_phi_res_vs_pT->Fill(j[ijet].Pt(), res_phi, eventWeight);
-            h_jet_phi_res_vs_eta->Fill(fabs(j[ijet].Eta()), res_phi, eventWeight);
+            h_jet_phi_res_vs_pT->Fill(j_un[ijet].Pt(), res_phi, eventWeight);
+            h_jet_phi_res_vs_eta->Fill(fabs(j_un[ijet].Eta()), res_phi, eventWeight);
             
-            h_jet_pTres_vs_etares_vs_pT->Fill(j[ijet].Pt(), res_pT, res_eta, eventWeight);
-            h_jet_pTres_vs_phires_vs_pT->Fill(j[ijet].Pt(), res_pT, res_phi, eventWeight);
+            h_jet_pTres_vs_etares_vs_pT->Fill(j_un[ijet].Pt(), res_pT, res_eta, eventWeight);
+            h_jet_pTres_vs_phires_vs_pT->Fill(j_un[ijet].Pt(), res_pT, res_phi, eventWeight);
             
-            h_recopT_minus_partpT_vs_recopT->Fill(j[ijet].Pt(), j[ijet].Pt() - b[jMatchedbindex[ijet]].Pt(), eventWeight);
-            if (j_MC[ijet].Pt()>0) h_recopT_minus_genpT_vs_recopT->Fill(j[ijet].Pt(), j[ijet].Pt() - j_MC[ijet].Pt(), eventWeight);
-            if (j_MC[ijet].Pt()>0) h_genpT_minus_partpT_vs_recopT->Fill(j[ijet].Pt(), j_MC[ijet].Pt() - b[jMatchedbindex[ijet]].Pt(), eventWeight);
+            h_recopT_minus_partpT_vs_recopT->Fill(j_un[ijet].Pt(), j[ijet].Pt() - b[jMatchedbindex[ijet]].Pt(), eventWeight);
+            if (j_MC[ijet].Pt()>0) h_recopT_minus_genpT_vs_recopT->Fill(j_un[ijet].Pt(), j[ijet].Pt() - j_MC[ijet].Pt(), eventWeight);
+            if (j_MC[ijet].Pt()>0) h_genpT_minus_partpT_vs_recopT->Fill(j_un[ijet].Pt(), j_MC[ijet].Pt() - b[jMatchedbindex[ijet]].Pt(), eventWeight);
             
             // In eta bins
             if (fabs(j[ijet].Eta())<1.4)
             {
-              h_jet_pT_res_vs_pT_eta_0_1p4->Fill(j[ijet].Pt(), res_pT, eventWeight);
+              h_jet_pT_res_vs_pT_eta_0_1p4->Fill(j_un[ijet].Pt(), res_pT, eventWeight);
             }
             else if (fabs(j[ijet].Eta())<2.5)
             {
-              h_jet_pT_res_vs_pT_eta_1p4_2p5->Fill(j[ijet].Pt(), res_pT, eventWeight);
+              h_jet_pT_res_vs_pT_eta_1p4_2p5->Fill(j_un[ijet].Pt(), res_pT, eventWeight);
             }
           }
         }
