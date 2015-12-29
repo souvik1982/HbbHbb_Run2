@@ -19,21 +19,21 @@
 
 #include "TDRStyle.h"
 
-/*
+
 double mean_H1_mass_=124;
 double sigma_H1_mass_=15; // 12;
 double mean_H2_mass_=117;
 double sigma_H2_mass_=20; // 13;
-*/
+
 
 double chi_1=1;
 double chi_2=2;
-
+/*
 double mean_H1_mass_=125;
 double sigma_H1_mass_=17.5;
 double mean_H2_mass_=mean_H1_mass_;
 double sigma_H2_mass_=sigma_H1_mass_;
-
+*/
 double marg=19;
 
 bool signalpoints=true;
@@ -109,17 +109,17 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
 void DisplaymHmX()
 {
   std::vector<TFile*> v_files;
-  v_files.push_back(new TFile("Histograms_Graviton300GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton400GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
+  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
+  //v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
+  //v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
+  //v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton1600GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton2000GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton3000GeV.root"));
-  TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
-  TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
+  TFile *f_data=new TFile("Histograms_BTagCSV_2015_Skim.root");
+  TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8.root");
   std::vector <double> mean_gen={300, 400, 600, 800, 1000, 1200};
   std::vector<int> v_colors = {kGreen, kGreen+2, kOrange, kOrange+2, kMagenta, kMagenta+2, kBlue, kBlue+2, kCyan, kCyan+2};
   
