@@ -1,6 +1,6 @@
 {
-  gSystem->Load("../libPhysicsToolsKinFitter.so");
-  gROOT->LoadMacro("../HbbHbb_MMRSelection_chi2.cc++");
+  gSystem->Load("../../libPhysicsToolsKinFitter.so");
+  gROOT->LoadMacro("../../HbbHbb_MMRSelection_chi2.cc++");
   HbbHbb_MMRSelection_chi2("Signal", "Graviton260GeV");
   HbbHbb_MMRSelection_chi2("Signal", "Graviton270GeV");
   HbbHbb_MMRSelection_chi2("Signal", "Graviton300GeV");

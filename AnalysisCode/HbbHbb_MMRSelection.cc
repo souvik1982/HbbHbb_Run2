@@ -51,14 +51,17 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
   
   // Book variables
+  int evt;
   float eventWeight;
   int nJets, nGenBQuarkFromH;
   float jet_btagCSV[100], jet_btagCMVA[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
   float genBQuarkFromH_pT[100],genBQuarkFromH_eta[100],genBQuarkFromH_phi[100],genBQuarkFromH_mass[100];
-  std::vector<unsigned int> *jetIndex_CentralpT40btag_pTOrder=0;
+  float jet_regressed_pT[100];
+  std::vector<unsigned int> *jetIndex_CentralpT40btag_CSVOrder=0;
   
   // Retrieve variables
+  tree->SetBranchAddress("evt", &evt);
   tree->SetBranchAddress("eventWeight", &(eventWeight));                
   tree->SetBranchAddress("nJet", &(nJets));                       
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));          
@@ -66,8 +69,9 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                    
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                  
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                  
-  tree->SetBranchAddress("Jet_mass", &(jet_mass));                
-  tree->SetBranchAddress("jetIndex_CentralpT40btag_pTOrder", &(jetIndex_CentralpT40btag_pTOrder));
+  tree->SetBranchAddress("Jet_mass", &(jet_mass));
+  tree->SetBranchAddress("Jet_regressed_pt", &(jet_regressed_pT));
+  tree->SetBranchAddress("jetIndex_CentralpT40btag_CSVOrder", &(jetIndex_CentralpT40btag_CSVOrder));
   tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   
@@ -90,6 +94,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   TH2F *h_mH1_mH2_asym_biasCorrected = new TH2F("h_mH1_mH2_asym_biasCorrected", "; m_{H1} (GeV); m_{H2} (GeV)", 300, 0., 300., 300, 0., 300.);
   
   TH1F *h_GenX_pT = new TH1F("h_GenX_pT", "; (#vec{p}_{H1} + #vec{p}_{H2})_{T} GeV", 200, 0., 800.);
+  TH1F *h_kinFitchi2=new TH1F("h_kinFitchi2", "; Event 4 jet kinematic #chi^2", 200, 0., 10.);
   
   TH1F *h_mX_SR         = new TH1F("h_mX_SR", "; m_{X} (GeV)", 2000, 0., 2000.);          h_mX_SR->Sumw2();
   TH1F *h_mX_SR_purity0 = new TH1F("h_mX_SR_purity0", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_purity0->Sumw2();
@@ -109,6 +114,10 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   TH1F *h_mX_SR_kinFit_purity5 = new TH1F("h_mX_SR_kinFit_purity5", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_kinFit_purity5->Sumw2();
   TH1F *h_HH_balance_kinFit = new TH1F("h_HH_balance_kinFit", "; (#vec{p}_{H1} + #vec{p}_{H2} - #vec{p}_{X}^{gen})_{T} GeV", 200, 0, 200.);
   
+  TH1F *h_mX_SB               = new TH1F("h_mX_SB", "; m_{X} (GeV)", 2000, 0., 2000.);                 h_mX_SB->Sumw2();
+  TH1F *h_mX_SB_biasCorrected = new TH1F("h_mX_SB_biasCorrected", "; m_{X} (GeV)", 2000, 0., 2000.);   h_mX_SB_biasCorrected->Sumw2();
+  TH1F *h_mX_SB_kinFit        = new TH1F("h_mX_SB_kinFit", "; m_{X} (GeV)", 2000, 0., 2000.);          h_mX_SB_kinFit->Sumw2();
+  
   // Get the h_Cuts histogram
   std::string histfilename="Histograms_"+sample+".root";
   gSystem->Exec(("cp ../"+histfilename+" "+histfilename).c_str());
@@ -126,30 +135,40 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
     double m_diff_old=50.;
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
+    
+    //std::cout<<"evt = "<<evt<<std::endl;
+    //std::cout<<"jetIndex_CentralpT40btag_CSVOrder->size() = "<<jetIndex_CentralpT40btag_CSVOrder->size()<<std::endl;
   
-    for (unsigned int j=0; j<jetIndex_CentralpT40btag_pTOrder->size(); ++j)
+    for (unsigned int j=0; j<jetIndex_CentralpT40btag_CSVOrder->size(); ++j)
     {
-      unsigned int j_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(j);
+      unsigned int j_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(j);
       TLorentzVector jet1_p4, jet2_p4, jet3_p4, jet4_p4;
-      jet1_p4=fillTLorentzVector(jet_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
-      for (unsigned int k=0; k<jetIndex_CentralpT40btag_pTOrder->size(); ++k)
+      jet1_p4=fillTLorentzVector(jet_regressed_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
+      for (unsigned int k=0; k<jetIndex_CentralpT40btag_CSVOrder->size(); ++k)
       {
         if (k!=j)
         {
-          unsigned int k_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(k);
-          jet2_p4=fillTLorentzVector(jet_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k_jetIndex], jet_mass[k_jetIndex]);
-          for (unsigned int l=0; l<jetIndex_CentralpT40btag_pTOrder->size(); ++l)
+          unsigned int k_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(k);
+          jet2_p4=fillTLorentzVector(jet_regressed_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k_jetIndex], jet_mass[k_jetIndex]);
+          for (unsigned int l=0; l<jetIndex_CentralpT40btag_CSVOrder->size(); ++l)
           {
             if (l!=j && l!=k)
             {
-              unsigned int l_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(l);
-              jet3_p4=fillTLorentzVector(jet_pT[l_jetIndex], jet_eta[l_jetIndex], jet_phi[l_jetIndex], jet_mass[l_jetIndex]);
-              for (unsigned int m=0; m<jetIndex_CentralpT40btag_pTOrder->size(); ++m)
+              unsigned int l_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(l);
+              jet3_p4=fillTLorentzVector(jet_regressed_pT[l_jetIndex], jet_eta[l_jetIndex], jet_phi[l_jetIndex], jet_mass[l_jetIndex]);
+              for (unsigned int m=0; m<jetIndex_CentralpT40btag_CSVOrder->size(); ++m)
               {
                 if (m!=j && m!=k && m!=l)
                 {
-                  unsigned int m_jetIndex=jetIndex_CentralpT40btag_pTOrder->at(m);
-                  jet4_p4=fillTLorentzVector(jet_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
+                  unsigned int m_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(m);
+                  jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
+                  
+                  /*
+                  std::cout<<"j_jetIndex = "<<j_jetIndex<<", jet_pT[j_jetIndex] = "<<jet_pT[j_jetIndex]<<", jet_regressed_pT[j_jetIndex] = "<<jet_regressed_pT[j_jetIndex]<<std::endl;
+                  std::cout<<"k_jetIndex = "<<k_jetIndex<<", jet_pT[k_jetIndex] = "<<jet_pT[k_jetIndex]<<", jet_regressed_pT[k_jetIndex] = "<<jet_regressed_pT[k_jetIndex]<<std::endl;
+                  std::cout<<"l_jetIndex = "<<l_jetIndex<<", jet_pT[l_jetIndex] = "<<jet_pT[l_jetIndex]<<", jet_regressed_pT[l_jetIndex] = "<<jet_regressed_pT[l_jetIndex]<<std::endl;
+                  std::cout<<"m_jetIndex = "<<m_jetIndex<<", jet_pT[m_jetIndex] = "<<jet_pT[m_jetIndex]<<", jet_regressed_pT[m_jetIndex] = "<<jet_regressed_pT[m_jetIndex]<<std::endl;
+                  */
                    
                   TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
                   TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
@@ -179,17 +198,22 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
     {
       nCut4+=eventWeight;
 	    
-      TLorentzVector jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
-	    TLorentzVector jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
-	    TLorentzVector jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
-	    TLorentzVector jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
+      TLorentzVector jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
+	    TLorentzVector jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
+	    TLorentzVector jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
+	    TLorentzVector jet4_p4=fillTLorentzVector(jet_regressed_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
       
       // The higher pT Higgs is H1, and the other is H2
       if ((jet1_p4+jet2_p4).Pt()<(jet3_p4+jet4_p4).Pt()) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} 
-	    jet1_p4=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
-	    jet2_p4=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
-	    jet3_p4=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
-	    jet4_p4=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
+	    jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
+	    jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
+	    jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
+	    jet4_p4=fillTLorentzVector(jet_regressed_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
+      
+      TLorentzVector jet1_p4_unregressed=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
+      TLorentzVector jet2_p4_unregressed=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
+      TLorentzVector jet3_p4_unregressed=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
+      TLorentzVector jet4_p4_unregressed=fillTLorentzVector(jet_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
       
       // Fill histograms before bias correction
       TLorentzVector H1_p4=jet1_p4+jet2_p4;
@@ -206,10 +230,10 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
       h_mH1_mH2_asym->Fill((pTH1>pTH2)?mH1:mH2, (pTH1>pTH2)?mH2:mH1, eventWeight);
       
       // Apply bias correction
-      TLorentzVector jet1_p4_biasCorrected=biasEt_signal(jet1_p4);
-      TLorentzVector jet2_p4_biasCorrected=biasEt_signal(jet2_p4);
-      TLorentzVector jet3_p4_biasCorrected=biasEt_signal(jet3_p4);
-      TLorentzVector jet4_p4_biasCorrected=biasEt_signal(jet4_p4);
+      TLorentzVector jet1_p4_biasCorrected=biasEt_signal(jet1_p4_unregressed);
+      TLorentzVector jet2_p4_biasCorrected=biasEt_signal(jet2_p4_unregressed);
+      TLorentzVector jet3_p4_biasCorrected=biasEt_signal(jet3_p4_unregressed);
+      TLorentzVector jet4_p4_biasCorrected=biasEt_signal(jet4_p4_unregressed);
       
       // Fill histograms after bias correction
       TLorentzVector H1_p4_biasCorrected=jet1_p4_biasCorrected+jet2_p4_biasCorrected;
@@ -239,7 +263,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
           b2_p4=fillTLorentzVector(genBQuarkFromH_pT[1], genBQuarkFromH_eta[1], genBQuarkFromH_phi[1], genBQuarkFromH_mass[1]);
           b3_p4=fillTLorentzVector(genBQuarkFromH_pT[2], genBQuarkFromH_eta[2], genBQuarkFromH_phi[2], genBQuarkFromH_mass[2]);
           b4_p4=fillTLorentzVector(genBQuarkFromH_pT[3], genBQuarkFromH_eta[3], genBQuarkFromH_phi[3], genBQuarkFromH_mass[3]);
-          TLorentzVector j[4]={jet1_p4_biasCorrected, jet2_p4_biasCorrected, jet3_p4_biasCorrected, jet4_p4_biasCorrected};
+          TLorentzVector j[4]={jet1_p4, jet2_p4, jet3_p4, jet4_p4};
           TLorentzVector b[4]={b1_p4,   b2_p4,   b3_p4,   b4_p4};
           int jMatchedbindex[4]={-1, -1, -1, -1};
           purity=purityTest(j, b, jMatchedbindex);
@@ -255,26 +279,46 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
       {
         nCut5+=eventWeight;
         
-        h_mX_SR->Fill(X_p4.M(), eventWeight);
-        
-        h_mX_SR_biasCorrected->Fill(X_p4_biasCorrected.M(), eventWeight);
-        if (purity==-1) h_mX_SR_purity5->Fill(X_p4_biasCorrected.M(), eventWeight);
-        if (purity== 0) h_mX_SR_purity0->Fill(X_p4_biasCorrected.M(), eventWeight);
-        if (purity== 1) h_mX_SR_purity1->Fill(X_p4_biasCorrected.M(), eventWeight);
-        if (purity== 2) h_mX_SR_purity2->Fill(X_p4_biasCorrected.M(), eventWeight);
-        if (purity== 3) h_mX_SR_purity3->Fill(X_p4_biasCorrected.M(), eventWeight);
-        if (purity== 4) h_mX_SR_purity4->Fill(X_p4_biasCorrected.M(), eventWeight);
-      
-        // Do the kinematic constraint
-        double chi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        // Apply kinematic constraint
+        // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
+        // double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        double kinFitchi2=constrainHH_afterRegression(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        h_kinFitchi2->Fill(kinFitchi2, eventWeight);
         TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
+        
+        h_mX_SR->Fill(X_p4.M(), eventWeight);
+        h_mX_SR_biasCorrected->Fill(X_p4_biasCorrected.M(), eventWeight);
         h_mX_SR_kinFit->Fill(X_p4_kinFit.M(), eventWeight);
-        if (purity==-1) h_mX_SR_kinFit_purity5->Fill(X_p4_kinFit.M(), eventWeight);
-        if (purity== 0) h_mX_SR_kinFit_purity0->Fill(X_p4_kinFit.M(), eventWeight);
-        if (purity== 1) h_mX_SR_kinFit_purity1->Fill(X_p4_kinFit.M(), eventWeight);
-        if (purity== 2) h_mX_SR_kinFit_purity2->Fill(X_p4_kinFit.M(), eventWeight);
-        if (purity== 3) h_mX_SR_kinFit_purity3->Fill(X_p4_kinFit.M(), eventWeight);
-        if (purity== 4) h_mX_SR_kinFit_purity4->Fill(X_p4_kinFit.M(), eventWeight);
+        if (purity==-1)
+        {
+          h_mX_SR_purity5->Fill(X_p4.M(), eventWeight);
+          h_mX_SR_kinFit_purity5->Fill(X_p4_kinFit.M(), eventWeight);
+        }
+        else if (purity==0)
+        {
+          h_mX_SR_purity0->Fill(X_p4.M(), eventWeight);
+          h_mX_SR_kinFit_purity0->Fill(X_p4_kinFit.M(), eventWeight);
+        }
+        else if (purity==1)
+        {
+          h_mX_SR_purity1->Fill(X_p4.M(), eventWeight);
+          h_mX_SR_kinFit_purity1->Fill(X_p4_kinFit.M(), eventWeight);
+        }
+        else if (purity==2)
+        {
+          h_mX_SR_purity2->Fill(X_p4.M(), eventWeight);
+          h_mX_SR_kinFit_purity2->Fill(X_p4_kinFit.M(), eventWeight);
+        }
+        else if (purity==3)
+        {
+          h_mX_SR_purity3->Fill(X_p4.M(), eventWeight);
+          h_mX_SR_kinFit_purity3->Fill(X_p4_kinFit.M(), eventWeight);
+        }
+        else if (purity==4)
+        {
+          h_mX_SR_purity4->Fill(X_p4.M(), eventWeight);
+          h_mX_SR_kinFit_purity4->Fill(X_p4_kinFit.M(), eventWeight);
+        }
         
         // Fill HH pT balancing histograms
         if (type=="Signal" && nGenBQuarkFromH==4)
@@ -284,6 +328,17 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
           h_HH_balance_biasCorrected->Fill((X_p4_biasCorrected - gen_X_p4).Pt(), eventWeight);
           h_HH_balance_kinFit->Fill((X_p4_kinFit - gen_X_p4).Pt(), eventWeight);
         }
+      }
+      else if (region==2 || region==4)                                   // Sideband Region
+      {
+        // Apply kinematic constraint
+        // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
+        double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
+        
+        h_mX_SB->Fill(X_p4.M(), eventWeight);
+        h_mX_SB_biasCorrected->Fill(X_p4_biasCorrected.M(), eventWeight);
+        h_mX_SB_kinFit->Fill(X_p4_kinFit.M(), eventWeight);
       }
     }
   } // Event loop
@@ -306,6 +361,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   h_HH_balance_biasCorrected->Write();
   h_mH1_mH2_asym_biasCorrected->Write();
   h_GenX_pT->Write();
+  h_kinFitchi2->Write();
   h_mX_SR->Write();
   h_mX_SR_biasCorrected->Write();
   h_mX_SR_purity5->Write();
@@ -322,6 +378,9 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   h_mX_SR_kinFit_purity3->Write();
   h_mX_SR_kinFit_purity4->Write();
   h_mX_SR_kinFit_purity5->Write();
+  h_mX_SB->Write();
+  h_mX_SB_biasCorrected->Write();
+  h_mX_SB_kinFit->Write();
   h_Cuts.Write();
 
   tFile2->Write();
@@ -346,6 +405,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   delete h_HH_balance_biasCorrected;
   delete h_mH1_mH2_asym_biasCorrected;
   delete h_GenX_pT;
+  delete h_kinFitchi2;
   delete h_mX_SR;
   delete h_mX_SR_biasCorrected;
   delete h_mX_SR_purity5;
@@ -362,4 +422,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   delete h_mX_SR_kinFit_purity3;
   delete h_mX_SR_kinFit_purity4;
   delete h_mX_SR_kinFit_purity5;
+  delete h_mX_SB;
+  delete h_mX_SB_biasCorrected;
+  delete h_mX_SB_kinFit;
 }

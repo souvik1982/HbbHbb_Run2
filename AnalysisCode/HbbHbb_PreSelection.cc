@@ -10,6 +10,12 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 #include <iostream>
 #include "TLorentzVector.h"
 
+#if not defined(__CINT__) || defined(__MAKECINT__)
+#include "TMVA/Tools.h"
+#include "TMVA/Reader.h"
+#include "TMVA/MethodCuts.h"
+#endif
+
 double pi=3.14159265358979;
 
 // Hardcoded configuration parameters
@@ -39,7 +45,8 @@ void fillIndexVectorFromJetList(JetList jetList, std::vector<unsigned int> *inde
   }
 }
 
-void HbbHbb_PreSelection(std::string dir, std::string sample, 
+void HbbHbb_PreSelection(std::string dir, std::string sample,
+                              std::string regressionFile="",
                               std::string sigmaJECUnc_string="JEC", 
                               std::string sigmaJERUnc_string="JER")
 {
@@ -48,6 +55,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
+  
+  if (regressionFile=="") std::cout<<"b jet regression not done. jet_regressed_pT = jet_pT"<<std::endl;
+  else std::cout<<"b jet regression done with "<<regressionFile<<" decisions file."<<std::endl;
   
   double sigmaJECUnc; // -1, 0, +1
   double sigmaJERUnc; // -1, 0, +1
@@ -68,7 +78,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float puWeight, genWeight;
   int nJets;
   float jet_btagCSV[100], jet_btagCMVA[100];
-  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
+  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100];
   int nGenHiggsBoson;	
   float genHiggsBoson_pT[100], genHiggsBoson_eta[100], genHiggsBoson_phi[100], genHiggsBoson_mass[100];
   float eventWeight;
@@ -76,6 +86,64 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float genBQuarkFromH_pT[100], genBQuarkFromH_eta[100], genBQuarkFromH_phi[100], genBQuarkFromH_mass[100];
   float jet_MCpT[100], jet_MCeta[100], jet_MCphi[100], jet_MCmass[100];
   float met_pT, met_phi;
+  
+  float jet_corr[100], 
+        rho,
+        jet_mt[100], 
+        jet_leadTrackPt[100], 
+        jet_leptonPtRel[100], 
+        jet_leptonPt[100], 
+        jet_leptonDeltaR[100],
+        jet_neHEF[100],
+        jet_neEmEF[100], 
+        jet_chMult[100], 
+        jet_vtxPt[100], 
+        jet_vtxMass[100], 
+        jet_vtx3dL[100], 
+        jet_vtxNtrk[100], 
+        jet_vtx3deL[100];
+        
+  float this_Jet_pt,
+        this_Jet_corr, 
+        this_rho, 
+        this_Jet_eta, 
+        this_Jet_mt, 
+        this_Jet_leadTrackPt, 
+        this_Jet_leptonPtRel, 
+        this_Jet_leptonPt, 
+        this_Jet_leptonDeltaR, 
+        this_Jet_neHEF,
+        this_Jet_neEmEF, 
+        this_Jet_chMult, 
+        this_Jet_vtxPt, 
+        this_Jet_vtxMass, 
+        this_Jet_vtx3dL, 
+        this_Jet_vtxNtrk, 
+        this_Jet_vtx3deL;
+  
+  TMVA::Reader *reader=new TMVA::Reader("!Color:!Silent");
+  if (regressionFile!="")
+  {
+    // b jet regression variables
+    reader->AddVariable("Jet_pt",            &this_Jet_pt);
+    reader->AddVariable("Jet_corr",          &this_Jet_corr);
+    reader->AddVariable("rho",               &this_rho);
+    reader->AddVariable("Jet_eta",           &this_Jet_eta); 
+    reader->AddVariable("Jet_mt",            &this_Jet_mt); 
+    reader->AddVariable("Jet_leadTrackPt",   &this_Jet_leadTrackPt); 
+    reader->AddVariable("Jet_leptonPtRel",   &this_Jet_leptonPtRel); 
+    reader->AddVariable("Jet_leptonPt",      &this_Jet_leptonPt); 
+    reader->AddVariable("Jet_leptonDeltaR",  &this_Jet_leptonDeltaR);
+    reader->AddVariable("Jet_neHEF",         &this_Jet_neHEF);
+    reader->AddVariable("Jet_neEmEF",        &this_Jet_neEmEF); 
+    reader->AddVariable("Jet_chMult",        &this_Jet_chMult);
+    reader->AddVariable("Jet_vtxPt",         &this_Jet_vtxPt); 
+    reader->AddVariable("Jet_vtxMass",       &this_Jet_vtxMass);
+    reader->AddVariable("Jet_vtx3dL",        &this_Jet_vtx3dL); 
+    reader->AddVariable("Jet_vtxNtrk",       &this_Jet_vtxNtrk);
+    reader->AddVariable("Jet_vtx3deL",       &this_Jet_vtx3deL);
+    reader->BookMVA("BDTG method", regressionFile);
+  }
   
   // Retrieve variables
   tree->SetBranchAddress("evt", &evt);
@@ -90,7 +158,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("nJet", &(nJets));                              tree->SetBranchStatus("nJet", 1); 
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));                 tree->SetBranchStatus("Jet_btagCSV", 1); 
   tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));               tree->SetBranchStatus("Jet_btagCMVA", 1);
-  tree->SetBranchAddress("Jet_pt", &(jet_pT));                           tree->SetBranchStatus("Jet_pt", 1); 
+  tree->SetBranchAddress("Jet_pt", &(jet_pT));                           tree->SetBranchStatus("Jet_pt", 1);
+  tree->SetBranchAddress("Jet_rawPt", &(jet_rawpT));                     tree->SetBranchStatus("Jet_rawPt", 1);
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                         tree->SetBranchStatus("Jet_eta", 1); 
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                         tree->SetBranchStatus("Jet_phi", 1); 
   tree->SetBranchAddress("Jet_mass", &(jet_mass));                       tree->SetBranchStatus("Jet_mass", 1);
@@ -110,6 +179,23 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass)); tree->SetBranchStatus("GenBQuarkFromH_mass", 1);
   tree->SetBranchAddress("met_pt", &(met_pT));                           tree->SetBranchStatus("met_pt", 1);
   tree->SetBranchAddress("met_phi", &(met_phi));                         tree->SetBranchStatus("met_phi", 1);
+  if (regressionFile!="")
+  {
+    tree->SetBranchAddress("Jet_corr", &(jet_corr));                     
+    tree->SetBranchAddress("rho", &(rho));                               
+    tree->SetBranchAddress("Jet_leadTrackPt", &(jet_leadTrackPt));        
+    tree->SetBranchAddress("Jet_leptonPtRel", &(jet_leptonPtRel));       
+    tree->SetBranchAddress("Jet_leptonPt", &(jet_leptonPt));             
+    tree->SetBranchAddress("Jet_leptonDeltaR", &(jet_leptonDeltaR));     
+    tree->SetBranchAddress("Jet_neHEF", &(jet_neHEF));                   
+    tree->SetBranchAddress("Jet_neEmEF", &(jet_neEmEF));                 
+    tree->SetBranchAddress("Jet_chMult", &(jet_chMult));                 
+    tree->SetBranchAddress("Jet_vtxPt", &(jet_vtxPt));                   
+    tree->SetBranchAddress("Jet_vtxMass", &(jet_vtxMass));               
+    tree->SetBranchAddress("Jet_vtx3DVal", &(jet_vtx3dL));               
+    tree->SetBranchAddress("Jet_vtx3DSig", &(jet_vtx3deL));              
+    tree->SetBranchAddress("Jet_vtxNtracks", &(jet_vtxNtrk));
+  }           
   
   TH1F *h_nCbJets=new TH1F("h_nCbJets", "; # Cleaned PAT Jets with |#eta|<2.5, p_{T} > 40 GeV, CSV > 0.6; Events", 10, 0., 10.);
   
@@ -142,10 +228,12 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::string outfilename="PreSelected_"+sample+".root";
   TFile *outfile=new TFile(outfilename.c_str(), "recreate");
   TTree *outtree=tree->CloneTree(0);
+  float jet_regressed_pT[100];
   std::vector<unsigned int> jetIndex_CentralpT40btag_pTOrder;
   std::vector<unsigned int> jetIndex_CentralpT40btag_CSVOrder;
   std::vector<unsigned int> jetIndex_CentralpT40btag_CMVAOrder;
   std::vector<unsigned int> jetIndex_Central_pTOrder;
+  outtree->Branch("Jet_regressed_pt", jet_regressed_pT, "Jet_regressed_pt[nJet]/F");
   outtree->Branch("jetIndex_CentralpT40btag_pTOrder", &jetIndex_CentralpT40btag_pTOrder);
   outtree->Branch("jetIndex_CentralpT40btag_CSVOrder", &jetIndex_CentralpT40btag_CSVOrder);
   outtree->Branch("jetIndex_CentralpT40btag_CMVAOrder", &jetIndex_CentralpT40btag_CMVAOrder);
@@ -160,23 +248,26 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     ++nCut0;
     tree->GetEvent(i);
     
-    if (isData==1) eventWeight=1;
-    else eventWeight=puWeight*genWeight/fabs(genWeight);
+    if (isData!=1) eventWeight=puWeight*genWeight/fabs(genWeight);
+    else eventWeight=1;
     
-    if (nGenHiggsBoson==2)
+    if (isData!=1)
     {
-      TLorentzVector gen_H1,gen_H2;
-      gen_H1.SetPtEtaPhiM(genHiggsBoson_pT[0], genHiggsBoson_eta[0], genHiggsBoson_phi[0], genHiggsBoson_mass[0]);
-      gen_H2.SetPtEtaPhiM(genHiggsBoson_pT[1], genHiggsBoson_eta[1], genHiggsBoson_phi[1], genHiggsBoson_mass[1]);
-      h_GenX_mass->Fill((gen_H1+gen_H2).M(), eventWeight);
-    }
+      if (nGenHiggsBoson==2)
+      {
+        TLorentzVector gen_H1,gen_H2;
+        gen_H1.SetPtEtaPhiM(genHiggsBoson_pT[0], genHiggsBoson_eta[0], genHiggsBoson_phi[0], genHiggsBoson_mass[0]);
+        gen_H2.SetPtEtaPhiM(genHiggsBoson_pT[1], genHiggsBoson_eta[1], genHiggsBoson_phi[1], genHiggsBoson_mass[1]);
+        h_GenX_mass->Fill((gen_H1+gen_H2).M(), eventWeight);
+      }
     
-    if (nGenBQuarkFromH==4)
-    {
-      TLorentzVector gen_H1_b, gen_H1_bbar;
-      gen_H1_b.SetPtEtaPhiM(genBQuarkFromH_pT[0], genBQuarkFromH_eta[0], genBQuarkFromH_phi[0], genBQuarkFromH_mass[0]);
-      gen_H1_bbar.SetPtEtaPhiM(genBQuarkFromH_pT[1], genBQuarkFromH_eta[1], genBQuarkFromH_phi[1], genBQuarkFromH_mass[1]);
-      h_dR_genHbb->Fill(gen_H1_b.DeltaR(gen_H1_bbar), eventWeight);
+      if (nGenBQuarkFromH==4)
+      {
+        TLorentzVector gen_H1_b, gen_H1_bbar;
+        gen_H1_b.SetPtEtaPhiM(genBQuarkFromH_pT[0], genBQuarkFromH_eta[0], genBQuarkFromH_phi[0], genBQuarkFromH_mass[0]);
+        gen_H1_bbar.SetPtEtaPhiM(genBQuarkFromH_pT[1], genBQuarkFromH_eta[1], genBQuarkFromH_phi[1], genBQuarkFromH_mass[1]);
+        h_dR_genHbb->Fill(gen_H1_b.DeltaR(gen_H1_bbar), eventWeight);
+      }
     }
     
     h_MET->Fill(met_pT, eventWeight);
@@ -207,8 +298,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
             jetList_Central_pTOrder[jet_pT[j]]=j;
             if (jet_pT[j]>jet_pT_cut)
             {
-              if (jet_btagCSV[j]>0) jetList_CentralpT40_CSVOrder[jet_btagCSV[j]]=j;
+              if (jet_btagCSV[j]>0)
               {
+                jetList_CentralpT40_CSVOrder[jet_btagCSV[j]]=j;
                 if (jet_btagCSV[j]>jet_btag_cut)
                 {
                   ++nCbJets;
@@ -251,6 +343,51 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
           fillIndexVectorFromJetList(jetList_CentralpT40btag_CSVOrder, &jetIndex_CentralpT40btag_CSVOrder);
           fillIndexVectorFromJetList(jetList_CentralpT40btag_CMVAOrder, &jetIndex_CentralpT40btag_CMVAOrder);
           fillIndexVectorFromJetList(jetList_Central_pTOrder, &jetIndex_Central_pTOrder);
+          
+          // Perform b-jet regression here
+          // std::cout<<" === new event with at least 3 central b-tagged pT > 40 jets === "<<std::endl;
+          // std::cout<<"evt = "<<evt<<std::endl;
+          for (unsigned int j=0; j<(unsigned int)nJets; ++j) jet_regressed_pT[j]=jet_pT[j];
+          if (regressionFile!="")
+          {
+            for (unsigned int j=0; j<jetIndex_CentralpT40btag_CSVOrder.size(); ++j)
+            {
+              int jetIndex = jetIndex_CentralpT40btag_CSVOrder.at(j);
+              this_Jet_pt = jet_pT[jetIndex];
+              
+              if (isData!=1) this_Jet_corr = jet_corr[jetIndex];
+              else this_Jet_corr = jet_pT[jetIndex]/jet_rawpT[jetIndex];
+              
+              this_rho = rho;
+              this_Jet_eta = jet_eta[jetIndex];
+              
+              TLorentzVector jet;
+              jet.SetPtEtaPhiM(this_Jet_pt, this_Jet_eta, jet_phi[jetIndex], jet_mass[jetIndex]);
+              this_Jet_mt = jet.Mt();
+              
+              this_Jet_leadTrackPt = jet_leadTrackPt[jetIndex];
+              this_Jet_leptonPtRel = jet_leptonPtRel[jetIndex];
+              this_Jet_leptonPt = jet_leptonPt[jetIndex];
+              this_Jet_leptonDeltaR = jet_leptonDeltaR[jetIndex];
+              this_Jet_neHEF = jet_neHEF[jetIndex];
+              this_Jet_neEmEF = jet_neEmEF[jetIndex];
+              this_Jet_chMult = jet_chMult[jetIndex];
+              this_Jet_vtxPt = jet_vtxPt[jetIndex];
+              this_Jet_vtxMass = jet_vtxMass[jetIndex];
+              this_Jet_vtx3dL = jet_vtx3dL[jetIndex];
+              this_Jet_vtxNtrk = jet_vtxNtrk[jetIndex];
+              this_Jet_vtx3deL = jet_vtx3deL[jetIndex];
+              double regressedJetpT=(reader->EvaluateRegression("BDTG method"))[0];
+              
+              //std::cout<<"Jet pT = "<<this_Jet_pt<<", corr = "<<this_Jet_corr<<", regressed pT = "<<regressedJetpT<<std::endl;
+              
+              jet_regressed_pT[jetIndex]=regressedJetpT;
+            }
+          }
+          
+          //
+          // std::cout<<"Writing out the regressed jet pT "<<std::endl;
+          // for (unsigned int j=0; j<(unsigned int)nJets; ++j) std::cout<<"jet_regressed_pT["<<j<<"]="<<jet_regressed_pT[j]=jet_pT[j]<<std::endl;
           
           // Write out tree
           outtree->Fill();
