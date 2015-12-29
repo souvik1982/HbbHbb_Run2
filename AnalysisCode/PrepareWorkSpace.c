@@ -88,7 +88,7 @@ void PrepareWorkSpace()
 
   gROOT->SetStyle("Plain");
 
-  TFile *f_MMMM_a=new TFile("LMRSelection/Histograms_BTagCSV_2015_Skim.root");
+  TFile *f_MMMM_a=new TFile("PreselectedWithoutRegression/LMRSelection/Histograms_BTagCSV_2015_Skim.root");
   f_MMMM_a->cd(); 
 
   RooRealVar *x;
@@ -188,7 +188,7 @@ for(int h=0; h<5;h++){
 
   //std::cout<<"Background CR->SR Scale  = "<<h_mX_SR->GetSumOfWeights()/h_mX_CR24->GetSumOfWeights()<<"  num " << h_mX_SR->GetSumOfWeights()<<"  den "<<h_mX_CR24->GetSumOfWeights()<< std::endl;
 
-  std::string filename="LMRSelection/Histograms_Graviton"+point[h]+"GeV.root";
+  std::string filename="PreselectedWithoutRegression/LMRSelection/Histograms_GluGluToBulkGravitonToHHTo4B_M-"+point[h]+"_narrow_13TeV-madgraph.root";
   
   TFile *signal=new TFile(filename.c_str());
   //TFile *signal_old=new TFile(filename_old.c_str());
@@ -367,13 +367,12 @@ for(int h=0; h<5;h++){
 		  std::cout<<point[h]<<" Datacard observation              -1"<<std::endl;
 		  std::cout<<point[h]<<" Datacard ----------"<<std::endl;
 
-		  std::cout<<point[h]<<" Datacard ----------"<<std::endl;
 
 
-		  std::cout<<"Datacard bin             HbbHbb          HbbHbb"<<std::endl;
-		  std::cout<<"Datacard process         signal_      background"<<std::endl;
-		  std::cout<<"Datacard process         0               1"<<std::endl;
-		  std::cout<<"Datacard rate            "<<ntoys_signal*btagSF<<"        "<<num_toys<<std::endl;
+		  std::cout<<point[h]<<" Datacard bin             HbbHbb          HbbHbb"<<std::endl;
+		  std::cout<<point[h]<<" Datacard process         signal_      background"<<std::endl;
+		  std::cout<<point[h]<<" Datacard process         0               1"<<std::endl;
+		  std::cout<<point[h]<<" Datacard rate            "<<ntoys_signal*btagSF<<"        "<<num_toys<<std::endl;
 		  std::cout<<point[h]<<" Datacard lumi            lnN     1.046            -     "<<std::endl;
 		  /*std::cout<<point[h]<<" Datacard JEC             lnN     "<<JEC/100.+1.<<"             -  1.00018     -"<<std::endl;
 		    std::cout<<point[h]<<" Datacard JER             lnN     "<<JER/100.+1.<<"              -   1.00843  -"<<std::endl;
@@ -383,14 +382,14 @@ for(int h=0; h<5;h++){
 		    std::cout<<point[h]<<" Datacard bg_free lnU    -   2.0   -   -"<<std::endl;
 		    std::cout<<point[h]<<" Datacard btag    lnN   1.1273  - 1.1273  -"<<std::endl;
 		    */
-		  std::cout<< "Datacard sg_p0   param   "<<sg_p0->getVal() <<  " "<<sg_p0->getError()<<std::endl;
-		  std::cout<< "Datacard sg_p1   param   "<<sg_p1->getVal() <<  " "<<sg_p1->getError()<<std::endl;
-		  std::cout<< "Datacard sg_p2   param   "<<sg_p2->getVal() <<  " "<<sg_p2->getError()<<std::endl;
-		  std::cout<< "Datacard sg_p3   param   "<<sg_p3->getVal() <<  " "<<sg_p3->getError()<<std::endl;
-		  std::cout<< "Datacard sg_p8   param   "<<sg_p8->getVal() <<  " "<<sg_p8->getError()<<std::endl;
-		  std::cout<< "Datacard bg_p0   param   "<<bg_p0.getVal() <<  " "<<bg_p0.getError()<<std::endl;
-		  std::cout<< "Datacard bg_p1   param   "<<bg_p1.getVal() <<  " "<<bg_p1.getError()<<std::endl;
-		  std::cout<< "Datacard bg_p2   param   "<<bg_p2.getVal() <<  " "<<bg_p2.getError()<<std::endl;
+		  std::cout<<point[h]<< " Datacard sg_p0   param   "<<sg_p0->getVal() <<  " "<<sg_p0->getError()<<std::endl;
+		  std::cout<<point[h]<< " Datacard sg_p1   param   "<<sg_p1->getVal() <<  " "<<sg_p1->getError()<<std::endl;
+		  std::cout<<point[h]<< " Datacard sg_p2   param   "<<sg_p2->getVal() <<  " "<<sg_p2->getError()<<std::endl;
+		  std::cout<<point[h]<< " Datacard sg_p3   param   "<<sg_p3->getVal() <<  " "<<sg_p3->getError()<<std::endl;
+		  std::cout<<point[h]<< " Datacard sg_p8   param   "<<sg_p8->getVal() <<  " "<<sg_p8->getError()<<std::endl;
+		  std::cout<<point[h]<< " Datacard bg_p0   param   "<<bg_p0.getVal() <<  " "<<bg_p0.getError()<<std::endl;
+		  std::cout<<point[h]<< " Datacard bg_p1   param   "<<bg_p1.getVal() <<  " "<<bg_p1.getError()<<std::endl;
+		  std::cout<<point[h]<< " Datacard bg_p2   param   "<<bg_p2.getVal() <<  " "<<bg_p2.getError()<<std::endl;
 
 
 
