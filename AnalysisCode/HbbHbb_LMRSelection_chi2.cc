@@ -161,17 +161,17 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
                   double mH2=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet2_p4.M():diJet1_p4.M();
                   
                   double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
-	 	  double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
-		  if(m_diff<m_diff_old && ((diJet2_p4.M()<150. && diJet2_p4.M()>80.) && (diJet1_p4.M()<160. && diJet1_p4.M()>90.)))
+                  double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                   
                   //if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
+                  if(m_diff<m_diff_old && ((diJet2_p4.M()<150. && diJet2_p4.M()>80.) && (diJet1_p4.M()<160. && diJet1_p4.M()>90.)))
                   {
                     H1jet1_i=j_jetIndex;
                     H1jet2_i=k_jetIndex;
                     H2jet1_i=l_jetIndex;
                     H2jet2_i=m_jetIndex;
                     chi2_old=chi2;
-		    m_diff_old=m_diff;
+                    m_diff_old=m_diff;
                     foundHH=true;
                   }
                 } // Conditions on 4th jet
@@ -272,8 +272,8 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
         
         // Apply kinematic constraint
         // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
-        // double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
-        double kinFitchi2=constrainHH_afterRegression(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        // double kinFitchi2=constrainHH_afterRegression(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
         h_kinFitchi2->Fill(kinFitchi2, eventWeight);
         TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
         
