@@ -109,17 +109,14 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
 void DisplaymHmX()
 {
   std::vector<TFile*> v_files;
-  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
-  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
-  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
-  //v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
-  //v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
-  //v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
-  // v_files.push_back(new TFile("Histograms_Graviton1600GeV.root"));
-  // v_files.push_back(new TFile("Histograms_Graviton2000GeV.root"));
-  // v_files.push_back(new TFile("Histograms_Graviton3000GeV.root"));
+  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
+  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
+  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("Histograms_Graviton300GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton400GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
   TFile *f_data=new TFile("Histograms_BTagCSV_2015_Skim.root");
-  TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8.root");
+  TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
   std::vector <double> mean_gen={300, 400, 600, 800, 1000, 1200};
   std::vector<int> v_colors = {kGreen, kGreen+2, kOrange, kOrange+2, kMagenta, kMagenta+2, kBlue, kBlue+2, kCyan, kCyan+2};
   
@@ -209,7 +206,7 @@ void DisplaymHmX()
   
   
   // Plot mX in SB region for Data and ttbar
-  /*
+  
   first=true;
   double lumi=2150; // /pb
   double xsec_ttbar=831.76; // pb
@@ -238,7 +235,7 @@ void DisplaymHmX()
   int bin2=h_mX_SB_kinFit_data->FindBin(1600.);
   double nDataEvents=h_mX_SB_kinFit_data->Integral(bin1, bin2);
   double nttbarEvents=h_mX_SB_kinFit_ttbar->Integral(bin1, bin2);
-  std::cout<<"nttbarEvents/nDataEvents = "<<nttbarEvents<<"/"<<nDataEvents<<" = "<<nttbarEvents/nDataEvents<<std::endl;*/
+  std::cout<<"nttbarEvents/nDataEvents = "<<nttbarEvents<<"/"<<nDataEvents<<" = "<<nttbarEvents/nDataEvents<<std::endl;
   
   
 }    
