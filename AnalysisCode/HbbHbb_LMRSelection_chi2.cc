@@ -124,7 +124,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
     
     bool foundHH=false;
     double chi2_old=200.;
-    double m_diff_old=50.;	
+    double m_diff_old=100.;	
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
     for (unsigned int j=0; j<jetIndex_CentralpT40btag_CSVOrder->size(); ++j)
@@ -164,7 +164,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                   
                   //if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
-                  if(m_diff<m_diff_old && ((diJet2_p4.M()<150. && diJet2_p4.M()>80.) && (diJet1_p4.M()<160. && diJet1_p4.M()>90.)))
+                  if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   {
                     H1jet1_i=j_jetIndex;
                     H1jet2_i=k_jetIndex;
