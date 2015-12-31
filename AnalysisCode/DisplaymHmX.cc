@@ -109,12 +109,15 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
 void DisplaymHmX()
 {
   std::vector<TFile*> v_files;
-  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
-  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
-  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
   v_files.push_back(new TFile("Histograms_Graviton300GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton400GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
+  /*v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton1600GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton2000GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton3000GeV.root"));*/
   TFile *f_data=new TFile("Histograms_BTagCSV_2015_Skim.root");
   TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
   std::vector <double> mean_gen={300, 400, 600, 800, 1000, 1200};
@@ -206,7 +209,6 @@ void DisplaymHmX()
   
   
   // Plot mX in SB region for Data and ttbar
-  
   first=true;
   double lumi=2150; // /pb
   double xsec_ttbar=831.76; // pb

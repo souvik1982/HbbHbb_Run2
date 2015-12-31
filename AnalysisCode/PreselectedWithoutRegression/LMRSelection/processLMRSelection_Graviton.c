@@ -1,15 +1,15 @@
 {
   gSystem->Load("../../libPhysicsToolsKinFitter.so");
   gROOT->LoadMacro("../../HbbHbb_LMRSelection_chi2.cc++");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-270_narrow_13TeV-madgraph");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-1000_narrow_13TeV-madgraph");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-1200_narrow_13TeV-madgraph");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-1600_narrow_13TeV-madgraph");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-2000_narrow_13TeV-madgraph");
-  HbbHbb_LMRSelection_chi2("Signal", "GluGluToBulkGravitonToHHTo4B_M-3000_narrow_13TeV-madgraph");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton260GeV");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton270GeV");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton300GeV");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton400GeV");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton600GeV");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton800GeV");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton1000GeV");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton1200GeV");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton1600GeV");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton2000GeV");
+  HbbHbb_LMRSelection_chi2("Signal", "Graviton3000GeV");
 }
