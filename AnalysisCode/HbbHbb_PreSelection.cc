@@ -8,6 +8,7 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 #include <TTree.h>
 #include <TChain.h>
 #include <iostream>
+#include "DrawFunctions.h"
 #include "TLorentzVector.h"
 
 #if not defined(__CINT__) || defined(__MAKECINT__)
@@ -72,7 +73,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   // Book variables
   int run;
   int evt;
-  int isData;
+  int isData, nTrueInt;
   float trigger_HLT_HH4bLowLumi;
   float vType;
   float puWeight, genWeight;
@@ -150,6 +151,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchStatus("*", 0);
   tree->SetBranchStatus("evt", 1);
   tree->SetBranchAddress("run", &run);                                   tree->SetBranchStatus("run", 1);  
+  tree->SetBranchAddress("nTrueInt",&nTrueInt);				 tree->SetBranchStatus("nTrueInt",1); 	
   tree->SetBranchAddress("isData", &isData);                             tree->SetBranchStatus("isData", 1);
   tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);   tree->SetBranchStatus("HLT_HH4bLowLumi", 1);
   tree->SetBranchAddress("Vtype", &(vType));                             tree->SetBranchStatus("Vtype", 1); 
@@ -248,7 +250,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     ++nCut0;
     tree->GetEvent(i);
     
-    if (isData!=1) eventWeight=puWeight*genWeight/fabs(genWeight);
+    if (isData!=1) eventWeight= weight2( nTrueInt )*genWeight/fabs(genWeight);
     else eventWeight=1;
     
     if (isData!=1)
