@@ -268,8 +268,8 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
         
         // Apply kinematic constraint
         // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
-        // double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
-        double kinFitchi2=constrainHH_afterRegression(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        // double kinFitchi2=constrainHH_afterRegression(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
         h_kinFitchi2->Fill(kinFitchi2, eventWeight);
         TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
         

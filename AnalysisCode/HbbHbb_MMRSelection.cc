@@ -12,34 +12,23 @@
 #include "HbbHbb_Component_SignalPurity.cc"
 #include "HbbHbb_Component_KinFit.cc"
 
-double pi=3.14159265358979;
-double H_mass=125.;
+double mean_H1_mass_=124;
+double sigma_H1_mass_=15; // 12;
+double mean_H2_mass_=117;
+double sigma_H2_mass_=20; // 13;
+
+/* to check against existing selection
+double mean_H1_mass_=125;
+double sigma_H1_mass_=17.5;
+double mean_H2_mass_=125;
+double sigma_H2_mass_=17.5;
+*/
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
   TLorentzVector jet_p4;
   jet_p4.SetPtEtaPhiM(pT, eta, phi, M);
   return jet_p4;
-}
-
-int withinRegion(double mH1, double mH2, double r1=15., double r2=30., double mH1_c=H_mass, double mH2_c=H_mass)
-{
-  double r=pow(pow(mH1-mH1_c, 2)+pow(mH2-mH2_c, 2), 0.5);
-  double angle=atan2(mH2-mH2_c, mH1-mH1_c);
-  // std::cout<<"(mH1, mH2) = ("<<mH1<<", "<<mH2<<") lies in region ";
-  int ret=-1;
-  if (r<r1) ret=0;
-  else if (r>r1 && r<r2)
-  {
-    if (angle>=0 && angle<pi/2.) ret=1;
-    else if (angle>=pi/2. && angle<pi) ret=4;
-    else if (angle<0 && angle>=-pi/2.) ret=2;
-    else if (angle<pi/2.&& angle>=-pi) ret=3;
-    else std::cout<<"This is within annulus but not within any CR!"<<std::endl;
-  }
-  else ret=5;
-  // std::cout<<ret<<std::endl;
-  return ret;
 }
 
 void HbbHbb_MMRSelection(std::string type, std::string sample)
@@ -132,7 +121,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
     tree->GetEvent(i);
     
     bool foundHH=false;
-    double m_diff_old=50.;
+    double m_diff_old=70.;
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
     
@@ -163,13 +152,6 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
                   unsigned int m_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(m);
                   jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
                   
-                  /*
-                  std::cout<<"j_jetIndex = "<<j_jetIndex<<", jet_pT[j_jetIndex] = "<<jet_pT[j_jetIndex]<<", jet_regressed_pT[j_jetIndex] = "<<jet_regressed_pT[j_jetIndex]<<std::endl;
-                  std::cout<<"k_jetIndex = "<<k_jetIndex<<", jet_pT[k_jetIndex] = "<<jet_pT[k_jetIndex]<<", jet_regressed_pT[k_jetIndex] = "<<jet_regressed_pT[k_jetIndex]<<std::endl;
-                  std::cout<<"l_jetIndex = "<<l_jetIndex<<", jet_pT[l_jetIndex] = "<<jet_pT[l_jetIndex]<<", jet_regressed_pT[l_jetIndex] = "<<jet_regressed_pT[l_jetIndex]<<std::endl;
-                  std::cout<<"m_jetIndex = "<<m_jetIndex<<", jet_pT[m_jetIndex] = "<<jet_pT[m_jetIndex]<<", jet_regressed_pT[m_jetIndex] = "<<jet_regressed_pT[m_jetIndex]<<std::endl;
-                  */
-                   
                   TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
                   TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
                   
@@ -227,7 +209,8 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
       h_H1_pT->Fill(pTH1, eventWeight);
       h_H2_mass->Fill(mH2, eventWeight);
       h_H2_pT->Fill(pTH2, eventWeight);
-      h_mH1_mH2_asym->Fill((pTH1>pTH2)?mH1:mH2, (pTH1>pTH2)?mH2:mH1, eventWeight);
+      h_mH1_mH2_asym->Fill(mH1, mH2, eventWeight);
+      double chi=pow(pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2), 0.5);
       
       // Apply bias correction
       TLorentzVector jet1_p4_biasCorrected=biasEt_signal(jet1_p4_unregressed);
@@ -247,7 +230,7 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
       h_H1_pT_biasCorrected->Fill(pTH1_biasCorrected, eventWeight);
       h_H2_mass_biasCorrected->Fill(mH2_biasCorrected, eventWeight);
       h_H2_pT_biasCorrected->Fill(pTH2_biasCorrected, eventWeight);
-      h_mH1_mH2_asym_biasCorrected->Fill((pTH1_biasCorrected>pTH2_biasCorrected)?mH1_biasCorrected:mH2_biasCorrected, (pTH1_biasCorrected>pTH2_biasCorrected)?mH2_biasCorrected:mH1_biasCorrected, eventWeight);
+      h_mH1_mH2_asym_biasCorrected->Fill(mH1_biasCorrected, mH2_biasCorrected, eventWeight);
       
       // Check purity of jet selection here
       TLorentzVector b1_p4;
@@ -274,15 +257,15 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
         }
       }
       
-      int region=withinRegion(mH1, mH2, 17.5, 35., H_mass, H_mass);
-      if (region==0) // SR
+      double oppSign=(mH1-mean_H1_mass_)*(mH2-mean_H2_mass_);
+      if (chi<=1)                                                                        // Signal Region
       {
         nCut5+=eventWeight;
         
         // Apply kinematic constraint
         // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
-        // double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
-        double kinFitchi2=constrainHH_afterRegression(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
+        // double kinFitchi2=constrainHH_afterRegression(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
         h_kinFitchi2->Fill(kinFitchi2, eventWeight);
         TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
         
@@ -327,9 +310,9 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
           h_HH_balance->Fill((X_p4 - gen_X_p4).Pt(), eventWeight);
           h_HH_balance_biasCorrected->Fill((X_p4_biasCorrected - gen_X_p4).Pt(), eventWeight);
           h_HH_balance_kinFit->Fill((X_p4_kinFit - gen_X_p4).Pt(), eventWeight);
-        }
+        } 
       }
-      else if (region==2 || region==4)                                   // Sideband Region
+      else if (1<chi && chi<2 && oppSign<0)                                   // Sideband Region
       {
         // Apply kinematic constraint
         // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
