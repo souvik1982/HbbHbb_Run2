@@ -12,16 +12,12 @@
 #include <TSystem.h>
 #include <TGraphErrors.h>
 #include <TF1.h>
+
+// Plot cosmetics
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV 
-int iPos =11;
+int iPos = 11;
 
-
-double H_mass=125.0;
-double mH_diff_cut=40.;
-double mH_mean_cut=20.;
-
-double rebin=5;
-bool useRatioFit=false;
+double rebin = 5;
 bool blind = true;
 
 double SR_lo=250.; // 350 for MMMM_nominal and 400 for MMMMbar
@@ -39,7 +35,6 @@ std::string itoa(int i)
   std::string ret(res);
   return ret;
 }
-
 
 /* TCanvas* comparePlots2(RooPlot *plot_bC, RooPlot *plot_bS, TH1F *data, TH1F *qcd, std::string title)
 {
@@ -103,7 +98,8 @@ std::string itoa(int i)
   p_1->cd();
   return c;
 }
-*/ 
+*/
+
 void BackgroundPrediction_Kinematic_GaussExp()
 {
 
@@ -112,7 +108,7 @@ void BackgroundPrediction_Kinematic_GaussExp()
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0); 
  
-   gROOT->LoadMacro("tdrstyle.C");
+  gROOT->LoadMacro("tdrstyle.C");
   //   setTDRStyle();
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
@@ -122,34 +118,31 @@ void BackgroundPrediction_Kinematic_GaussExp()
   writeExtraText = false;       // if extra text
   extraText  = "Preliminary";  // default extra text is "Preliminary"
   lumi_13TeV  = "2.2 fb^{-1}";  // default is "5.1 fb^{-1}"
-*/
-   TFile *f_MMMM_a=new TFile("PreselectedWithoutRegression/LMRSelection/Histograms_BTagCSV_2015_Skim.root");
-   f_MMMM_a->cd();
+  */
+  
+  TFile *f=new TFile("PreselectedWithoutRegression/LMRSelection/Histograms_BTagCSV_2015_Skim.root");
+  f->cd();
 
-   RooRealVar *x;
-   x=new RooRealVar("x", "m_{X} (GeV)", SR_lo, SR_hi);
+  RooRealVar *x;
+  x=new RooRealVar("x", "m_{X} (GeV)", SR_lo, SR_hi);
 
-   std::cout<<" = MMMM Background Prediction ==== "<<std::endl;
-   TH1F *h_mX_CR24=(TH1F*)f_MMMM_a->Get("h_mX_SB");
-   TH1F *h_mX_SR;
-   h_mX_SR=(TH1F*)f_MMMM_a->Get("h_mX_SR");
-   h_mX_CR24->SetLineColor(kBlue);
-   h_mX_SR->SetLineColor(kBlue);
-   TH1F *h_mMMMMa_SR_Prediction=(TH1F*)h_mX_CR24->Clone("h_mX_SR_Prediction");
-   double aC=h_mX_CR24->Integral(h_mX_CR24->FindBin(SR_lo), h_mX_CR24->FindBin(SR_hi));
- 
-   h_mX_CR24->Rebin(rebin);
-   h_mX_CR24->SetLineColor(kBlack);
-   h_mX_SR->Rebin(rebin);
-  TH1F *h_mX_SR_Prediction;
-  if(blind) h_mX_SR_Prediction= (TH1F*)h_mX_CR24->Clone("h_mX_SR_Prediction");
+  std::cout<<" === Background Prediction ==== "<<std::endl;
+  TH1F *h_mX_SB=(TH1F*)f->Get("h_mX_SB");
+  TH1F *h_mX_SR=(TH1F*)f->Get("h_mX_SR");
+  
+  h_mX_SB->Rebin(rebin);
+  h_mX_SR->Rebin(rebin);
+  
+  TH1F *h_mX_SR_Prediction=0;
+  if (blind) h_mX_SR_Prediction=(TH1F*)h_mX_SB->Clone("h_mX_SR_Prediction");
   else  h_mX_SR_Prediction=(TH1F*)h_mX_SR->Clone("h_mX_SR_Prediction");	
   h_mX_SR_Prediction->SetMarkerColor(kBlack);
-  RooRealVar bg_p0("bg_p0", "bg_p0", 300., 500.);
-  RooRealVar bg_p1("bg_p1", "bg_p1", 50., 100.1);
+  RooDataHist pred("pred", "Prediction from SB", RooArgList(*x), h_mX_SR_Prediction);
+  
+  RooRealVar bg_p0("bg_p0", "bg_p0", 270., 450.);
+  RooRealVar bg_p1("bg_p1", "bg_p1", 10., 100.1);
   RooRealVar bg_p2("bg_p2", "bg_p2", 0.01, 10.1);
   GaussExp bg("bg", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2);
-  RooDataHist pred("pred", "Prediction from SB", RooArgList(*x), h_mX_SR_Prediction);
   RooFitResult *r_bg=bg.fitTo(pred, RooFit::Range(SR_lo, SR_hi), RooFit::Save());
   //RooDataHist  data_=*(bg.generateBinned(x, h_mX_SR_Prediction->Integral(h_mX_SR_Prediction->FindBin(SR_lo), h_mX_SR->FindBin(SR_hi)-1) , RooAbsData::Poisson));
   std::cout<<" --------------------- Building Envelope --------------------- "<<std::endl;
@@ -157,129 +150,96 @@ void BackgroundPrediction_Kinematic_GaussExp()
   std::cout<< "bg_p1   param   "<<bg_p1.getVal() <<  " "<<bg_p1.getError()<<std::endl;
   std::cout<< "bg_p2   param   "<<bg_p2.getVal() <<  " "<<bg_p2.getError()<<std::endl;
 
-  RooPlot *aC_plot=x->frame();
-  pred.plotOn(aC_plot, RooFit::MarkerColor(kPink+2));
-  bg.plotOn(aC_plot, RooFit::VisualizeError(*r_bg, 1), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
-  bg.plotOn(aC_plot, RooFit::LineColor(kBlack));
-  pred.plotOn(aC_plot, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
-  TCanvas *c_rooFit=new TCanvas("c_rooFit", "c_rooFit", 700, 700);
-  c_rooFit->SetFillStyle(4000);
-  c_rooFit->SetFrameFillColor(0);
-
+  RooPlot *data_plot=x->frame();
+  pred.plotOn(data_plot, RooFit::MarkerColor(kPink+2));
+  bg.plotOn(data_plot, RooFit::VisualizeError(*r_bg, 1), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
+  bg.plotOn(data_plot, RooFit::LineColor(kBlack));
+  pred.plotOn(data_plot, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
+  
+  TCanvas *c_Background=new TCanvas("c_Background", "c_Background", 700, 700);
+  c_Background->SetFillStyle(4000);
+  c_Background->SetFrameFillColor(0);
   TPad *p_1=new TPad("p_1", "p_1", 0, 0.35, 1, 1);
   //p_1->SetBottomMargin(0.05);
   //p_2->SetBottomMargin(-.5);
   p_1->SetFillStyle(4000);
   p_1->SetFrameFillColor(0);
-  TPad *p_2 = new TPad("p_2", "p_2",0,0.003740648,0.9975278,0.3591022);
-   //p_2->Draw();
-   //p_2->cd();
-   p_2->Range(160.1237,-0.8717948,1008.284,2.051282);
-   p_2->SetFillColor(0);
-   p_2->SetBorderMode(0);
-   p_2->SetBorderSize(2);
-   p_2->SetTopMargin(0.01754386);
-   p_2->SetBottomMargin(0.2982456);
-   p_2->SetFrameBorderMode(0);
-   p_2->SetFrameBorderMode(0);
-
-   p_1->Draw();
-   p_2->Draw();
-   p_1->cd();
-
-   nbins = (int) (SR_hi- SR_lo)/(float)rebin;
-   x->setBins(nbins);
-   RooDataSet* data = bg.generate( *x , h_mX_SR_Prediction->GetEntries() );
-   RooDataHist *data_binned      = (RooDataHist*) data->binnedClone();
-   RooAbsReal* chi2_data  = bg.createChi2(*data_binned);
-
-   std::cout << "chi2(data) " <<  chi2_data->getVal() << " nbin " <<nbins<<std::endl;
-
-   std::cout << "p-value: data     under hypothesis H0:  " << TMath::Prob(chi2_data->getVal(), nbins - 1) << std::endl;
-
-
-   aC_plot->GetXaxis()->SetRangeUser(SR_lo, SR_hi);
-   h_mX_SR_Prediction->GetXaxis()->SetRangeUser(SR_lo, SR_hi);
-   h_mX_SR_Prediction->Draw("Ep9 SAME");
-   aC_plot->Draw();
-   aC_plot->GetXaxis()->SetTitle("m_{X} (GeV) ");  aC_plot->GetYaxis()->SetTitle("Events / 3 GeV ");    
-   aC_plot->SetTitle("");
-   TPaveText *pave = new TPaveText(0.85625,0.7,0.67,0.8,"NDC");
-  //TLegend *leg = new TLegend(0.85625,0.7721654,0.6765625,0.8903839,NULL,"brNDC");`
-   pave->SetBorderSize(0);
-   pave->SetTextSize(0.03);
-   pave->SetLineColor(1);
-   pave->SetLineStyle(1);
-   pave->SetLineWidth(2);
-   pave->SetFillColor(0);
-   pave->SetFillStyle(0);
-   char name[1000];
-   sprintf(name,"SB #chi^{2}/n = %.2f",chi2_data->getVal()/(nbins-1));//aC_plot->chiSquare());
-   if(!blind)  sprintf(name,"SR #chi^{2}/n = %.2f",chi2_data->getVal()/(nbins-1));	
-   pave->AddText(name);
-  //sprintf(name,"p-value = %.3f",TMath::Prob(chi2_data->getVal(), nbins - 1)); pave->AddText(name);
-   pave->Draw(); 
-    // ---------------------
-    // Envelope of functions
-    // RooRealVar bg_pred0_p("bg_pred0_p", "bg_pred0_p", bg_pred0->getVal()+bg_pred0->getError()/2.);
-    // RooRealVar bg_pred0_m("bg_pred0_m", "bg_pred0_m", bg_pred0->getVal()-bg_pred0->getError()/2.);
-    // RooRealVar bg_pred1_p("bg_pred1_p", "bg_pred1_p", bg_pred1->getVal()+bg_pred1->getError()/2.);
-    // RooRealVar bg_pred1_m("bg_pred1_m", "bg_pred1_m", bg_pred1->getVal()-bg_pred1->getError()/2.);
-    // RooRealVar bg_pred2_p("bg_pred2_p", "bg_pred2_p", bg_pred2->getVal()+bg_pred2->getError()/2.);
-    // RooRealVar bg_pred2_m("bg_pred2_m", "bg_pred2_m", bg_pred2->getVal()-bg_pred2->getError()/2.);
-    // GaussExp bg_pred_Env_p0_p("bg_pred_Env_p0_p", "bg_pred_Env_p0_p", x, bg_pred0_p, *bg_pred1,   *bg_pred2);
-    // GaussExp bg_pred_Env_p0_m("bg_pred_Env_p0_m", "bg_pred_Env_p0_m", x, bg_pred0_m, *bg_pred1,   *bg_pred2);
-    // GaussExp bg_pred_Env_p1_p("bg_pred_Env_p1_p", "bg_pred_Env_p1_p", x, *bg_pred0,   bg_pred1_p, *bg_pred2);
-    // GaussExp bg_pred_Env_p1_m("bg_pred_Env_p1_m", "bg_pred_Env_p1_m", x, *bg_pred0,   bg_pred1_m, *bg_pred2);
-    // GaussExp bg_pred_Env_p2_p("bg_pred_Env_p2_p", "bg_pred_Env_p2_p", x, *bg_pred0,   *bg_pred1,   bg_pred2_p);
-    // GaussExp bg_pred_Env_p2_m("bg_pred_Env_p2_m", "bg_pred_Env_p2_m", x, *bg_pred0,   *bg_pred1,   bg_pred2_m);
-    // ---------------------
-    // ---------------------
-    // Plot envelopes
-    // bg_pred_Env_p0_p.plotOn(aS_plot, RooFit::LineColor(kBlack), RooFit::Range(SR_lo, SR_hi));
-    // bg_pred_Env_p0_m.plotOn(aS_plot, RooFit::LineColor(kRed-1), RooFit::Range(SR_lo, SR_hi));
-    // bg_pred_Env_p1_p.plotOn(aS_plot, RooFit::LineColor(kBlue+1), RooFit::Range(SR_lo, SR_hi));
-    // bg_pred_Env_p1_m.plotOn(aS_plot, RooFit::LineColor(kBlue-1), RooFit::Range(SR_lo, SR_hi));
-    // bg_pred_Env_p2_p.plotOn(aS_plot, RooFit::LineColor(kBlack), RooFit::Range(SR_lo, SR_hi));
-    // bg_pred_Env_p2_m.plotOn(aS_plot, RooFit::LineColor(kRed-1), RooFit::Range(SR_lo, SR_hi));
-    // ---------------------
-   std::cout<<" === === "<<std::endl;
-   std::cout<<"chi^2/n of SB = "<<aC_plot->chiSquare()<<std::endl;
-   std::cout<<" === === "<<std::endl;
- 
-   TLatex * tPrel = new TLatex();
-   tPrel->SetNDC();
-   tPrel->SetTextColor(kBlack);
-   tPrel->SetTextSize(0.04027386);
+  TPad *p_2 = new TPad("p_2", "p_2", 0, 0.004, 1.0 , 0.35);
+  //p_2->Draw();
+  //p_2->cd();
+  p_2->Range(160.1237,-0.8717948,1008.284,2.051282);
+  p_2->SetFillColor(0);
+  p_2->SetBorderMode(0);
+  p_2->SetBorderSize(2);
+  p_2->SetTopMargin(0.01754386);
+  p_2->SetBottomMargin(0.2982456);
+  p_2->SetFrameBorderMode(0);
+  p_2->SetFrameBorderMode(0);
+  p_1->Draw();
+  p_2->Draw();
+  p_1->cd();
   
-   TLegend *leg = new TLegend(0.85625,0.7721654,0.6765625,0.8903839,NULL,"brNDC");
-   leg->SetBorderSize(0);
-   leg->SetTextSize(0.035);
-   leg->SetLineColor(1);
-   leg->SetLineStyle(1);
-   leg->SetLineWidth(2);
-   leg->SetFillColor(0);
-   leg->SetFillStyle(0);
-   h_mX_SR_Prediction->SetMarkerColor(kBlack);
-   h_mX_SR_Prediction->SetLineColor(kBlack);
-   h_mX_SR_Prediction->SetMarkerStyle(20);
-   h_mX_SR_Prediction->GetYaxis()->SetTitle(" Events / 20 GeV");
-   if(blind) leg->AddEntry(h_mX_SR_Prediction, "Data in SB", "lep");
-   else leg->AddEntry(h_mX_SR_Prediction, "Data in SR", "lep");	
-	
-   TH1F *h=new TH1F();
-   h->SetLineColor(kRed);
-   h->SetLineWidth(3);
-   leg->Draw();
+  // Calculating fit chi^2 and p-value
+  int nbins = (int) (SR_hi- SR_lo)/(float)rebin;
+  x->setBins(nbins);
+  RooDataSet* data = bg.generate( *x , h_mX_SR_Prediction->GetEntries() );
+  RooDataHist *data_binned      = (RooDataHist*) data->binnedClone();
+  RooAbsReal* chi2_data  = bg.createChi2(*data_binned);
+  std::cout << "chi2(data) " <<  chi2_data->getVal() << " nbin " <<nbins<<std::endl;
+  std::cout << "p-value: data     under hypothesis H0:  " << TMath::Prob(chi2_data->getVal(), nbins - 1) << std::endl;
 
+  // data_plot->GetXaxis()->SetRangeUser(SR_lo, SR_hi);
+  // h_mX_SR_Prediction->GetXaxis()->SetRangeUser(SR_lo, SR_hi);
+  // h_mX_SR_Prediction->Draw("Ep9 SAME");
+  data_plot->Draw();
+  data_plot->GetXaxis()->SetTitle("m_{X} (GeV) ");
+  data_plot->GetYaxis()->SetTitle("Events / 3 GeV ");    
+  data_plot->SetTitle("");
+  
+  TPaveText *pave = new TPaveText(0.85625,0.7,0.67,0.8,"NDC");
+  pave->SetBorderSize(0);
+  pave->SetTextSize(0.03);
+  pave->SetLineColor(1);
+  pave->SetLineStyle(1);
+  pave->SetLineWidth(2);
+  pave->SetFillColor(0);
+  pave->SetFillStyle(0);
+  char name[1000];
+  sprintf(name,"SB #chi^{2}/n = %.2f",chi2_data->getVal()/(nbins-1));//aC_plot->chiSquare());
+  if (!blind) sprintf(name,"SR #chi^{2}/n = %.2f",chi2_data->getVal()/(nbins-1));  
+  pave->AddText(name);
+  //sprintf(name,"p-value = %.3f",TMath::Prob(chi2_data->getVal(), nbins - 1)); pave->AddText(name);
+  pave->Draw(); 
+    
+  std::cout<<" === === "<<std::endl;
+  std::cout<<"chi^2/n of SB = "<<data_plot->chiSquare()<<std::endl;
+  std::cout<<" === === "<<std::endl;
+ 
+  TLatex * tPrel = new TLatex();
+  tPrel->SetNDC();
+  tPrel->SetTextColor(kBlack);
+  tPrel->SetTextSize(0.04027386);
+  
+  TLegend *leg = new TLegend(0.85625,0.7721654,0.6765625,0.8903839,NULL,"brNDC");
+  leg->SetBorderSize(0);
+  leg->SetTextSize(0.035);
+  leg->SetLineColor(1);
+  leg->SetLineStyle(1);
+  leg->SetLineWidth(2);
+  leg->SetFillColor(0);
+  leg->SetFillStyle(0);
+  h_mX_SR_Prediction->SetMarkerColor(kBlack);
+  h_mX_SR_Prediction->SetLineColor(kBlack);
+  h_mX_SR_Prediction->SetMarkerStyle(20);
+  if (blind) leg->AddEntry(h_mX_SR_Prediction, "Data in SB", "lep");
+  else leg->AddEntry(h_mX_SR_Prediction, "Data in SR", "lep"); 
+	leg->Draw();
 
-//// print KS
-
-  //CMS_lumi( p_1, iPeriod, iPos );
+  // CMS_lumi( p_1, iPeriod, iPos );
 
   p_2->cd();
   RooHist* hpull;
-  hpull = aC_plot->pullHist();
+  hpull = data_plot->pullHist();
   hpull->GetXaxis()->SetRangeUser(SR_lo, SR_hi);
   RooPlot* frameP = x->frame() ;
   frameP->SetTitle("");
@@ -299,10 +259,10 @@ void BackgroundPrediction_Kinematic_GaussExp()
   frameP->Draw();
    
   string tag;
-  if(blind) tag= "SB";
+  if (blind) tag= "SB";
   else tag="SR";	
  
-   c_rooFit->SaveAs((tag+"_RooFit_GaussExp.pdf").c_str()); 
+  c_Background->SaveAs((tag+"_RooFit_GaussExp.pdf").c_str()); 
   
   // --- Ratio of function to data points ---
   /*
