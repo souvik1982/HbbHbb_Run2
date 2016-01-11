@@ -1,3 +1,10 @@
+/*---------------------------------------------------/
+| A multipurpose bump hunter                         |
+| applied on various points on the mH1, mH2 plane    |
+| in the 4b final state                              |
+| (O) Souvik Das 2016                                |
+/---------------------------------------------------*/
+
 #include <TH1F.h>
 #include <TH2F.h>
 #include <TROOT.h>
