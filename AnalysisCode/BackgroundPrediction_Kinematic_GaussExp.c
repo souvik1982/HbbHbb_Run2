@@ -20,9 +20,6 @@ int iPos = 11;
 
 double rebin = 20;
 
-double SR_lo=250.; // 350 for MMMM_nominal and 400 for MMMMbar
-double SR_hi=2550.;
-
 std::string itoa(int i) 
 {
   char res[10];
