@@ -355,7 +355,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
           fillIndexVectorFromJetList(jetList_CentralpT40btag_CSVOrder, &jetIndex_CentralpT40btag_CSVOrder);
           fillIndexVectorFromJetList(jetList_CentralpT40btag_CMVAOrder, &jetIndex_CentralpT40btag_CMVAOrder);
           fillIndexVectorFromJetList(jetList_Central_pTOrder, &jetIndex_Central_pTOrder);
-	  fillIndexVectorFromJetList(jetList_CentralpT40_CSVOrder, &jetIndex_CentralpT40_CSVOrder);
+          fillIndexVectorFromJetList(jetList_CentralpT40_CSVOrder, &jetIndex_CentralpT40_CSVOrder);
           
           // Perform b-jet regression here
           // std::cout<<" === new event with at least 3 central b-tagged pT > 40 jets === "<<std::endl;
@@ -411,7 +411,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         jetIndex_CentralpT40btag_CSVOrder.clear();
         jetIndex_CentralpT40btag_CMVAOrder.clear();
         jetIndex_Central_pTOrder.clear();
-	jetIndex_CentralpT40_CSVOrder.clear();
+        jetIndex_CentralpT40_CSVOrder.clear();
         
       } // vType==-1
     } // Trigger
