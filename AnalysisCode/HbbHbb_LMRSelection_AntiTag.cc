@@ -17,7 +17,7 @@ double sigma_H1_mass_=15; // 12;
 double mean_H2_mass_=117;
 double sigma_H2_mass_=20; // 13;
 
-/* to check against existing selection
+/* //to check against existing selection
 double mean_H1_mass_=125;
 double sigma_H1_mass_=17.5;
 double mean_H2_mass_=125;
@@ -174,7 +174,10 @@ void HbbHbb_LMRSelection_AntiTag(std::string type, std::string sample)
                   
                   //if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
                   if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
+                  //if(m_diff<m_diff_old && ((90.<mH1 && mH1<160.) && (90.<mH2 && mH2<160.)))	
                   {
+		     if((jet2_p4.Pt()>90&&jet4_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet1_p4.Pt()>90)||(jet1_p4.Pt()>90&&jet4_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet2_p4.Pt()>90)|| (jet1_p4.Pt()>90&&jet2_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet4_p4.Pt()>90)){
+
                     H1jet1_i=j_jetIndex;
                     H1jet2_i=k_jetIndex;
                     H2jet1_i=l_jetIndex;
@@ -182,6 +185,7 @@ void HbbHbb_LMRSelection_AntiTag(std::string type, std::string sample)
                     chi2_old=chi2;
                     m_diff_old=m_diff;
                     foundHH=true;
+			}
                   }
                 } // Conditions on 4th jet
               } // Loop over 4th jet
