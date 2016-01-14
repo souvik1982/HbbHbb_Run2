@@ -16,22 +16,7 @@
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV 
 int iPos = 20;
 
-double rebin = 20;
-
-double quad(double a, double b, double c=0, double d=0, double e=0, double f=0)
-{
-  return pow(a*a+b*b+c*c+d*d+e*e+f*f, 0.5);
-}
-
-std::string itoa(int i) 
-{
-  char res[10];
-  sprintf(res, "%d", i);
-  std::string ret(res);
-  return ret;
-}
-
-void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, 
+void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, double rebin,
                                            double fit_lo, double fit_hi, 
                                            double gaussexp_mean_lo, double gaussexp_mean_hi, 
                                            double gaussexp_width_lo, double gaussexp_width_hi,
