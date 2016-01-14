@@ -122,7 +122,7 @@ void BackgroundPrediction_AntiTag_GaussExp()
   lumi_13TeV  = "2.2 fb^{-1}";  // default is "5.1 fb^{-1}"
  */
 
-  TFile *f=new TFile("PreselectedWithoutRegression/LMRSelection_AntiTag/Histograms_Data_BTagCSV_2015_Skim.root");
+  TFile *f=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   f->cd();
 
   RooRealVar *x;

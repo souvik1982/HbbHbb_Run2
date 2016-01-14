@@ -19,7 +19,7 @@
 
 #include "TDRStyle.h"
 
-ouble mean_H1_mass_=124;
+double mean_H1_mass_=124;
 double sigma_H1_mass_=15; // 12;
 double mean_H2_mass_=117;
 double sigma_H2_mass_=20; // 13;
@@ -105,13 +105,10 @@ void DisplaymHmX()
   v_files.push_back(new TFile("Histograms_Graviton300GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton400GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
-  /*v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
+  v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton1600GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton2000GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton3000GeV.root"));*/
-  TFile *f_data=new TFile("Histograms_BTagCSV_2015_Skim.root");
+  TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
   std::vector <double> mean_gen={300, 400, 600, 800, 1000, 1200};
   std::vector<int> v_colors = {kGreen, kGreen+2, kOrange, kOrange+2, kMagenta, kMagenta+2, kBlue, kBlue+2, kCyan, kCyan+2};

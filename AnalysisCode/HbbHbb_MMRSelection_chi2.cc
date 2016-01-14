@@ -87,27 +87,27 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
   TH1F *h_chi=new TH1F("h_chi", "; HH #chi", 100, 0, 100);
   TH1F *h_chi_biasCorrected=new TH1F("h_chi_biasCorrected", "; HH #chi", 100, 0, 100);
   
-  TH1F *h_mX_SR         = new TH1F("h_mX_SR", "; m_{X} (GeV)", 2000, 0., 2000.);          h_mX_SR->Sumw2();
-  TH1F *h_mX_SR_purity0 = new TH1F("h_mX_SR_purity0", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_purity0->Sumw2();
-  TH1F *h_mX_SR_purity1 = new TH1F("h_mX_SR_purity1", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_purity1->Sumw2();
-  TH1F *h_mX_SR_purity2 = new TH1F("h_mX_SR_purity2", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_purity2->Sumw2();
-  TH1F *h_mX_SR_purity3 = new TH1F("h_mX_SR_purity3", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_purity3->Sumw2();
-  TH1F *h_mX_SR_purity4 = new TH1F("h_mX_SR_purity4", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_purity4->Sumw2();
-  TH1F *h_mX_SR_purity5 = new TH1F("h_mX_SR_purity5", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_purity5->Sumw2();
-  TH1F *h_mX_SR_biasCorrected = new TH1F("h_mX_SR_biasCorrected", "; m_{X} (GeV)", 2000, 0., 2000.); h_mX_SR_biasCorrected->Sumw2();
+  TH1F *h_mX_SR         = new TH1F("h_mX_SR", "; m_{X} (GeV)", 3000, 0., 3000.);          h_mX_SR->Sumw2();
+  TH1F *h_mX_SR_purity0 = new TH1F("h_mX_SR_purity0", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_purity0->Sumw2();
+  TH1F *h_mX_SR_purity1 = new TH1F("h_mX_SR_purity1", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_purity1->Sumw2();
+  TH1F *h_mX_SR_purity2 = new TH1F("h_mX_SR_purity2", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_purity2->Sumw2();
+  TH1F *h_mX_SR_purity3 = new TH1F("h_mX_SR_purity3", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_purity3->Sumw2();
+  TH1F *h_mX_SR_purity4 = new TH1F("h_mX_SR_purity4", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_purity4->Sumw2();
+  TH1F *h_mX_SR_purity5 = new TH1F("h_mX_SR_purity5", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_purity5->Sumw2();
+  TH1F *h_mX_SR_biasCorrected = new TH1F("h_mX_SR_biasCorrected", "; m_{X} (GeV)", 3000, 0., 3000.); h_mX_SR_biasCorrected->Sumw2();
   
-  TH1F *h_mX_SR_kinFit         = new TH1F("h_mX_SR_kinFit", "; m_{X} (GeV)", 2000, 0., 2000.);          h_mX_SR_kinFit->Sumw2();
-  TH1F *h_mX_SR_kinFit_purity0 = new TH1F("h_mX_SR_kinFit_purity0", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_kinFit_purity0->Sumw2();
-  TH1F *h_mX_SR_kinFit_purity1 = new TH1F("h_mX_SR_kinFit_purity1", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_kinFit_purity1->Sumw2();
-  TH1F *h_mX_SR_kinFit_purity2 = new TH1F("h_mX_SR_kinFit_purity2", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_kinFit_purity2->Sumw2();
-  TH1F *h_mX_SR_kinFit_purity3 = new TH1F("h_mX_SR_kinFit_purity3", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_kinFit_purity3->Sumw2();
-  TH1F *h_mX_SR_kinFit_purity4 = new TH1F("h_mX_SR_kinFit_purity4", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_kinFit_purity4->Sumw2();
-  TH1F *h_mX_SR_kinFit_purity5 = new TH1F("h_mX_SR_kinFit_purity5", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_SR_kinFit_purity5->Sumw2();
+  TH1F *h_mX_SR_kinFit         = new TH1F("h_mX_SR_kinFit", "; m_{X} (GeV)", 3000, 0., 3000.);          h_mX_SR_kinFit->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity0 = new TH1F("h_mX_SR_kinFit_purity0", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_kinFit_purity0->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity1 = new TH1F("h_mX_SR_kinFit_purity1", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_kinFit_purity1->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity2 = new TH1F("h_mX_SR_kinFit_purity2", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_kinFit_purity2->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity3 = new TH1F("h_mX_SR_kinFit_purity3", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_kinFit_purity3->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity4 = new TH1F("h_mX_SR_kinFit_purity4", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_kinFit_purity4->Sumw2();
+  TH1F *h_mX_SR_kinFit_purity5 = new TH1F("h_mX_SR_kinFit_purity5", "; m_{X} (GeV)", 3000, 0., 3000.);  h_mX_SR_kinFit_purity5->Sumw2();
   TH1F *h_HH_balance_kinFit = new TH1F("h_HH_balance_kinFit", "; (#vec{p}_{H1} + #vec{p}_{H2} - #vec{p}_{X}^{gen})_{T} GeV", 200, 0, 200.);
   
-  TH1F *h_mX_SB               = new TH1F("h_mX_SB", "; m_{X} (GeV)", 2000, 0., 2000.);                 h_mX_SB->Sumw2();
-  TH1F *h_mX_SB_biasCorrected = new TH1F("h_mX_SB_biasCorrected", "; m_{X} (GeV)", 2000, 0., 2000.);   h_mX_SB_biasCorrected->Sumw2();
-  TH1F *h_mX_SB_kinFit        = new TH1F("h_mX_SB_kinFit", "; m_{X} (GeV)", 2000, 0., 2000.);          h_mX_SB_kinFit->Sumw2();
+  TH1F *h_mX_SB               = new TH1F("h_mX_SB", "; m_{X} (GeV)", 3000, 0., 3000.);                 h_mX_SB->Sumw2();
+  TH1F *h_mX_SB_biasCorrected = new TH1F("h_mX_SB_biasCorrected", "; m_{X} (GeV)", 3000, 0., 3000.);   h_mX_SB_biasCorrected->Sumw2();
+  TH1F *h_mX_SB_kinFit        = new TH1F("h_mX_SB_kinFit", "; m_{X} (GeV)", 3000, 0., 3000.);          h_mX_SB_kinFit->Sumw2();
   
   // Get the h_Cuts histogram
   std::string histfilename="Histograms_"+sample+".root";
