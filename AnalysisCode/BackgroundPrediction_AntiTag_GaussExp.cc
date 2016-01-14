@@ -31,7 +31,13 @@ std::string itoa(int i)
   return ret;
 }
 
-void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, double fit_lo, double fit_hi, std::string hist1="h_mX_SB_kinFit", std::string hist2="h_mX_SR_kinFit", std::string log="lin")
+void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, 
+                                           double fit_lo, double fit_hi, 
+                                           double gaussexp_mean_lo, double gaussexp_mean_hi, 
+                                           double gaussexp_width_lo, double gaussexp_width_hi,
+                                           double gaussexp_exp_lo, double gaussexp_exp_hi,
+                                           std::string hist1="h_mX_SB_kinFit", std::string hist2="h_mX_SR_kinFit", 
+                                           std::string log="lin")
 {
   gROOT->SetStyle("Plain");
   gROOT->LoadMacro("tdrstyle.C");
@@ -59,28 +65,28 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   x=new RooRealVar("x", "m_{X} (GeV)", plot_lo, plot_hi);
   
   // SB Fit
-  RooRealVar bC_p0("bC_p0", "bC_p0", 450., 600.);
-  RooRealVar bC_p1("bC_p1", "bC_p1", 10., 200.1);
-  RooRealVar bC_p2("bC_p2", "bC_p2", 0.01, 5.1);
+  RooRealVar bC_p0("bC_p0", "bC_p0", gaussexp_mean_lo, gaussexp_mean_hi);
+  RooRealVar bC_p1("bC_p1", "bC_p1", gaussexp_width_lo, gaussexp_width_hi);
+  RooRealVar bC_p2("bC_p2", "bC_p2", gaussexp_exp_lo, gaussexp_exp_hi);
   GaussExp bC_fit("bC_fit", "bC Fit", *x, bC_p0, bC_p1, bC_p2);
   RooDataHist bC_data("bC_data", "bC Data", RooArgList(*x), h_mX_SB);
-  RooFitResult *r_bC_fit=bC_fit.fitTo(bC_data, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
+  RooFitResult *r_bC_fit=bC_fit.fitTo(bC_data, RooFit::Range(fit_lo, fit_hi), RooFit::SumW2Error(kTRUE), RooFit::Save());
   RooPlot *bC_plot=x->frame();
   bC_data.plotOn(bC_plot);
-  // bC_fit.plotOn(bC_plot, RooFit::VisualizeError(*r_bC_fit), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
+  bC_fit.plotOn(bC_plot, RooFit::VisualizeError(*r_bC_fit), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
   bC_fit.plotOn(bC_plot, RooFit::LineColor(kBlack));
   bC_data.plotOn(bC_plot, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
 
   // bS
-  RooRealVar bS_p0("bS_p0", "bS_p0", 450., 600.);
-  RooRealVar bS_p1("bS_p1", "bS_p1", 10., 200.1);
-  RooRealVar bS_p2("bS_p2", "bS_p2", 0.01, 5.1);
+  RooRealVar bS_p0("bS_p0", "bS_p0", gaussexp_mean_lo, gaussexp_mean_hi);
+  RooRealVar bS_p1("bS_p1", "bS_p1", gaussexp_width_lo, gaussexp_width_hi);
+  RooRealVar bS_p2("bS_p2", "bS_p2", gaussexp_exp_lo, gaussexp_exp_hi);
   GaussExp bS_fit("bS_fit", "bS Fit", *x, bS_p0, bS_p1, bS_p2);
   RooDataHist bS_data("bS_data", "bS Data", RooArgList(*x), h_mX_SR);
-  RooFitResult *r_bS_fit=bS_fit.fitTo(bS_data, RooFit::Range(fit_lo, fit_hi), RooFit::Save()); // RooFit::SumW2Error(kTRUE), 
+  RooFitResult *r_bS_fit=bS_fit.fitTo(bS_data, RooFit::Range(fit_lo, fit_hi), RooFit::SumW2Error(kTRUE), RooFit::Save()); 
   RooPlot *bS_plot=x->frame();
   bS_data.plotOn(bS_plot);
-  // bS_fit.plotOn(bS_plot,RooFit::VisualizeError(*r_bS_fit), RooFit::FillColor(kBlue+1), RooFit::FillStyle(3001));
+  bS_fit.plotOn(bS_plot,RooFit::VisualizeError(*r_bS_fit), RooFit::FillColor(kBlue+1), RooFit::FillStyle(3001));
   bS_fit.plotOn(bS_plot, RooFit::LineColor(kBlue+1));
   bS_data.plotOn(bS_plot, RooFit::LineColor(kBlue+1), RooFit::MarkerColor(kBlue+1));
 
@@ -96,7 +102,6 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   
   TCanvas *c_AntiTag_GaussExp=new TCanvas("c_AntiTag_GaussExp", "c_AntiTag_GaussExp", 700, 700);
   TPad *p_1=new TPad("p_1", "p_1", 0, 0.35, 1, 1);
-  if (log=="log") p_1->SetLogy();
   TPad *p_2=new TPad("p_2", "p_2", 0, 0, 1, 0.35);
   p_2->SetFillColor(0);
   p_2->SetBorderMode(0);
@@ -110,10 +115,12 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   double max1=h_mX_SR->GetMaximum();
   double max2=h_mX_SB->GetMaximum();
   double maxy=(max1>max2) ? max1 : max2;
-  bC_plot->GetYaxis()->SetRangeUser(1e-4, maxy*1.5);
+  if (log=="log") bC_plot->GetYaxis()->SetRangeUser(1e-4, maxy*1.5);
+  else bC_plot->GetYaxis()->SetRangeUser(0, maxy*1.5);
   bC_plot->SetTitle("; m_{X} (GeV); Normalized units");
   bC_plot->Draw();
   bS_plot->Draw("same");
+  if (log=="log") p_1->SetLogy();
   
   TPaveText *pave = new TPaveText(0.60, 0.60, 0.89, 0.69, "NDC");
   pave->SetBorderSize(0);
@@ -150,10 +157,11 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   
   p_2->cd();
   h_ratio->GetYaxis()->SetRangeUser(0, 2.);
-  h_ratio->GetXaxis()->SetTitleSize(0.09);
-  h_ratio->GetXaxis()->SetTitleOffset(1.0);
-  h_ratio->GetXaxis()->SetLabelSize(0.07);
   h_ratio->GetYaxis()->SetLabelSize(0.06);
+  h_ratio->GetYaxis()->SetTitleSize(0.05);
+  h_ratio->GetXaxis()->SetTitleSize(0.1);
+  h_ratio->GetXaxis()->SetTitleOffset(1.0);
+  h_ratio->GetXaxis()->SetLabelSize(0.1);
   h_ratio->SetMarkerStyle(20);
   h_ratio->SetLineColor(kBlack);
   h_ratio->Draw();
