@@ -117,6 +117,7 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
   tFile1->Close();
   
   // Event loop
+  int nEvents=tree->GetEntries();
   double nCut4=0, nCut5=0, nCutGen=0;
   for (int i=0; i<tree->GetEntries(); ++i)
   {
@@ -163,7 +164,7 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
                   double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                   
-                  //if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
+                  //if (chi2<chi2_old)
                   if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   {
                     H1jet1_i=j_jetIndex;

@@ -139,7 +139,8 @@ void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
     for (unsigned int j=0; j<jetIndex_CentralpT40btag_CSVOrder->size(); ++j)
-    { 	
+    {
+      	
       unsigned int j_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(j);
       TLorentzVector jet1_p4, jet2_p4, jet3_p4, jet4_p4;
       jet1_p4=fillTLorentzVector(jet_regressed_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
@@ -174,8 +175,8 @@ void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
                   double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                   
-                  if (chi2<chi2_old)
-                  // if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
+                  // if (chi2<chi2_old)
+                  if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   {
                     H1jet1_i=j_jetIndex;
                     H1jet2_i=k_jetIndex;
