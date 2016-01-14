@@ -31,7 +31,7 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   return jet_p4;
 }
 
-void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
+void HbbHbb_MMRSelection_chi2_AntiTag(std::string type, std::string sample)
 {
 
   std::string inputfilename="../PreSelected_"+sample+".root";
