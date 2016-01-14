@@ -20,9 +20,6 @@ int iPos = 11;
 
 double rebin = 20;
 
-double SR_lo=250.; // 350 for MMMM_nominal and 400 for MMMMbar
-double SR_hi=2550.;
-
 std::string itoa(int i) 
 {
   char res[10];
@@ -31,7 +28,7 @@ std::string itoa(int i)
   return ret;
 }
 
-void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, double fit_lo, double fit_hi, std::string log="lin", std::string blind="blind")
+void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, double fit_lo, double fit_hi, std::string hist="h_mX_SB_kinFit", std::string log="lin")
 {
 
   gROOT->SetStyle("Plain");
@@ -46,9 +43,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   */
   
   TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
-  TH1F *h_mX_SR;
-  if (blind=="blind") h_mX_SR=(TH1F*)f_data->Get("h_mX_SB");
-  else h_mX_SR=(TH1F*)f_data->Get("h_mX_SR_kinFit");
+  TH1F *h_mX_SR=(TH1F*)f_data->Get(hist.c_str());
   h_mX_SR->Rebin(rebin);
   
   RooRealVar *x;
@@ -95,7 +90,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   data_plot->Draw();
   data_plot->SetTitle("; m_{X} (GeV); Events / 3 GeV");
   
-  TPaveText *pave = new TPaveText(0.85625,0.7,0.67,0.8,"NDC");
+  TPaveText *pave = new TPaveText(0.86,0.7,0.67,0.8,"NDC");
   pave->SetBorderSize(0);
   pave->SetTextSize(0.03);
   pave->SetLineColor(1);
@@ -104,7 +99,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   pave->SetFillColor(0);
   pave->SetFillStyle(0);
   char name[1000];
-  if (blind=="blind") sprintf(name,"SB #chi^{2}/n = %.2f",fitChi2);
+  if (hist.substr(0,7)=="h_mX_SB") sprintf(name,"SB #chi^{2}/n = %.2f",fitChi2);
   else sprintf(name,"SR #chi^{2}/n = %.2f",fitChi2);  
   pave->AddText(name);
   pave->Draw(); 
@@ -123,7 +118,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   h_mX_SR->SetMarkerStyle(20);
-  if (blind=="blind") leg->AddEntry(h_mX_SR, "Data in SB", "lep");
+  if (hist.substr(0,7)=="h_mX_SB") leg->AddEntry(h_mX_SR, "Data in SB", "lep");
   else leg->AddEntry(h_mX_SR, "Data in SR", "lep"); 
 	leg->Draw();
 
@@ -148,7 +143,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   line->Draw();
    
   string tag;
-  if (blind=="blind") tag="SB";
+  if (hist.substr(0,7)=="h_mX_SB") tag="SB";
   else tag="SR";
   c_Background->SaveAs(("BackgroundFit_"+tag+"_GaussExp.png").c_str());
   c_Background->SaveAs(("BackgroundFit_"+tag+"_GaussExp.pdf").c_str()); 
