@@ -722,11 +722,10 @@ int Display_SignalFits_LMR()
 
 	gROOT->SetStyle("Plain");
 	gStyle->SetOptStat(000000000);
-	// gStyle->SetPalette(1);
 	gSystem->Load("PDFs/ExpGaussExp_cxx.so");
 
 	// Calculate nSignal events given production cross section, branching fractions and efficiency
-	double totalLumi=17928.0; // /pb
+	double totalLumi=2150; // /pb
 	double prodXsec_1=1.; // pb
 
 	// Interpolation Plots
@@ -738,7 +737,7 @@ int Display_SignalFits_LMR()
 	std::vector<double> v_zero;
 
 	// Write to an HTML File
-	outfile.open("SignalFits/SignalSystematics.html");
+	outfile.open("SignalFits_LMR/index.html");
 	outfile<<"<html>"<<std::endl;
 	outfile<<"<head>"<<std::endl;
 	// outfile<<"<base href=\"https://cmslpcweb.fnal.gov/uscms_data/souvik/SignalSystematics\" target=\"_blank\">"<<std::endl;
@@ -808,8 +807,8 @@ int Display_SignalFits_LMR()
 		h_H2_mass_JECp1->Draw("same");
 		h_H2_mass_JECm1->Draw("same");
 		threeStatBoxes(h_H2_mass, 
-				h_H2_mass_JECp1, 
-				h_H2_mass_JECm1)->Draw();
+				           h_H2_mass_JECp1, 
+				           h_H2_mass_JECm1)->Draw();
 		c_H2_mass->SaveAs(("SignalFits/c_H2_mass_"+masses.at(i)+".png").c_str());
 
 		TCanvas *c_mX_SR=new TCanvas(("c_mX_SR_"+masses.at(i)).c_str(), ("c_mX_SR_"+masses.at(i)).c_str(), 700, 700);
