@@ -31,7 +31,7 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   return jet_p4;
 }
 
-void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
+void HbbHbb_LMRSelection_AntiTag(std::string type, std::string sample)
 {
 
   std::string inputfilename="../PreSelected_"+sample+".root";
@@ -179,7 +179,7 @@ void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
                   if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   //if(m_diff<m_diff_old && ((90.<mH1 && mH1<160.) && (90.<mH2 && mH2<160.)))	
                   {
-		     if((jet2_p4.Pt()>90&&jet4_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet1_p4.Pt()>90)||(jet1_p4.Pt()>90&&jet4_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet2_p4.Pt()>90)|| (jet1_p4.Pt()>90&&jet2_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet4_p4.Pt()>90)){
+		    //if((jet2_p4.Pt()>90&&jet4_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet1_p4.Pt()>90)||(jet1_p4.Pt()>90&&jet4_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet2_p4.Pt()>90)|| (jet1_p4.Pt()>90&&jet2_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet4_p4.Pt()>90)){
 
                     H1jet1_i=j_jetIndex;
                     H1jet2_i=k_jetIndex;
@@ -188,7 +188,7 @@ void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
                     chi2_old=chi2;
                     m_diff_old=m_diff;
                     foundHH=true;
-			}
+			//}
                   }
                 } // Conditions on 4th jet
               } // Loop over 4th jet

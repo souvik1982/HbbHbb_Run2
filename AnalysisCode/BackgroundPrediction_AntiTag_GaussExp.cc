@@ -58,7 +58,7 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   RooFitResult *r_bC_fit=bC_fit.fitTo(bC_data, RooFit::Range(fit_lo, fit_hi), RooFit::SumW2Error(kTRUE), RooFit::Save());
   RooPlot *bC_plot=x->frame();
   bC_data.plotOn(bC_plot);
-  bC_fit.plotOn(bC_plot, RooFit::VisualizeError(*r_bC_fit), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
+  //bC_fit.plotOn(bC_plot, RooFit::VisualizeError(*r_bC_fit), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
   bC_fit.plotOn(bC_plot, RooFit::LineColor(kBlack));
   bC_data.plotOn(bC_plot, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
 
@@ -71,7 +71,7 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   RooFitResult *r_bS_fit=bS_fit.fitTo(bS_data, RooFit::Range(fit_lo, fit_hi), RooFit::SumW2Error(kTRUE), RooFit::Save()); 
   RooPlot *bS_plot=x->frame();
   bS_data.plotOn(bS_plot);
-  bS_fit.plotOn(bS_plot,RooFit::VisualizeError(*r_bS_fit), RooFit::FillColor(kBlue+1), RooFit::FillStyle(3001));
+  //bS_fit.plotOn(bS_plot,RooFit::VisualizeError(*r_bS_fit), RooFit::FillColor(kBlue+1), RooFit::FillStyle(3001));
   bS_fit.plotOn(bS_plot, RooFit::LineColor(kBlue+1));
   bS_data.plotOn(bS_plot, RooFit::LineColor(kBlue+1), RooFit::MarkerColor(kBlue+1));
 
