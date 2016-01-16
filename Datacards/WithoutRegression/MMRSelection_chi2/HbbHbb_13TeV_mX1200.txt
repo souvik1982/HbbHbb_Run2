@@ -1,9 +1,14 @@
+# X -> HH -> bbbb 
+# 1/16/2016
+# Souvik Das
+
 imax 1 number of channels
 jmax * number of backgrounds
 kmax * number of systematic uncertainty sources
 ----------
-shapes signal HbbHbb w_signal.root HbbHbb:signal
-shapes background HbbHbb w_background_GaussExp.root HbbHbb:bg
+shapes signal HbbHbb w_signal.root HbbHbb:signal    
+shapes background HbbHbb w_background_GaussExp.root HbbHbb:background
+shapes data_obs HbbHbb w_data.root HbbHbb:data_obs
 ----------
 # Observation
 bin       HbbHbb
