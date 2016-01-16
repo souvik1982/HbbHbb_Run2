@@ -20,7 +20,7 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 double pi=3.14159265358979;
 
 // Hardcoded configuration parameters
-double jet_pT_cut=30.;
+double jet_pT_cut=40.;
 double jet_pT_ttbar_cut=20.;
 double jet_eta_cut=2.5;
 double jet_btag_cut=0.6;

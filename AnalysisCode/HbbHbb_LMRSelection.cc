@@ -164,18 +164,24 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
                   double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                   
-                  //if (chi2<chi2_old)
+                  // if (chi2<chi2_old)
                   if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   {
-		     if((jet2_p4.Pt()>90&&jet4_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet1_p4.Pt()>90)||(jet1_p4.Pt()>90&&jet4_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet2_p4.Pt()>90)|| (jet1_p4.Pt()>90&&jet2_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet4_p4.Pt()>90)){
-
-                    H1jet1_i=j_jetIndex;
-                    H1jet2_i=k_jetIndex;
-                    H2jet1_i=l_jetIndex;
-                    H2jet2_i=m_jetIndex;
-                    chi2_old=chi2;
-                    m_diff_old=m_diff;
-                    foundHH=true;
+                    int nJets90=0;
+                    if (jet1_p4.Pt()>90) ++nJets90;
+                    if (jet2_p4.Pt()>90) ++nJets90;
+                    if (jet3_p4.Pt()>90) ++nJets90;
+                    if (jet4_p4.Pt()>90) ++nJets90;
+		                if(nJets90>=2){
+                    {
+                      H1jet1_i=j_jetIndex;
+                      H1jet2_i=k_jetIndex;
+                      H2jet1_i=l_jetIndex;
+                      H2jet2_i=m_jetIndex;
+                      chi2_old=chi2;
+                      m_diff_old=m_diff;
+                      foundHH=true;
+			              }
                   }
                 } // Conditions on 4th jet
               } // Loop over 4th jet
