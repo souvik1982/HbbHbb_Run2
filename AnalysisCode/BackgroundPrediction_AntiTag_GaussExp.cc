@@ -34,7 +34,7 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   extraText  = "Preliminary";  // default extra text is "Preliminary"
   lumi_8TeV  = "17.9 fb^{-1}"; // default is "19.7 fb^{-1}"
   lumi_13TeV  = "2.2 fb^{-1}";  // default is "5.1 fb^{-1}"
-  */
+ */
 
   TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   TH1F *h_mX_SB=(TH1F*)f_data->Get(hist1.c_str());
