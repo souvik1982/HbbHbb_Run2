@@ -107,7 +107,7 @@ void DisplaymHmX()
   v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
+  // v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
   TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
   std::vector <double> mean_gen={300, 400, 600, 800, 1000, 1200};
