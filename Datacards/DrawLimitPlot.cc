@@ -99,12 +99,12 @@ void DrawLimitPlot()
   leg->AddEntry(g_xsec, "Expected Upper Limit", "L");
   leg->AddEntry(g_xsec_1sigma, "Expected #pm 1 #sigma", "F");
   leg->AddEntry(g_xsec_2sigma, "Expected #pm 2 #sigma", "F");
-  leg->AddEntry(g_obs, "Observed Upper Limit", "LP");
+  // leg->AddEntry(g_obs, "Observed Upper Limit", "LP");
   if (compareATLAS) leg->AddEntry(g_ATLAS, "ATLAS expected limit", "L");
   leg->Draw();
   TLatex * tPrel = new TLatex();
   tPrel->SetTextSize(0.05);
-  tPrel->DrawLatexNDC(0.1, 0.94, "CMS Preliminary; #sqrt{s} = 8 TeV, L = 17.928 fb^{-1}");
+  tPrel->DrawLatexNDC(0.1, 0.94, "CMS Preliminary; #sqrt{s} = 13 TeV, L = 2.19 fb^{-1}");
   c_xsec->Update();
   c_xsec->SaveAs("UpperLimit.png");
   c_xsec->SaveAs("UpperLimit.pdf");
