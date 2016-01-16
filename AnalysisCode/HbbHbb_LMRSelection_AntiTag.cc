@@ -178,12 +178,12 @@ void HbbHbb_LMRSelection_AntiTag(std::string type, std::string sample)
                   // if (chi2<chi2_old)
                   if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   {
-                    int nJets90=0;
+                    /*int nJets90=0;
                     if (jet1_p4.Pt()>90) ++nJets90;
                     if (jet2_p4.Pt()>90) ++nJets90;
                     if (jet3_p4.Pt()>90) ++nJets90;
                     if (jet4_p4.Pt()>90) ++nJets90;
-		                if (nJets90>=2)
+		                if (nJets90>=2)*/
                     {
                       H1jet1_i=j_jetIndex;
                       H1jet2_i=k_jetIndex;
