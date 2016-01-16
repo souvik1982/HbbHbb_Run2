@@ -80,11 +80,6 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   h_ratio->Divide(h_mX_SB);
   h_ratio->SetTitle("; m_{X} (GeV); SR/SB");
   
-  // bC_plot->SetAxisRange(SR_lo, SR_hi, "X");
-  // bS_plot->SetAxisRange(SR_lo, SR_hi, "X");
-
-  
-  
   TCanvas *c_AntiTag_GaussExp=new TCanvas("c_AntiTag_GaussExp", "c_AntiTag_GaussExp", 700, 700);
   TPad *p_1=new TPad("p_1", "p_1", 0, 0.35, 1, 1);
   TPad *p_2=new TPad("p_2", "p_2", 0, 0, 1, 0.35);
