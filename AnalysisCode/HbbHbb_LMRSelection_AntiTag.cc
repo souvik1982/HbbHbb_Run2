@@ -17,7 +17,7 @@ double sigma_H1_mass_=15; // 12;
 double mean_H2_mass_=117;
 double sigma_H2_mass_=20; // 13;
 
-/* to check against existing selection
+/* //to check against existing selection
 double mean_H1_mass_=125;
 double sigma_H1_mass_=17.5;
 double mean_H2_mass_=125;
@@ -31,7 +31,7 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   return jet_p4;
 }
 
-void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
+void HbbHbb_LMRSelection_AntiTag(std::string type, std::string sample)
 {
 
   std::string inputfilename="../PreSelected_"+sample+".root";
@@ -178,13 +178,21 @@ void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
                   // if (chi2<chi2_old)
                   if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   {
-                    H1jet1_i=j_jetIndex;
-                    H1jet2_i=k_jetIndex;
-                    H2jet1_i=l_jetIndex;
-                    H2jet2_i=m_jetIndex;
-                    chi2_old=chi2;
-                    m_diff_old=m_diff;
-                    foundHH=true;
+                    /*int nJets90=0;
+                    if (jet1_p4.Pt()>90) ++nJets90;
+                    if (jet2_p4.Pt()>90) ++nJets90;
+                    if (jet3_p4.Pt()>90) ++nJets90;
+                    if (jet4_p4.Pt()>90) ++nJets90;
+		                if (nJets90>=2)*/
+                    {
+                      H1jet1_i=j_jetIndex;
+                      H1jet2_i=k_jetIndex;
+                      H2jet1_i=l_jetIndex;
+                      H2jet2_i=m_jetIndex;
+                      chi2_old=chi2;
+                      m_diff_old=m_diff;
+                      foundHH=true;
+			              }
                   }
                 } // Conditions on 4th jet
               } // Loop over 4th jet

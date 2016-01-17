@@ -36,15 +36,7 @@
 #include "RooCBShape.h"
 #include "RooGaussian.h"
 
-// #include "PDFs/ExpGaussExp.h"
-
-bool focus=true;
-
-std::string dir_preselection="PreselectedWithoutRegression";
-std::string dir_selection="MMRSelection_chi2";
-std::string file_histograms="Histograms_Graviton";
-
-int rebin=1;
+int rebin=10;
 ofstream outfile;
 
 std::string tostr(float t)
@@ -269,8 +261,7 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 {
   
   RooRealVar *x, *sg_p0, *sg_p1, *sg_p2, *sg_p3;
-  x=new RooRealVar("x", "m_{X} (GeV)", 300., 1100.);
-  // x=new RooRealVar("x", "m_{X} (GeV)", 300., 800.);
+  // x=new RooRealVar("x", "m_{X} (GeV)", 300., 1100.);
   double rangeLo=-1, rangeHi=-1;
   if (!kinFit)
   {
@@ -383,6 +374,14 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
       rangeLo=850., rangeHi=1250.; 
       sg_p0=new RooRealVar("sg_p0", "sg_p0", 1080., 1150.);
       sg_p1=new RooRealVar("sg_p1", "sg_p1", 30., 50.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 5.);
+    }
+    else if (mass=="1200")
+    {
+      rangeLo=950., rangeHi=1400.; 
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 1100., 1300.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 40., 70.);
       sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
       sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 5.);
     }
@@ -501,6 +500,14 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
       sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
       sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
     }
+    else if (mass=="1200")
+    {
+      rangeLo=950., rangeHi=1400.; 
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 1100., 1300.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 40., 70.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 5.);
+    }
   }
   x=new RooRealVar("x", "m_{X} (GeV)", rangeLo-50., rangeHi+50.);
   // RevCrystalBall signal("signal", "Signal Prediction", *x, *sg_p0, *sg_p1, *sg_p2, *sg_p3);
@@ -538,8 +545,7 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
     ExpGaussExp signal_fixed("signal", "Signal Prediction Fixed", *x, signal_p0, signal_p1, signal_p2, signal_p3);
     RooWorkspace *w=new RooWorkspace("HbbHbb");
     w->import(signal_fixed);
-    if (!kinFit) w->SaveAs(("SignalShapes/w_signal_"+mass+".root").c_str());
-    if (kinFit) w->SaveAs(("SignalShapes_KinFit/w_signal_"+mass+".root").c_str());
+    w->SaveAs(("SignalFits/w_signal_"+mass+".root").c_str());
   }
   return plot;
 }
@@ -759,8 +765,7 @@ RooPlot* fitSignal_Gaussian(TH1F *h, std::string mass, int color, TLegend *leg, 
     RooGaussian signal_fixed("signal", "Signal Prediction Fixed", *x, signal_p0, signal_p1);
     RooWorkspace *w=new RooWorkspace("HbbHbb");
     w->import(signal_fixed);
-    if (!kinFit) w->SaveAs(("SignalShapes/w_signal_Gaussian_"+mass+".root").c_str());
-    if (kinFit) w->SaveAs(("SignalShapes_KinFit/w_signal_Gaussian_"+mass+".root").c_str());
+    w->SaveAs(("SignalFits/w_signal_Gaussian_"+mass+".root").c_str());
   }
   return plot;
 }
@@ -774,7 +779,10 @@ double lnN(double b, double a, double c)
   return err;
 }
 
-int Display_SignalFits()
+int Display_SignalFits(std::string dir_preselection="PreselectedWithoutRegression",
+                       std::string dir_selection="MMRSelection_chi2",
+                       std::string file_histograms="Histograms_Graviton",
+                       bool focus=true)
 {
 
   std::vector<std::string> masses;
@@ -785,7 +793,7 @@ int Display_SignalFits()
   masses.push_back("600");
   masses.push_back("800");
   masses.push_back("1000");
-  // masses.push_back("1200");
+  masses.push_back("1200");
   
   gROOT->SetStyle("Plain");
   gStyle->SetOptStat(000000000);
@@ -793,7 +801,7 @@ int Display_SignalFits()
   gSystem->Load("PDFs/ExpGaussExp_cxx.so");
   
   // Calculate nSignal events given production cross section, branching fractions and efficiency
-  double totalLumi=17928.0; // /pb
+  double totalLumi=2150; // /pb
   double prodXsec_1=1.; // pb
   
   // Interpolation Plots
@@ -804,7 +812,7 @@ int Display_SignalFits()
   std::vector<double> v_zero;
   
   // Write to an HTML File
-  outfile.open("SignalFits/SignalSystematics.html");
+  outfile.open("SignalFits/index.html");
   outfile<<"<html>"<<std::endl;
   outfile<<"<head>"<<std::endl;
   // outfile<<"<base href=\"https://cmslpcweb.fnal.gov/uscms_data/souvik/SignalSystematics\" target=\"_blank\">"<<std::endl;
@@ -841,18 +849,18 @@ int Display_SignalFits()
     TFile *file_JECp1;
     if (focus) file_JECp1=file;
     else file_JECp1=new TFile((dir_preselection+"_JECp1/"+dir_selection+"/"+file_histograms+masses.at(i)+"GeV.root").c_str());
-    TH1F *h_H1_mass_JECp1=(TH1F*)file_JECp1->Get("h_H1_mass");
-    TH1F *h_H2_mass_JECp1=(TH1F*)file_JECp1->Get("h_H2_mass");
-    TH1F *h_mX_SR_JECp1=(TH1F*)file_JECp1->Get("h_mX_SR");
-    TH1F *h_mX_SR_JECp1_KinFit=(TH1F*)file_JECp1->Get("h_mX_SR_kinFit");
+    TH1F *h_H1_mass_JECp1=(TH1F*)file_JECp1->Get("h_H1_mass")->Clone("h_H1_mass_JECp1");
+    TH1F *h_H2_mass_JECp1=(TH1F*)file_JECp1->Get("h_H2_mass")->Clone("h_H2_mass_JECp1");
+    TH1F *h_mX_SR_JECp1=(TH1F*)file_JECp1->Get("h_mX_SR")->Clone("h_mX_SR_JECp1");
+    TH1F *h_mX_SR_JECp1_KinFit=(TH1F*)file_JECp1->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_JECp1_KinFit");
     
     TFile *file_JECm1;
     if (focus) file_JECm1=file;
     else file_JECm1=new TFile((dir_preselection+"_JECm1/"+dir_selection+"/"+file_histograms+masses.at(i)+"GeV.root").c_str());
-    TH1F *h_H1_mass_JECm1=(TH1F*)file_JECm1->Get("h_H1_mass");
-    TH1F *h_H2_mass_JECm1=(TH1F*)file_JECm1->Get("h_H2_mass");
-    TH1F *h_mX_SR_JECm1=(TH1F*)file_JECm1->Get("h_mX_SR");
-    TH1F *h_mX_SR_JECm1_KinFit=(TH1F*)file_JECm1->Get("h_mX_SR_kinFit");
+    TH1F *h_H1_mass_JECm1=(TH1F*)file_JECm1->Get("h_H1_mass")->Clone("h_H1_mass_JECm1");
+    TH1F *h_H2_mass_JECm1=(TH1F*)file_JECm1->Get("h_H2_mass")->Clone("h_H2_mass_JECm1");;
+    TH1F *h_mX_SR_JECm1=(TH1F*)file_JECm1->Get("h_mX_SR")->Clone("h_mX_SR_JECm1");
+    TH1F *h_mX_SR_JECm1_KinFit=(TH1F*)file_JECm1->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_JECm1_KinFit");
     
     TCanvas *c_H1_mass=new TCanvas("c_H1_mass", "c_H1_mass", 700, 700);
     h_H1_mass->SetLineWidth(2);
@@ -968,29 +976,28 @@ int Display_SignalFits()
     outfile<<"   <h2 align='center'>Without Kin-Fit. Fitted to an Exp-Gauss-Exp function.</h2><br/>"<<std::endl;
     outfile<<"   === Baseline plot === </br>"<<std::endl;
     outfile<<"   norm = "<<h_mX_SR->GetSumOfWeights()*totalLumi*prodXsec_1/nSignal_init<<" <br/>"<<std::endl;
-    outfile<<"   sg_p0 = "<<par.sg_p0<<" +- "<<par.sg_p0_err<<" <br/>"<<std::endl;
-    outfile<<"   sg_p1 = "<<par.sg_p1<<" +- "<<par.sg_p1_err<<" <br/>"<<std::endl;
-    outfile<<"   sg_p2 = "<<par.sg_p2<<" +- "<<par.sg_p2_err<<" <br/>"<<std::endl;
-    outfile<<"   sg_p3 = "<<par.sg_p3<<" +- "<<par.sg_p3_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p0 = "<<par.sg_p0<<" "<<par.sg_p0_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p1 = "<<par.sg_p1<<" "<<par.sg_p1_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p2 = "<<par.sg_p2<<" "<<par.sg_p2_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p3 = "<<par.sg_p3<<" "<<par.sg_p3_err<<" <br/>"<<std::endl;
     if (!focus) 
     {
       outfile<<"   <center><input type='button' onclick=\"return toggleMe('"<<masses.at(i)<<"')\" value='Systematics'></center><br/>"<<std::endl;
       outfile<<"   <div id=\""<<masses.at(i)<<"\" style=\"display:none\">"<<std::endl;
       outfile<<"   === JEC +1 sigma === <br/>"<<std::endl;
       outfile<<"   norm = "<<h_mX_SR_JECp1->GetSumOfWeights()<<" <br/>"<<std::endl;
-      outfile<<"   sg_p0 = "<<par_JECp1.sg_p0<<" +- "<<par_JECp1.sg_p0_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p1 = "<<par_JECp1.sg_p1<<" +- "<<par_JECp1.sg_p1_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p2 = "<<par_JECp1.sg_p2<<" +- "<<par_JECp1.sg_p2_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p3 = "<<par_JECp1.sg_p3<<" +- "<<par_JECp1.sg_p3_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p0 = "<<par_JECp1.sg_p0<<" "<<par_JECp1.sg_p0_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p1 = "<<par_JECp1.sg_p1<<" "<<par_JECp1.sg_p1_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p2 = "<<par_JECp1.sg_p2<<" "<<par_JECp1.sg_p2_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p3 = "<<par_JECp1.sg_p3<<" "<<par_JECp1.sg_p3_err<<" <br/>"<<std::endl;
       outfile<<"   === JEC -1 sigma === <br/>"<<std::endl;
       outfile<<"   norm = "<<h_mX_SR_JECm1->GetSumOfWeights()<<" <br/>"<<std::endl;
-      outfile<<"   sg_p0 = "<<par_JECm1.sg_p0<<" +- "<<par_JECm1.sg_p0_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p1 = "<<par_JECm1.sg_p1<<" +- "<<par_JECm1.sg_p1_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p2 = "<<par_JECm1.sg_p2<<" +- "<<par_JECm1.sg_p2_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p3 = "<<par_JECm1.sg_p3<<" +- "<<par_JECm1.sg_p3_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p0 = "<<par_JECm1.sg_p0<<" "<<par_JECm1.sg_p0_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p1 = "<<par_JECm1.sg_p1<<" "<<par_JECm1.sg_p1_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p2 = "<<par_JECm1.sg_p2<<" "<<par_JECm1.sg_p2_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p3 = "<<par_JECm1.sg_p3<<" "<<par_JECm1.sg_p3_err<<" <br/>"<<std::endl;
       outfile<<"   === === <br/>"<<std::endl;
       outfile<<"   </div>"<<std::endl;
-    
     }
     outfile<<"  </td>"<<std::endl;
     outfile<<"  <td>"<<std::endl;
@@ -998,10 +1005,10 @@ int Display_SignalFits()
     outfile<<"   <h2 align='center'>With Kin-Fit. Fitted to an Exp-Gauss-Exp function.</h2><br/>"<<std::endl;
     outfile<<"   === Baseline plot === </br>"<<std::endl;
     outfile<<"   norm = "<<h_mX_SR_KinFit->GetSumOfWeights()*totalLumi*prodXsec_1/nSignal_init<<" <br/>"<<std::endl;
-    outfile<<"   sg_p0 = "<<par_KinFit.sg_p0<<" +- "<<par_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-    outfile<<"   sg_p1 = "<<par_KinFit.sg_p1<<" +- "<<par_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-    outfile<<"   sg_p2 = "<<par_KinFit.sg_p2<<" +- "<<par_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-    outfile<<"   sg_p3 = "<<par_KinFit.sg_p3<<" +- "<<par_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p0 = "<<par_KinFit.sg_p0<<" "<<par_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p1 = "<<par_KinFit.sg_p1<<" "<<par_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p2 = "<<par_KinFit.sg_p2<<" "<<par_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p3 = "<<par_KinFit.sg_p3<<" "<<par_KinFit.sg_p3_err<<" <br/>"<<std::endl;
     if (!focus) 
     {
       outfile<<"   <center><input type='button' onclick=\"return toggleMe('"<<masses.at(i)<<"_KinFit')\" value='Systematics'></center><br/>"<<std::endl;
@@ -1009,17 +1016,17 @@ int Display_SignalFits()
       outfile<<"   === JEC +1 sigma === <br/>"<<std::endl;
       outfile<<"   norm = "<<h_mX_SR_JECp1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
       // outfile<<"   chi2/ndof = "<<plot_JECp1_KinFit->chiSquare()<<" <br/>"<<std::endl;
-      outfile<<"   sg_p0 = "<<par_JECp1_KinFit.sg_p0<<" +- "<<par_JECp1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p1 = "<<par_JECp1_KinFit.sg_p1<<" +- "<<par_JECp1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p2 = "<<par_JECp1_KinFit.sg_p2<<" +- "<<par_JECp1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p3 = "<<par_JECp1_KinFit.sg_p3<<" +- "<<par_JECp1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p0 = "<<par_JECp1_KinFit.sg_p0<<" "<<par_JECp1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p1 = "<<par_JECp1_KinFit.sg_p1<<" "<<par_JECp1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p2 = "<<par_JECp1_KinFit.sg_p2<<" "<<par_JECp1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p3 = "<<par_JECp1_KinFit.sg_p3<<" "<<par_JECp1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
       outfile<<"   === JEC -1 sigma === <br/>"<<std::endl;
       outfile<<"   norm = "<<h_mX_SR_JECm1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
       // outfile<<"   chi2/ndof = "<<plot_JECm1_KinFit->chiSquare()<<" <br/>"<<std::endl;
-      outfile<<"   sg_p0 = "<<par_JECm1_KinFit.sg_p0<<" +- "<<par_JECm1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p1 = "<<par_JECm1_KinFit.sg_p1<<" +- "<<par_JECm1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p2 = "<<par_JECm1_KinFit.sg_p2<<" +- "<<par_JECm1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p3 = "<<par_JECm1_KinFit.sg_p3<<" +- "<<par_JECm1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p0 = "<<par_JECm1_KinFit.sg_p0<<" "<<par_JECm1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p1 = "<<par_JECm1_KinFit.sg_p1<<" "<<par_JECm1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p2 = "<<par_JECm1_KinFit.sg_p2<<" "<<par_JECm1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p3 = "<<par_JECm1_KinFit.sg_p3<<" "<<par_JECm1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
       outfile<<"   === === <br/>"<<std::endl;
       outfile<<"   </div>"<<std::endl;
     }
