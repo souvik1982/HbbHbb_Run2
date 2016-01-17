@@ -7,5 +7,5 @@
                                         50, 150,       // range of gaussExp width
                                         0.01, 1.1,     // range of gaussExp exponent
                                         "h_mX_SB_kinFit", "h_mX_SR_kinFit", 
-                                        "log");
+                                        "lin");
 }
