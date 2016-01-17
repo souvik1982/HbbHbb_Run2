@@ -18,8 +18,6 @@
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV 
 int iPos = 11;
 
-double rebin = 20;
-
 std::string itoa(int i) 
 {
   char res[10];
@@ -28,7 +26,13 @@ std::string itoa(int i)
   return ret;
 }
 
-void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, double fit_lo, double fit_hi, std::string hist="h_mX_SB_kinFit", std::string log="lin")
+void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, double rebin,
+                                             double fit_lo, double fit_hi, 
+                                             double gaussexp_mean_lo, double gaussexp_mean_hi, 
+                                             double gaussexp_width_lo, double gaussexp_width_hi,
+                                             double gaussexp_exp_lo, double gaussexp_exp_hi,
+                                             std::string hist="h_mX_SB_kinFit", 
+                                             std::string log="lin")
 {
 
   gROOT->SetStyle("Plain");
@@ -50,9 +54,9 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   x=new RooRealVar("x", "m_{X} (GeV)", plot_lo, plot_hi);
   RooDataHist pred("pred", "Data", RooArgList(*x), h_mX_SR);
   
-  RooRealVar bg_p0("bg_p0", "bg_p0", 400., 600.);
-  RooRealVar bg_p1("bg_p1", "bg_p1", 10., 200.);
-  RooRealVar bg_p2("bg_p2", "bg_p2", 0.01, 10.0);
+  RooRealVar bg_p0("bg_p0", "bg_p0", gaussexp_mean_lo, gaussexp_mean_hi);
+  RooRealVar bg_p1("bg_p1", "bg_p1", gaussexp_width_lo, gaussexp_width_hi);
+  RooRealVar bg_p2("bg_p2", "bg_p2", gaussexp_exp_lo, gaussexp_exp_hi);
   GaussExp bg("background", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2);
   RooFitResult *r_bg=bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
   

@@ -99,18 +99,13 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
   drawRegion(isData);
 }
 
-void DisplaymHmX()
+void DisplaymHmX(std::vector<std::string> files)
 {
   std::vector<TFile*> v_files;
-  v_files.push_back(new TFile("Histograms_Graviton300GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton400GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
-  // v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
+  for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
   TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
-  std::vector <double> mean_gen={300, 400, 600, 800, 1000, 1200};
+  std::vector <double> mean_gen={300, 400, 600, 800, 1000, 1200, 1600};
   std::vector<int> v_colors = {kGreen, kGreen+2, kOrange, kOrange+2, kMagenta, kMagenta+2, kBlue, kBlue+2, kCyan, kCyan+2};
   
   gROOT->SetStyle("Plain");
@@ -122,10 +117,19 @@ void DisplaymHmX()
   TLegend *leg=new TLegend(0.6, 0.7, 0.89, 0.89);
   for (unsigned int i=0; i<v_files.size(); ++i)
   {
-    leg->AddEntry(v_files.at(i)->Get("h_pTOrder_JetpT_1"), ("Signal m_{X} = "+itoa(mean_gen.at(i))+" GeV").c_str());
+    TH1F *h_pTOrder_JetpT_1=(TH1F*)v_files.at(i)->Get("h_pTOrder_JetpT_1");
+    h_pTOrder_JetpT_1->SetLineColor(v_colors.at(i));
+    h_pTOrder_JetpT_1->SetLineWidth(2);
+    leg->AddEntry(h_pTOrder_JetpT_1, ("Signal m_{X} = "+itoa(mean_gen.at(i))+" GeV").c_str());
   }
-  leg->AddEntry(f_data->Get("h_pTOrder_JetpT_1"), "13 TeV Data");
-  leg->AddEntry(f_ttbar->Get("h_pTOrder_JetpT_1"), "t#bar{t}");
+  h_pTOrder_JetpT_1=(TH1F*)f_data->Get("h_pTOrder_JetpT_1");
+  h_pTOrder_JetpT_1->SetLineColor(kBlack);
+  h_pTOrder_JetpT_1->SetLineWidth(2);
+  leg->AddEntry(h_pTOrder_JetpT_1, "13 TeV Data");
+  h_pTOrder_JetpT_1=(TH1F*)f_ttbar->Get("h_pTOrder_JetpT_1");
+  h_pTOrder_JetpT_1->SetLineColor(kRed);
+  h_pTOrder_JetpT_1->SetLineWidth(2);
+  leg->AddEntry(h_pTOrder_JetpT_1, "t#bar{t}");
   
   // Plot mH1
   first=true;
@@ -203,8 +207,8 @@ void DisplaymHmX()
   double lumi=2150; // /pb
   double xsec_ttbar=831.76; // pb
   double init_ttbar=((TH1F*)f_ttbar->Get("Count"))->GetBinContent(1);
-  TH1F *h_mX_SB_kinFit_data=(TH1F*)f_data->Get("h_mX_SB");
-  TH1F *h_mX_SB_kinFit_ttbar=(TH1F*)f_ttbar->Get("h_mX_SB");
+  TH1F *h_mX_SB_kinFit_data=(TH1F*)f_data->Get("h_mX_SB_kinFit");
+  TH1F *h_mX_SB_kinFit_ttbar=(TH1F*)f_ttbar->Get("h_mX_SB_kinFit");
   h_mX_SB_kinFit_data->Rebin(40);
   h_mX_SB_kinFit_ttbar->Rebin(40);
   h_mX_SB_kinFit_data->GetXaxis()->SetRangeUser(150, 1600);

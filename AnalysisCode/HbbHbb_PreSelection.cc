@@ -20,7 +20,7 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 double pi=3.14159265358979;
 
 // Hardcoded configuration parameters
-double jet_pT_cut=40.;
+double jet_pT_cut=45.;
 double jet_pT_ttbar_cut=20.;
 double jet_eta_cut=2.5;
 double jet_btag_cut=0.6;
@@ -287,7 +287,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
-    if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v==1) //trigger_HLT_HH4bLowLumi==1)
+    // if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v==1) //trigger_HLT_HH4bLowLumi==1)
+    if (trigger_HLT_HH4bLowLumi==1)
     {
       nCut1+=eventWeight;
       

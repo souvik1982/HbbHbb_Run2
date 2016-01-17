@@ -37,13 +37,7 @@
 #include "RooGaussian.h"
 
 
-bool focus=true;
-
-std::string dir_preselection="PreselectedWithoutRegression";
-std::string dir_selection="LMRSelection";
-std::string file_histograms="Histograms_Graviton";
-
-int rebin=1;
+int rebin=3;
 ofstream outfile;
 
 std::string tostr(float t)
@@ -464,15 +458,15 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 	  RooRealVar signal_p1("signal_p1", "signal_p1", sg_p1->getVal());
 	  RooRealVar signal_p2("signal_p2", "signal_p2", sg_p2->getVal());
 	  RooRealVar signal_p3("signal_p3", "signal_p3", sg_p3->getVal());
-          RooRealVar signal_p4("signal_p4", "signal_p4", sg_p4->getVal());
-          RooGaussian signalCore_fixed("signalCore_fixed", "Signal Prediction", *x, signal_p0, signal_p1);
-          RooGaussian signalComb_fixed("signalComb_fixed", "Combinatoric", *x, signal_p2, signal_p3);
-          RooAddPdf signal_fixed("signal_fixed", "signal", RooArgList(signalCore_fixed, signalComb_fixed), signal_p4);
+    RooRealVar signal_p4("signal_p4", "signal_p4", sg_p4->getVal());
+    RooGaussian signalCore_fixed("signalCore_fixed", "Signal Prediction", *x, signal_p0, signal_p1);
+    RooGaussian signalComb_fixed("signalComb_fixed", "Combinatoric", *x, signal_p2, signal_p3);
+    RooAddPdf signal_fixed("signal_fixed", "signal", RooArgList(signalCore_fixed, signalComb_fixed), signal_p4);
 
 	  RooWorkspace *w=new RooWorkspace("HbbHbb");
 	  w->import(signal_fixed);
-	  if (!kinFit) w->SaveAs(("SignalShapes/w_signal_"+mass+".root").c_str());
-	  if (kinFit) w->SaveAs(("SignalShapes_KinFit/w_signal_"+mass+".root").c_str());
+	  if (!kinFit) w->SaveAs(("SignalFits_LMR/w_signal_"+mass+".root").c_str());
+	  if (kinFit) w->SaveAs(("SignalFits_LMR/w_signal_"+mass+".root").c_str());
   }
   return plot;
 }
@@ -692,8 +686,8 @@ RooPlot* fitSignal_Gaussian(TH1F *h, std::string mass, int color, TLegend *leg, 
 		RooGaussian signal_fixed("signal", "Signal Prediction Fixed", *x, signal_p0, signal_p1);
 		RooWorkspace *w=new RooWorkspace("HbbHbb");
 		w->import(signal_fixed);
-		if (!kinFit) w->SaveAs(("SignalShapes/w_signal_Gaussian_"+mass+".root").c_str());
-		if (kinFit) w->SaveAs(("SignalShapes_KinFit/w_signal_Gaussian_"+mass+".root").c_str());
+		if (!kinFit) w->SaveAs(("SignalFits_LMR/w_signal_Gaussian_"+mass+".root").c_str());
+		if (kinFit) w->SaveAs(("SignalFits_LMR/w_signal_Gaussian_"+mass+".root").c_str());
 	}
 	return plot;
 }
@@ -707,7 +701,10 @@ double lnN(double b, double a, double c)
 	return err;
 }
 
-int Display_SignalFits_LMR()
+int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegression",
+                           std::string dir_selection="LMRSelection",
+                           std::string file_histograms="Histograms_Graviton",
+                           bool focus=true)
 {
 
 	std::vector<std::string> masses;
@@ -716,9 +713,6 @@ int Display_SignalFits_LMR()
 	masses.push_back("300");
 	masses.push_back("400");
 	masses.push_back("600");
-	masses.push_back("800");
-//	masses.push_back("1000");
-	// masses.push_back("1200");
 
 	gROOT->SetStyle("Plain");
 	gStyle->SetOptStat(000000000);
@@ -763,53 +757,53 @@ int Display_SignalFits_LMR()
 		v_zero.push_back(0);
 
 		TFile *file=new TFile((dir_preselection+"/"+dir_selection+"/"+file_histograms+masses.at(i)+"GeV.root").c_str());
-		TH1F *h_H1_mass=(TH1F*)file->Get("h_H1_mass");
-		TH1F *h_H2_mass=(TH1F*)file->Get("h_H2_mass");
-		TH1F *h_mX_SR=(TH1F*)file->Get("h_mX_SR");
-		TH1F *h_mX_SR_KinFit=(TH1F*)file->Get("h_mX_SR_kinFit");
-		TH1F *h_Count=(TH1F*)file->Get("Count");
-		double nSignal_init=h_Count->GetBinContent(1);
-		std::cout<<"nSignal_init = "<<nSignal_init<<std::endl;
-
-		TFile *file_JECp1;
-		if (focus) file_JECp1=file;
-		else file_JECp1=new TFile((dir_preselection+"_JECp1/"+dir_selection+"/"+file_histograms+masses.at(i)+"GeV.root").c_str());
-		TH1F *h_H1_mass_JECp1=(TH1F*)file_JECp1->Get("h_H1_mass");
-		TH1F *h_H2_mass_JECp1=(TH1F*)file_JECp1->Get("h_H2_mass");
-		TH1F *h_mX_SR_JECp1=(TH1F*)file_JECp1->Get("h_mX_SR");
-		TH1F *h_mX_SR_JECp1_KinFit=(TH1F*)file_JECp1->Get("h_mX_SR_kinFit");
-
-		TFile *file_JECm1;
-		if (focus) file_JECm1=file;
-		else file_JECm1=new TFile((dir_preselection+"_JECm1/"+dir_selection+"/"+file_histograms+masses.at(i)+"GeV.root").c_str());
-		TH1F *h_H1_mass_JECm1=(TH1F*)file_JECm1->Get("h_H1_mass");
-		TH1F *h_H2_mass_JECm1=(TH1F*)file_JECm1->Get("h_H2_mass");
-		TH1F *h_mX_SR_JECm1=(TH1F*)file_JECm1->Get("h_mX_SR");
-		TH1F *h_mX_SR_JECm1_KinFit=(TH1F*)file_JECm1->Get("h_mX_SR_kinFit");
-
-		TCanvas *c_H1_mass=new TCanvas("c_H1_mass", "c_H1_mass", 700, 700);
-		h_H1_mass->SetLineWidth(2);
-		h_H1_mass_JECp1->SetLineStyle(9); h_H1_mass_JECp1->SetLineColor(kRed);
-		h_H1_mass_JECm1->SetLineStyle(9); h_H1_mass_JECm1->SetLineColor(kRed+2);
-		h_H1_mass->Draw("same");
-		h_H1_mass_JECp1->Draw("same");
-		h_H1_mass_JECm1->Draw("same");
-		threeStatBoxes(h_H1_mass, 
-				h_H1_mass_JECp1, 
-				h_H1_mass_JECm1)->Draw();
-		c_H1_mass->SaveAs(("SignalFits/c_H1_mass_"+masses.at(i)+".png").c_str());
-
-		TCanvas *c_H2_mass=new TCanvas("c_H2_mass", "c_H2_mass", 700, 700);
-		h_H2_mass->SetLineWidth(2);
-		h_H2_mass_JECp1->SetLineStyle(9); h_H2_mass_JECp1->SetLineColor(kRed);
-		h_H2_mass_JECm1->SetLineStyle(9); h_H2_mass_JECm1->SetLineColor(kRed+2);
-		h_H2_mass->Draw("same");
-		h_H2_mass_JECp1->Draw("same");
-		h_H2_mass_JECm1->Draw("same");
-		threeStatBoxes(h_H2_mass, 
-				           h_H2_mass_JECp1, 
-				           h_H2_mass_JECm1)->Draw();
-		c_H2_mass->SaveAs(("SignalFits/c_H2_mass_"+masses.at(i)+".png").c_str());
+    TH1F *h_H1_mass=(TH1F*)file->Get("h_H1_mass");
+    TH1F *h_H2_mass=(TH1F*)file->Get("h_H2_mass");
+    TH1F *h_mX_SR=(TH1F*)file->Get("h_mX_SR");
+    TH1F *h_mX_SR_KinFit=(TH1F*)file->Get("h_mX_SR_kinFit");
+    TH1F *h_Count=(TH1F*)file->Get("Count");
+    double nSignal_init=h_Count->GetBinContent(1);
+    std::cout<<"nSignal_init = "<<nSignal_init<<std::endl;
+    
+    TFile *file_JECp1;
+    if (focus) file_JECp1=file;
+    else file_JECp1=new TFile((dir_preselection+"_JECp1/"+dir_selection+"/"+file_histograms+masses.at(i)+"GeV.root").c_str());
+    TH1F *h_H1_mass_JECp1=(TH1F*)file_JECp1->Get("h_H1_mass")->Clone("h_H1_mass_JECp1");
+    TH1F *h_H2_mass_JECp1=(TH1F*)file_JECp1->Get("h_H2_mass")->Clone("h_H2_mass_JECp1");
+    TH1F *h_mX_SR_JECp1=(TH1F*)file_JECp1->Get("h_mX_SR")->Clone("h_mX_SR_JECp1");
+    TH1F *h_mX_SR_JECp1_KinFit=(TH1F*)file_JECp1->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_JECp1_KinFit");
+    
+    TFile *file_JECm1;
+    if (focus) file_JECm1=file;
+    else file_JECm1=new TFile((dir_preselection+"_JECm1/"+dir_selection+"/"+file_histograms+masses.at(i)+"GeV.root").c_str());
+    TH1F *h_H1_mass_JECm1=(TH1F*)file_JECm1->Get("h_H1_mass")->Clone("h_H1_mass_JECm1");
+    TH1F *h_H2_mass_JECm1=(TH1F*)file_JECm1->Get("h_H2_mass")->Clone("h_H2_mass_JECm1");;
+    TH1F *h_mX_SR_JECm1=(TH1F*)file_JECm1->Get("h_mX_SR")->Clone("h_mX_SR_JECm1");
+    TH1F *h_mX_SR_JECm1_KinFit=(TH1F*)file_JECm1->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_JECm1_KinFit");
+    
+    TCanvas *c_H1_mass=new TCanvas("c_H1_mass", "c_H1_mass", 700, 700);
+    h_H1_mass->SetLineWidth(2);
+    h_H1_mass_JECp1->SetLineStyle(9); h_H1_mass_JECp1->SetLineColor(kRed);
+    h_H1_mass_JECm1->SetLineStyle(9); h_H1_mass_JECm1->SetLineColor(kRed+2);
+    h_H1_mass->Draw("same");
+    h_H1_mass_JECp1->Draw("same");
+    h_H1_mass_JECm1->Draw("same");
+    threeStatBoxes(h_H1_mass, 
+                   h_H1_mass_JECp1, 
+                   h_H1_mass_JECm1)->Draw();
+    c_H1_mass->SaveAs(("SignalFits_LMR/c_H1_mass_"+masses.at(i)+".png").c_str());
+    
+    TCanvas *c_H2_mass=new TCanvas("c_H2_mass", "c_H2_mass", 700, 700);
+    h_H2_mass->SetLineWidth(2);
+    h_H2_mass_JECp1->SetLineStyle(9); h_H2_mass_JECp1->SetLineColor(kRed);
+    h_H2_mass_JECm1->SetLineStyle(9); h_H2_mass_JECm1->SetLineColor(kRed+2);
+    h_H2_mass->Draw("same");
+    h_H2_mass_JECp1->Draw("same");
+    h_H2_mass_JECm1->Draw("same");
+    threeStatBoxes(h_H2_mass, 
+                   h_H2_mass_JECp1, 
+                   h_H2_mass_JECm1)->Draw();
+    c_H2_mass->SaveAs(("SignalFits_LMR/c_H2_mass_"+masses.at(i)+".png").c_str());
 
 		TCanvas *c_mX_SR=new TCanvas(("c_mX_SR_"+masses.at(i)).c_str(), ("c_mX_SR_"+masses.at(i)).c_str(), 700, 700);
 		h_mX_SR->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" GeV); m_{X} (GeV)").c_str());
@@ -844,7 +838,7 @@ int Display_SignalFits_LMR()
 		plot->Draw("same");
 		leg->SetFillColor(0);
 		leg->Draw();
-		c_mX_SR->SaveAs(("SignalFits/c_mX_SR_"+masses.at(i)+".png").c_str());
+		c_mX_SR->SaveAs(("SignalFits_LMR/c_mX_SR_"+masses.at(i)+".png").c_str());
 
 		TCanvas *c_mX_SR_KinFit=new TCanvas(("c_mX_SR_KinFit_"+masses.at(i)).c_str(), ("c_mX_SR_KinFit_"+masses.at(i)).c_str(), 700, 700);
 		h_mX_SR_KinFit->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" GeV); m_{X} (GeV)").c_str());
@@ -883,7 +877,7 @@ int Display_SignalFits_LMR()
 		plot_KinFit->Draw("same");
 		leg->SetFillColor(0);
 		leg->Draw();
-		c_mX_SR_KinFit->SaveAs(("SignalFits/c_mX_SR_KinFit_"+masses.at(i)+".png").c_str());
+		c_mX_SR_KinFit->SaveAs(("SignalFits_LMR/c_mX_SR_KinFit_"+masses.at(i)+".png").c_str());
 
 		outfile<<"<br/><hr/>"<<std::endl;
 		outfile<<"<h2> mX = "<<masses.at(i)<<" </h2>"<<std::endl;
