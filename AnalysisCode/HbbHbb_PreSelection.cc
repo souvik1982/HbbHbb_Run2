@@ -75,10 +75,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   int evt;
   int isData, nTrueInt;
   float trigger_HLT_HH4bLowLumi;
-  float trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v; 
-  float trigger_HLT_BIT_HLT_QuadJet45_DoubleBTagCSV0p67_v; 
-  float trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v;
-  float trigger_HLT_BIT_HLT_DoubleJet90_Double30_DoubleBTagCSV0p67_v;	
+  float trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v; 
+  float trigger_HLT_BIT_HLT_QuadJet45_DoubleCSV0p5_v; 
+  float trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v;
+  float trigger_HLT_BIT_HLT_DoubleJet90_Double30_DoubleCSV0p5_v;	
   float vType;
   float puWeight, genWeight;
   int nJets;
@@ -158,10 +158,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("nTrueInt",&nTrueInt);				 tree->SetBranchStatus("nTrueInt",1); 	
   tree->SetBranchAddress("isData", &isData);                             tree->SetBranchStatus("isData", 1);
   tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);   tree->SetBranchStatus("HLT_HH4bLowLumi", 1);
-  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v",1);
-  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_DoubleBTagCSV0p67_v",&trigger_HLT_BIT_HLT_QuadJet45_DoubleBTagCSV0p67_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_DoubleBTagCSV0p67_v",1);		
-  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v",1);
-  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_DoubleBTagCSV0p67_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_DoubleBTagCSV0p67_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_DoubleBTagCSV0p67_v",1);
+  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v",1);
+  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_DoubleCSV0p5_v",&trigger_HLT_BIT_HLT_QuadJet45_DoubleCSV0p5_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_DoubleCSV0p5_v",1);		
+  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v",1);
+  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_DoubleCSV0p5_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_DoubleCSV0p5_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_DoubleCSV0p5_v",1);
   tree->SetBranchAddress("Vtype", &(vType));                             tree->SetBranchStatus("Vtype", 1); 
   tree->SetBranchAddress("puWeight", &(puWeight));                       tree->SetBranchStatus("puWeight", 1); 
   tree->SetBranchAddress("genWeight", &(genWeight));                     tree->SetBranchStatus("genWeight", 1);
@@ -287,7 +287,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
-    if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v==1) //trigger_HLT_HH4bLowLumi==1)
+    if (trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1) //trigger_HLT_HH4bLowLumi==1)
     {
       nCut1+=eventWeight;
       
