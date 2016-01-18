@@ -24,6 +24,6 @@ sg_p2   param   10.0037 21.4823
 sg_p3   param   186.683 7.99001
 sg_p8   param   0.519706 0.0268188
 bgFloat   lnU     -          2.00
-bg_p0   param   400 100
-bg_p1   param   90 60
-bg_p2   param   0.5 1
+bg_p0   param   400 50
+bg_p1   param   90 10
+bg_p2   param   0.7 0.2

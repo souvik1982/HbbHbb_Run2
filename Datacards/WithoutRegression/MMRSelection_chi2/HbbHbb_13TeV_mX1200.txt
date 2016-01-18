@@ -29,6 +29,6 @@ signal_p1 param   41.7359 0.00194144
 signal_p2 param   1.97653 0.00545476
 signal_p3 param   1.25705 0.000109543 
 bgFloat   lnU     -          2.00
-bg_p0 param   533  100
-bg_p1 param   100  60
-bg_p2 param   0.5  1
+bg_p0 param   533  50
+bg_p1 param   100  10
+bg_p2 param   0.5  0.5
