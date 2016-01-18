@@ -164,7 +164,7 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
                   double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                   
-                  //if (chi2<chi2_old)
+                  // if (chi2<chi2_old)
                   if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   {
 		 //    if((jet2_p4.Pt()>90&&jet4_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet1_p4.Pt()>90)||(jet1_p4.Pt()>90&&jet4_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet2_p4.Pt()>90)|| (jet1_p4.Pt()>90&&jet2_p4.Pt()>90) || (jet3_p4.Pt()>90&&jet4_p4.Pt()>90)){
@@ -184,7 +184,6 @@ void HbbHbb_LMRSelection(std::string type, std::string sample)
         } // Conditions on 2nd jet
       } // Loop over 2nd jet
     } // Loop over 1st jet
-}
     if (foundHH)
     {
       nCut4+=eventWeight;

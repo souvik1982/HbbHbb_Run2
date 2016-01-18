@@ -58,7 +58,7 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   RooFitResult *r_bC_fit=bC_fit.fitTo(bC_data, RooFit::Range(fit_lo, fit_hi), RooFit::SumW2Error(kTRUE), RooFit::Save());
   RooPlot *bC_plot=x->frame();
   bC_data.plotOn(bC_plot);
-  //bC_fit.plotOn(bC_plot, RooFit::VisualizeError(*r_bC_fit), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
+  // bC_fit.plotOn(bC_plot, RooFit::VisualizeError(*r_bC_fit), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
   bC_fit.plotOn(bC_plot, RooFit::LineColor(kBlack));
   bC_data.plotOn(bC_plot, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
 
@@ -71,7 +71,7 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   RooFitResult *r_bS_fit=bS_fit.fitTo(bS_data, RooFit::Range(fit_lo, fit_hi), RooFit::SumW2Error(kTRUE), RooFit::Save()); 
   RooPlot *bS_plot=x->frame();
   bS_data.plotOn(bS_plot);
-  //bS_fit.plotOn(bS_plot,RooFit::VisualizeError(*r_bS_fit), RooFit::FillColor(kBlue+1), RooFit::FillStyle(3001));
+  // bS_fit.plotOn(bS_plot,RooFit::VisualizeError(*r_bS_fit), RooFit::FillColor(kBlue+1), RooFit::FillStyle(3001));
   bS_fit.plotOn(bS_plot, RooFit::LineColor(kBlue+1));
   bS_data.plotOn(bS_plot, RooFit::LineColor(kBlue+1), RooFit::MarkerColor(kBlue+1));
 
@@ -79,11 +79,6 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   TH1F *h_ratio=(TH1F*)h_mX_SR->Clone("h_ratio");
   h_ratio->Divide(h_mX_SB);
   h_ratio->SetTitle("; m_{X} (GeV); SR/SB");
-  
-  // bC_plot->SetAxisRange(SR_lo, SR_hi, "X");
-  // bS_plot->SetAxisRange(SR_lo, SR_hi, "X");
-
-  
   
   TCanvas *c_AntiTag_GaussExp=new TCanvas("c_AntiTag_GaussExp", "c_AntiTag_GaussExp", 700, 700);
   TPad *p_1=new TPad("p_1", "p_1", 0, 0.35, 1, 1);

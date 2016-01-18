@@ -18,7 +18,6 @@
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV 
 int iPos = 11;
 
-double rebin = 5;
 
 std::string itoa(int i) 
 {
@@ -28,11 +27,16 @@ std::string itoa(int i)
   return ret;
 }
 
-void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, double fit_lo, double fit_hi, std::string hist="h_mX_SB_kinFit", std::string log="lin")
+void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, double rebin,
+                                             double fit_lo, double fit_hi, 
+                                             double gaussexp_mean_lo, double gaussexp_mean_hi, 
+                                             double gaussexp_width_lo, double gaussexp_width_hi,
+                                             double gaussexp_exp_lo, double gaussexp_exp_hi,
+                                             std::string hist="h_mX_SB_kinFit", 
+                                             std::string log="lin")
 {
 
   gROOT->SetStyle("Plain");
-  gROOT->LoadMacro("tdrstyle.C");
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
   gStyle->SetOptStat(0000);
@@ -44,21 +48,18 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   TH1F *h_mX_SR=(TH1F*)f_data->Get(hist.c_str());
   h_mX_SR->Rebin(rebin);
+  double nEventsSR=((TH1F*)f_data->Get("h_mX_SR_kinFit"))->GetSumOfWeights();
   
   RooRealVar *x;
   x=new RooRealVar("x", "m_{X} (GeV)", plot_lo, plot_hi);
   RooDataHist pred("pred", "Data", RooArgList(*x), h_mX_SR);
   
-  RooRealVar bg_p0("bg_p0", "bg_p0", 200., 300.);
-  RooRealVar bg_p1("bg_p1", "bg_p1", 10., 200.);
-  RooRealVar bg_p2("bg_p2", "bg_p2", 0.01, 10.0);
-  GaussExp bg("bg", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2);
+  RooRealVar bg_p0("bg_p0", "bg_p0", gaussexp_mean_lo, gaussexp_mean_hi);
+  RooRealVar bg_p1("bg_p1", "bg_p1", gaussexp_width_lo, gaussexp_width_hi);
+  RooRealVar bg_p2("bg_p2", "bg_p2", gaussexp_exp_lo, gaussexp_exp_hi);
+  GaussExp bg("background", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2);
   RooFitResult *r_bg=bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
-  std::cout<<" === RooFit data fit result === "<<std::endl;
-  std::cout<< "bg_p0   param   "<<bg_p0.getVal() <<  " "<<bg_p0.getError()<<std::endl;
-  std::cout<< "bg_p1   param   "<<bg_p1.getVal() <<  " "<<bg_p1.getError()<<std::endl;
-  std::cout<< "bg_p2   param   "<<bg_p2.getVal() <<  " "<<bg_p2.getError()<<std::endl;
-
+  
   RooPlot *data_plot=x->frame();
   pred.plotOn(data_plot);
   bg.plotOn(data_plot, RooFit::VisualizeError(*r_bg, 1), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
@@ -70,7 +71,6 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   
   TCanvas *c_Background=new TCanvas("c_Background", "c_Background", 700, 700);
   TPad *p_1=new TPad("p_1", "p_1", 0, 0.35, 1, 1);
-  if (log=="log") p_1->SetLogy();
   //p_1->SetBottomMargin(0.05);
   //p_2->SetBottomMargin(-.5);
   // p_1->SetFillStyle(4000);
@@ -86,8 +86,11 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   p_2->Draw();
   p_1->cd();
   
+  if (log=="log") data_plot->GetYaxis()->SetRangeUser(1e-4, h_mX_SR->GetMaximum()*1.5);
+  else data_plot->GetYaxis()->SetRangeUser(0, h_mX_SR->GetMaximum()*1.5);
   data_plot->Draw();
-  data_plot->SetTitle("; m_{X} (GeV); Events / 3 GeV");
+  data_plot->SetTitle(("; m_{X} (GeV); Events / "+itoa(h_mX_SR->GetBinWidth(1))+" GeV").c_str());
+  if (log=="log") p_1->SetLogy();
   
   TPaveText *pave = new TPaveText(0.86,0.7,0.67,0.8,"NDC");
   pave->SetBorderSize(0);
@@ -145,7 +148,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   if (hist.substr(0,7)=="h_mX_SB") tag="SB";
   else tag="SR";
   c_Background->SaveAs(("BackgroundFit_"+tag+"_GaussExp.png").c_str());
-  c_Background->SaveAs(("BackgroundFit_"+tag+"_GaussExp.pdf").c_str()); 
+  c_Background->SaveAs(("BackgroundFit_"+tag+"_GaussExp.pdf").c_str());
   
   // --- Ratio of function to data points ---
   /*
@@ -170,11 +173,28 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   c_DataFit->SaveAs(("c_DataFit_"+tags+"SR.png").c_str());
   */
   // ------------------------------------------
- /* 
-  RooWorkspace *w=new RooWorkspace("HbbHbb");
-  w->import(bg_pred);
-  w->SaveAs("w_background_GaussExp.root");
-  */
+  
+   
+  RooWorkspace *w_background=new RooWorkspace("HbbHbb");
+  w_background->import(bg);
+  w_background->SaveAs("w_background_GaussExp.root");
+  
+  // Normalize h_mX_SB to SR for pretend data
+  TH1F *h_mX_SR_fakeData=(TH1F*)h_mX_SR->Clone("h_mX_SR_fakeData");
+  h_mX_SR_fakeData->Scale(nEventsSR/h_mX_SR_fakeData->GetSumOfWeights());
+  RooDataHist data_obs("data_obs", "Data", RooArgList(*x), h_mX_SR_fakeData);
+  
+  RooWorkspace *w_data=new RooWorkspace("HbbHbb");
+  w_data->import(data_obs);
+  w_data->SaveAs("w_data.root");
+  
+  // For the datacard
+  std::cout<<" === RooFit data fit result to be entered in datacard === "<<std::endl;
+  std::cout<<" Background number of events = "<<nEventsSR<<std::endl;
+  std::cout<< "bg_p0   param   "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
+  std::cout<< "bg_p1   param   "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
+  std::cout<< "bg_p2   param   "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;
+  
 }
   
   

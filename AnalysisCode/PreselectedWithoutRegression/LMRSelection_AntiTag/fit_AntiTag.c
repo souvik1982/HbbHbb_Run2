@@ -1,7 +1,7 @@
 {
   gSystem->Load("../../PDFs/GaussExp_cxx.so");
   gROOT->LoadMacro("../../BackgroundPrediction_AntiTag_GaussExp.cc");
-  BackgroundPrediction_AntiTag_GaussExp(250, 700, 10, // range of plot, binning
+  BackgroundPrediction_AntiTag_GaussExp(150, 800, 10, // range of plot, binning
                                         250, 700, // range of fit
                                         260, 350,  // range of gaussExp mean
                                         10, 30,   // range of gaussExp width
