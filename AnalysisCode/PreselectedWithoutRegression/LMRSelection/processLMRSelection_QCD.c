@@ -8,5 +8,5 @@
   HbbHbb_LMRSelection("QCD", "QCD_HT700to1000_Skim");
   HbbHbb_LMRSelection("QCD", "QCD_HT1000to1500_Skim");
   HbbHbb_LMRSelection("QCD", "QCD_HT1500to2000_Skim");
-  HbbHbb_LMRSelection("QCD", "QCD_HT2000toInf_Skim");
+  HbbHbb_LMRSelection("QCD", "QCD_HT2000toInf");
 }

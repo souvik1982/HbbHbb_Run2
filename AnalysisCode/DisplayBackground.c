@@ -116,13 +116,13 @@ void DisplayBackground(){
 	  h_mX_SB_kinFitQ->Draw("same");
 	  h_mX_SB_kinFitQ->SetLineColor(kRed+1);
 	  h_mX_SB_kinFitQ->SetFillColor(kRed+1);
-	  if(m==0) leg->AddEntry(h_mX_SB_kinFitQ, "QCD", "f");
-	  hs.Add(h_mX_SB_kinFitQ,"hist");
+//	  if(m==0) leg->AddEntry(h_mX_SB_kinFitQ, "QCD", "f");
+//	  hs.Add(h_mX_SB_kinFitQ,"hist");
 	  integralQCD = integralQCD + h_mX_SB_kinFitQ->Integral(0, 200);
 
   }
   std::cout<< "integral QCD " << integralQCD<<std::endl;
-  h_mX_SB_kinFit->GetYaxis()->SetRangeUser(0., hs.GetMaximum()*1.5);
+  h_mX_SB_kinFit->GetYaxis()->SetRangeUser(0., hs.GetMaximum()*13.);
   //h_mX_SB_kinFit->Scale(b/a);
   h_mX_SB_kinFit->SetTitle("");
   h_mX_SB_kinFit->SetLineColor(kBlue+2);
@@ -153,7 +153,7 @@ void DisplayBackground(){
 
   std::cout<<" adding data "<<std::endl;
 
-  TFile * fData = new TFile("Histograms_BTagCSV_2015_Skim.root");
+  TFile * fData = new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   TH1F* h_mX_SB_kinFitD=(TH1F*)fData->Get("h_mX_SB_kinFit");	
   h_mX_SB_kinFitD->Rebin(40);	
   h_mX_SB_kinFitD->SetMarkerStyle(20);

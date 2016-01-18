@@ -1,0 +1,26 @@
+imax 1 number of channels
+jmax * number of backgrounds
+kmax * number of systematic uncertainty sources
+----------
+shapes signal_ HbbHbb w_data_LowMass260.root HbbHbb:signal_
+shapes background HbbHbb w_data_LowMass260.root HbbHbb:bg
+shapes data_obs HbbHbb w_data_LowMass260.root HbbHbb:obs
+----------
+## Observation
+bin                     HbbHbb
+observation              -1
+----------
+bin             HbbHbb          HbbHbb
+process         signal_      background
+process         0               1
+rate            4.11619        4144
+lumi            lnN     1.046            -     
+sg_p0   param   258.289 0.516187
+sg_p1   param   6 0.102648
+sg_p2   param   10.0037 21.4823
+sg_p3   param   186.683 7.99001
+sg_p8   param   0.519706 0.0268188
+bg_p0   param   400 0.0392003
+bg_p1   param   90.1 0.058439
+bg_p2   param   0.7 0.00306183
+
