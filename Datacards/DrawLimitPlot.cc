@@ -11,8 +11,6 @@
 
 #include "../AnalysisCode/TDRStyle.h"
 
-bool compareATLAS=false;
-
 std::string itoa(int i) 
 {
   char res[4];
@@ -21,13 +19,13 @@ std::string itoa(int i)
   return ret;
 }
 
-void DrawLimitPlot()
+void DrawLimitPlot(std::vector<double> mass, double ymin, double ymax)
 {
-  const unsigned int nPoints=5;
+  const unsigned int nPoints=mass.size();
   double xsec[nPoints], xsecNeg1[nPoints], xsecPos1[nPoints], xsecNeg2[nPoints], xsecPos2[nPoints];
   double obs[nPoints];
   double expNeg2[nPoints], expNeg1[nPoints], expPos1[nPoints], expPos2[nPoints];
-  double mass[nPoints]={400, 600, 800, 1000, 1200};
+  // double mass[nPoints]={400, 600, 800, 1000, 1200};
   // double mass[nPoints]={400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100};
   
   for (unsigned int i=0; i<nPoints; ++i)
@@ -62,45 +60,38 @@ void DrawLimitPlot()
   gROOT->SetStyle("Plain");
   // gStyle->SetOptStat(000000000);
   
-  // ATLAS curve
-  double masses_ATLAS[8]={500, 600, 700, 800, 900, 1000, 1100};
-  double limit_ATLAS[8]={80, 25, 15, 12, 10, 9, 8};
-  TGraph *g_ATLAS=new TGraph(7, masses_ATLAS, limit_ATLAS); g_ATLAS->SetLineWidth(2); g_ATLAS->SetLineColor(kRed);
-  
   TStyle *tdrStyle=setTDRStyle();
   tdrStyle->cd();
   
-  TGraph *g_xsec=new TGraph(nPoints, mass, xsec);
+  TGraph *g_xsec=new TGraph(nPoints, &(mass[0]), xsec);
   g_xsec->SetTitle("; m_{X} (GeV); #sigma(pp#rightarrowX) #times Br(X#rightarrowH(b#bar{b}) H(b#bar{b})) (fb)");
   g_xsec->SetLineWidth(2);
   g_xsec->SetLineStyle(2);
-  TGraphAsymmErrors *g_xsec_1sigma=new TGraphAsymmErrors(nPoints, mass, xsec, 0, 0, expNeg1, expPos1);
+  TGraphAsymmErrors *g_xsec_1sigma=new TGraphAsymmErrors(nPoints, &(mass[0]), xsec, 0, 0, expNeg1, expPos1);
   g_xsec_1sigma->SetLineColor(kGreen);
   g_xsec_1sigma->SetFillColor(kGreen);
-  TGraphAsymmErrors *g_xsec_2sigma=new TGraphAsymmErrors(nPoints, mass, xsec, 0, 0, expNeg2, expPos2);
+  TGraphAsymmErrors *g_xsec_2sigma=new TGraphAsymmErrors(nPoints, &(mass[0]), xsec, 0, 0, expNeg2, expPos2);
   g_xsec_2sigma->SetLineColor(kYellow);
   g_xsec_2sigma->SetFillColor(kYellow);
-  TGraph *g_obs=new TGraph(nPoints, mass, obs);
+  TGraph *g_obs=new TGraph(nPoints, &(mass[0]), obs);
   g_obs->SetLineWidth(2);
   g_obs->SetLineStyle(1);
   TCanvas *c_xsec=new TCanvas("c_xsec", "c_xsec", 1000, 700);
   c_xsec->SetLogy();
   c_xsec->SetGridx(); c_xsec->SetGridy();
-  g_xsec->SetMaximum(2000); g_xsec->SetMinimum(10);
+  g_xsec->SetMaximum(ymax); g_xsec->SetMinimum(ymin);
   g_xsec->Draw("AL*");
   g_xsec_2sigma->Draw("3");
   g_xsec_1sigma->Draw("3");
   g_xsec->Draw("L*");
   // g_obs->Draw("L* SAME");
-  if (compareATLAS) g_ATLAS->Draw("L* same");
-  TLegend *leg=new TLegend(0.45, 0.6, 0.9, 0.85);
+  TLegend *leg=new TLegend(0.55, 0.65, 0.9, 0.85);
   // TLegend *leg=new TLegend(0.45, 0.5, 0.9, 0.7);
   leg->SetFillStyle(1); leg->SetFillColor(kWhite);
   leg->AddEntry(g_xsec, "Expected Upper Limit", "L");
   leg->AddEntry(g_xsec_1sigma, "Expected #pm 1 #sigma", "F");
   leg->AddEntry(g_xsec_2sigma, "Expected #pm 2 #sigma", "F");
   // leg->AddEntry(g_obs, "Observed Upper Limit", "LP");
-  if (compareATLAS) leg->AddEntry(g_ATLAS, "ATLAS expected limit", "L");
   leg->Draw();
   TLatex * tPrel = new TLatex();
   tPrel->SetTextSize(0.05);
