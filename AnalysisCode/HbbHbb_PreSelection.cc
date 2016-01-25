@@ -255,6 +255,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   // Loop over events
   int nEvents=tree->GetEntries();
   double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0;
+  double nTrig1=0, nTrig12=0, nTrig2=0;
   for (int i=0; i<nEvents; ++i)
   {
     ++nCut0;
@@ -283,7 +284,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     }
     
     h_MET->Fill(met_pT, eventWeight);
-    h_MET_phi->Fill(met_phi, eventWeight);	
+    h_MET_phi->Fill(met_phi, eventWeight);
+    
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v!=1) nTrig1+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v==1) nTrig12+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v!=1 && trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v==1) nTrig2+=1;
     
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
@@ -349,8 +354,6 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         
         if (nCbJets>=3)
         {
-          nCut3+=eventWeight;
-          
           fillIndexVectorFromJetList(jetList_CentralpT40btag_pTOrder, &jetIndex_CentralpT40btag_pTOrder);
           fillIndexVectorFromJetList(jetList_CentralpT40btag_CSVOrder, &jetIndex_CentralpT40btag_CSVOrder);
           fillIndexVectorFromJetList(jetList_CentralpT40btag_CMVAOrder, &jetIndex_CentralpT40btag_CMVAOrder);
@@ -405,7 +408,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
           // Write out tree
           outtree->Fill();
           
-        } // nCbJets>=4
+        } // nCbJets>=3
+        
+        if (nCbJets>=4) nCut3+=eventWeight;
         
         jetIndex_CentralpT40btag_pTOrder.clear();
         jetIndex_CentralpT40btag_CSVOrder.clear();
@@ -466,6 +471,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::cout<<"Number of events after finding HH candidate (btag && pT>40 GeV && |eta|<2.4)  = "<<nCut4<<std::endl;
   std::cout<<"Number of events after finding X = "<<nCut5<<", eff. = "<<nCut5/nInitial<<std::endl;
   std::cout<<"========================"<<std::endl;
+  
+  std::cout<<"=== Trigger Report === "<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v = "<<nTrig1/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v && trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v = "<<nTrig12/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v = "<<nTrig2/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
   
   delete h_Count;
   delete h_nCbJets;

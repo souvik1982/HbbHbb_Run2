@@ -1,4 +1,4 @@
-setenv dir /uscms_data/d2/souvik/HbbHbb_Run2/HbbHbb_Run2/AnalysisCode/PDFs
+setenv dir ../../../AnalysisCode/PDFs
 combine -M Asymptotic HbbHbb_13TeV_mX400.root --noFitAsimov -L $dir/GaussExp_cxx.so -L $dir/ExpGaussExp_cxx.so >&! HbbHbb_13TeV_mX400_Asymptotic.log 
 echo mX400 done
 combine -M Asymptotic HbbHbb_13TeV_mX600.root --noFitAsimov -L $dir/GaussExp_cxx.so -L $dir/ExpGaussExp_cxx.so >&! HbbHbb_13TeV_mX600_Asymptotic.log
