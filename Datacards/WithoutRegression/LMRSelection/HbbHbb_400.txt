@@ -15,12 +15,16 @@ process         signal_      background
 process         0               1
 rate            44.9527        4144
 lumi            lnN     1.046            -     
+JER       lnN     1.05    -
+bTag      lnN     1.10    -
+trigger   lnN     1.10    -  
 sg_p0   param   384.841 0.295427
 sg_p1   param   15 0.00634192
 sg_p2   param   376.331 2.40669
 sg_p3   param   75.0675 2.27344
 sg_p8   param   0.722258 0.00992917
-bg_p0   param   400 0.0392003
-bg_p1   param   90.1 0.058439
-bg_p2   param   0.7 0.00306183
+bgFloat   lnU     -          2.00
+bg_p0   param   400 50
+bg_p1   param   90 10
+bg_p2   param   0.7 0.2
 
