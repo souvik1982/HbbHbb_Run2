@@ -10,7 +10,7 @@ void Quadplots_fit_test_singleBtag(){
     c1->SetGridy();
 
 //    TFile *_file0 = TFile::Open("SingleElectronVBF.root");
-    TFile *_file0 = TFile::Open("../SingleElectronVBF.root");
+    TFile *_file0 = TFile::Open("/eos/uscms/store/user/cvernier/SingleElectronVBF.root");
     TTree* tree = (TTree*) _file0->Get("tree");
 
     //////////////////////////////////////////////////

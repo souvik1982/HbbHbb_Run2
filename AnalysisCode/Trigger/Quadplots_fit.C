@@ -23,6 +23,61 @@ void doFit(TF1* function,TEfficiency* efficiency,float xmin, float xmax, string 
     gStyle->SetOptFit(0);
     efficiency->Fit(function);
     function->Draw("same");
+
+  TF1* fit = (TF1*)function->Clone("fit");
+    TF1* fitUp = (TF1*)function->Clone("fitUp");
+    fitUp->SetLineColor(kRed);
+    fitUp->SetLineStyle(2);
+    TF1* fitDown = (TF1*)function->Clone("fitDown");
+    fitDown->SetLineStyle(2);
+    double parameters[4];
+    for(int i=0; i<4; i++)  {
+                parameters[i] = fit->GetParameter(i);
+                }
+
+
+    double parametersUp[4];
+    double parametersDown[4];
+
+
+    double looseRange=10.;
+    double tightRange=10.;
+
+     for(int i=0; i<4; i++) {
+        double nsigma = 2;
+        if (i==0){// #  x0 can go down 
+            parametersUp[i] = fit->GetParameter(i) + fit->GetParError(i)*nsigma;
+            parametersDown[i] = fit->GetParameter(i) - fit->GetParError(i)*nsigma;
+        }
+        if(i==1){
+            parametersUp[i] = fit->GetParameter(i) + fit->GetParError(i)*nsigma;
+            parametersDown[i] = fit->GetParameter(i) - fit->GetParError(i)*nsigma;
+        }
+        if(i==2){
+            parametersUp[i] = fit->GetParameter(i) + fit->GetParError(i)*nsigma;
+            parametersDown[i] = fit->GetParameter(i) - fit->GetParError(i)*nsigma;
+        }
+        if(i==3){
+
+            parametersUp[i] = fit->GetParameter(i) + fit->GetParError(i)*nsigma;
+            parametersDown[i] = fit->GetParameter(i) - fit->GetParError(i)*nsigma;
+        }
+        else{//: # fix the other parameters
+            parametersUp[i] = fit->GetParameter(i);
+            parametersDown[i] = fit->GetParameter(i);
+        }
+
+}
+
+        for(int i=0; i<4; i++) {
+        fit->SetParameter(i,parameters[i]);
+        fitUp->SetParameter(i,parametersUp[i]);
+        fitDown->SetParameter(i,parametersDown[i]);
+        }
+
+
+
+
     c1->SaveAs((fileName+".png").c_str());
 //    c1->SaveAs((fileName+".C").c_str());
     c1->SaveAs((fileName+".root").c_str());
@@ -86,7 +141,7 @@ void Quadplots_fit(){
     gStyle->SetOptFit(0);
     gStyle->SetOptStat(0);
 
-    TFile *_file0 = TFile::Open("../SingleElectronVBF.root");
+    TFile *_file0 = TFile::Open("/eos/uscms/store/user/cvernier/SingleElectronVBF.root");
     TTree* tree = (TTree*) _file0->Get("tree");
 
     TFile* file = new TFile("test.root","recreate");
