@@ -12,6 +12,8 @@
 #include "HbbHbb_Component_SignalPurity.cc"
 #include "HbbHbb_Component_KinFit.cc"
 
+double jet_pT_cut1=30.;
+
 double mean_H1_mass_=124;
 double sigma_H1_mass_=15; // 12;
 double mean_H2_mass_=117;
@@ -131,51 +133,59 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
       unsigned int j_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(j);
       TLorentzVector jet1_p4, jet2_p4, jet3_p4, jet4_p4;
       jet1_p4=fillTLorentzVector(jet_regressed_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
-      for (unsigned int k=0; k<jetIndex_CentralpT40btag_CSVOrder->size(); ++k)
+      if (jet1_p4.Pt()>jet_pT_cut1)
       {
-        if (k!=j)
+        for (unsigned int k=0; k<jetIndex_CentralpT40btag_CSVOrder->size(); ++k)
         {
           unsigned int k_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(k);
           jet2_p4=fillTLorentzVector(jet_regressed_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k_jetIndex], jet_mass[k_jetIndex]);
-          for (unsigned int l=0; l<jetIndex_CentralpT40btag_CSVOrder->size(); ++l)
+          if (k_jetIndex!=j_jetIndex && jet2_p4.Pt()>jet_pT_cut1)
           {
-            if (l!=j && l!=k)
+            for (unsigned int l=0; l<jetIndex_CentralpT40btag_CSVOrder->size(); ++l)
             {
               unsigned int l_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(l);
               jet3_p4=fillTLorentzVector(jet_regressed_pT[l_jetIndex], jet_eta[l_jetIndex], jet_phi[l_jetIndex], jet_mass[l_jetIndex]);
-              for (unsigned int m=0; m<jetIndex_CentralpT40btag_CSVOrder->size(); ++m)
+              if (l_jetIndex!=k_jetIndex && l_jetIndex!=j_jetIndex && jet3_p4.Pt()>jet_pT_cut1)
               {
-                if (m!=j && m!=k && m!=l)
+                for (unsigned int m=0; m<jetIndex_CentralpT40btag_CSVOrder->size(); ++m)
                 {
                   unsigned int m_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(m);
                   jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
-                   
-                  TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
-                  TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
-                  
-                  double deltaR1=jet1_p4.DeltaR(jet2_p4);
-                  double deltaR2=jet3_p4.DeltaR(jet4_p4);
-                  
-                  double mH1=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet1_p4.M():diJet2_p4.M();
-                  double mH2=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet2_p4.M():diJet1_p4.M();
-                  
-                  double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
-                  
-                  if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
+                  if (m_jetIndex!=l_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=j_jetIndex && jet4_p4.Pt()>jet_pT_cut1)
                   {
-                    H1jet1_i=j_jetIndex;
-                    H1jet2_i=k_jetIndex;
-                    H2jet1_i=l_jetIndex;
-                    H2jet2_i=m_jetIndex;
-                    chi2_old=chi2;
-                    foundHH=true;
-                  }
-                } // Conditions on 4th jet
-              } // Loop over 4th jet
-            } // Conditions on 3rd jet
-          } // Loop over 3rd jet
-        } // Conditions on 2nd jet
-      } // Loop over 2nd jet
+                    TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
+                    TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
+                  
+                    double deltaR1=jet1_p4.DeltaR(jet2_p4);
+                    double deltaR2=jet3_p4.DeltaR(jet4_p4);
+                    
+                    // mH1, mH2 classified by pT
+                    // double mH1=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet1_p4.M():diJet2_p4.M();
+                    // double mH2=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet2_p4.M():diJet1_p4.M();
+                    
+                    // mH1, mH2 classified by mass
+                    double mH1=(diJet1_p4.M()>diJet2_p4.M())?diJet1_p4.M():diJet2_p4.M();
+                    double mH2=(diJet1_p4.M()>diJet2_p4.M())?diJet2_p4.M():diJet1_p4.M();
+                  
+                    double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
+                  
+                    // if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
+                    if (chi2<chi2_old)
+                    {
+                      H1jet1_i=j_jetIndex;
+                      H1jet2_i=k_jetIndex;
+                      H2jet1_i=l_jetIndex;
+                      H2jet2_i=m_jetIndex;
+                      chi2_old=chi2;
+                      foundHH=true;
+                    }
+                  } // Conditions on 4th jet
+                } // Loop over 4th jet
+              } // Conditions on 3rd jet
+            } // Loop over 3rd jet
+          } // Conditions on 2nd jet
+        } // Loop over 2nd jet
+      } // Condition of 1st jet
     } // Loop over 1st jet
 
     if (foundHH)
@@ -191,7 +201,11 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
 	    TLorentzVector jet4_p4=fillTLorentzVector(jet_regressed_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
       
       // The higher pT Higgs is H1, and the other is H2
-      if ((jet1_p4+jet2_p4).Pt()<(jet3_p4+jet4_p4).Pt()) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} 
+      // if ((jet1_p4+jet2_p4).Pt()<(jet3_p4+jet4_p4).Pt()) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} 
+      
+      // The higher mass Higgs is H1, and the other is H2
+      if ((jet1_p4+jet2_p4).M()<(jet3_p4+jet4_p4).M()) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} 
+      
 	    jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
 	    jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
 	    jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
@@ -210,11 +224,14 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
       double pTH2=H2_p4.Pt();
       double mH1=H1_p4.M();
       double mH2=H2_p4.M();
+      
+      if (mH1<mH2) std::cout<<"Hey! mH1 < mH2"<<std::endl;
+      
       h_H1_mass->Fill(mH1, eventWeight);
       h_H1_pT->Fill(pTH1, eventWeight);
       h_H2_mass->Fill(mH2, eventWeight);
       h_H2_pT->Fill(pTH2, eventWeight);
-      h_mH1_mH2_asym->Fill((pTH1>pTH2)?mH1:mH2, (pTH1>pTH2)?mH2:mH1, eventWeight);
+      h_mH1_mH2_asym->Fill(mH1, mH2, eventWeight);
       
       // Apply bias correction
       TLorentzVector jet1_p4_biasCorrected=biasEt_signal(jet1_p4_unregressed);
