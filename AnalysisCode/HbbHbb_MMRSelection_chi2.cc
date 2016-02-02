@@ -14,17 +14,10 @@
 
 double jet_pT_cut1=30.;
 
-double mean_H1_mass_=124;
-double sigma_H1_mass_=15; // 12;
-double mean_H2_mass_=117;
-double sigma_H2_mass_=20; // 13;
-
-/* to check against existing selection
 double mean_H1_mass_=125;
-double sigma_H1_mass_=17.5;
+double sigma_H1_mass_=20;
 double mean_H2_mass_=125;
-double sigma_H2_mass_=17.5;
-*/
+double sigma_H2_mass_=20;
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
