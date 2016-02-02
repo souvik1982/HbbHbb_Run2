@@ -153,24 +153,27 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
                   jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
                   if (m_jetIndex!=l_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=j_jetIndex && jet4_p4.Pt()>jet_pT_cut1)
                   {
-                    TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
-                    TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
-                  
+                    // swap if H pT is odd in second decimal place
+                    if (int((jet1_p4+jet2_p4).Pt()*100.) % 2 == 1)
+                    {
+                      swap(j_jetIndex, l_jetIndex); 
+                      swap(k_jetIndex, m_jetIndex);
+                      swap(jet1_p4, jet3_p4);
+                      swap(jet2_p4, jet4_p4);
+                    }
+                    
                     double deltaR1=jet1_p4.DeltaR(jet2_p4);
                     double deltaR2=jet3_p4.DeltaR(jet4_p4);
                     
-                    // mH1, mH2 classified by pT
-                    // double mH1=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet1_p4.M():diJet2_p4.M();
-                    // double mH2=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet2_p4.M():diJet1_p4.M();
+                    TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
+                    TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
                     
-                    // mH1, mH2 classified by mass
-                    double mH1=(diJet1_p4.M()>diJet2_p4.M())?diJet1_p4.M():diJet2_p4.M();
-                    double mH2=(diJet1_p4.M()>diJet2_p4.M())?diJet2_p4.M():diJet1_p4.M();
-                  
+                    double mH1=diJet1_p4.M();
+                    double mH2=diJet2_p4.M();
+                    
                     double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   
-                    // if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
-                    if (chi2<chi2_old)
+                    if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
                     {
                       H1jet1_i=j_jetIndex;
                       H1jet2_i=k_jetIndex;
@@ -200,17 +203,6 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
 	    TLorentzVector jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
 	    TLorentzVector jet4_p4=fillTLorentzVector(jet_regressed_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
       
-      // The higher pT Higgs is H1, and the other is H2
-      // if ((jet1_p4+jet2_p4).Pt()<(jet3_p4+jet4_p4).Pt()) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} 
-      
-      // The higher mass Higgs is H1, and the other is H2
-      if ((jet1_p4+jet2_p4).M()<(jet3_p4+jet4_p4).M()) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} 
-      
-	    jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
-	    jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
-	    jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
-	    jet4_p4=fillTLorentzVector(jet_regressed_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
-      
       TLorentzVector jet1_p4_unregressed=fillTLorentzVector(jet_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
       TLorentzVector jet2_p4_unregressed=fillTLorentzVector(jet_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
       TLorentzVector jet3_p4_unregressed=fillTLorentzVector(jet_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
@@ -224,8 +216,6 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
       double pTH2=H2_p4.Pt();
       double mH1=H1_p4.M();
       double mH2=H2_p4.M();
-      
-      if (mH1<mH2) std::cout<<"Hey! mH1 < mH2"<<std::endl;
       
       h_H1_mass->Fill(mH1, eventWeight);
       h_H1_pT->Fill(pTH1, eventWeight);
