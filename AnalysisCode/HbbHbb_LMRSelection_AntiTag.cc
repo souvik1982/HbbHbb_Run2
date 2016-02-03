@@ -175,8 +175,8 @@ void HbbHbb_LMRSelection_AntiTag(std::string type, std::string sample)
                   double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                   
-                  // if (chi2<chi2_old)
-                  if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
+                  if (chi2<chi2_old)
+                  //if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   {
                     /*int nJets90=0;
                     if (jet1_p4.Pt()>90) ++nJets90;
@@ -214,7 +214,7 @@ void HbbHbb_LMRSelection_AntiTag(std::string type, std::string sample)
 	    TLorentzVector jet4_p4=fillTLorentzVector(jet_regressed_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
       
       // The higher pT Higgs is H1, and the other is H2
-      if ((jet1_p4+jet2_p4).Pt()<(jet3_p4+jet4_p4).Pt()) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);} 
+      if (int((jet1_p4+jet2_p4).Pt()*100.) % 2 == 1) {swap(H1jet1_i, H2jet1_i); swap(H1jet2_i, H2jet2_i);}
 	    jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
 	    jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]); 
 	    jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]); 
