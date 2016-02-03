@@ -92,28 +92,39 @@ void DisplayCutFlow()
 
 
 	//int n=10;
-	//int massPts[15]={270, 300, 350, 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100};
-	int massL[9]={260, 270, 300, 400, 600, 800, 1000, 1200, 1600};//, 550, 600, 650, 700, 800, 900, 1000, 1100};
+	//int massL[11]={ 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100};
+	int massL[10]={260, 270, 300, 350, 400, 450, 500, 550, 600, 650}; //, 700, 800, 900, 1000, 1100};
   TFile *glugluToX260=new TFile("Histograms_Graviton260GeV.root");
   TFile *glugluToX270=new TFile("Histograms_Graviton270GeV.root");
   TFile *glugluToX300=new TFile("Histograms_Graviton300GeV.root");
+ TFile *glugluToX350=new TFile("Histograms_Graviton350GeV.root");
   TFile *glugluToX400=new TFile("Histograms_Graviton400GeV.root");
-  TFile *glugluToX600=new TFile("Histograms_Graviton600GeV.root"); 
-  TFile *glugluToX800=new TFile("Histograms_Graviton800GeV.root");
-  TFile *glugluToX1000=new TFile("Histograms_Graviton1000GeV.root");
-  TFile *glugluToX1200=new TFile("Histograms_Graviton1200GeV.root");
-  TFile *glugluToX1600=new TFile("Histograms_Graviton1600GeV.root");
-
+  TFile *glugluToX450=new TFile("Histograms_Graviton450GeV.root"); 
+  TFile *glugluToX500=new TFile("Histograms_Graviton500GeV.root");
+  TFile *glugluToX550=new TFile("Histograms_Graviton550GeV.root");
+  TFile *glugluToX600=new TFile("Histograms_Graviton600GeV.root");
+  TFile *glugluToX650=new TFile("Histograms_Graviton650GeV.root");
+/*  TFile *glugluToX700=new TFile("Histograms_Graviton700GeV.root");
+TFile *glugluToX800=new TFile("Histograms_Graviton800GeV.root");
+TFile *glugluToX900=new TFile("Histograms_Graviton900GeV.root");
+TFile *glugluToX1000=new TFile("Histograms_Graviton1000GeV.root");
+TFile *glugluToX1100=new TFile("Histograms_Graviton1100GeV.root");
+*/
   pushBackHistograms(signals, glugluToX260, glugluToX260);
   pushBackHistograms(signals, glugluToX270, glugluToX270);
   pushBackHistograms(signals, glugluToX300, glugluToX300 );
+  pushBackHistograms(signals, glugluToX350, glugluToX350 );
   pushBackHistograms(signals, glugluToX400, glugluToX400);
+  pushBackHistograms(signals, glugluToX450, glugluToX450);
+  pushBackHistograms(signals, glugluToX500, glugluToX500);
+  pushBackHistograms(signals, glugluToX550, glugluToX550);
   pushBackHistograms(signals, glugluToX600, glugluToX600);
-  pushBackHistograms(signals, glugluToX800, glugluToX800);
-  pushBackHistograms(signals, glugluToX1000, glugluToX1000);
-  pushBackHistograms(signals, glugluToX1200, glugluToX1200);
-  pushBackHistograms(signals, glugluToX1600, glugluToX1600);
-
+  pushBackHistograms(signals, glugluToX650, glugluToX650);
+/*  pushBackHistograms(signals, glugluToX700, glugluToX700);
+pushBackHistograms(signals, glugluToX800, glugluToX800);
+pushBackHistograms(signals, glugluToX900, glugluToX900);
+pushBackHistograms(signals, glugluToX1000, glugluToX1000);
+*/
   std::vector<TH1F *> h_Cut;
   TH1F *h_Init=new TH1F("h_Init", "h_Init", 154, 260, 1800);
 
@@ -141,7 +152,7 @@ void DisplayCutFlow()
   TGraphAsymmErrors *g_Ae_10=new TGraphAsymmErrors(h_Events10, h_Init); g_Ae_10->SetTitle("HH Candidate efficiency"); g_Ae_10->SetLineColor(kGreen+2); g_Ae_10->SetMarkerColor(kGreen+2); g_Ae_10->SetMarkerStyle(23); g_Ae_10->SetLineWidth(2);
   TGraphAsymmErrors *g_Ae_16=new TGraphAsymmErrors(h_Events16, h_Init); g_Ae_16->SetTitle("SR efficiency"); g_Ae_16->SetLineColor(kRed+2);  g_Ae_16->SetMarkerColor(kRed+2); g_Ae_16->SetMarkerStyle(33); g_Ae_16->SetLineWidth(2);
 
-  TCanvas *c_Ae=new TCanvas("c_Ae", "c_Ae", 1000, 700);
+  TCanvas *c_Ae=new TCanvas("c_Ae", "c_Ae", 700, 700);
   c_Ae->SetTickx(1);
   c_Ae->SetTicky(1);
   c_Ae->SetLogy();
@@ -149,10 +160,10 @@ void DisplayCutFlow()
   c_Ae->SetFrameFillStyle(4000);
   c_Ae->SetFrameFillColor(0000);
   g_Ae_3->SetMaximum(1.);
-  g_Ae_3->SetMinimum(0.0001);
+  g_Ae_3->SetMinimum(0.007);
   //g_Ae_3->SetMaximum(0.7); g_Ae_3->SetMinimum(0);
   g_Ae_3->SetTitle("");
-  g_Ae_3->GetXaxis()->SetTitle("m_{X} [GeV]");
+  g_Ae_3->GetXaxis()->SetTitle("m_{X} (GeV)");
   g_Ae_3->GetYaxis()->SetTitle("A #times #epsilon");
   g_Ae_3->GetYaxis()->SetTitleOffset(1.1);
   g_Ae_3->GetYaxis()->SetLabelSize(0.03);

@@ -10,6 +10,9 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 #include <iostream>
 #include "DrawFunctions.h"
 #include "TLorentzVector.h"
+#include "TMath.h"
+#include "Trigger/Double.h"
+#include "Trigger/Quad.h"
 
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"
@@ -23,7 +26,7 @@ double pi=3.14159265358979;
 double jet_pT_cut=30.;
 double jet_pT_ttbar_cut=20.;
 double jet_eta_cut=2.5;
-double jet_btag_cut=0.6;
+double jet_btag_cut=0.605;
 /////////////////////////////////////
 
 typedef std::map<double, int> JetList;
@@ -207,17 +210,17 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     tree->SetBranchAddress("Jet_vtxNtracks", &(jet_vtxNtrk));
   }           
   
-  TH1F *h_nCbJets=new TH1F("h_nCbJets", "; # Cleaned PAT Jets with |#eta|<2.5, p_{T} > 40 GeV, CSV > 0.6; Events", 10, 0., 10.);
+  TH1F *h_nCbJets=new TH1F("h_nCbJets", "; #Jets with |#eta|<2.5, p_{T} > 30 GeV, CSV > CSVL; Events", 10, 0., 10.);
   
   TH1F *h_pTOrder_JetpT_1=new TH1F("h_pTOrder_JetpT_1", "; Jet pT 1 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 800.);
   TH1F *h_pTOrder_JetpT_2=new TH1F("h_pTOrder_JetpT_2", "; Jet pT 2 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 500.);
   TH1F *h_pTOrder_JetpT_3=new TH1F("h_pTOrder_JetpT_3", "; Jet pT 3 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 350.);
   TH1F *h_pTOrder_JetpT_4=new TH1F("h_pTOrder_JetpT_4", "; Jet pT 4 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
   TH1F *h_pTOrder_JetpT_5=new TH1F("h_pTOrder_JetpT_5", "; Jet pT 5 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
-  TH1F *h_CSVOrder_JetCSV_1=new TH1F("h_CSVOrder_JetCSV_1", "; Jet CSV 1 for jets with |#eta|<2.5, p_{T} > 40 GeV; Events", 50, 0., 1.);
-  TH1F *h_CSVOrder_JetCSV_2=new TH1F("h_CSVOrder_JetCSV_2", "; Jet CSV 2 for jets with |#eta|<2.5, p_{T} > 40 GeV; Events", 50, 0., 1.);
-  TH1F *h_CSVOrder_JetCSV_3=new TH1F("h_CSVOrder_JetCSV_3", "; Jet CSV 3 for jets with |#eta|<2.5, p_{T} > 40 GeV; Events", 50, 0., 1.);
-  TH1F *h_CSVOrder_JetCSV_4=new TH1F("h_CSVOrder_JetCSV_4", "; Jet CSV 4 for jets with |#eta|<2.5, p_{T} > 40 GeV; Events", 50, 0., 1.);
+  TH1F *h_CSVOrder_JetCSV_1=new TH1F("h_CSVOrder_JetCSV_1", "; Jet CSV 1 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, 0., 1.);
+  TH1F *h_CSVOrder_JetCSV_2=new TH1F("h_CSVOrder_JetCSV_2", "; Jet CSV 2 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, 0., 1.);
+  TH1F *h_CSVOrder_JetCSV_3=new TH1F("h_CSVOrder_JetCSV_3", "; Jet CSV 3 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, 0., 1.);
+  TH1F *h_CSVOrder_JetCSV_4=new TH1F("h_CSVOrder_JetCSV_4", "; Jet CSV 4 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, 0., 1.);
   
   TH1F *h_GenX_mass=new TH1F("h_GenX_mass", "; m_{X}^{GEN} (GeV); Events", 1800, 200, 2000);
   TH1F *h_dR_genHbb=new TH1F("h_dR_genHbb", "; #Delta R(b#bar{b}}; Events", 1000, 0., 5.);
@@ -292,7 +295,23 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
-    if (trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1) //trigger_HLT_HH4bLowLumi==1)
+    float max1 =-1 ;
+    float max2=-1;
+    float max3=-1;	
+    for(int i=0; i<8;i++){
+	if(max1 < jet_btagCSV[i]) { max3=max2; max2=max1; max1=jet_btagCSV[i];}
+	else if (max2  < jet_btagCSV[i]){max3=max2; max2 = jet_btagCSV[i];}
+	else if (max3  < jet_btagCSV[i]) max3 = jet_btagCSV[i];
+	}
+    /*std::cout<<max1<<"   "<<max2<<"  "<<max3<<std::endl;
+    std::cout<<"pt order "<<std::endl;	
+    std::cout<<jet_btagCSV[0]<<"   "<<jet_btagCSV[1]<<"   "<<jet_btagCSV[2]<<std::endl;
+    */
+    float CSV3 = TMath::Min(max3, (float) 0.9999999999);	
+    bool quad =  QuadTriggerWeight(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3); 
+    bool Double = DoubleTriggerWeight(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+    if( quad || Double)	
+    //if (trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1) //trigger_HLT_HH4bLowLumi==1)
     {
       nCut1+=eventWeight;
       
@@ -334,8 +353,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         // Fill jet pT order histograms
         std::vector<TH1F*> v_pTOrder_JetpT = {h_pTOrder_JetpT_1, h_pTOrder_JetpT_2, h_pTOrder_JetpT_3, h_pTOrder_JetpT_4, h_pTOrder_JetpT_5};
         std::vector<TH1F*> v_CSVOrder_JetCSV = {h_CSVOrder_JetCSV_1, h_CSVOrder_JetCSV_2, h_CSVOrder_JetCSV_3, h_CSVOrder_JetCSV_4};
-        fillHistogramsFromJetList(jetList_Central_pTOrder, v_pTOrder_JetpT, puWeight);
-        fillHistogramsFromJetList(jetList_CentralpT40_CSVOrder, v_CSVOrder_JetCSV, puWeight);
+        fillHistogramsFromJetList(jetList_Central_pTOrder, v_pTOrder_JetpT, eventWeight);
+        fillHistogramsFromJetList(jetList_CentralpT40_CSVOrder, v_CSVOrder_JetCSV, eventWeight);
         
         // A non-symmetric CSV cut
         /*if (jetList_CentralpT40_CSVOrder.size()>=4)
@@ -465,7 +484,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::cout<<"=== Cut Efficiencies === "<<std::endl;
   if (isData==0) std::cout<<"Initial number of events = "<<nInitial<<std::endl;
   std::cout<<"Number of events at the end of step 2 = "<<nCut0<<std::endl;
-  std::cout<<"Number of events after trigger = "<<nCut1<<std::endl;
+  std::cout<<"Number of events after trigger = "<<nCut1<< "   "<<(double) nCut1/nInitial<<std::endl;
   std::cout<<"Number of events after Vtype==-1 = "<<nCut2<<std::endl;
   std::cout<<"Number of events after nCbJets>=4 = "<<nCut3<<std::endl;
   std::cout<<"Number of events after finding HH candidate (btag && pT>40 GeV && |eta|<2.4)  = "<<nCut4<<std::endl;
