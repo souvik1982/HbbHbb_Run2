@@ -18,25 +18,12 @@ TH2F* getGraph2DError(TEfficiency* efficiency,int nx, float xmin, float xmax, in
 }
 
 void doFit(TF1* function, TF1* fUp, TF1 * fDown, TEfficiency* efficiency,float xmin, float xmax, string fileName, TCanvas* c1){
-
-    TGraphAsymmErrors* eff = (TGraphAsymmErrors*) efficiency->CreateGraph("eff");
     function->SetRange(xmin,xmax);
-    eff->Draw("");
-    gStyle->SetOptFit(0);
-    eff->Fit(function);
-    eff->Fit(function);
-    eff->Fit(function);
-    //eff->Fit(function);
-    //eff->Fit(function);
-    //eff->Fit(function);
-    function->Draw("same");
-  
-    /*function->SetRange(xmin,xmax);
     efficiency->Draw("");
     gStyle->SetOptFit(0);
     efficiency->Fit(function);
     function->Draw("same");
- */
+ 
     TF1* fit = (TF1*)function->Clone("fit");
     TF1* fitUp = (TF1*)function->Clone("fitUp");
     fitUp->SetLineColor(kRed);
@@ -148,7 +135,7 @@ TEfficiency* getHisto(TTree* tree, string draw, int nx, float xmin, float xmax, 
     }
 }
 
-void Doubleplots_fit_error(){
+void Quadplots_fit_error(){
     gEnv->SetValue("Hist.Binning.2D.Prof",10);
     gEnv->SetValue("Hist.Binning.3D.Profx",10);
     gEnv->SetValue("Hist.Binning.3D.Profy",10);
@@ -198,12 +185,12 @@ void Doubleplots_fit_error(){
     fileName= "L1Pt1PtPt3Pt4";
     TH2F* graph2D;
     efficiency = getHisto(tree,variable,nx,xmin,xmax,preselection,filter,title);
-    TF1* tnL1Pt1PtPt3Pt4 = (TF1*) turnonPt->Clone("tnL1Pt1PtPt3Pt4");
-    TF1* tnL1Pt1PtPt3Pt4Up = (TF1*) turnonPt->Clone("tnL1Pt1PtPt3Pt4Up");
-    TF1* tnL1Pt1PtPt3Pt4Down = (TF1*) turnonPt->Clone("tnL1Pt1PtPt3Pt4Down");
+    TF1* nL1Pt1PtPt3Pt4 = (TF1*) turnonPt->Clone("nL1Pt1PtPt3Pt4");
+    TF1* nL1Pt1PtPt3Pt4Up = (TF1*) turnonPt->Clone("nL1Pt1PtPt3Pt4Up");
+    TF1* nL1Pt1PtPt3Pt4Down = (TF1*) turnonPt->Clone("nL1Pt1PtPt3Pt4Down");
 	
-//    tnL1Pt1PtPt3Pt4->SetParameters(145,75,190,0.01,2,15);
-    doFit(tnL1Pt1PtPt3Pt4, tnL1Pt1PtPt3Pt4Up, tnL1Pt1PtPt3Pt4Down,efficiency,xmin,xmax, fileName, c1);
+//    nL1Pt1PtPt3Pt4->SetParameters(145,75,190,0.01,2,15);
+    doFit(nL1Pt1PtPt3Pt4, nL1Pt1PtPt3Pt4Up, nL1Pt1PtPt3Pt4Down,efficiency,xmin,xmax, fileName, c1);
 
 ///////////////////////////////////////////////////////
     turnonPt->SetParameters(50,20,12,0,1,12);
@@ -211,33 +198,18 @@ void Doubleplots_fit_error(){
     nx=100, xmin=0, xmax=100;
     variable="Jet_pt[3]";
     preselection=preselection+"&&"+filter;
-    filter="(ntrgObjects_hltQuadCentralJet30>=4)";
-    title= "Calo p^{T}_{4} turn-on; p^{T}_{4} (GeV) ; Efficiency";
+    filter="(ntrgObjects_hltQuadCentralJet45>=4)";
+    title= "Calo p^{T}_{4} turn-on; p^{T}_{4} (GeV); Efficiency";
     fileName= "CaloPt4";
     efficiency = getHisto(tree,variable,nx,xmin,xmax,preselection,filter,title);
-    TF1* tnCaloPt4 = (TF1*) turnonPt->Clone("tnCaloPt4");
-    TF1* tnCaloPt4Up = (TF1*) turnonPt->Clone("tnCaloPt4Up"); 
-    TF1* tnCaloPt4Down = (TF1*) turnonPt->Clone("tnCaloPt4Down");
-    tnCaloPt4->SetParameters(4,20,160,0,1,2);
-    doFit(tnCaloPt4, tnCaloPt4Up, tnCaloPt4Down, efficiency,xmin,xmax, fileName, c1);
-    
-
-/////////////////////////////////////////////////////
-    nx=150, xmin=30, xmax=180;
-    variable="Jet_pt[1]";
-    preselection=preselection+"&&"+filter;
-    filter="(ntrgObjects_hltDoubleCentralJet90>=2)";
-    title= "Calo p^{T}_{2} turn-on; p^{T}_{2} (GeV); Efficiency";
-    fileName= "CaloPt2";
-    efficiency = getHisto(tree,variable,nx,xmin,xmax,preselection,filter,title);
-    TF1* tnCaloPt2 = (TF1*) turnonPt->Clone("tnCaloPt2");
-     TF1* tnCaloPt2Up = (TF1*) turnonPt->Clone("tnCaloPt2Up");
-     TF1* tnCaloPt2Down = (TF1*) turnonPt->Clone("tnCaloPt2Down");	
-    //tnCaloPt2->SetParameters(4,20,160,0,1,2);
-    doFit(tnCaloPt2, tnCaloPt2Up, tnCaloPt2Down, efficiency,xmin,xmax, fileName, c1);
+    TF1* nCaloPt4 = (TF1*) turnonPt->Clone("nCaloPt4");
+    TF1* nCaloPt4Up = (TF1*) turnonPt->Clone("nCaloPt4Up"); 
+    TF1* nCaloPt4Down = (TF1*) turnonPt->Clone("nCaloPt4Down");
+    nCaloPt4->SetParameters(4,20,160,0,1,2);
+    doFit(nCaloPt4, nCaloPt4Up, nCaloPt4Down, efficiency,xmin,xmax, fileName, c1);
+   
 
 
-////////////////////////////////////////////////////
 
     nx=20, xmin=0, xmax=8;
     ny=0, ymin=0, ymax=0;
@@ -247,101 +219,63 @@ void Doubleplots_fit_error(){
     title= "Calo CSV_{3} turn-on; -Log(1-CSV_{3}) ; Efficiency";
     fileName= "CaloCSV3";
     efficiency = getHisto(tree,variable,nx,xmin,xmax,preselection,filter,title);
-    TF1* tnCaloCSV3 = (TF1*) turnonPt->Clone("tnCaloCSV3");
-    TF1* tnCaloCSV3Up = (TF1*) turnonPt->Clone("tnCaloCSV3Up");
-    TF1* tnCaloCSV3Down = (TF1*) turnonPt->Clone("tnCaloCSV3Down");
-    tnCaloCSV3->SetParameters(-0.4,2.8,10,-2.7,3.7,1.8);
-    doFit(tnCaloCSV3,tnCaloCSV3Up, tnCaloCSV3Down,efficiency,xmin,xmax, fileName, c1);
-
-///////////////////////////////////////////////////////
+    TF1* nCaloCSV3 = (TF1*) turnonPt->Clone("nCaloCSV3");
+    TF1* nCaloCSV3Up = (TF1*) turnonPt->Clone("nCaloCSV3Up");
+    TF1* nCaloCSV3Down = (TF1*) turnonPt->Clone("nCaloCSV3Down");
+    nCaloCSV3->SetParameters(-0.4,2.8,10,-2.7,3.7,1.8);
+    doFit(nCaloCSV3,nCaloCSV3Up, nCaloCSV3Down,efficiency,xmin,xmax, fileName, c1);
 
 
-    nx=25, xmin=20, xmax=120;
+
+    nx=50, xmin=20, xmax=120;
     variable="Jet_pt[3]";
     preselection=preselection+"&&"+filter;
-    filter="(ntrgObjects_hltQuadPFCentralJetLooseID30>=4)";
+    filter="(ntrgObjects_hltQuadPFCentralJetLooseID45>=4)";
     title= "PF p^{T}_{4} turn-on; p^{T}_{4} (GeV); Efficiency";
     fileName= "PFPt4";
     efficiency = getHisto(tree,variable,nx,xmin,xmax,preselection,filter,title);
-    TF1* tnPFPt4 = (TF1*) tnCaloPt4->Clone("tnPFPt4");
-    TF1* tnPFPt4Up = (TF1*) tnCaloPt4->Clone("tnPFPt4Up");
-    TF1* tnPFPt4Down = (TF1*) tnCaloPt4->Clone("tnPFPt4Down");
+    TF1* nPFPt4 = (TF1*) nCaloPt4->Clone("nPFPt4");
+    TF1* nPFPt4Up = (TF1*) nCaloPt4->Clone("nPFPt4Up");
+    TF1* nPFPt4Down = (TF1*) nCaloPt4->Clone("nPFPt4Down");
      
-    doFit(tnPFPt4,tnPFPt4Up, tnPFPt4Down, efficiency,xmin,xmax, fileName, c1);
+    doFit(nPFPt4,nPFPt4Up, nPFPt4Down, efficiency,xmin,xmax, fileName, c1);
 
-////////////////////////////////////////////////
-    nx=10, xmin=80, xmax=180;
-    variable="Jet_pt[1]";
-    preselection=preselection+"&&"+filter;
-    filter="(ntrgObjects_hltDoublePFCentralJetLooseID90>=2)";
-    title= "PF p^{T}_{2} turn-on; p^{T}_{2} (GeV); Efficiency";
-    fileName= "PFPt2";
-    efficiency = getHisto(tree,variable,nx,xmin,xmax,preselection,filter,title);
-    TF1* tnPFPt2 = (TF1*) tnCaloPt2->Clone("tnPFPt2");
-    TF1* tnPFPt2Up = (TF1*) tnCaloPt2->Clone("tnPFPt2Up");
-    TF1* tnPFPt2Down = (TF1*) tnCaloPt2->Clone("tnPFPt2Down");
-    //tnPFPt2->SetParameters( 2.59999e+00, 2.25792e+01,-5.18454e+04,-4.53102e+03, 4.53202e+03, 0.00000e+00); 
-    //tnPFPt2->SetParameters( 2.32528e-01 , 5.83071e+01 ,-2.67834e+02 ,-1.32842e+01 , 1.42933e+01 ,-8.21258e+01 );
-    
-
-
-     tnPFPt2->SetParameters(2.50961e+00, 5.63960e+01,-3.21610e+04,-1.32368e+01, 1.42427e+01, 0.00000e+00	);
-    //tnPFPt2->SetParameters(-1.13862e+02 , 7.42174e+01 ,-2.86264e+05 ,-4.53102e+03 , 4.53202e+03 , 0.00000e+00 );
-    //
-    /*tnPFPt2->SetParameter(  0,7.56835e+01);
-    tnPFPt2->SetParameter(  1,2.46977e+01);
-	
-    tnPFPt2->SetParameter(  2, -4.82774e+05); 
-    tnPFPt2->SetParameter(  3, 3.18418e-03  );
-    tnPFPt2->SetParameter(  4, 9.98558e-01 );
-    tnPFPt2->SetParameter(  5, 0.00000e+00 );
-    *///tnPFPt2->SetParameters(  7.56835e+01 , 2.46977e+01 ,-4.82774e+05 , 3.18418e-03 , 9.98558e-01 , 0.00000e+00 );//-1.04275e+02 , 7.00286e+01 ,-4.54482e+05  , -4.53102e+03 ,  4.53202e+03 ,  0.00000e+00 );
-    doFit(tnPFPt2, tnPFPt2Up, tnPFPt2Down, efficiency,xmin,xmax, fileName, c1);
-    //tnPFPt2->SetParameter(3,0.);
-    //tnPFPt2->SetParameter(4,1.);
-    //tnPFPt2->SetParameter(5,0.);	
 	
 
     ofstream myfile;
     myfile.open ("fittedFunctions.h");
 
-    myfile << "float tnL1Pt1PtPt3Pt4(float x){\n\treturn "<< tnL1Pt1PtPt3Pt4->GetExpFormula("P") <<" ; }\n\n";
+    myfile << "float nL1Pt1PtPt3Pt4(float x){\n\treturn "<< nL1Pt1PtPt3Pt4->GetExpFormula("P") <<" ; }\n\n";
 
-    myfile << "float tnCaloPt4(float x){\n\treturn "<< tnCaloPt4->GetExpFormula("P") <<" ; }\n\n";
-    myfile << "float tnCaloPt2(float x){\n\treturn "<< tnCaloPt2->GetExpFormula("P") <<" ; }\n\n";	
+    myfile << "float nCaloPt4(float x){\n\treturn "<< nCaloPt4->GetExpFormula("P") <<" ; }\n\n";
 
-    myfile << "float tnCaloCSV3(float x){\n\treturn "<< tnCaloCSV3->GetExpFormula("P") <<" ; }\n\n";
+    myfile << "float nCaloCSV3(float x){\n\treturn "<< nCaloCSV3->GetExpFormula("P") <<" ; }\n\n";
 
-    myfile << "float tnPFPt4(float x){\n\treturn "<< tnPFPt4->GetExpFormula("P") <<" ; }\n\n";
-    myfile << "float tnPFPt2(float x){\n\treturn "<< tnPFPt2->GetExpFormula("P") <<" ; }\n\n";	
+    myfile << "float nPFPt4(float x){\n\treturn "<< nPFPt4->GetExpFormula("P") <<" ; }\n\n";
     
-    myfile << "float tnL1Pt1PtPt3Pt4Up(float x){\n\treturn "<< tnL1Pt1PtPt3Pt4Up->GetExpFormula("P") <<" ; }\n\n";
+    myfile << "float nL1Pt1PtPt3Pt4Up(float x){\n\treturn "<< nL1Pt1PtPt3Pt4Up->GetExpFormula("P") <<" ; }\n\n";
 
-    myfile << "float tnCaloPt4Up(float x){\n\treturn "<< tnCaloPt4Up->GetExpFormula("P") <<" ; }\n\n";
-    myfile << "float tnCaloPt2Up(float x){\n\treturn "<< tnCaloPt2Up->GetExpFormula("P") <<" ; }\n\n";
+    myfile << "float nCaloPt4Up(float x){\n\treturn "<< nCaloPt4Up->GetExpFormula("P") <<" ; }\n\n";
 
-    myfile << "float tnCaloCSV3Up(float x){\n\treturn "<< tnCaloCSV3Up->GetExpFormula("P") <<" ; }\n\n";
+    myfile << "float nCaloCSV3Up(float x){\n\treturn "<< nCaloCSV3Up->GetExpFormula("P") <<" ; }\n\n";
 
-    myfile << "float tnPFPt4Up(float x){\n\treturn "<< tnPFPt4Up->GetExpFormula("P") <<" ; }\n\n";
-    myfile << "float tnPFPt2Up(float x){\n\treturn "<< tnPFPt2Up->GetExpFormula("P") <<" ; }\n\n";
+    myfile << "float nPFPt4Up(float x){\n\treturn "<< nPFPt4Up->GetExpFormula("P") <<" ; }\n\n";
     
 
-    myfile << "float tnL1Pt1PtPt3Pt4Down(float x){\n\treturn "<< tnL1Pt1PtPt3Pt4Down->GetExpFormula("P") <<" ; }\n\n";
+    myfile << "float nL1Pt1PtPt3Pt4Down(float x){\n\treturn "<< nL1Pt1PtPt3Pt4Down->GetExpFormula("P") <<" ; }\n\n";
 
-    myfile << "float tnCaloPt4Down(float x){\n\treturn "<< tnCaloPt4Down->GetExpFormula("P") <<" ; }\n\n";
-    myfile << "float tnCaloPt2Down(float x){\n\treturn "<< tnCaloPt2Down->GetExpFormula("P") <<" ; }\n\n";
+    myfile << "float nCaloPt4Down(float x){\n\treturn "<< nCaloPt4Down->GetExpFormula("P") <<" ; }\n\n";
 
-    myfile << "float tnCaloCSV3Down(float x){\n\treturn "<< tnCaloCSV3Down->GetExpFormula("P") <<" ; }\n\n";
+    myfile << "float nCaloCSV3Down(float x){\n\treturn "<< nCaloCSV3Down->GetExpFormula("P") <<" ; }\n\n";
 
-    myfile << "float tnPFPt4Down(float x){\n\treturn "<< tnPFPt4Down->GetExpFormula("P") <<" ; }\n\n";
-    myfile << "float tnPFPt2Down(float x){\n\treturn "<< tnPFPt2Down->GetExpFormula("P") <<" ; }\n\n";
+    myfile << "float nPFPt4Down(float x){\n\treturn "<< nPFPt4Down->GetExpFormula("P") <<" ; }\n\n";
     
 
-    myfile << "float DoubleTriggerWeight(float pt1, float pt2, float pt3, float pt4 , float CSV3){\n\tif(isnan(CSV3)) CSV3=0;\n\tCSV3=CSV3>1?1:CSV3;CSV3=CSV3<0?0:CSV3;\n\treturn tnL1Pt1PtPt3Pt4(pt1+pt2+pt3+pt4)*tnCaloPt4(pt4)*tnCaloPt2(pt2)*tnPFPt4(pt4)*tnPFPt2(pt2)*tnCaloCSV3(-log(1-CSV3+1.e-7)) ; }\n\n";
+    myfile << "float DoubleTriggerWeight(float pt1, float pt2, float pt3, float pt4 , float CSV3){\n\tif(isnan(CSV3)) CSV3=0;\n\tCSV3=CSV3>1?1:CSV3;CSV3=CSV3<0?0:CSV3;\n\treturn nL1Pt1PtPt3Pt4(pt1+pt2+pt3+pt4)*nCaloPt4(pt4)*nPFPt4(pt4)*nCaloCSV3(-log(1-CSV3+1.e-7)) ; }\n\n";
 
-    myfile << "float DoubleTriggerWeightUp(float pt1, float pt2, float pt3, float pt4 , float CSV3){\n\tif(isnan(CSV3)) CSV3=0;\n\tCSV3=CSV3>1?1:CSV3;CSV3=CSV3<0?0:CSV3;\n\treturn tnL1Pt1PtPt3Pt4Up(pt1+pt2+pt3+pt4)*tnCaloPt4Up(pt4)*tnCaloPt2Up(pt2)*tnPFPt4Up(pt4)*tnPFPt2Up(pt2)*tnCaloCSV3Up(-log(1-CSV3+1.e-7)) ; }\n\n";
+    myfile << "float DoubleTriggerWeightUp(float pt1, float pt2, float pt3, float pt4 , float CSV3){\n\tif(isnan(CSV3)) CSV3=0;\n\tCSV3=CSV3>1?1:CSV3;CSV3=CSV3<0?0:CSV3;\n\treturn nL1Pt1PtPt3Pt4Up(pt1+pt2+pt3+pt4)*nCaloPt4Up(pt4)*nPFPt4Up(pt4)*nCaloCSV3Up(-log(1-CSV3+1.e-7)) ; }\n\n";
 
-    myfile << "float DoubleTriggerWeightDown(float pt1, float pt2, float pt3, float pt4 , float CSV3){\n\tif(isnan(CSV3)) CSV3=0;\n\tCSV3=CSV3>1?1:CSV3;CSV3=CSV3<0?0:CSV3;\n\treturn tnL1Pt1PtPt3Pt4Down(pt1+pt2+pt3+pt4)*tnCaloPt4Down(pt4)*tnCaloPt2Down(pt2)*tnPFPt4Down(pt4)*tnPFPt2Down(pt2)*tnCaloCSV3Down(-log(1-CSV3+1.e-7)) ; }\n\n";
+    myfile << "float DoubleTriggerWeightDown(float pt1, float pt2, float pt3, float pt4 , float CSV3){\n\tif(isnan(CSV3)) CSV3=0;\n\tCSV3=CSV3>1?1:CSV3;CSV3=CSV3<0?0:CSV3;\n\treturn nL1Pt1PtPt3Pt4Down(pt1+pt2+pt3+pt4)*nCaloPt4Down(pt4)*nPFPt4Down(pt4)*nCaloCSV3Down(-log(1-CSV3+1.e-7)) ; }\n\n";
 
     myfile.close();
 }
