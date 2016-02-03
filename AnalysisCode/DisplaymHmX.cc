@@ -99,7 +99,7 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
   drawRegion(isData);
 }
 
-void DisplaymHmX(std::vector<std::string> files)
+void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=125, double sigma_H1_mass_=20, double mean_H2_mass_=125, double sigma_H2_mass_=20)
 {
   std::vector<TFile*> v_files;
   for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
