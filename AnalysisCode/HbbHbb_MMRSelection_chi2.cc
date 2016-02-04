@@ -169,8 +169,8 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample)
                   
                     double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   
-                    // if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
-                    if (chi2<chi2_old)
+                    if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
+                    //if (chi2<chi2_old)
                     {
                       H1jet1_i=j_jetIndex;
                       H1jet2_i=k_jetIndex;
