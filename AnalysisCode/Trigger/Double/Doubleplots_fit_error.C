@@ -19,7 +19,7 @@ TH2F* getGraph2DError(TEfficiency* efficiency,int nx, float xmin, float xmax, in
 
 void doFit(TF1* function, TF1* fUp, TF1 * fDown, TEfficiency* efficiency,float xmin, float xmax, string fileName, TCanvas* c1){
 
-    TGraphAsymmErrors* eff = (TGraphAsymmErrors*) efficiency->CreateGraph("eff");
+/*    TGraphAsymmErrors* eff = (TGraphAsymmErrors*) efficiency->CreateGraph("eff");
     function->SetRange(xmin,xmax);
     eff->Draw("");
     gStyle->SetOptFit(0);
@@ -29,14 +29,15 @@ void doFit(TF1* function, TF1* fUp, TF1 * fDown, TEfficiency* efficiency,float x
     //eff->Fit(function);
     //eff->Fit(function);
     //eff->Fit(function);
+
     function->Draw("same");
-  
-    /*function->SetRange(xmin,xmax);
+*/  
+    function->SetRange(xmin,xmax);
     efficiency->Draw("");
     gStyle->SetOptFit(0);
     efficiency->Fit(function);
     function->Draw("same");
- */
+ 
     TF1* fit = (TF1*)function->Clone("fit");
     TF1* fitUp = (TF1*)function->Clone("fitUp");
     fitUp->SetLineColor(kRed);

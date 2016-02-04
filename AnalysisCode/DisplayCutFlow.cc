@@ -92,39 +92,39 @@ void DisplayCutFlow()
 
 
 	//int n=10;
-	int massL[11]={ 400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1200};
-//	int massL[10]={260, 270, 300, 350, 400, 450, 500, 550, 600, 650}; //, 700, 800, 900, 1000, 1100};
-/*  TFile *glugluToX260=new TFile("Histograms_Graviton260GeV.root");
+//	int massL[5]={ 400,  600,  800, 1000, 1200};
+	int massL[5]={260, 270, 300, 400, 600}; //, 700, 800, 900, 1000, 1100};
+  TFile *glugluToX260=new TFile("Histograms_Graviton260GeV.root");
   TFile *glugluToX270=new TFile("Histograms_Graviton270GeV.root");
   TFile *glugluToX300=new TFile("Histograms_Graviton300GeV.root");
  TFile *glugluToX350=new TFile("Histograms_Graviton350GeV.root");
-*/  TFile *glugluToX400=new TFile("Histograms_Graviton400GeV.root");
-  TFile *glugluToX450=new TFile("Histograms_Graviton450GeV.root"); 
-  TFile *glugluToX500=new TFile("Histograms_Graviton500GeV.root");
-  TFile *glugluToX550=new TFile("Histograms_Graviton550GeV.root");
+  TFile *glugluToX400=new TFile("Histograms_Graviton400GeV.root");
+  //TFile *glugluToX450=new TFile("Histograms_Graviton450GeV.root"); 
+  //TFile *glugluToX500=new TFile("Histograms_Graviton500GeV.root");
+  //TFile *glugluToX550=new TFile("Histograms_Graviton550GeV.root");
   TFile *glugluToX600=new TFile("Histograms_Graviton600GeV.root");
-  TFile *glugluToX650=new TFile("Histograms_Graviton650GeV.root");
-  TFile *glugluToX700=new TFile("Histograms_Graviton700GeV.root");
+/* // TFile *glugluToX650=new TFile("Histograms_Graviton650GeV.root");
+ // TFile *glugluToX700=new TFile("Histograms_Graviton700GeV.root");
 TFile *glugluToX800=new TFile("Histograms_Graviton800GeV.root");
-TFile *glugluToX900=new TFile("Histograms_Graviton900GeV.root");
+//TFile *glugluToX900=new TFile("Histograms_Graviton900GeV.root");
 TFile *glugluToX1000=new TFile("Histograms_Graviton1000GeV.root");
 TFile *glugluToX1200=new TFile("Histograms_Graviton1200GeV.root");
-
-  /*pushBackHistograms(signals, glugluToX260, glugluToX260);
+*/
+  pushBackHistograms(signals, glugluToX260, glugluToX260);
   pushBackHistograms(signals, glugluToX270, glugluToX270);
   pushBackHistograms(signals, glugluToX300, glugluToX300 );
   pushBackHistograms(signals, glugluToX350, glugluToX350 );
-  */pushBackHistograms(signals, glugluToX400, glugluToX400);
-  pushBackHistograms(signals, glugluToX450, glugluToX450);
-  pushBackHistograms(signals, glugluToX500, glugluToX500);
-  pushBackHistograms(signals, glugluToX550, glugluToX550);
+  pushBackHistograms(signals, glugluToX400, glugluToX400);
+ // pushBackHistograms(signals, glugluToX450, glugluToX450);
+ // pushBackHistograms(signals, glugluToX500, glugluToX500);
+ // pushBackHistograms(signals, glugluToX550, glugluToX550);
   pushBackHistograms(signals, glugluToX600, glugluToX600);
-  pushBackHistograms(signals, glugluToX650, glugluToX650);
-  pushBackHistograms(signals, glugluToX700, glugluToX700);
-pushBackHistograms(signals, glugluToX800, glugluToX800);
-pushBackHistograms(signals, glugluToX900, glugluToX900);
-pushBackHistograms(signals, glugluToX1000, glugluToX1000);
-pushBackHistograms(signals, glugluToX1200, glugluToX1200);
+ // pushBackHistograms(signals, glugluToX650, glugluToX650);
+ // pushBackHistograms(signals, glugluToX700, glugluToX700);
+//pushBackHistograms(signals, glugluToX800, glugluToX800);
+//pushBackHistograms(signals, glugluToX900, glugluToX900);
+//pushBackHistograms(signals, glugluToX1000, glugluToX1000);
+//pushBackHistograms(signals, glugluToX1200, glugluToX1200);
 
   std::vector<TH1F *> h_Cut;
   TH1F *h_Init=new TH1F("h_Init", "h_Init", 154, 260, 1800);
@@ -133,8 +133,8 @@ pushBackHistograms(signals, glugluToX1200, glugluToX1200);
   TH1F *h_Events8=(TH1F*)h_Init->Clone("h_Events8");
   TH1F *h_Events10=(TH1F*)h_Init->Clone("h_Events10");
   TH1F *h_Events16=(TH1F*)h_Init->Clone("h_Events16");
-  for (unsigned int i=2; i<=8; ++i)
-  // for (unsigned int i=0; i<=5; ++i)
+//  for (unsigned int i=2; i<=8; ++i)
+   for (unsigned int i=0; i<5; ++i)
   {
 	  h_Init->SetBinContent(h_Init->FindBin(massL[i]), signals.v_CountWithPU.at(i)->GetBinContent(1));
 	  // std::cout<<"signals.v_CountWithPU.at(i)->GetBinContent(1) = "<<.signals.v_CountWithPU.at(i)->GetBinContent(1)<<std::endl;

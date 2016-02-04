@@ -19,9 +19,9 @@
 
 #include "TDRStyle.h"
 
-double mean_H1_mass_=124;
-double sigma_H1_mass_=15; // 12;
-double mean_H2_mass_=117;
+double mean_H1_mass_=125;
+double sigma_H1_mass_=20; // 12;
+double mean_H2_mass_=125;
 double sigma_H2_mass_=20; // 13;
 
 double chi_1=1;
@@ -107,21 +107,21 @@ void DisplaymHmX()//std::vector<std::string> files)
   v_files.push_back(new TFile("Histograms_Graviton350GeV.root"));
  */ v_files.push_back(new TFile("Histograms_Graviton400GeV.root"));
   //v_files.push_back(new TFile("Histograms_Graviton450GeV.root"));
-   v_files.push_back(new TFile("Histograms_Graviton500GeV.root"));
+ //  v_files.push_back(new TFile("Histograms_Graviton500GeV.root"));
 // v_files.push_back(new TFile("Histograms_Graviton550GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
 //   v_files.push_back(new TFile("Histograms_Graviton650GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton700GeV.root"));
+ // v_files.push_back(new TFile("Histograms_Graviton700GeV.root"));
   v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton900GeV.root"));
+//  v_files.push_back(new TFile("Histograms_Graviton900GeV.root"));
  v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
+  //v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
 
  // for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
   TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   //TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
-    std::vector <double> mean_gen={ 400, 500,600,  700, 800, 900, 1000, 1200};
-  std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1, kAzure+3, kPink+2, kGray+2,kBlue+1};
+    std::vector <double> mean_gen={ 400, 600,   800, 1000};
+  std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1};// kAzure+3, kPink+2, kGray+2,kBlue+1};
 
   
   gROOT->SetStyle("Plain");
@@ -150,6 +150,7 @@ void DisplaymHmX()//std::vector<std::string> files)
   // Plot mH1
   first=true;
   TCanvas *c_H1_mass=new TCanvas("c_H1_mass", "c_H1_mass", 700, 700);
+
   for (int i=v_files.size()-1; i>=0; --i)
   {
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass", v_colors.at(i));
@@ -160,18 +161,7 @@ void DisplaymHmX()//std::vector<std::string> files)
   c_H1_mass->SaveAs("c_H1_mass.png");
   delete c_H1_mass;
   
-  first=true;
-  TCanvas *c_H1_mass_biasCorrected=new TCanvas("c_H1_mass_biasCorrected", "c_H1_mass_biasCorrected", 700, 700);
-  for (int i=v_files.size()-1; i>=0; --i)
-  {
-    DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass_biasCorrected", v_colors.at(i));
-  }
-  DisplayHistogram_mH_forFile(f_data, "h_H1_mass_biasCorrected", kBlack);
-  //DisplayHistogram_mH_forFile(f_ttbar, "h_H1_mass_biasCorrected", kRed);
-  leg->Draw();
-  c_H1_mass_biasCorrected->SaveAs("c_H1_mass_biasCorrected.png");
-  delete c_H1_mass_biasCorrected;
-  
+ std::cout<<"  asd "<<std::endl; 
   // Plot mH2
   first=true;
   TCanvas *c_H2_mass=new TCanvas("c_H2_mass", "c_H2_mass", 700, 700);
@@ -185,18 +175,7 @@ void DisplaymHmX()//std::vector<std::string> files)
   c_H2_mass->SaveAs("c_H2_mass.png");
   delete c_H2_mass;
   
-  first=true;
-  TCanvas *c_H2_mass_biasCorrected=new TCanvas("c_H2_mass_biasCorrected", "c_H2_mass_biasCorrected", 700, 700);
-  for (int i=v_files.size()-1; i>=0; --i)
-  {
-    DisplayHistogram_mH_forFile(v_files.at(i), "h_H2_mass_biasCorrected", v_colors.at(i));
-  }
-  DisplayHistogram_mH_forFile(f_data, "h_H2_mass_biasCorrected", kBlack);
-  //DisplayHistogram_mH_forFile(f_ttbar, "h_H2_mass_biasCorrected", kRed);
-  leg->Draw();
-  c_H2_mass_biasCorrected->SaveAs("c_H2_mass_biasCorrected.png");
-  delete c_H2_mass_biasCorrected;
-  
+ std::cout<<"  asd "<<std::endl; 
   
   // Plot mH1 vs mH2
   for (unsigned int i=0; i<v_files.size(); ++i)
