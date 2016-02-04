@@ -14,9 +14,9 @@
 
 double jet_pT_cut1=45.;
 
-double mean_H1_mass_=124;
-double sigma_H1_mass_=15; // 12;
-double mean_H2_mass_=117;
+double mean_H1_mass_=125;
+double sigma_H1_mass_=20; // 12;
+double mean_H2_mass_=125;
 double sigma_H2_mass_=20; // 13;
 
 /* to check against existing selection
@@ -156,14 +156,22 @@ void HbbHbb_MMRSelection_chi2_AntiTag(std::string type, std::string sample)
                   jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
                   if (m_jetIndex!=l_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=j_jetIndex && jet_btagCSV[m_jetIndex]<0.6 && jet4_p4.Pt()>jet_pT_cut1)
                   {
+
+		     if (int((jet1_p4+jet2_p4).Pt()*100.) % 2 == 1)
+                    {
+                      swap(j_jetIndex, l_jetIndex);
+                      swap(k_jetIndex, m_jetIndex);
+                      swap(jet1_p4, jet3_p4);
+                      swap(jet2_p4, jet4_p4);
+                    }	
                     TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
                     TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
                   
                     double deltaR1=jet1_p4.DeltaR(jet2_p4);
                     double deltaR2=jet3_p4.DeltaR(jet4_p4);
                   
-                    double mH1=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet1_p4.M():diJet2_p4.M();
-                    double mH2=(diJet1_p4.Pt()>diJet2_p4.Pt())?diJet2_p4.M():diJet1_p4.M();
+                    double mH1=(diJet1_p4.Pt());//>diJet2_p4.Pt())?diJet1_p4.M():diJet2_p4.M();
+                    double mH2=(diJet1_p4.Pt());//>diJet2_p4.Pt())?diJet2_p4.M():diJet1_p4.M();
                   
                     double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   
