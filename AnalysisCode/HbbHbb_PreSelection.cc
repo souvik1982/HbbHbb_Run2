@@ -298,10 +298,16 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     float max1 =-1 ;
     float max2=-1;
     float max3=-1;	
+    float max4=-1;	
+    int contpt=0;	
     for(int i=0; i<8;i++){
-	if(max1 < jet_btagCSV[i]) { max3=max2; max2=max1; max1=jet_btagCSV[i];}
-	else if (max2  < jet_btagCSV[i]){max3=max2; max2 = jet_btagCSV[i];}
-	else if (max3  < jet_btagCSV[i]) max3 = jet_btagCSV[i];
+	if(max1 < jet_btagCSV[i]) { max4=max3;max3=max2; max2=max1; max1=jet_btagCSV[i];}
+	else if (max2  < jet_btagCSV[i]){max4=max3;max3=max2; max2 = jet_btagCSV[i];}
+	else if (max3  < jet_btagCSV[i]) {max4=max3;max3 = jet_btagCSV[i];}
+	else if (max4  < jet_btagCSV[i]) max4 = jet_btagCSV[i];
+	if(jet_pT[i]>40 && TMath::Abs(jet_eta[i])<2.4 && jet_btagCSV[i] >0.3)  contpt++;
+
+	
 	}
     /*std::cout<<max1<<"   "<<max2<<"  "<<max3<<std::endl;
     std::cout<<"pt order "<<std::endl;	
@@ -310,7 +316,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     float CSV3 = TMath::Min(max3, (float) 0.9999999999);	
     bool quad =  QuadTriggerWeight(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3); 
     bool Double = DoubleTriggerWeight(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
-    if( quad || Double)	
+    if(( quad || Double) && max3>0.605 && contpt>=4)	
     //if (trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1) //trigger_HLT_HH4bLowLumi==1)
     {
       nCut1+=eventWeight;
