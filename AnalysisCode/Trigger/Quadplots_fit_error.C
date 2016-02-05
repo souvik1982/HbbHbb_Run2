@@ -205,7 +205,8 @@ void Quadplots_fit_error(){
     TF1* nCaloPt4 = (TF1*) turnonPt->Clone("nCaloPt4");
     TF1* nCaloPt4Up = (TF1*) turnonPt->Clone("nCaloPt4Up"); 
     TF1* nCaloPt4Down = (TF1*) turnonPt->Clone("nCaloPt4Down");
-    nCaloPt4->SetParameters(4,20,160,0,1,2);
+    nCaloPt4->SetParameters(48,15,15,0,1,2);
+    //nCaloPt4->SetParameters(4,20,160,0,1,2);
     doFit(nCaloPt4, nCaloPt4Up, nCaloPt4Down, efficiency,xmin,xmax, fileName, c1);
    
 

@@ -219,7 +219,8 @@ void Doubleplots_fit_error(){
     TF1* tnCaloPt4 = (TF1*) turnonPt->Clone("tnCaloPt4");
     TF1* tnCaloPt4Up = (TF1*) turnonPt->Clone("tnCaloPt4Up"); 
     TF1* tnCaloPt4Down = (TF1*) turnonPt->Clone("tnCaloPt4Down");
-    tnCaloPt4->SetParameters(4,20,160,0,1,2);
+    tnCaloPt4->SetParameters(48,15,15,0,1,2);	
+    //tnCaloPt4->SetParameters(4,20,160,0,1,2);
     doFit(tnCaloPt4, tnCaloPt4Up, tnCaloPt4Down, efficiency,xmin,xmax, fileName, c1);
     
 
