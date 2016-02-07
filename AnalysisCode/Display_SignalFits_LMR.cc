@@ -350,7 +350,7 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
   {
 	  if (mass=="270")
 	  {       
-		  rangeLo=252, rangeHi=600.;
+		  rangeLo=250, rangeHi=600.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 260., 280.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 5.);
 		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 10., 530.);
@@ -360,7 +360,7 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 	  }
 	  if (mass=="260")
 	  {       
-		  rangeLo=252., rangeHi=630.;
+		  rangeLo=250., rangeHi=630.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 250., 270.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 6.);
 		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 10., 590.);
@@ -369,7 +369,7 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 	  }
 	  if (mass=="600")
 	  {       
-		  rangeLo=580., rangeHi=650.;
+		  rangeLo=550., rangeHi=660.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 580., 630.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 40.);
 		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 500., 650.);
@@ -414,7 +414,7 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 	  }
 	  if (mass=="300")
 	  {
-		  rangeLo=250., rangeHi=550.;
+		  rangeLo=250., rangeHi=600.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 290., 320.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 9.);
 		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 250., 360.);
@@ -702,7 +702,7 @@ double lnN(double b, double a, double c)
 }
 
 int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegression",
-                           std::string dir_selection="LMRSelection",
+                           std::string dir_selection="LMRSelection_chi2",
                            std::string file_histograms="Histograms_Graviton",
                            bool focus=true)
 {
