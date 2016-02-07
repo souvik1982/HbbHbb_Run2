@@ -194,8 +194,8 @@ void DisplayKinFit()
   v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton260GeV.root"));
   v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton270GeV.root"));
   v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton300GeV.root"));
-  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton400GeV.root"));
-  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton600GeV.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton400GeV.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton600GeV.root"));
   v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton800GeV.root"));
   v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton1000GeV.root"));
   v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton1200GeV.root"));
