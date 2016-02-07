@@ -14,9 +14,9 @@
 
 double jet_pT_cut1=30.;
 
-double mean_H1_mass_=125;
+double mean_H1_mass_=120;
 double sigma_H1_mass_=20;
-double mean_H2_mass_=125;
+double mean_H2_mass_=120;
 double sigma_H2_mass_=20;
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
@@ -166,7 +166,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
                     
                     double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   
-                    if (chi2<chi2_old && ((90.<mH1 && mH1<160.) && (90.<mH2 && mH2<160.)))
+                    if (chi2<chi2_old && ((90.<mH1 && mH1<150.) && (90.<mH2 && mH2<150.)))
                     {
                       H1jet1_i=j_jetIndex;
                       H1jet2_i=k_jetIndex;
