@@ -87,7 +87,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   int nJets;
   float jet_btagCSV[100], jet_btagCMVA[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100];
-  float jet_corr_JECUp[100], jet_corr_JECDown[100], jet_corr_JECUp[100], jet_corr_JECDown[100] , jet_corr_JER[100], jet_corr_JEC[100];
+  float jet_corrJERUp[100], jet_corrJERDown[100], jet_corrJECUp[100], jet_corrJECDown[100] , jet_corrJER[100], jet_corrJEC[100];
   int nGenHiggsBoson;	
   float genHiggsBoson_pT[100], genHiggsBoson_eta[100], genHiggsBoson_phi[100], genHiggsBoson_mass[100];
   float eventWeight;
@@ -196,12 +196,12 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   if (regressionFile!="")
   {
     tree->SetBranchAddress("Jet_corr", &(jet_corr));                     
-    tree->SetBranchAddress("Jet_corr_JEC", &(jet_corr_JEC));
-    tree->SetBranchAddress("Jet_corr_JECUp", &(jet_corr_JECUp));
-    tree->SetBranchAddress("Jet_corr_JECDown", &(jet_corr_JECDown));
-    tree->SetBranchAddress("Jet_corr_JER", &(jet_corr_JER));
-    tree->SetBranchAddress("Jet_corr_JERUp", &(jet_corr_JERUp));
-    tree->SetBranchAddress("Jet_corr_JERDown", &(jet_corr_JERDown));
+    tree->SetBranchAddress("Jet_corr_JEC", &(jet_corrJEC));
+    tree->SetBranchAddress("Jet_corr_JECUp", &(jet_corrJECUp));
+    tree->SetBranchAddress("Jet_corr_JECDown", &(jet_corrJECDown));
+    tree->SetBranchAddress("Jet_corr_JER", &(jet_corrJER));
+    tree->SetBranchAddress("Jet_corr_JERUp", &(jet_corrJERUp));
+    tree->SetBranchAddress("Jet_corr_JERDown", &(jet_corrJERDown));
     tree->SetBranchAddress("rho", &(rho));                               
     tree->SetBranchAddress("Jet_leadTrackPt", &(jet_leadTrackPt));        
     tree->SetBranchAddress("Jet_leptonPtRel", &(jet_leptonPtRel));       
@@ -262,7 +262,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   outtree->Branch("jetIndex_CentralpT40_CSVOrder", &jetIndex_CentralpT40_CSVOrder);
   outtree->Branch("eventWeight", &eventWeight);
   
-  // Loop over ejet_t nEvents=tree->GetEntries();
+  // Loop over ejet_t 
+  int nEvents=tree->GetEntries();
   double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0;
   double nTrig1=0, nTrig12=0, nTrig2=0;
   for (int i=0; i<nEvents; ++i)
@@ -342,10 +343,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         for (unsigned int j=0; j<(unsigned int)nJets; ++j)
         {
 
-  	    if (sigmaJECUnc_string=="JECp1") jet_pT[j] = jet_rawpT[j]*jet_corrJER[j]*jet_corr_JECUp[j];
-            if (sigmaJECUnc_string=="JECm1") jet_pT[j] = jet_rawpT[j]*jet_corrJER[j]*jet_corr_JECDown[j];
-            if (sigmaJERUnc_string=="JERp1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corr_JERUp[j];
-            if (sigmaJERUnc_string=="JERm1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corr_JERDown[j];
+  	    if (sigmaJECUnc_string=="JECp1") jet_pT[j] = jet_rawpT[j]*jet_corrJER[j]*jet_corrJECUp[j];
+            if (sigmaJECUnc_string=="JECm1") jet_pT[j] = jet_rawpT[j]*jet_corrJER[j]*jet_corrJECDown[j];
+            if (sigmaJERUnc_string=="JERp1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERUp[j];
+            if (sigmaJERUnc_string=="JERm1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERDown[j];
 	
           if (fabs(jet_eta[j])<jet_eta_cut) 
           {
