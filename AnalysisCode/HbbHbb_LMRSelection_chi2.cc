@@ -15,9 +15,9 @@
 double jet_pT_cut1=30.;
 double jet_pT_cut2=90.;
 
-double mean_H1_mass_=125;
+double mean_H1_mass_=120;
 double sigma_H1_mass_=20; // 12;
-double mean_H2_mass_=125;
+double mean_H2_mass_=120;
 double sigma_H2_mass_=20; // 13;
 
 /* to check against existing selection
@@ -184,7 +184,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
                   double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                  	 
-                  if (chi2<chi2_old && ((90.<mH1 && mH1<160.) && (90.<mH2 && mH2<160.)))
+                  if (chi2<chi2_old && ((90.<mH1 && mH1<150.) && (90.<mH2 && mH2<150.)))
       //            if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                //   if(m_diff<m_diff_old && ((90.<mH1 && mH1<160.) && (90.<mH2 && mH2<160.))) less sensitive
                   {

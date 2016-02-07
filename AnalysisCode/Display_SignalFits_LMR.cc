@@ -37,7 +37,7 @@
 #include "RooGaussian.h"
 
 
-int rebin=3;
+int rebin=5;
 ofstream outfile;
 
 std::string tostr(float t)
