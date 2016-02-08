@@ -52,7 +52,7 @@ void fillIndexVectorFromJetList(JetList jetList, std::vector<unsigned int> *inde
 void HbbHbb_PreSelection(std::string dir, std::string sample,
                               std::string regressionFile="",
                               std::string sigmaJECUnc_string="JEC", 
-                              std::string sigmaJERUnc_string="JER")
+                              std::string sigmaJERUnc_string="JER", std::string sigmaTrigUnc_string="Trig")
 {
   
   std::string inputfilename=dir+"/"+sample+".root";
@@ -193,15 +193,16 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass)); tree->SetBranchStatus("GenBQuarkFromH_mass", 1);
   tree->SetBranchAddress("met_pt", &(met_pT));                           tree->SetBranchStatus("met_pt", 1);
   tree->SetBranchAddress("met_phi", &(met_phi));                         tree->SetBranchStatus("met_phi", 1);
+  tree->SetBranchAddress("Jet_corr", &(jet_corrJEC));
+  tree->SetBranchAddress("Jet_corr_JECUp", &(jet_corrJECUp));
+  tree->SetBranchAddress("Jet_corr_JECDown", &(jet_corrJECDown));
+  tree->SetBranchAddress("Jet_corr_JER", &(jet_corrJER));
+  tree->SetBranchAddress("Jet_corr_JERUp", &(jet_corrJERUp));
+  tree->SetBranchAddress("Jet_corr_JERDown", &(jet_corrJERDown));
+
   if (regressionFile!="")
   {
     tree->SetBranchAddress("Jet_corr", &(jet_corr));                     
-    tree->SetBranchAddress("Jet_corr_JEC", &(jet_corrJEC));
-    tree->SetBranchAddress("Jet_corr_JECUp", &(jet_corrJECUp));
-    tree->SetBranchAddress("Jet_corr_JECDown", &(jet_corrJECDown));
-    tree->SetBranchAddress("Jet_corr_JER", &(jet_corrJER));
-    tree->SetBranchAddress("Jet_corr_JERUp", &(jet_corrJERUp));
-    tree->SetBranchAddress("Jet_corr_JERDown", &(jet_corrJERDown));
     tree->SetBranchAddress("rho", &(rho));                               
     tree->SetBranchAddress("Jet_leadTrackPt", &(jet_leadTrackPt));        
     tree->SetBranchAddress("Jet_leptonPtRel", &(jet_leptonPtRel));       
@@ -306,13 +307,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     float max2=-1;
     float max3=-1;	
     float max4=-1;	
-    int contpt=0;	
     for(int i=0; i<8;i++){
 	if(max1 < jet_btagCSV[i]) { max4=max3;max3=max2; max2=max1; max1=jet_btagCSV[i];}
 	else if (max2  < jet_btagCSV[i]){max4=max3;max3=max2; max2 = jet_btagCSV[i];}
 	else if (max3  < jet_btagCSV[i]) {max4=max3;max3 = jet_btagCSV[i];}
 	else if (max4  < jet_btagCSV[i]) max4 = jet_btagCSV[i];
-	if(jet_pT[i]>40 && TMath::Abs(jet_eta[i])<2.4 && jet_btagCSV[i] >0.3)  contpt++;
 
 	
 	}
@@ -321,11 +320,23 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     std::cout<<jet_btagCSV[0]<<"   "<<jet_btagCSV[1]<<"   "<<jet_btagCSV[2]<<std::endl;
     */
     float CSV3 = TMath::Min(max3, (float) 0.9999999999);	
-    bool quad =  QuadTriggerWeight(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3); 
-    bool Double = DoubleTriggerWeight(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
-    if(( quad || Double) && max3>0.605 && contpt>=4)	
+    float quad =  QuadTriggerWeight(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3); 
+    float Double = DoubleTriggerWeight(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+    if(sigmaTrigUnc_string == "Trigm1") {
+		quad =  QuadTriggerWeightDown(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+		Double = DoubleTriggerWeightDown(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+
+		}
+    else if (sigmaTrigUnc_string == "Trigp1") {
+	
+		quad =  QuadTriggerWeightUp(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+                Double = DoubleTriggerWeightUp(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+
+                }
+		
     //if (trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1) //trigger_HLT_HH4bLowLumi==1)
     {
+      eventWeight = eventWeight*(Double+quad-Double*quad); //P(A||B) = P(A)+P(B)-P(A&B) = P(A)+P(B)-P(A)*(B));
       nCut1+=eventWeight;
       
       if (vType==-1)
