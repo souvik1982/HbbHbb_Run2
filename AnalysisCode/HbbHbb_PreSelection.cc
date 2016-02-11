@@ -13,7 +13,7 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 #include "TMath.h"
 #include "Trigger/Double.h"
 #include "Trigger/Quad.h"
-
+#include <TSystem.h>
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
@@ -86,7 +86,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float puWeight, genWeight;
   int nJets;
   float jet_btagCSV[100], jet_btagCMVA[100];
-  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100];
+  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100], jet_flavor[100];
   float jet_corrJERUp[100], jet_corrJERDown[100], jet_corrJECUp[100], jet_corrJECDown[100] , jet_corrJER[100], jet_corrJEC[100];
   int nGenHiggsBoson;	
   float genHiggsBoson_pT[100], genHiggsBoson_eta[100], genHiggsBoson_phi[100], genHiggsBoson_mass[100];
@@ -181,6 +181,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("Jet_mcEta", &(jet_MCeta));                     tree->SetBranchStatus("Jet_mcEta", 1);
   tree->SetBranchAddress("Jet_mcPhi", &(jet_MCphi));                     tree->SetBranchStatus("Jet_mcPhi", 1);
   tree->SetBranchAddress("Jet_mcM", &(jet_MCmass));                      tree->SetBranchStatus("Jet_mcM", 1);
+  
   tree->SetBranchAddress("nGenHiggsBoson", &(nGenHiggsBoson));           tree->SetBranchStatus("nGenHiggsBoson",1);
   tree->SetBranchAddress("GenHiggsBoson_pt", &(genHiggsBoson_pT));       tree->SetBranchStatus("GenHiggsBoson_pt",1);
   tree->SetBranchAddress("GenHiggsBoson_eta", &(genHiggsBoson_eta));     tree->SetBranchStatus("GenHiggsBoson_eta",1);
@@ -199,6 +200,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("Jet_corr_JER", &(jet_corrJER));
   tree->SetBranchAddress("Jet_corr_JERUp", &(jet_corrJERUp));
   tree->SetBranchAddress("Jet_corr_JERDown", &(jet_corrJERDown));
+  tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));// tree->SetBranchStatus("Jet_Flavour", 1);
 
   if (regressionFile!="")
   {
@@ -262,7 +264,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   outtree->Branch("jetIndex_Central_pTOrder", &jetIndex_Central_pTOrder);
   outtree->Branch("jetIndex_CentralpT40_CSVOrder", &jetIndex_CentralpT40_CSVOrder);
   outtree->Branch("eventWeight", &eventWeight);
+
+
   
+
+ 
   // Loop over ejet_t 
   int nEvents=tree->GetEntries();
   double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0;
