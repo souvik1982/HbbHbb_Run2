@@ -82,15 +82,15 @@ double constrainHH_signalMeasurement(TLorentzVector *j1, TLorentzVector *j2, TLo
   m4(2,2) = ErrPhi_Signal(j4->Et());
   
   // Correct the jet energies for bias
-  TLorentzVector j1_new=biasEt_signal(*j1);
+  /*TLorentzVector j1_new=biasEt_signal(*j1);
   TLorentzVector j2_new=biasEt_signal(*j2);
   TLorentzVector j3_new=biasEt_signal(*j3);
   TLorentzVector j4_new=biasEt_signal(*j4);
-  
-  TFitParticleEtEtaPhi *jet1 = new TFitParticleEtEtaPhi(&j1_new, &m1);
-  TFitParticleEtEtaPhi *jet2 = new TFitParticleEtEtaPhi(&j2_new, &m2);
-  TFitParticleEtEtaPhi *jet3 = new TFitParticleEtEtaPhi(&j3_new, &m3);
-  TFitParticleEtEtaPhi *jet4 = new TFitParticleEtEtaPhi(&j4_new, &m4);
+  */
+  TFitParticleEtEtaPhi *jet1 = new TFitParticleEtEtaPhi(j1, &m1);
+  TFitParticleEtEtaPhi *jet2 = new TFitParticleEtEtaPhi(j2, &m2);
+  TFitParticleEtEtaPhi *jet3 = new TFitParticleEtEtaPhi(j3, &m3);
+  TFitParticleEtEtaPhi *jet4 = new TFitParticleEtEtaPhi(j4, &m4);
   
   // Constrain jet1 and jet2 to one H, and jet3 and jet4 to another
   TFitConstraintM *massConstraint1 = new TFitConstraintM("massConstraint1", "massConstraint1", 0, 0, mass1);
