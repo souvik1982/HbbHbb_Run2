@@ -42,7 +42,8 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
   float genBQuarkFromH_pT[100],genBQuarkFromH_eta[100],genBQuarkFromH_phi[100],genBQuarkFromH_mass[100];
   float jet_regressed_pT[100], jet_flavor[100];
-  std::vector<unsigned int> *jetIndex_CentralpT40btag_CSVOrder=0;
+  std::vector<unsigned int> *jetIndex_CentralpT40btag_CMVAOrder=0;
+  //std::vector<unsigned int> *jetIndex_CentralpT40btag_CMVAOrder=0;
   
   // Retrieve variables
   tree->SetBranchAddress("evt", &evt);
@@ -55,7 +56,8 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                  
   tree->SetBranchAddress("Jet_mass", &(jet_mass));
   tree->SetBranchAddress("Jet_regressed_pt", &(jet_regressed_pT));
-  tree->SetBranchAddress("jetIndex_CentralpT40btag_CSVOrder", &(jetIndex_CentralpT40btag_CSVOrder));
+ // tree->SetBranchAddress("jetIndex_CentralpT40btag_CMVAOrder", &(jetIndex_CentralpT40btag_CMVAOrder));
+  tree->SetBranchAddress("jetIndex_CentralpT40btag_CMVAOrder", &(jetIndex_CentralpT40btag_CMVAOrder));	
   tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   
@@ -113,10 +115,11 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
   tFile1->Close();
 
  
-  BtagCalibration calib("CSVv2","/uscms_data/d3/cvernier/4b/HbbHbb_Run2/HbbHbb_Run2/AnalysisCode/PDFs/CSVv2.csv");
+  //BtagCalibration calib("CSVv2","/uscms_data/d3/cvernier/4b/HbbHbb_Run2/HbbHbb_Run2/AnalysisCode/PDFs/CSVv2.csv");
+  BtagCalibration calib("cMVAv2","/uscms_data/d3/cvernier/4b/HbbHbb_Run2/HbbHbb_Run2/AnalysisCode/PDFs/cMVAv2.csv");
   
-  BtagCalibrationReader csv_calib_l(&calib,BtagEntry::OP_LOOSE,"comb","central");
-  BtagCalibrationReader csv_calib_bc(&calib,BtagEntry::OP_LOOSE,"mujets","central");
+  BtagCalibrationReader csv_calib_l(&calib,BtagEntry::OP_LOOSE,"incl","central");
+  BtagCalibrationReader csv_calib_bc(&calib,BtagEntry::OP_LOOSE,"ttbar","central");
   if(bTagSF=="up"){
 	std::cout<< " UP "<<std::endl;
 	BtagCalibrationReader csv_calib_l(&calib,BtagEntry::OP_LOOSE,"comb","up");
@@ -138,28 +141,28 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
     double chi2_old=200.;
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
-    for (unsigned int j=0; j<jetIndex_CentralpT40btag_CSVOrder->size(); ++j)
+    for (unsigned int j=0; j<jetIndex_CentralpT40btag_CMVAOrder->size(); ++j)
     {
-      unsigned int j_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(j);
+      unsigned int j_jetIndex=jetIndex_CentralpT40btag_CMVAOrder->at(j);
       TLorentzVector jet1_p4, jet2_p4, jet3_p4, jet4_p4;
       jet1_p4=fillTLorentzVector(jet_regressed_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
       if (jet1_p4.Pt()>jet_pT_cut1)
       {
-        for (unsigned int k=0; k<jetIndex_CentralpT40btag_CSVOrder->size(); ++k)
+        for (unsigned int k=0; k<jetIndex_CentralpT40btag_CMVAOrder->size(); ++k)
         {
-          unsigned int k_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(k);
+          unsigned int k_jetIndex=jetIndex_CentralpT40btag_CMVAOrder->at(k);
           jet2_p4=fillTLorentzVector(jet_regressed_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k_jetIndex], jet_mass[k_jetIndex]);
           if (k_jetIndex!=j_jetIndex && jet2_p4.Pt()>jet_pT_cut1)
           {
-            for (unsigned int l=0; l<jetIndex_CentralpT40btag_CSVOrder->size(); ++l)
+            for (unsigned int l=0; l<jetIndex_CentralpT40btag_CMVAOrder->size(); ++l)
             {
-              unsigned int l_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(l);
+              unsigned int l_jetIndex=jetIndex_CentralpT40btag_CMVAOrder->at(l);
               jet3_p4=fillTLorentzVector(jet_regressed_pT[l_jetIndex], jet_eta[l_jetIndex], jet_phi[l_jetIndex], jet_mass[l_jetIndex]);
               if (l_jetIndex!=k_jetIndex && l_jetIndex!=j_jetIndex && jet3_p4.Pt()>jet_pT_cut1)
               {
-                for (unsigned int m=0; m<jetIndex_CentralpT40btag_CSVOrder->size(); ++m)
+                for (unsigned int m=0; m<jetIndex_CentralpT40btag_CMVAOrder->size(); ++m)
                 {
-                  unsigned int m_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(m);
+                  unsigned int m_jetIndex=jetIndex_CentralpT40btag_CMVAOrder->at(m);
                   jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
                   if (m_jetIndex!=l_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=j_jetIndex && jet4_p4.Pt()>jet_pT_cut1)
                   {
@@ -232,6 +235,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
 
 	
       eventWeight = eventWeight*jet_scalefactor1*jet_scalefactor2*jet_scalefactor3*jet_scalefactor4;	
+
 	    
       TLorentzVector jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
 	    TLorentzVector jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
