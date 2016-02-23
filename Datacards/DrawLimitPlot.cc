@@ -31,9 +31,10 @@ void DrawLimitPlot(std::vector<double> mass, double ymin, double ymax)
   for (unsigned int i=0; i<nPoints; ++i)
   {
     std::string mass_string=itoa(mass[i]);
-    std::string filename="HbbHbb_13TeV_mX"+mass_string+"_Asymptotic.log";
+//    std::string filename="HbbHbb_13TeV_mX"+mass_string+"_Asymptotic.log";
+    std::string filename="CMS_HH4b_"+mass_string+"_13TeV_asymptoticCLs.out";
     std::ifstream file(filename.c_str(), ios::in);
-    // std::cout<<"Opened file "<<filename<<std::endl;
+    std::cout<<"Opened file "<<filename<<std::endl;
     std::string line;
     getline(file, line);
     getline(file, line);
@@ -58,7 +59,7 @@ void DrawLimitPlot(std::vector<double> mass, double ymin, double ymax)
   }
   
   // Graviton curve
-  std::vector<double> masses_graviton={200,	
+  std::vector<double> masses_graviton={//260,300,400,500,600,700,800,900,1000};
                                        260,  
                                        300,  
                                        350,  
@@ -84,45 +85,69 @@ void DrawLimitPlot(std::vector<double> mass, double ymin, double ymax)
                                        1350,
                                        1400,
                                        1450,
-                                       1500,
-                                       2000};
-  
-  
-  std::vector<double> x_graviton={
-                                  5.649417401247585,   
-                                  1.942937143101152,  
-                                  1.068487385421470,  
-                                  0.551453225607504,  
-                                  0.306465209281976,  
-                                  0.179648341500263,  
-                                  0.110212989072781,  
-                                  0.070452805343422,  
-                                  0.046310769831789,  
-                                  0.031271547303295,  
-                                  0.021611330228787,  
-                                  0.015241418189689,  
-                                  0.010953371285280,  
-                                  0.007973233764684,  
-                                  0.005886101099004,  
-                                  0.004386360642407,  
-                                  0.003315318658155,  
-                                  0.002533722446469,  
-                                  0.001949901492357,  
-                                  0.001510666005692,  
-                                  0.001179681973057,  
-                                  0.000929048536139,  
-                                  0.000734267676625,  
-                                  0.000585735348110,  
-                                  0.000468838667410,  
-                                  0.000378059177134,  
-                                  0.000307044019540,  
-                                  0.000045428801850
-                                };
-                                  
+                                       1500};
+
+  std::vector<double> x_graviton{
+			 13189.5110556213,
+ 7213.724953,
+ 3724.152306612245,
+ 2074.118283562500,
+ 1220.908845777777,
+ 756.0527086799999,
+ 484.2628197024792,
+ 321.127891575,
+ 219.297103860355, 
+ 152.2164810122449,
+ 108.4982254720000,
+ 78.4962635203125 ,
+ 57.88419000415223,
+ 43.08418917777778,
+ 32.69710000221605,
+ 24.96632111100000,
+ 19.26116379591836,
+ 15.04592709917355,
+ 11.87132725293005,
+ 9.391763225,
+ 7.510401695231998,
+ 6.032381149171598,
+ 4.878695042469133,
+ 3.980540729387755,
+ 3.259530744827586,
+ 2.6789518692	
+};
+
+  std::vector<double> br_hh={//32.552,593.385,959.755,573.531,308.096,162.880,89.196,50.616,29.627};
+				 7.875333606243001e-6,
+				0.0002609363907507743,
+				0.0008527793007645482 , 
+				0.0014748453016228675,
+				0.00202120813640487,
+				0.0024744221679741125,
+				0.002843812476091045,
+				0.003144265384982541,
+				0.0033897489806557304,
+				0.0035917787224510177, 
+				0.003759423688146881,
+				0.0038997130095539006, 
+				0.004018077826392619,
+				0.004118727164348574,   
+				0.004204942476367313,   
+				0.00427930100894505,   
+				0.004343843097937954, 
+				0.004400197131035117,  
+ 				0.004449673107888205,
+				0.0044933330427632395, 
+				0.00453204428524029 , 
+				0.004566520194709918,   
+				0.004597351400961763, 
+				0.004625030011213332, 
+				0.00464996849485267,   
+ 				0.004672514523079795
+                              };
   // Multiply graviton x-sec with appropriate Br(G->HH)*Br(H->bb)^2 * (k'/k)^2
   for(int i=0; i<masses_graviton.size(); ++i) 
   {
-    x_graviton[i]=x_graviton[i]*0.25*(0.57*0.57)*pow(0.2/0.1,2)*1000. ; //BR X->HH 
+    x_graviton[i]=x_graviton[i]*br_hh[i]*(0.57*0.57)*1000. ; 
     std::cout<<"Graviton mass = "<<masses_graviton[i]<<", x-sec = "<<x_graviton[i]<<std::endl;
   }
   TGraph *g_graviton=new TGraph(masses_graviton.size(), &(masses_graviton[0]), &(x_graviton[0])); g_graviton->SetLineWidth(2); g_graviton->SetLineColor(kBlue+1); g_graviton->SetFillColor(kWhite);

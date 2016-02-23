@@ -19,9 +19,9 @@
 
 #include "TDRStyle.h"
 
-double mean_H1_mass_=124;
-double sigma_H1_mass_=15; // 12;
-double mean_H2_mass_=117;
+double mean_H1_mass_=120;
+double sigma_H1_mass_=20; // 12;
+double mean_H2_mass_=120;
 double sigma_H2_mass_=20; // 13;
 
 double chi_1=1;
@@ -99,14 +99,14 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
   drawRegion(isData);
 }
 
-void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=125, double sigma_H1_mass_=20, double mean_H2_mass_=125, double sigma_H2_mass_=20)
+void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=120, double sigma_H1_mass_=20, double mean_H2_mass_=125, double sigma_H2_mass_=20)
 {
-  std::vector<TFile*> v_files;
   for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
   TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
-  TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
-  std::vector <double> mean_gen={300, 400, 600, 800, 1000, 1200, 1600};
-  std::vector<int> v_colors = {kGreen, kGreen+2, kOrange, kOrange+2, kMagenta, kMagenta+2, kBlue, kBlue+2, kCyan, kCyan+2};
+  //TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
+  std::vector <double> mean_gen={ 400, 600,   800, 1000};
+  std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1};// kAzure+3, kPink+2, kGray+2,kBlue+1};
+
   
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();
@@ -115,7 +115,7 @@ void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=125, doubl
   myStyle->SetOptStat(0);
   
   TLegend *leg=new TLegend(0.6, 0.7, 0.89, 0.89);
-  for (unsigned int i=0; i<v_files.size(); ++i)
+ /* for (unsigned int i=0; i<v_files.size(); ++i)
   {
     TH1F *h_pTOrder_JetpT_1=(TH1F*)v_files.at(i)->Get("h_pTOrder_JetpT_1");
     h_pTOrder_JetpT_1->SetLineColor(v_colors.at(i));
@@ -130,31 +130,20 @@ void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=125, doubl
   h_pTOrder_JetpT_1->SetLineColor(kRed);
   h_pTOrder_JetpT_1->SetLineWidth(2);
   leg->AddEntry(h_pTOrder_JetpT_1, "t#bar{t}");
-  
+ */ 
   // Plot mH1
   first=true;
   TCanvas *c_H1_mass=new TCanvas("c_H1_mass", "c_H1_mass", 700, 700);
+
   for (int i=v_files.size()-1; i>=0; --i)
   {
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass", v_colors.at(i));
   }
   DisplayHistogram_mH_forFile(f_data, "h_H1_mass", kBlack);
-  DisplayHistogram_mH_forFile(f_ttbar, "h_H1_mass", kRed);
+  //DisplayHistogram_mH_forFile(f_ttbar, "h_H1_mass", kRed);
   leg->Draw();
   c_H1_mass->SaveAs("c_H1_mass.png");
   delete c_H1_mass;
-  
-  first=true;
-  TCanvas *c_H1_mass_biasCorrected=new TCanvas("c_H1_mass_biasCorrected", "c_H1_mass_biasCorrected", 700, 700);
-  for (int i=v_files.size()-1; i>=0; --i)
-  {
-    DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass_biasCorrected", v_colors.at(i));
-  }
-  DisplayHistogram_mH_forFile(f_data, "h_H1_mass_biasCorrected", kBlack);
-  DisplayHistogram_mH_forFile(f_ttbar, "h_H1_mass_biasCorrected", kRed);
-  leg->Draw();
-  c_H1_mass_biasCorrected->SaveAs("c_H1_mass_biasCorrected.png");
-  delete c_H1_mass_biasCorrected;
   
   // Plot mH2
   first=true;
@@ -164,23 +153,10 @@ void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=125, doubl
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H2_mass", v_colors.at(i));
   }
   DisplayHistogram_mH_forFile(f_data, "h_H2_mass", kBlack);
-  DisplayHistogram_mH_forFile(f_ttbar, "h_H2_mass", kRed);
+  //DisplayHistogram_mH_forFile(f_ttbar, "h_H2_mass", kRed);
   leg->Draw();
   c_H2_mass->SaveAs("c_H2_mass.png");
   delete c_H2_mass;
-  
-  first=true;
-  TCanvas *c_H2_mass_biasCorrected=new TCanvas("c_H2_mass_biasCorrected", "c_H2_mass_biasCorrected", 700, 700);
-  for (int i=v_files.size()-1; i>=0; --i)
-  {
-    DisplayHistogram_mH_forFile(v_files.at(i), "h_H2_mass_biasCorrected", v_colors.at(i));
-  }
-  DisplayHistogram_mH_forFile(f_data, "h_H2_mass_biasCorrected", kBlack);
-  DisplayHistogram_mH_forFile(f_ttbar, "h_H2_mass_biasCorrected", kRed);
-  leg->Draw();
-  c_H2_mass_biasCorrected->SaveAs("c_H2_mass_biasCorrected.png");
-  delete c_H2_mass_biasCorrected;
-  
   
   // Plot mH1 vs mH2
   for (unsigned int i=0; i<v_files.size(); ++i)
@@ -196,14 +172,14 @@ void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=125, doubl
   c_mH1_mH2_asym_Data->SaveAs("c_mH1_mH2_asym_Data.png");
   delete c_mH1_mH2_asym_Data;
   
-  TCanvas *c_mH1_mH2_asym_ttbar=new TCanvas("c_mH1_mH2_asym_ttbar", "c_mH1_mH2_asym_ttbar", 700, 700);
-  DisplaymH1vsmH2_ForFile(f_ttbar);
-  c_mH1_mH2_asym_ttbar->SaveAs("c_mH1_mH2_asym_ttbar.png");
-  delete c_mH1_mH2_asym_ttbar;
+ // TCanvas *c_mH1_mH2_asym_ttbar=new TCanvas("c_mH1_mH2_asym_ttbar", "c_mH1_mH2_asym_ttbar", 700, 700);
+ // DisplaymH1vsmH2_ForFile(f_ttbar);
+ // c_mH1_mH2_asym_ttbar->SaveAs("c_mH1_mH2_asym_ttbar.png");
+ // delete c_mH1_mH2_asym_ttbar;
   
   
   // Plot mX in SB region for Data and ttbar
-  first=true;
+ /* first=true;
   double lumi=2150; // /pb
   double xsec_ttbar=831.76; // pb
   double init_ttbar=((TH1F*)f_ttbar->Get("Count"))->GetBinContent(1);
@@ -231,7 +207,8 @@ void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=125, doubl
   int bin2=h_mX_SB_kinFit_data->FindBin(1600.);
   double nDataEvents=h_mX_SB_kinFit_data->Integral(bin1, bin2);
   double nttbarEvents=h_mX_SB_kinFit_ttbar->Integral(bin1, bin2);
-  std::cout<<"nttbarEvents/nDataEvents = "<<nttbarEvents<<"/"<<nDataEvents<<" = "<<nttbarEvents/nDataEvents<<std::endl;
-  
+  std::cout<<"nttbarEvents/nDataEvents = "<<nttbarEvents<<"/"<<nDataEvents<<" = "<<nttbarEvents/nDataEvents<<std::endl;r
+
+  */
 }    
   

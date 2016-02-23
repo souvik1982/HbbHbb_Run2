@@ -14,9 +14,9 @@
 
 double jet_pT_cut1=45.;
 
-double mean_H1_mass_=124;
-double sigma_H1_mass_=15; // 12;
-double mean_H2_mass_=117;
+double mean_H1_mass_=125;
+double sigma_H1_mass_=20; // 12;
+double mean_H2_mass_=125;
 double sigma_H2_mass_=20; // 13;
 
 /* to check against existing selection

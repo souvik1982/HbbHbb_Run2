@@ -10,7 +10,10 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 #include <iostream>
 #include "DrawFunctions.h"
 #include "TLorentzVector.h"
-
+#include "TMath.h"
+#include "Trigger/Double.h"
+#include "Trigger/Quad.h"
+#include <TSystem.h>
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
@@ -23,7 +26,7 @@ double pi=3.14159265358979;
 double jet_pT_cut=30.;
 double jet_pT_ttbar_cut=20.;
 double jet_eta_cut=2.5;
-double jet_btag_cut=0.6;
+double jet_btag_cut=-0.715; //0.605;
 /////////////////////////////////////
 
 typedef std::map<double, int> JetList;
@@ -47,9 +50,10 @@ void fillIndexVectorFromJetList(JetList jetList, std::vector<unsigned int> *inde
 }
 
 void HbbHbb_PreSelection(std::string dir, std::string sample,
-                              std::string regressionFile="",
-                              std::string sigmaJECUnc_string="JEC", 
-                              std::string sigmaJERUnc_string="JER")
+                         std::string regressionFile="",
+                         std::string sigmaJECUnc_string="JEC", 
+                         std::string sigmaJERUnc_string="JER", 
+                         std::string sigmaTrigUnc_string="Trig")
 {
   
   std::string inputfilename=dir+"/"+sample+".root";
@@ -60,30 +64,19 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   if (regressionFile=="") std::cout<<"b jet regression not done. jet_regressed_pT = jet_pT"<<std::endl;
   else std::cout<<"b jet regression done with "<<regressionFile<<" decisions file."<<std::endl;
   
-  double sigmaJECUnc; // -1, 0, +1
-  double sigmaJERUnc; // -1, 0, +1
-  if (sigmaJECUnc_string=="JEC") sigmaJECUnc=0;
-  else if (sigmaJECUnc_string=="JECp1") sigmaJECUnc=1;
-  else if (sigmaJECUnc_string=="JECm1") sigmaJECUnc=-1;
-  
-  if (sigmaJERUnc_string=="JER") sigmaJERUnc=0;
-  else if (sigmaJERUnc_string=="JERp1") sigmaJERUnc=1;
-  else if (sigmaJERUnc_string=="JERm1") sigmaJERUnc=-1;
-  
   // Book variables
   int run;
   int evt;
   int isData, nTrueInt;
   float trigger_HLT_HH4bLowLumi;
-  float trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v; 
-  float trigger_HLT_BIT_HLT_QuadJet45_DoubleCSV0p5_v; 
-  float trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v;
-  float trigger_HLT_BIT_HLT_DoubleJet90_Double30_DoubleCSV0p5_v;	
+  int trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v; 
+  int trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v;
   float vType;
   float puWeight, genWeight;
   int nJets;
   float jet_btagCSV[100], jet_btagCMVA[100];
-  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100];
+  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100], jet_flavor[100];
+  float jet_corrJERUp[100], jet_corrJERDown[100], jet_corrJECUp[100], jet_corrJECDown[100] , jet_corrJER[100], jet_corrJEC[100];
   int nGenHiggsBoson;	
   float genHiggsBoson_pT[100], genHiggsBoson_eta[100], genHiggsBoson_phi[100], genHiggsBoson_mass[100];
   float eventWeight;
@@ -158,10 +151,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("nTrueInt",&nTrueInt);				 tree->SetBranchStatus("nTrueInt",1); 	
   tree->SetBranchAddress("isData", &isData);                             tree->SetBranchStatus("isData", 1);
   tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);   tree->SetBranchStatus("HLT_HH4bLowLumi", 1);
-  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v",1);
-  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_DoubleCSV0p5_v",&trigger_HLT_BIT_HLT_QuadJet45_DoubleCSV0p5_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_DoubleCSV0p5_v",1);		
-  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v",1);
-  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_DoubleCSV0p5_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_DoubleCSV0p5_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_DoubleCSV0p5_v",1);
+  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v",1);
+  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v",1);
   tree->SetBranchAddress("Vtype", &(vType));                             tree->SetBranchStatus("Vtype", 1); 
   tree->SetBranchAddress("puWeight", &(puWeight));                       tree->SetBranchStatus("puWeight", 1); 
   tree->SetBranchAddress("genWeight", &(genWeight));                     tree->SetBranchStatus("genWeight", 1);
@@ -177,6 +168,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("Jet_mcEta", &(jet_MCeta));                     tree->SetBranchStatus("Jet_mcEta", 1);
   tree->SetBranchAddress("Jet_mcPhi", &(jet_MCphi));                     tree->SetBranchStatus("Jet_mcPhi", 1);
   tree->SetBranchAddress("Jet_mcM", &(jet_MCmass));                      tree->SetBranchStatus("Jet_mcM", 1);
+  
   tree->SetBranchAddress("nGenHiggsBoson", &(nGenHiggsBoson));           tree->SetBranchStatus("nGenHiggsBoson",1);
   tree->SetBranchAddress("GenHiggsBoson_pt", &(genHiggsBoson_pT));       tree->SetBranchStatus("GenHiggsBoson_pt",1);
   tree->SetBranchAddress("GenHiggsBoson_eta", &(genHiggsBoson_eta));     tree->SetBranchStatus("GenHiggsBoson_eta",1);
@@ -189,6 +181,14 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass)); tree->SetBranchStatus("GenBQuarkFromH_mass", 1);
   tree->SetBranchAddress("met_pt", &(met_pT));                           tree->SetBranchStatus("met_pt", 1);
   tree->SetBranchAddress("met_phi", &(met_phi));                         tree->SetBranchStatus("met_phi", 1);
+  tree->SetBranchAddress("Jet_corr", &(jet_corrJEC));
+  tree->SetBranchAddress("Jet_corr_JECUp", &(jet_corrJECUp));
+  tree->SetBranchAddress("Jet_corr_JECDown", &(jet_corrJECDown));
+  tree->SetBranchAddress("Jet_corr_JER", &(jet_corrJER));
+  tree->SetBranchAddress("Jet_corr_JERUp", &(jet_corrJERUp));
+  tree->SetBranchAddress("Jet_corr_JERDown", &(jet_corrJERDown));
+  tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));// tree->SetBranchStatus("Jet_Flavour", 1);
+
   if (regressionFile!="")
   {
     tree->SetBranchAddress("Jet_corr", &(jet_corr));                     
@@ -207,17 +207,17 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     tree->SetBranchAddress("Jet_vtxNtracks", &(jet_vtxNtrk));
   }           
   
-  TH1F *h_nCbJets=new TH1F("h_nCbJets", "; # Cleaned PAT Jets with |#eta|<2.5, p_{T} > 40 GeV, CSV > 0.6; Events", 10, 0., 10.);
+  TH1F *h_nCbJets=new TH1F("h_nCbJets", "; #Jets with |#eta|<2.5, p_{T} > 30 GeV, CSV > CSVL; Events", 10, 0., 10.);
   
   TH1F *h_pTOrder_JetpT_1=new TH1F("h_pTOrder_JetpT_1", "; Jet pT 1 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 800.);
   TH1F *h_pTOrder_JetpT_2=new TH1F("h_pTOrder_JetpT_2", "; Jet pT 2 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 500.);
   TH1F *h_pTOrder_JetpT_3=new TH1F("h_pTOrder_JetpT_3", "; Jet pT 3 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 350.);
   TH1F *h_pTOrder_JetpT_4=new TH1F("h_pTOrder_JetpT_4", "; Jet pT 4 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
   TH1F *h_pTOrder_JetpT_5=new TH1F("h_pTOrder_JetpT_5", "; Jet pT 5 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
-  TH1F *h_CSVOrder_JetCSV_1=new TH1F("h_CSVOrder_JetCSV_1", "; Jet CSV 1 for jets with |#eta|<2.5, p_{T} > 40 GeV; Events", 50, 0., 1.);
-  TH1F *h_CSVOrder_JetCSV_2=new TH1F("h_CSVOrder_JetCSV_2", "; Jet CSV 2 for jets with |#eta|<2.5, p_{T} > 40 GeV; Events", 50, 0., 1.);
-  TH1F *h_CSVOrder_JetCSV_3=new TH1F("h_CSVOrder_JetCSV_3", "; Jet CSV 3 for jets with |#eta|<2.5, p_{T} > 40 GeV; Events", 50, 0., 1.);
-  TH1F *h_CSVOrder_JetCSV_4=new TH1F("h_CSVOrder_JetCSV_4", "; Jet CSV 4 for jets with |#eta|<2.5, p_{T} > 40 GeV; Events", 50, 0., 1.);
+  TH1F *h_CSVOrder_JetCSV_1=new TH1F("h_CSVOrder_JetCSV_1", "; Jet CSV 1 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, 0., 1.);
+  TH1F *h_CSVOrder_JetCSV_2=new TH1F("h_CSVOrder_JetCSV_2", "; Jet CSV 2 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, 0., 1.);
+  TH1F *h_CSVOrder_JetCSV_3=new TH1F("h_CSVOrder_JetCSV_3", "; Jet CSV 3 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, 0., 1.);
+  TH1F *h_CSVOrder_JetCSV_4=new TH1F("h_CSVOrder_JetCSV_4", "; Jet CSV 4 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, 0., 1.);
   
   TH1F *h_GenX_mass=new TH1F("h_GenX_mass", "; m_{X}^{GEN} (GeV); Events", 1800, 200, 2000);
   TH1F *h_dR_genHbb=new TH1F("h_dR_genHbb", "; #Delta R(b#bar{b}}; Events", 1000, 0., 5.);
@@ -251,8 +251,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   outtree->Branch("jetIndex_Central_pTOrder", &jetIndex_Central_pTOrder);
   outtree->Branch("jetIndex_CentralpT40_CSVOrder", &jetIndex_CentralpT40_CSVOrder);
   outtree->Branch("eventWeight", &eventWeight);
-  
-  // Loop over events
+ 
+  // Loop over events 
   int nEvents=tree->GetEntries();
   double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0;
   double nTrig1=0, nTrig12=0, nTrig2=0;
@@ -261,7 +261,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     ++nCut0;
     tree->GetEvent(i);
     
-    if (isData!=1) eventWeight= weight2( nTrueInt )*genWeight/fabs(genWeight);
+    if (isData!=1) eventWeight=puWeight;//weight2( nTrueInt )*genWeight/fabs(genWeight);
     else eventWeight=1;
     
     if (isData!=1)
@@ -286,14 +286,44 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     h_MET->Fill(met_pT, eventWeight);
     h_MET_phi->Fill(met_phi, eventWeight);
     
-    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v!=1) nTrig1+=1;
-    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v==1) nTrig12+=1;
-    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v!=1 && trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v==1) nTrig2+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v!=1) nTrig1+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v==1) nTrig12+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v!=1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v==1) nTrig2+=1;
     
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
-    if (trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1) //trigger_HLT_HH4bLowLumi==1)
+    float max1 =-1 ;
+    float max2=-1;
+    float max3=-1;	
+    float max4=-1;	
+    for (int i=0; i<8;i++)
     {
+	    if(max1 < jet_btagCSV[i]) { max4=max3;max3=max2; max2=max1; max1=jet_btagCSV[i];}
+	    else if (max2  < jet_btagCSV[i]){max4=max3;max3=max2; max2 = jet_btagCSV[i];}
+	    else if (max3  < jet_btagCSV[i]) {max4=max3;max3 = jet_btagCSV[i];}
+	    else if (max4  < jet_btagCSV[i]) max4 = jet_btagCSV[i];
+    }
+    
+    /*std::cout<<max1<<"   "<<max2<<"  "<<max3<<std::endl;
+    std::cout<<"pt order "<<std::endl;	
+    std::cout<<jet_btagCSV[0]<<"   "<<jet_btagCSV[1]<<"   "<<jet_btagCSV[2]<<std::endl;
+    */
+    float CSV3 = TMath::Min(max3, (float) 0.9999999999);	
+    float quad =  QuadTriggerWeight(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3); 
+    float Double = DoubleTriggerWeight(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+    if(sigmaTrigUnc_string == "Trigm1") {
+		quad =  QuadTriggerWeightDown(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+		Double = DoubleTriggerWeightDown(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+
+		}
+    else if (sigmaTrigUnc_string == "Trigp1") {
+	    quad =  QuadTriggerWeightUp(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+      Double = DoubleTriggerWeightUp(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
+    }
+		
+    if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v==1)
+    {
+      //eventWeight = eventWeight*(Double+quad-Double*quad); //P(A||B) = P(A)+P(B)-P(A&B) = P(A)+P(B)-P(A)*(B));
       nCut1+=eventWeight;
       
       if (vType==-1)
@@ -307,24 +337,27 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         JetList jetList_CentralpT40btag_CSVOrder;
         JetList jetList_CentralpT40btag_CMVAOrder;
         int nCbJets=0;
-        double ht=0;
         for (unsigned int j=0; j<(unsigned int)nJets; ++j)
         {
+        
+          // std::cout<<"Jet #"<<j<<", jet_pT = "<<jet_pT[j]<<", jet_rawpT = "<<jet_rawpT[j]<<", jet_corrJEC = "<<jet_corrJEC[j]<<", jet_corrJER = "<<jet_corrJER[j]<<", calc. jet_pT = "<<jet_rawpT[j]*jet_corrJEC[j]*jet_corrJER[j]<<std::endl;
+
+  	      if (sigmaJECUnc_string=="JECp1") jet_pT[j] = jet_rawpT[j]*jet_corrJER[j]*jet_corrJECUp[j];
+          if (sigmaJECUnc_string=="JECm1") jet_pT[j] = jet_rawpT[j]*jet_corrJER[j]*jet_corrJECDown[j];
+          if (sigmaJERUnc_string=="JERp1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERUp[j];
+          if (sigmaJERUnc_string=="JERm1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERDown[j];
+	
           if (fabs(jet_eta[j])<jet_eta_cut) 
           {
             jetList_Central_pTOrder[jet_pT[j]]=j;
             if (jet_pT[j]>jet_pT_cut)
             {
-              if (jet_btagCSV[j]>-1)
+              if (jet_btagCMVA[j]>jet_btag_cut)
               {
-                jetList_CentralpT40_CSVOrder[jet_btagCSV[j]]=j;
-                if (jet_btagCSV[j]>jet_btag_cut)
-                {
-                  ++nCbJets;
-                  jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
-                  if (jet_btagCSV[j]>0) jetList_CentralpT40btag_CSVOrder[jet_btagCSV[j]]=j;
-                  if (jet_btagCMVA[j]>0) jetList_CentralpT40btag_CMVAOrder[jet_btagCMVA[j]]=j;
-                }
+                ++nCbJets;
+                jetList_CentralpT40btag_CMVAOrder[jet_btagCMVA[j]]=j;
+                jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
+                if (jet_btagCSV[j]>0) jetList_CentralpT40btag_CSVOrder[jet_btagCSV[j]]=j;
               }
             }
           }
@@ -334,8 +367,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         // Fill jet pT order histograms
         std::vector<TH1F*> v_pTOrder_JetpT = {h_pTOrder_JetpT_1, h_pTOrder_JetpT_2, h_pTOrder_JetpT_3, h_pTOrder_JetpT_4, h_pTOrder_JetpT_5};
         std::vector<TH1F*> v_CSVOrder_JetCSV = {h_CSVOrder_JetCSV_1, h_CSVOrder_JetCSV_2, h_CSVOrder_JetCSV_3, h_CSVOrder_JetCSV_4};
-        fillHistogramsFromJetList(jetList_Central_pTOrder, v_pTOrder_JetpT, puWeight);
-        fillHistogramsFromJetList(jetList_CentralpT40_CSVOrder, v_CSVOrder_JetCSV, puWeight);
+        fillHistogramsFromJetList(jetList_Central_pTOrder, v_pTOrder_JetpT, eventWeight);
+        fillHistogramsFromJetList(jetList_CentralpT40_CSVOrder, v_CSVOrder_JetCSV, eventWeight);
         
         // A non-symmetric CSV cut
         /*if (jetList_CentralpT40_CSVOrder.size()>=4)
@@ -358,7 +391,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
           fillIndexVectorFromJetList(jetList_CentralpT40btag_CSVOrder, &jetIndex_CentralpT40btag_CSVOrder);
           fillIndexVectorFromJetList(jetList_CentralpT40btag_CMVAOrder, &jetIndex_CentralpT40btag_CMVAOrder);
           fillIndexVectorFromJetList(jetList_Central_pTOrder, &jetIndex_Central_pTOrder);
-          fillIndexVectorFromJetList(jetList_CentralpT40_CSVOrder, &jetIndex_CentralpT40_CSVOrder);
+          // fillIndexVectorFromJetList(jetList_CentralpT40_CSVOrder, &jetIndex_CentralpT40_CSVOrder);
           
           // Perform b-jet regression here
           // std::cout<<" === new event with at least 3 central b-tagged pT > 40 jets === "<<std::endl;
@@ -465,7 +498,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::cout<<"=== Cut Efficiencies === "<<std::endl;
   if (isData==0) std::cout<<"Initial number of events = "<<nInitial<<std::endl;
   std::cout<<"Number of events at the end of step 2 = "<<nCut0<<std::endl;
-  std::cout<<"Number of events after trigger = "<<nCut1<<std::endl;
+  std::cout<<"Number of events after trigger = "<<nCut1<< "   "<<(double) nCut1/nInitial<<std::endl;
   std::cout<<"Number of events after Vtype==-1 = "<<nCut2<<std::endl;
   std::cout<<"Number of events after nCbJets>=4 = "<<nCut3<<std::endl;
   std::cout<<"Number of events after finding HH candidate (btag && pT>40 GeV && |eta|<2.4)  = "<<nCut4<<std::endl;
@@ -473,9 +506,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::cout<<"========================"<<std::endl;
   
   std::cout<<"=== Trigger Report === "<<std::endl;
-  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v = "<<nTrig1/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
-  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v && trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v = "<<nTrig12/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
-  std::cout<<"trigger_HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v = "<<nTrig2/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v = "<<nTrig1/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v = "<<nTrig12/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v = "<<nTrig2/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
   
   delete h_Count;
   delete h_nCbJets;

@@ -22,9 +22,9 @@ bool bReg=false;
 std::string tags="MMMM"; // MMMM
 
 double VR_lo=250.;
-double VR_hi=651.;
+double VR_hi=751.;
 double SR_lo=250.;//252.;
-double SR_hi=650;//651.;
+double SR_hi=750;//651.;
 
 double r1=15., r2=35.;
 struct Params
@@ -88,16 +88,16 @@ void PrepareWorkSpace()
 
   gROOT->SetStyle("Plain");
 
-  TFile *f_MMMM_a=new TFile("PreselectedWithoutRegression/LMRSelection/Histograms_BTagCSV_2015_Skim.root");
+  TFile *f_MMMM_a=new TFile("PreselectedWithoutRegression/LMRSelection_chi2/Histograms_Data_BTagCSV_2015_Skim.root");
   f_MMMM_a->cd(); 
 
   RooRealVar *x;
   x=new RooRealVar("x", "m_{X} (GeV)", SR_lo, SR_hi);
  
   std::cout<<" = MMMM Background Prediction ==== "<<std::endl;
-  TH1F *h_mMMMMa_3Tag_CR24=(TH1F*)f_MMMM_a->Get("h_mX_SB");
+  TH1F *h_mMMMMa_3Tag_CR24=(TH1F*)f_MMMM_a->Get("h_mX_SB_kinFit");
   TH1F *h_mMMMMa_3Tag_SR;
-  h_mMMMMa_3Tag_SR=(TH1F*)f_MMMM_a->Get("h_mX_SR");
+  h_mMMMMa_3Tag_SR=(TH1F*)f_MMMM_a->Get("h_mX_SR_kinFit");
   h_mMMMMa_3Tag_CR24->SetLineColor(kBlue);
   h_mMMMMa_3Tag_SR->SetLineColor(kBlue);
   TH1F *h_mMMMMa_3Tag_SR_Prediction=(TH1F*)h_mMMMMa_3Tag_CR24->Clone("h_mMMMMa_3Tag_SR_Prediction");
@@ -105,9 +105,9 @@ void PrepareWorkSpace()
 
 std::cout<<"  asd "<<std::endl;
 
- RooRealVar bg_p0("bg_p0", "bg_p0", 400., 500.);
- RooRealVar bg_p1("bg_p1", "bg_p1", 60., 90.1);
- RooRealVar bg_p2("bg_p2", "bg_p2", 0.3, 0.7);
+ RooRealVar bg_p0("bg_p0", "bg_p0", 250., 350.);
+ RooRealVar bg_p1("bg_p1", "bg_p1", 1., 50.1);
+ RooRealVar bg_p2("bg_p2", "bg_p2", 0.1, 0.7);
   
  GaussExp bg("bg", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2);
  RooDataHist pred("pred", "Prediction from SB", RooArgList(*x), h_mMMMMa_3Tag_SR_Prediction);
@@ -188,7 +188,7 @@ for(int h=0; h<5;h++){
 
   //std::cout<<"Background CR->SR Scale  = "<<h_mX_SR->GetSumOfWeights()/h_mX_CR24->GetSumOfWeights()<<"  num " << h_mX_SR->GetSumOfWeights()<<"  den "<<h_mX_CR24->GetSumOfWeights()<< std::endl;
 
-  std::string filename="PreselectedWithoutRegression/LMRSelection/Histograms_GluGluToBulkGravitonToHHTo4B_M-"+point[h]+"_narrow_13TeV-madgraph.root";
+  std::string filename="PreselectedWithoutRegression/LMRSelection_chi2/Histograms_Graviton"+point[h]+"GeV.root";
   
   TFile *signal=new TFile(filename.c_str());
   //TFile *signal_old=new TFile(filename_old.c_str());
@@ -203,7 +203,7 @@ for(int h=0; h<5;h++){
   for(int n =1; n<2; n++){ 
 	  for(int toy=0; toy<1; toy++){
 
-		  TH1F *h_mX_SR_signal=(TH1F*)signal->Get("h_mX_SR"); 
+		  TH1F *h_mX_SR_signal=(TH1F*)signal->Get("h_mX_SR_kinFit"); 
 		  h_mX_SR_signal->Rebin(rebin);
 		  RooRealVar *sg_p0, *sg_p1, *sg_p2, *sg_p3, *sg_p7, *sg_p8;
 		  double rangeLo=-1, rangeHi=-1; 
