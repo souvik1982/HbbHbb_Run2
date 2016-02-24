@@ -8,5 +8,5 @@
                                    "Histograms_Graviton1200GeV.root"
                                  };
   gROOT->LoadMacro("../../DisplaymHmX.cc");
-  DisplaymHmX(files, 125, 20, 125, 20);
+  DisplaymHmX(files, 150, 20, 125, 20);
 }

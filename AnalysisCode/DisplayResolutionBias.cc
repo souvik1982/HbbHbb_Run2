@@ -58,7 +58,7 @@ void Display_pT_Resolution(std::vector<TFile*> *v)
   
   TH1D *h_MEAN_jet_pT_res_vs_pT_eta_0_1p4=MEANY(h_jet_pT_res_vs_pT_eta_0_1p4);
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet <(p_{T}^{reco} - p_{T}^{parton})> (GeV)"); // Souvik
-  h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetRangeUser(-500, 200);
+  h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetRangeUser(-200, 500);
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetTitleOffset(1.6);
   h_MEAN_jet_pT_res_vs_pT_eta_0_1p4->GetXaxis()->SetTitleOffset(1.2);
   TF1 *f_MEAN_jet_pT_res_vs_pT_eta_0_1p4=new TF1("f_MEAN_jet_pT_res_vs_pT_eta_0_1p4", "pol2", 40, 750);
@@ -66,7 +66,7 @@ void Display_pT_Resolution(std::vector<TFile*> *v)
   
   TH1D *h_RMS_jet_pT_res_vs_pT_eta_0_1p4=RMSY(h_jet_pT_res_vs_pT_eta_0_1p4);
   h_RMS_jet_pT_res_vs_pT_eta_0_1p4->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet #sigma(p_{T}^{reco} - p_{T}^{parton}) (GeV)"); // Souvik
-  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetRangeUser(0, 100);
+  h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetRangeUser(0, 150);
   h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetYaxis()->SetTitleOffset(1.6);
   h_RMS_jet_pT_res_vs_pT_eta_0_1p4->GetXaxis()->SetTitleOffset(1.2);
   TF1 *f_RMS_jet_pT_res_vs_pT_eta_0_1p4=new TF1("f_RMS_jet_pT_res_vs_pT_eta_0_1p4", "pol2", 40, 750);
@@ -78,7 +78,7 @@ void Display_pT_Resolution(std::vector<TFile*> *v)
   
   TH1D *h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5=MEANY(h_jet_pT_res_vs_pT_eta_1p4_2p5);
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet <(p_{T}^{reco} - p_{T}^{parton})> (GeV)"); // Souvik
-  h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetRangeUser(-500, 200);
+  h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetRangeUser(-200, 500);
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetTitleOffset(1.6);
   h_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5->GetXaxis()->SetTitleOffset(1.2);
   TF1 *f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5=new TF1("f_MEAN_jet_pT_res_vs_pT_eta_1p4_2p5", "pol2", 40, 550);
@@ -86,7 +86,7 @@ void Display_pT_Resolution(std::vector<TFile*> *v)
   
   TH1D *h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5=RMSY(h_jet_pT_res_vs_pT_eta_1p4_2p5);
   h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->SetTitle("; b Jet p_{T}^{reco} (GeV); b Jet #sigma(p_{T}^{reco} - p_{T}^{parton}) (GeV)"); // Souvik
-  h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetRangeUser(0, 70);
+  h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetRangeUser(0, 100);
   h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->GetYaxis()->SetTitleOffset(1.6);
   h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->GetXaxis()->SetTitleOffset(1.2);
   TF1 *f_RMS_jet_pT_res_vs_pT_eta_1p4_2p5=new TF1("f_RMS_jet_pT_res_vs_pT_eta_1p4_2p5", "pol1", 40, 550);
@@ -114,6 +114,95 @@ void Display_pT_Resolution(std::vector<TFile*> *v)
   h_RMS_jet_pT_res_vs_pT_eta_1p4_2p5->Draw();
   c_pT_Resolution_eta_1p4_2p5->SaveAs("c_pT_Resolution_eta_1p4_2p5.png");
   c_pT_Resolution_eta_1p4_2p5->SaveAs("c_pT_Resolution_eta_1p4_2p5.root");
+}
+
+void Display_pT_Resolution_vsPartonpT(std::vector<TFile*> *v)
+{
+  TH2F *h_recopT_minus_partpT_vs_partpT_eta_0_1p4=(TH2F*)v->at(0)->Get("h_recopT_minus_partpT_vs_partpT_eta_0_1p4");
+  TH2F *h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5=(TH2F*)v->at(0)->Get("h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5");
+  h_recopT_minus_partpT_vs_partpT_eta_0_1p4->SetTitle("; Jet p_{T}^{parton} (GeV); Jet p_{T}^{reco} - p_{T}^{parton} (GeV)");
+  h_recopT_minus_partpT_vs_partpT_eta_0_1p4->GetYaxis()->SetTitleOffset(1.4);
+  h_recopT_minus_partpT_vs_partpT_eta_0_1p4->GetXaxis()->SetTitleOffset(1.2);
+  for (unsigned int i=1; i<v->size(); ++i)
+  {
+    h_recopT_minus_partpT_vs_partpT_eta_0_1p4->Add((TH2F*)v->at(i)->Get("h_recopT_minus_partpT_vs_partpT_eta_0_1p4"));
+    h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->Add((TH2F*)v->at(i)->Get("h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5"));
+  }
+  h_recopT_minus_partpT_vs_partpT_eta_0_1p4->RebinX(2);
+  h_recopT_minus_partpT_vs_partpT_eta_0_1p4->RebinY(2);
+  h_recopT_minus_partpT_vs_partpT_eta_0_1p4->GetXaxis()->SetRangeUser(0, 650);
+  
+  TH1D *h_MEAN_recopT_minus_partpT_vs_partpT_eta_0_1p4=MEANY(h_recopT_minus_partpT_vs_partpT_eta_0_1p4);
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_0_1p4->SetTitle("; b Jet p_{T}^{parton} (GeV); b Jet <(p_{T}^{reco} - p_{T}^{parton})> (GeV)"); // Souvik
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_0_1p4->GetYaxis()->SetRangeUser(-100, 200);
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_0_1p4->GetYaxis()->SetTitleOffset(1.6);
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_0_1p4->GetXaxis()->SetTitleOffset(1.2);
+  TF1 *f_MEAN_recopT_minus_partpT_vs_partpT_eta_0_1p4=new TF1("f_MEAN_recopT_minus_partpT_vs_partpT_eta_0_1p4", "pol0", 40, 600);
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_0_1p4->Fit(f_MEAN_recopT_minus_partpT_vs_partpT_eta_0_1p4, "R");
+  
+  TH1D *h_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4=RMSY(h_recopT_minus_partpT_vs_partpT_eta_0_1p4);
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->SetTitle("; b Jet p_{T}^{parton} (GeV); b Jet #sigma(p_{T}^{reco} - p_{T}^{parton}) (GeV)"); // Souvik
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->GetYaxis()->SetRangeUser(0, 150);
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->GetYaxis()->SetTitleOffset(1.6);
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->GetXaxis()->SetTitleOffset(1.2);
+  /*TF1 *f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4=new TF1("f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4", "[0]+[1]*(1-exp(-[2]*x))", 40, 600);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->SetParLimits(0, 5, 10);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->SetParLimits(1, 40, 50);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->SetParLimits(2, 0.0, 0.01);*/
+  TF1 *f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4=new TF1("f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4", "[0]+[1]*sqrt(x-[2])", 40, 600);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->SetParLimits(0, -10, 10);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->SetParLimits(1, 1, 10);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->SetParLimits(2, -10, 10);
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->Fit(f_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4, "R");
+  
+  h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->RebinX(2);
+  h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->RebinY(2);
+  h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->GetXaxis()->SetRangeUser(0, 650);
+  
+  TH1D *h_MEAN_recopT_minus_partpT_vs_partpT_eta_1p4_2p5=MEANY(h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5);
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->SetTitle("; b Jet p_{T}^{parton} (GeV); b Jet <(p_{T}^{reco} - p_{T}^{parton})> (GeV)"); // Souvik
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->GetYaxis()->SetRangeUser(-100, 200);
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->GetYaxis()->SetTitleOffset(1.6);
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->GetXaxis()->SetTitleOffset(1.2);
+  TF1 *f_MEAN_recopT_minus_partpT_vs_partpT_eta_1p4_2p5=new TF1("f_MEAN_recopT_minus_partpT_vs_partpT_eta_1p4_2p5", "pol0", 40, 600);
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->Fit(f_MEAN_recopT_minus_partpT_vs_partpT_eta_1p4_2p5, "R");
+  
+  TH1D *h_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5=RMSY(h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5);
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->SetTitle("; b Jet p_{T}^{parton} (GeV); b Jet #sigma(p_{T}^{reco} - p_{T}^{parton}) (GeV)"); // Souvik
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->GetYaxis()->SetRangeUser(0, 100);
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->GetYaxis()->SetTitleOffset(1.6);
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->GetXaxis()->SetTitleOffset(1.2);
+  /*TF1 *f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5=new TF1("f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5", "[0]+[1]*(1-exp(-[2]*x))", 40, 600);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->SetParLimits(0, 1, 10);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->SetParLimits(1, 20, 50);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->SetParLimits(2, 0.0, 0.02);*/
+  TF1 *f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5=new TF1("f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5", "[0]+[1]*sqrt(x-[2])", 40, 600);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->SetParLimits(0, -10, 10);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->SetParLimits(1, 1, 10);
+  f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->SetParLimits(2, -10, 10);
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->Fit(f_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5, "R");
+  
+  TCanvas *c_pT_Resolution_eta_0_1p4_vsPartonpT=new TCanvas("c_pT_Resolution_eta_0_1p4_vsPartonpT", "c_pT_Resolution_eta_0_1p4_vsPartonpT", 2100, 700);
+  c_pT_Resolution_eta_0_1p4_vsPartonpT->Divide(3,1);
+  c_pT_Resolution_eta_0_1p4_vsPartonpT->cd(1);
+  h_recopT_minus_partpT_vs_partpT_eta_0_1p4->Draw("colz");
+  c_pT_Resolution_eta_0_1p4_vsPartonpT->cd(2);
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_0_1p4->Draw();
+  c_pT_Resolution_eta_0_1p4_vsPartonpT->cd(3);
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_0_1p4->Draw();
+  c_pT_Resolution_eta_0_1p4_vsPartonpT->SaveAs("c_pT_Resolution_eta_0_1p4_vsPartonpT.png");
+  c_pT_Resolution_eta_0_1p4_vsPartonpT->SaveAs("c_pT_Resolution_eta_0_1p4_vsPartonpT.root");
+  
+  TCanvas *c_pT_Resolution_eta_1p4_2p5_vsPartonpT=new TCanvas("c_pT_Resolution_eta_1p4_2p5_vsPartonpT", "c_pT_Resolution_eta_1p4_2p5_vsPartonpT", 2100, 700);
+  c_pT_Resolution_eta_1p4_2p5_vsPartonpT->Divide(3,1);
+  c_pT_Resolution_eta_1p4_2p5_vsPartonpT->cd(1);
+  h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->Draw("colz");
+  c_pT_Resolution_eta_1p4_2p5_vsPartonpT->cd(2);
+  h_MEAN_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->Draw();
+  c_pT_Resolution_eta_1p4_2p5_vsPartonpT->cd(3);
+  h_RMS_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->Draw();
+  c_pT_Resolution_eta_1p4_2p5_vsPartonpT->SaveAs("c_pT_Resolution_eta_1p4_2p5_vsPartonpT.png");
+  c_pT_Resolution_eta_1p4_2p5_vsPartonpT->SaveAs("c_pT_Resolution_eta_1p4_2p5_vsPartonpT.root");
 }
 
 void Display_eta_ResolutionForFile(std::vector<TFile*> *v)
@@ -213,6 +302,7 @@ void DisplayResolutionBias(std::vector<std::string> files)
   myStyle->SetOptFit();
   
   Display_pT_Resolution(&v_files);
+  Display_pT_Resolution_vsPartonpT(&v_files);
   Display_eta_ResolutionForFile(&v_files);
   Display_phi_ResolutionForFile(&v_files);
   
