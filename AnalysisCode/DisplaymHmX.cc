@@ -19,11 +19,6 @@
 
 #include "TDRStyle.h"
 
-double mean_H1_mass_=124;
-double sigma_H1_mass_=15; // 12;
-double mean_H2_mass_=117;
-double sigma_H2_mass_=20; // 13;
-
 double chi_1=1;
 double chi_2=2;
 
@@ -62,30 +57,30 @@ void DisplayHistogram_mH_forFile(TFile *file, std::string histogramName, int col
   h->Draw("hist same");
 }
 
-void drawRegion(bool isData=false)
+void drawRegion(bool isData=false, double mean_H1_mass=125, double sigma_H1_mass=20, double mean_H2_mass=125, double sigma_H2_mass=20)
 {
-  TEllipse *circle1=new TEllipse(mean_H1_mass_, mean_H2_mass_, sigma_H1_mass_*chi_1, sigma_H2_mass_*chi_1); 
+  TEllipse *circle1=new TEllipse(mean_H1_mass, mean_H2_mass, sigma_H1_mass*chi_1, sigma_H2_mass*chi_1); 
   circle1->SetLineWidth(3); 
   circle1->SetLineColor(kBlack);
   circle1->SetFillColor(kRed);
   if (!isData) circle1->SetFillStyle(0);
   circle1->Draw();
   
-  TEllipse *circle2=new TEllipse(mean_H1_mass_, mean_H2_mass_, sigma_H1_mass_*chi_2, sigma_H2_mass_*chi_2, 90., 180.); circle2->SetLineWidth(3); circle2->SetNoEdges(); circle2->SetLineColor(kBlack); circle2->SetFillStyle(0); circle2->Draw();
-  TEllipse *circle3=new TEllipse(mean_H1_mass_, mean_H2_mass_, sigma_H1_mass_*chi_2, sigma_H2_mass_*chi_2, 270., 360.); circle3->SetLineWidth(3); circle3->SetNoEdges(); circle3->SetLineColor(kBlack); circle3->SetFillStyle(0); circle3->Draw();
-  TLine *line1=new TLine(mean_H1_mass_-sigma_H1_mass_*chi_2, mean_H2_mass_, mean_H1_mass_-sigma_H1_mass_*chi_1, mean_H2_mass_); line1->SetLineWidth(3); line1->SetLineColor(kBlack); line1->Draw();
-  TLine *line2=new TLine(mean_H1_mass_+sigma_H1_mass_*chi_2, mean_H2_mass_, mean_H1_mass_+sigma_H1_mass_*chi_1, mean_H2_mass_); line2->SetLineWidth(3); line2->SetLineColor(kBlack); line2->Draw();
-  TLine *line3=new TLine(mean_H1_mass_, mean_H2_mass_-sigma_H2_mass_*chi_2, mean_H1_mass_, mean_H2_mass_-sigma_H2_mass_*chi_1); line3->SetLineWidth(3); line3->SetLineColor(kBlack); line3->Draw();
-  TLine *line4=new TLine(mean_H1_mass_, mean_H2_mass_+sigma_H2_mass_*chi_2, mean_H1_mass_, mean_H2_mass_+sigma_H2_mass_*chi_1); line4->SetLineWidth(3); line4->SetLineColor(kBlack); line4->Draw();
+  TEllipse *circle2=new TEllipse(mean_H1_mass, mean_H2_mass, sigma_H1_mass*chi_2, sigma_H2_mass*chi_2, 90., 180.); circle2->SetLineWidth(3); circle2->SetNoEdges(); circle2->SetLineColor(kBlack); circle2->SetFillStyle(0); circle2->Draw();
+  TEllipse *circle3=new TEllipse(mean_H1_mass, mean_H2_mass, sigma_H1_mass*chi_2, sigma_H2_mass*chi_2, 270., 360.); circle3->SetLineWidth(3); circle3->SetNoEdges(); circle3->SetLineColor(kBlack); circle3->SetFillStyle(0); circle3->Draw();
+  TLine *line1=new TLine(mean_H1_mass-sigma_H1_mass*chi_2, mean_H2_mass, mean_H1_mass-sigma_H1_mass*chi_1, mean_H2_mass); line1->SetLineWidth(3); line1->SetLineColor(kBlack); line1->Draw();
+  TLine *line2=new TLine(mean_H1_mass+sigma_H1_mass*chi_2, mean_H2_mass, mean_H1_mass+sigma_H1_mass*chi_1, mean_H2_mass); line2->SetLineWidth(3); line2->SetLineColor(kBlack); line2->Draw();
+  TLine *line3=new TLine(mean_H1_mass, mean_H2_mass-sigma_H2_mass*chi_2, mean_H1_mass, mean_H2_mass-sigma_H2_mass*chi_1); line3->SetLineWidth(3); line3->SetLineColor(kBlack); line3->Draw();
+  TLine *line4=new TLine(mean_H1_mass, mean_H2_mass+sigma_H2_mass*chi_2, mean_H1_mass, mean_H2_mass+sigma_H2_mass*chi_1); line4->SetLineWidth(3); line4->SetLineColor(kBlack); line4->Draw();
   
-  TArrow *arrow1=new TArrow(mean_H1_mass_, mean_H2_mass_+sigma_H2_mass_*chi_2*4., mean_H1_mass_, mean_H2_mass_, 0.02); arrow1->SetLineWidth(3); arrow1->SetLineColor(kBlack); arrow1->Draw();
-  TPaveText *mod1=new TPaveText(mean_H1_mass_-marg, mean_H2_mass_+sigma_H2_mass_*chi_2*4.-marg, mean_H1_mass_+marg, mean_H2_mass_+sigma_H2_mass_*chi_2*4.+marg);
+  TArrow *arrow1=new TArrow(mean_H1_mass, mean_H2_mass+sigma_H2_mass*chi_2*4., mean_H1_mass, mean_H2_mass, 0.02); arrow1->SetLineWidth(3); arrow1->SetLineColor(kBlack); arrow1->Draw();
+  TPaveText *mod1=new TPaveText(mean_H1_mass-marg, mean_H2_mass+sigma_H2_mass*chi_2*4.-marg, mean_H1_mass+marg, mean_H2_mass+sigma_H2_mass*chi_2*4.+marg);
   mod1->SetBorderSize(0); mod1->SetFillColor(0); mod1->AddText("SR"); mod1->SetLineColor(kBlue); mod1->Draw("ARC");
-  TArrow *arrow2_1=new TArrow(mean_H1_mass_+sigma_H1_mass_*chi_2*4., mean_H2_mass_, mean_H1_mass_-sigma_H1_mass_*chi_2/2., mean_H2_mass_+sigma_H2_mass_*chi_2/2., 0.02); arrow2_1->SetLineWidth(3); arrow2_1->SetLineColor(kBlack);     
-  TArrow *arrow2_2=new TArrow(mean_H1_mass_+sigma_H1_mass_*chi_2*4., mean_H2_mass_, mean_H1_mass_+sigma_H1_mass_*chi_2/2., mean_H2_mass_-sigma_H2_mass_*chi_2/2., 0.02); arrow2_2->SetLineWidth(3); arrow2_2->SetLineColor(kBlack);
-  TLine *arrow2_3=new TLine(mean_H1_mass_+sigma_H1_mass_*chi_2*4., mean_H2_mass_, mean_H1_mass_+sigma_H1_mass_*chi_2*5., mean_H2_mass_); arrow2_3->SetLineWidth(3); arrow2_3->SetLineColor(kBlack);
+  TArrow *arrow2_1=new TArrow(mean_H1_mass+sigma_H1_mass*chi_2*4., mean_H2_mass, mean_H1_mass-sigma_H1_mass*chi_2/2., mean_H2_mass+sigma_H2_mass*chi_2/2., 0.02); arrow2_1->SetLineWidth(3); arrow2_1->SetLineColor(kBlack);     
+  TArrow *arrow2_2=new TArrow(mean_H1_mass+sigma_H1_mass*chi_2*4., mean_H2_mass, mean_H1_mass+sigma_H1_mass*chi_2/2., mean_H2_mass-sigma_H2_mass*chi_2/2., 0.02); arrow2_2->SetLineWidth(3); arrow2_2->SetLineColor(kBlack);
+  TLine *arrow2_3=new TLine(mean_H1_mass+sigma_H1_mass*chi_2*4., mean_H2_mass, mean_H1_mass+sigma_H1_mass*chi_2*5., mean_H2_mass); arrow2_3->SetLineWidth(3); arrow2_3->SetLineColor(kBlack);
   arrow2_1->Draw(); arrow2_2->Draw(); arrow2_3->Draw();
-  TPaveText *mod2=new TPaveText(mean_H1_mass_+sigma_H1_mass_*chi_2*5.-marg, mean_H2_mass_+marg, mean_H1_mass_+sigma_H1_mass_*chi_2*5.+marg, mean_H2_mass_-marg);
+  TPaveText *mod2=new TPaveText(mean_H1_mass+sigma_H1_mass*chi_2*5.-marg, mean_H2_mass+marg, mean_H1_mass+sigma_H1_mass*chi_2*5.+marg, mean_H2_mass-marg);
   mod2->SetBorderSize(0); mod2->SetFillColor(0); mod2->AddText("SB"); mod2->SetLineColor(kBlack); mod2->Draw("ARC");
   
 }
@@ -99,7 +94,7 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
   drawRegion(isData);
 }
 
-void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=125, double sigma_H1_mass_=20, double mean_H2_mass_=125, double sigma_H2_mass_=20)
+void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass=125, double sigma_H1_mass=20, double mean_H2_mass=125, double sigma_H2_mass=20)
 {
   std::vector<TFile*> v_files;
   for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
