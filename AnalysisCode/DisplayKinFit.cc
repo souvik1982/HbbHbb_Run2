@@ -73,13 +73,13 @@ void DisplayKinFitForFile(TFile *file, double xLine)
     leg->SetLineColor(0);
     leg->SetFillColor(0);
     leg->AddEntry(h_mX_SR, "m_{X} Signal Peak");
-    leg->AddEntry(h_mX_SR_biasCorrected, "m_{X} w/ Bias Correct.");
+   // leg->AddEntry(h_mX_SR_biasCorrected, "m_{X} w/ Bias Correct.");
     leg->AddEntry(h_mX_SR_kinFit, "m_{X} w/ Kinematic Fit");
     leg->Draw();
     first=false;
   }
   else h_mX_SR_kinFit->Draw("hist same");
-  h_mX_SR_biasCorrected->Draw("hist same");
+  //h_mX_SR_biasCorrected->Draw("hist same");
   h_mX_SR->Draw("hist same");
   
   TLine *line=new TLine(xLine, 0, xLine, h_mX_SR_kinFit->GetMaximum()*0.9);
@@ -191,14 +191,14 @@ void DisplayXpT_ForFile(TFile *f)
 void DisplayKinFit()
 {
   std::vector<TFile*> v_files;
-  v_files.push_back(new TFile("Histograms_Graviton260GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton270GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton300GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton400GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton600GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton800GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton1000GeV.root"));
-  v_files.push_back(new TFile("Histograms_Graviton1200GeV.root"));
+  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton260GeV.root"));
+  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton270GeV.root"));
+  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton300GeV.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton400GeV.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton600GeV.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton800GeV.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton1000GeV.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton1200GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton1600GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton2000GeV.root"));
   // v_files.push_back(new TFile("Histograms_Graviton3000GeV.root"));

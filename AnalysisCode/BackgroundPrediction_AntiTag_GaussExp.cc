@@ -112,10 +112,10 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   pave->SetFillStyle(0);
   pave->AddText("AntiTag selection");
   char name[100];
-  sprintf(name,"SB #chi^{2}/ndof = %.2f",bC_plot->chiSquare());
-  pave->AddText(name);
-  sprintf(name,"SR #chi^{2}/ndof = %.2f",bS_plot->chiSquare());
-  pave->AddText(name);
+  //sprintf(name,"SB #chi^{2}/ndof = %.2f",bC_plot->chiSquare());
+  //pave->AddText(name);
+  //sprintf(name,"SR #chi^{2}/ndof = %.2f",bS_plot->chiSquare());
+  //pave->AddText(name);
   pave->Draw();
   
   TLegend *leg = new TLegend(0.65,0.73,0.89,0.89);

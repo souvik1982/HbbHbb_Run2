@@ -198,17 +198,13 @@ void Display_phi_ResolutionForFile(std::vector<TFile*> *v)
   c_phi_Resolution_pT->SaveAs("c_phi_Resolution_pT.png");
 } 
 
-void DisplayResolutionBias()
+void DisplayResolutionBias(std::vector<std::string> files)
 {
   std::vector<TFile*> v_files;
-  v_files.push_back(new TFile("ResolutionHistograms_Graviton260GeV.root"));
-  v_files.push_back(new TFile("ResolutionHistograms_Graviton270GeV.root"));
-  v_files.push_back(new TFile("ResolutionHistograms_Graviton300GeV.root"));
-  v_files.push_back(new TFile("ResolutionHistograms_Graviton400GeV.root"));
-  v_files.push_back(new TFile("ResolutionHistograms_Graviton600GeV.root"));
-  v_files.push_back(new TFile("ResolutionHistograms_Graviton800GeV.root"));
-  v_files.push_back(new TFile("ResolutionHistograms_Graviton1000GeV.root"));
-  v_files.push_back(new TFile("ResolutionHistograms_Graviton1200GeV.root"));
+  for (unsigned int i=0; i<files.size(); ++i)
+  {
+    v_files.push_back(new TFile(files.at(i).c_str()));
+  }
   
   TStyle *myStyle=setTDRStyle();
   myStyle->cd();
