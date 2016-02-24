@@ -211,31 +211,27 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
       double chi=pow(chi2_old, 0.5);
       h_chi->Fill(chi, eventWeight);
 
-           double jet_scalefactor1=1.;
-        if ( jet_pT[H1jet1_i]<670. && TMath::Abs(jet_flavor[H1jet1_i])==5) jet_scalefactor1 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
-	 if ( jet_pT[H1jet1_i]<670. && TMath::Abs(jet_flavor[H1jet1_i])==4) jet_scalefactor1 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
-        if (TMath::Abs(jet_flavor[H1jet1_i])<4 && jet_pT[H1jet1_i] > 20.&& jet_pT[H1jet1_i]<1000.) jet_scalefactor1 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
+      double jet_scalefactor1=1.;
+      if (jet_pT[H1jet1_i]<670. && TMath::Abs(jet_flavor[H1jet1_i])==5) jet_scalefactor1 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
+	    if (jet_pT[H1jet1_i]<670. && TMath::Abs(jet_flavor[H1jet1_i])==4) jet_scalefactor1 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
+      if (TMath::Abs(jet_flavor[H1jet1_i])<4 && jet_pT[H1jet1_i] > 20.&& jet_pT[H1jet1_i]<1000.) jet_scalefactor1 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
 
-         double jet_scalefactor2=1.;
-        if ( jet_pT[H1jet2_i]<670. && TMath::Abs(jet_flavor[H1jet2_i])==5) jet_scalefactor2 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
-	if ( jet_pT[H1jet2_i]<670. && TMath::Abs(jet_flavor[H1jet2_i])==4) jet_scalefactor2 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
-        if (TMath::Abs(jet_flavor[H1jet2_i])<4 && jet_pT[H1jet2_i] > 20.&& jet_pT[H1jet2_i]<1000.) jet_scalefactor2 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
+      double jet_scalefactor2=1.;
+      if (jet_pT[H1jet2_i]<670. && TMath::Abs(jet_flavor[H1jet2_i])==5) jet_scalefactor2 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
+	    if (jet_pT[H1jet2_i]<670. && TMath::Abs(jet_flavor[H1jet2_i])==4) jet_scalefactor2 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
+      if (TMath::Abs(jet_flavor[H1jet2_i])<4 && jet_pT[H1jet2_i] > 20.&& jet_pT[H1jet2_i]<1000.) jet_scalefactor2 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
 
-         double jet_scalefactor3=1.;
-        if ( jet_pT[H2jet1_i]<670. && TMath::Abs(jet_flavor[H2jet1_i])==5) jet_scalefactor3 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
-	if ( jet_pT[H2jet1_i]<670. && TMath::Abs(jet_flavor[H2jet1_i])==4) jet_scalefactor3 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
-        if (TMath::Abs(jet_flavor[H2jet1_i])<4 && jet_pT[H2jet1_i] > 20.&& jet_pT[H2jet1_i]<1000.) jet_scalefactor3 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
+      double jet_scalefactor3=1.;
+      if (jet_pT[H2jet1_i]<670. && TMath::Abs(jet_flavor[H2jet1_i])==5) jet_scalefactor3 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
+	    if (jet_pT[H2jet1_i]<670. && TMath::Abs(jet_flavor[H2jet1_i])==4) jet_scalefactor3 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
+       if (TMath::Abs(jet_flavor[H2jet1_i])<4 && jet_pT[H2jet1_i] > 20.&& jet_pT[H2jet1_i]<1000.) jet_scalefactor3 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
 
-         double jet_scalefactor4=1.;
-        if ( jet_pT[H2jet2_i]<670. && TMath::Abs(jet_flavor[H2jet2_i])==5) jet_scalefactor4 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
-	if ( jet_pT[H2jet2_i]<670. && TMath::Abs(jet_flavor[H2jet2_i])==4) jet_scalefactor4 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
-        if (TMath::Abs(jet_flavor[H2jet2_i])<4 && jet_pT[H2jet2_i] > 20.&& jet_pT[H2jet2_i]<1000.) jet_scalefactor4 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
+      double jet_scalefactor4=1.;
+      if ( jet_pT[H2jet2_i]<670. && TMath::Abs(jet_flavor[H2jet2_i])==5) jet_scalefactor4 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
+	    if (jet_pT[H2jet2_i]<670. && TMath::Abs(jet_flavor[H2jet2_i])==4) jet_scalefactor4 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
+      if (TMath::Abs(jet_flavor[H2jet2_i])<4 && jet_pT[H2jet2_i] > 20.&& jet_pT[H2jet2_i]<1000.) jet_scalefactor4 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
 
-//       std::cout<< jet_scalefactor1 << "  "<<jet_scalefactor2 << "   "<<jet_scalefactor3<< "  "<<jet_scalefactor4<<std::endl;
-
-	
       eventWeight = eventWeight*jet_scalefactor1*jet_scalefactor2*jet_scalefactor3*jet_scalefactor4;	
-
 	    
       TLorentzVector jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
 	    TLorentzVector jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    

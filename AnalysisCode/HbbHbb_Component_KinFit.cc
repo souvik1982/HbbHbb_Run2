@@ -79,11 +79,11 @@ double constrainHH_signalMeasurement(TLorentzVector *j1, TLorentzVector *j2, TLo
   m4(1,1) = ErrEta_Signal(j4->Et());
   m4(2,2) = ErrPhi_Signal(j4->Et());
   
-  /*TLorentzVector j1_new=biasEt_signal(*j1);
- *   TLorentzVector j2_new=biasEt_signal(*j2);
- *     TLorentzVector j3_new=biasEt_signal(*j3);
- *       TLorentzVector j4_new=biasEt_signal(*j4);
- *         */
+  // TLorentzVector j1_new=biasEt_signal(*j1);
+  // TLorentzVector j2_new=biasEt_signal(*j2);
+  // TLorentzVector j3_new=biasEt_signal(*j3);
+  // TLorentzVector j4_new=biasEt_signal(*j4);
+   
   TFitParticleEtEtaPhi *jet1 = new TFitParticleEtEtaPhi(j1, &m1);
   TFitParticleEtEtaPhi *jet2 = new TFitParticleEtEtaPhi(j2, &m2);
   TFitParticleEtEtaPhi *jet3 = new TFitParticleEtEtaPhi(j3, &m3);

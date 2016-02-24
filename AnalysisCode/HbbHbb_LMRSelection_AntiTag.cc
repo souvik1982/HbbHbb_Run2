@@ -12,9 +12,9 @@
 #include "HbbHbb_Component_SignalPurity.cc"
 #include "HbbHbb_Component_KinFit.cc"
 
-double mean_H1_mass_=124;
-double sigma_H1_mass_=15; // 12;
-double mean_H2_mass_=117;
+double mean_H1_mass_=125;
+double sigma_H1_mass_=20; // 12;
+double mean_H2_mass_=125;
 double sigma_H2_mass_=20; // 13;
 
 /* //to check against existing selection
@@ -176,7 +176,6 @@ void HbbHbb_LMRSelection_AntiTag(std::string type, std::string sample)
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                   
                   if (chi2<chi2_old)
-                  //if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   {
                     /*int nJets90=0;
                     if (jet1_p4.Pt()>90) ++nJets90;
