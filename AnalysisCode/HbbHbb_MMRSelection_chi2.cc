@@ -59,7 +59,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, std::string 
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   
   tree->SetBranchAddress("GenBQuarkFromH_phi", &(genBQuarkFromH_phi));   
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));
-     tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));
+  tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));
 	
   TH1F * hJet_pt_H = new TH1F("hJet_pt_H","; jet pt (GeV)", 600, 0., 1200.);
 
