@@ -11,24 +11,32 @@ double ErrpT_Signal(double pT, double eta)
   double sigmapT=0;
   if (fabs(eta)<1.4)
   {
-    sigmapT = 25 + 0.0017*pT + 0.00009*pT*pT;
+    if (pT<40) pT=40;
+    if (pT>550) pT=550;
+    sigmapT = 22.26 - 0.01*pT + 0.00018*pT*pT;
   }
   else
   {
-    sigmapT = 19.9 + 0.045 * pT;
+    if (pT<40) pT=40;
+    if (pT>350) pT=350;
+    sigmapT = 17.11 + 0.058 * pT;
   }
   return sigmapT*sigmapT;
 }
 
 double ErrEta_Signal(double pT)
 {
-  double sigmaEta = 0.034 + (4.20/pT) + (-0.23/pow(pT,0.5));
+  if (pT<40) pT=40;
+  if (pT>500) pT=500;
+  double sigmaEta = 0.033 + (4.1/pT) + (-0.17/pow(pT,0.5));
   return sigmaEta*sigmaEta;
 }
 
 double ErrPhi_Signal(double pT)
 {
-  double sigmaPhi = 0.043 + (4.76/pT) + (-0.35/pow(pT,0.5));
+  if (pT<40) pT=40;
+  if (pT>500) pT=500;
+  double sigmaPhi = 0.038 + (4.1/pT) + (-0.19/pow(pT,0.5));
   return sigmaPhi*sigmaPhi;
 }
 
