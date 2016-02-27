@@ -14,10 +14,10 @@
 
 double jet_pT_cut1=30.;
 
-double mean_H1_mass_=120;
-double sigma_H1_mass_=20;
-double mean_H2_mass_=120;
-double sigma_H2_mass_=20;
+double mean_H1_mass_=115;
+double sigma_H1_mass_=17;
+double mean_H2_mass_=115;
+double sigma_H2_mass_=17;
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
@@ -26,7 +26,7 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   return jet_p4;
 }
 
-void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string bTagSF="nominal")
+void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
 {
 
   std::string inputfilename="../PreSelected_"+sample+".root";
@@ -50,7 +50,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
   tree->SetBranchAddress("eventWeight", &(eventWeight));                
   tree->SetBranchAddress("nJet", &(nJets));                       
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));          
-  tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));        
+  tree->SetBranchAddress("Jet_btagCMVAV2", &(jet_btagCMVA));        
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                    
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                  
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                  
@@ -115,21 +115,6 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
   tFile1->Close();
 
  
-  //BtagCalibration calib("CSVv2","/uscms_data/d3/cvernier/4b/HbbHbb_Run2/HbbHbb_Run2/AnalysisCode/PDFs/CSVv2.csv");
-  BtagCalibration calib("cMVAv2","/uscms_data/d3/cvernier/4b/HbbHbb_Run2/HbbHbb_Run2/AnalysisCode/PDFs/cMVAv2.csv");
-  
-  BtagCalibrationReader csv_calib_l(&calib,BtagEntry::OP_LOOSE,"incl","central");
-  BtagCalibrationReader csv_calib_bc(&calib,BtagEntry::OP_LOOSE,"ttbar","central");
-  if(bTagSF=="up"){
-	std::cout<< " UP "<<std::endl;
-	BtagCalibrationReader csv_calib_l(&calib,BtagEntry::OP_LOOSE,"comb","up");
-        BtagCalibrationReader csv_calib_bc(&calib,BtagEntry::OP_LOOSE,"mujets","up");
-	}
-  else if(bTagSF=="down"){
-        BtagCalibrationReader csv_calib_l(&calib,BtagEntry::OP_LOOSE,"comb","down");
-        BtagCalibrationReader csv_calib_bc(&calib,BtagEntry::OP_LOOSE,"mujets","down");
-        }	
-
   
   // Event loop
   double nCut4=0, nCut5=0, nCutGen=0;
@@ -139,6 +124,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
     
     bool foundHH=false;
     double chi2_old=200.;
+     double m_diff_old=100.;		
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
     for (unsigned int j=0; j<jetIndex_CentralpT40btag_CMVAOrder->size(); ++j)
@@ -180,19 +166,22 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
                     
                     TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
                     TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
+			
+		    double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());	
                     
                     double mH1=diJet1_p4.M();
                     double mH2=diJet2_p4.M();
                     
                     double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   
-                    if (chi2<chi2_old && ((90.<mH1 && mH1<150.) && (90.<mH2 && mH2<150.)))
+                    if (chi2<chi2_old && ((80.<mH1 && mH1<150.) && (80.<mH2 && mH2<150.)))
                     {
                       H1jet1_i=j_jetIndex;
                       H1jet2_i=k_jetIndex;
                       H2jet1_i=l_jetIndex;
                       H2jet2_i=m_jetIndex;
                       chi2_old=chi2;
+ 		      m_diff_old=m_diff;	
                       foundHH=true;
                     }
                   } // Conditions on 4th jet
@@ -211,30 +200,6 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
       double chi=pow(chi2_old, 0.5);
       h_chi->Fill(chi, eventWeight);
 
-           double jet_scalefactor1=1.;
-        if ( jet_pT[H1jet1_i]<670. && TMath::Abs(jet_flavor[H1jet1_i])==5) jet_scalefactor1 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
-	 if ( jet_pT[H1jet1_i]<670. && TMath::Abs(jet_flavor[H1jet1_i])==4) jet_scalefactor1 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
-        if (TMath::Abs(jet_flavor[H1jet1_i])<4 && jet_pT[H1jet1_i] > 20.&& jet_pT[H1jet1_i]<1000.) jet_scalefactor1 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
-
-         double jet_scalefactor2=1.;
-        if ( jet_pT[H1jet2_i]<670. && TMath::Abs(jet_flavor[H1jet2_i])==5) jet_scalefactor2 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
-	if ( jet_pT[H1jet2_i]<670. && TMath::Abs(jet_flavor[H1jet2_i])==4) jet_scalefactor2 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
-        if (TMath::Abs(jet_flavor[H1jet2_i])<4 && jet_pT[H1jet2_i] > 20.&& jet_pT[H1jet2_i]<1000.) jet_scalefactor2 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
-
-         double jet_scalefactor3=1.;
-        if ( jet_pT[H2jet1_i]<670. && TMath::Abs(jet_flavor[H2jet1_i])==5) jet_scalefactor3 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
-	if ( jet_pT[H2jet1_i]<670. && TMath::Abs(jet_flavor[H2jet1_i])==4) jet_scalefactor3 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
-        if (TMath::Abs(jet_flavor[H2jet1_i])<4 && jet_pT[H2jet1_i] > 20.&& jet_pT[H2jet1_i]<1000.) jet_scalefactor3 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
-
-         double jet_scalefactor4=1.;
-        if ( jet_pT[H2jet2_i]<670. && TMath::Abs(jet_flavor[H2jet2_i])==5) jet_scalefactor4 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
-	if ( jet_pT[H2jet2_i]<670. && TMath::Abs(jet_flavor[H2jet2_i])==4) jet_scalefactor4 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
-        if (TMath::Abs(jet_flavor[H2jet2_i])<4 && jet_pT[H2jet2_i] > 20.&& jet_pT[H2jet2_i]<1000.) jet_scalefactor4 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
-
-//       std::cout<< jet_scalefactor1 << "  "<<jet_scalefactor2 << "   "<<jet_scalefactor3<< "  "<<jet_scalefactor4<<std::endl;
-
-	
-      eventWeight = eventWeight*jet_scalefactor1*jet_scalefactor2*jet_scalefactor3*jet_scalefactor4;	
 
 	    
       TLorentzVector jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
@@ -362,7 +327,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, std::string 
           h_HH_balance_kinFit->Fill((X_p4_kinFit - gen_X_p4).Pt(), eventWeight);
         } 
       }
-      else if (1<chi && chi<2 && oppSign<0)                                   // Sideband Region
+      else if (1<chi && chi<2. && oppSign<0)                                   // Sideband Region
       {
         // Apply kinematic constraint
         // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
