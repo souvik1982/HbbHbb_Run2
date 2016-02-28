@@ -137,6 +137,9 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
   TH2F *h_recopT_minus_genpT_vs_recopT = new TH2F("h_recopT_minus_genpT_vs_recopT", "; p_{T}^{reco} (GeV); Jet (p_{T}^{reco} - p_{T}^{gen}) (GeV)", 100, 0., 1000., 100, -200., 200.);
   TH2F *h_genpT_minus_partpT_vs_recopT = new TH2F("h_genpT_minus_partpT_vs_recopT", "; p_{T}^{reco} (GeV); Jet (p_{T}^{gen} - p_{T}^{part}) (GeV)", 100, 0., 1000., 100, -200., 200.);
   
+  TH2F *h_recopT_minus_partpT_vs_partpT_eta_0_1p4 = new TH2F("h_recopT_minus_partpT_vs_partpT_eta_0_1p4", "; p_{T}^{part} (GeV); Jet (p_{T}^{reco} - p_{T}^{part}) (GeV)", 100, 0., 1000., 200, -400., 400.);
+  TH2F *h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5 = new TH2F("h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5", "; p_{T}^{part} (GeV); Jet (p_{T}^{reco} - p_{T}^{part}) (GeV)", 100, 0., 1000., 200, -400., 400.);
+  
   TH1F *h_mX_genForKinFitCheck = new TH1F("h_mX_genForKinFitCheck", "; m_{X} (GeV)", 2000, 0., 2000.);  h_mX_genForKinFitCheck->Sumw2();
   
   // Event loop
@@ -275,10 +278,12 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
             if (fabs(j[ijet].Eta())<1.4)
             {
               h_jet_pT_res_vs_pT_eta_0_1p4->Fill(j_un[ijet].Pt(), res_pT, eventWeight);
+              h_recopT_minus_partpT_vs_partpT_eta_0_1p4->Fill(b[jMatchedbindex[ijet]].Pt(), res_pT, eventWeight);
             }
             else if (fabs(j[ijet].Eta())<2.5)
             {
               h_jet_pT_res_vs_pT_eta_1p4_2p5->Fill(j_un[ijet].Pt(), res_pT, eventWeight);
+              h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->Fill(b[jMatchedbindex[ijet]].Pt(), res_pT, eventWeight);
             }
           }
         }
@@ -315,6 +320,8 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
   h_jet_pT_res_vs_pT_eta_1p4_2p5->Write();
   h_recopT_minus_partpT_vs_recopT->Write();
   h_recopT_minus_genpT_vs_recopT->Write();
+  h_recopT_minus_partpT_vs_partpT_eta_0_1p4->Write();
+  h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5->Write();
   h_genpT_minus_partpT_vs_recopT->Write();
   h_mX_genForKinFitCheck->Write();
   tFile2->Write();
@@ -340,5 +347,7 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
   delete h_recopT_minus_partpT_vs_recopT;
   delete h_recopT_minus_genpT_vs_recopT;
   delete h_genpT_minus_partpT_vs_recopT;
+  delete h_recopT_minus_partpT_vs_partpT_eta_0_1p4;
+  delete h_recopT_minus_partpT_vs_partpT_eta_1p4_2p5;
   delete h_mX_genForKinFitCheck;
 }
