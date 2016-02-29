@@ -17,9 +17,9 @@ float extraTextFont = 52;  // default is helvetica-italics
 
 // text sizes and text offsets with respect to the top frame
 // in unit of the top margin size
-float lumiTextSize     = 0.6;
+float lumiTextSize     = 0.4;
 float lumiTextOffset   = 0.2;
-float cmsTextSize      = 0.875;
+float cmsTextSize      = 0.475;
 float cmsTextOffset    = 0.1;  // only used in outOfFrame version
 
 float relPosX    = 0.045;
@@ -32,6 +32,7 @@ float extraOverCmsTextSize  = 0.76;
 TString lumi_13TeV = "20.1 fb^{-1}";
 TString lumi_8TeV  = "19.7 fb^{-1}";
 TString lumi_7TeV  = "5.1 fb^{-1}";
+TString lumi_sqrtS = "";
 
 bool drawLogo      = false;
 
