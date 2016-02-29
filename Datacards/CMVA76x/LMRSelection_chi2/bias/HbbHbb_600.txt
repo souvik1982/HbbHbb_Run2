@@ -3,7 +3,7 @@ jmax * number of backgrounds
 kmax * number of systematic uncertainty sources
 ----------
 shapes signal HbbHbb w_signal_600.root HbbHbb:signal_fixed
-shapes background * background_pdfs.root backgrounds:roomultipdf
+shapes background HbbHbb w_background_GaussExp.root HbbHbb:background
 shapes data_obs HbbHbb w_data.root HbbHbb:data_obs
 ----------
 ## Observation
@@ -13,7 +13,7 @@ observation              -1
 bin             HbbHbb          HbbHbb
 process         signal      background
 process         0               1
-rate            25.0288          8953
+rate            250.288          8953
 lumi            lnN     1.046            -     
 bgFloat   lnU     -          2.00
 JEC lnN 1.02204 - 
@@ -25,7 +25,10 @@ sg_p1 param 16.6927 -0.620851/+0.412839
 sg_p2 param 591.958 -16.8471/+10.5851 
 sg_p3 param 45.4721 -12.074/+25.7618 
 sg_p4 param 0.760833 -0.0664695/+0.0431536 
-pdf_index discrete
+bg_p0   param   273.272 5.37175
+bg_p1   param   14.0655 4.106
+bg_p2   param   0.0845128 0.0249208
+
 
 
 
