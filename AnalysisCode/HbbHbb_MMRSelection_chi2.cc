@@ -47,7 +47,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   tree->SetBranchAddress("eventWeight", &(eventWeight));                
   tree->SetBranchAddress("nJet", &(nJets));                       
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));          
-  tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));        
+  tree->SetBranchAddress("Jet_btagCMVA2", &(jet_btagCMVA));        
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                    
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                  
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                  
@@ -59,7 +59,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   
   tree->SetBranchAddress("GenBQuarkFromH_phi", &(genBQuarkFromH_phi));   
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));
-     tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));
+  tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));
 	
   TH1F * hJet_pt_H = new TH1F("hJet_pt_H","; jet pt (GeV)", 600, 0., 1200.);
 
@@ -109,9 +109,6 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   TFile *tFile1=new TFile((histfilename).c_str(), "READ");
   TH1F h_Cuts=*((TH1F*)((TH1F*)tFile1->Get("h_Cuts"))->Clone("h_Cuts"));
   tFile1->Close();
-
-
-
   
   double nCut4=0, nCut5=0, nCutGen=0;
   for (int i=0; i<tree->GetEntries(); ++i)
@@ -190,15 +187,12 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
 
       double chi=pow(chi2_old, 0.5);
       h_chi->Fill(chi, eventWeight);
+      
+	    hJet_pt_H->Fill(jet_pT[H1jet1_i]);
+      hJet_pt_H->Fill(jet_pT[H1jet2_i]);
+      hJet_pt_H->Fill(jet_pT[H2jet1_i]);
+      hJet_pt_H->Fill(jet_pT[H2jet2_i]);
 
- 
-	
-	 hJet_pt_H->Fill(jet_pT[H1jet1_i]);
-         hJet_pt_H->Fill(jet_pT[H1jet2_i]);
- hJet_pt_H->Fill(jet_pT[H2jet1_i]);
- hJet_pt_H->Fill(jet_pT[H2jet2_i]);
-
-	    
       TLorentzVector jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
 	    TLorentzVector jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
 	    TLorentzVector jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
@@ -239,7 +233,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
       h_H1_pT_biasCorrected->Fill(pTH1_biasCorrected, eventWeight);
       h_H2_mass_biasCorrected->Fill(mH2_biasCorrected, eventWeight);
       h_H2_pT_biasCorrected->Fill(pTH2_biasCorrected, eventWeight);
-      h_mH1_mH2_asym_biasCorrected->Fill((pTH1_biasCorrected>pTH2_biasCorrected)?mH1_biasCorrected:mH2_biasCorrected, (pTH1_biasCorrected>pTH2_biasCorrected)?mH2_biasCorrected:mH1_biasCorrected, eventWeight);
+      h_mH1_mH2_asym_biasCorrected->Fill(mH1_biasCorrected, mH2_biasCorrected, eventWeight);
       
       TLorentzVector b1_p4;
       TLorentzVector b2_p4;

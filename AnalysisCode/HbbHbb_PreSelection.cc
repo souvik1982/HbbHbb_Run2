@@ -222,6 +222,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   TH1F *h_CSVOrder_JetCSV_2=new TH1F("h_CSVOrder_JetCSV_2", "; Jet CSV 2 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
   TH1F *h_CSVOrder_JetCSV_3=new TH1F("h_CSVOrder_JetCSV_3", "; Jet CSV 3 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
   TH1F *h_CSVOrder_JetCSV_4=new TH1F("h_CSVOrder_JetCSV_4", "; Jet CSV 4 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
+  TH1F *h_CMVAOrder_JetCMVA_1=new TH1F("h_CMVAOrder_JetCMVA_1", "; Jet CMVA 1 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
+  TH1F *h_CMVAOrder_JetCMVA_2=new TH1F("h_CMVAOrder_JetCMVA_2", "; Jet CMVA 2 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
+  TH1F *h_CMVAOrder_JetCMVA_3=new TH1F("h_CMVAOrder_JetCMVA_3", "; Jet CMVA 3 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
+  TH1F *h_CMVAOrder_JetCMVA_4=new TH1F("h_CMVAOrder_JetCMVA_4", "; Jet CMVA 4 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
+  
   
   TH1F *h_GenX_mass=new TH1F("h_GenX_mass", "; m_{X}^{GEN} (GeV); Events", 1800, 200, 2000);
   TH1F *h_dR_genHbb=new TH1F("h_dR_genHbb", "; #Delta R(b#bar{b}}; Events", 1000, 0., 5.);
@@ -346,10 +351,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         
           // std::cout<<"Jet #"<<j<<", jet_pT = "<<jet_pT[j]<<", jet_rawpT = "<<jet_rawpT[j]<<", jet_corrJEC = "<<jet_corrJEC[j]<<", jet_corrJER = "<<jet_corrJER[j]<<", calc. jet_pT = "<<jet_rawpT[j]*jet_corrJEC[j]*jet_corrJER[j]<<std::endl;
 
-  	    if (sigmaJECUnc_string=="JECp1") jet_pT[j] = jet_rawpT[j]*jet_corrJER[j]*jet_corrJECUp[j];
-            if (sigmaJECUnc_string=="JECm1") jet_pT[j] = jet_rawpT[j]*jet_corrJER[j]*jet_corrJECDown[j];
-            if (sigmaJERUnc_string=="JERp1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERUp[j];
-            if (sigmaJERUnc_string=="JERm1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERDown[j];
+          if (sigmaJECUnc_string=="JECp1") jet_pT[j] = jet_rawpT[j]*jet_corrJECUp[j]*jet_corrJER[j];
+          if (sigmaJECUnc_string=="JECm1") jet_pT[j] = jet_rawpT[j]*jet_corrJECDown[j]*jet_corrJER[j];
+          if (sigmaJERUnc_string=="JERp1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERUp[j];
+          if (sigmaJERUnc_string=="JERm1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERDown[j];
 	      
           if (fabs(jet_eta[j])<jet_eta_cut) 
           {
@@ -358,29 +363,27 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
             {
               if (jet_btagCMVA[j]>jet_btag_cut)
               {
-                if (jet_btagCMVA[j]>jet_btag_cut)
+                ++nCbJets;
+		            if(nCbJets<=4 && isData!=1)
                 {
-                  ++nCbJets;
-		  if( nCbJets<= 4 && isData!=1)  {
-		        if (sigmabTagUnc_string=="bTagp1") eventWeight=eventWeight*jet_btagCMVAMSFUp[j];
-		        if (sigmabTagUnc_string=="bTagm1") eventWeight=eventWeight*jet_btagCMVAMSFDown[j];  
-			if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1")    eventWeight=eventWeight*jet_btagCMVAMSF[j];
-
-		  }	
-	
-                  jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
-                  if (jet_btagCSV[j]>0) jetList_CentralpT40btag_CSVOrder[jet_btagCSV[j]]=j;
-                  jetList_CentralpT40btag_CMVAOrder[jet_btagCMVA[j]]=j;
+                  if (sigmabTagUnc_string=="bTag") eventWeight=eventWeight*jet_btagCMVAMSF[j];
+                  else if (sigmabTagUnc_string=="bTagp1") eventWeight=eventWeight*jet_btagCMVAMSFUp[j];
+                  else if (sigmabTagUnc_string=="bTagm1") eventWeight=eventWeight*jet_btagCMVAMSFDown[j];
                 }
+	
+                jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
+                if (jet_btagCSV[j]>0) jetList_CentralpT40btag_CSVOrder[jet_btagCSV[j]]=j;
+                jetList_CentralpT40btag_CMVAOrder[jet_btagCMVA[j]]=j;
               }
             }
           }
         }
-        h_nCbJets->Fill(nCbJets);
+        h_nCbJets->Fill(nCbJets, eventWeight);
         
         // Fill jet pT order histograms
         std::vector<TH1F*> v_pTOrder_JetpT = {h_pTOrder_JetpT_1, h_pTOrder_JetpT_2, h_pTOrder_JetpT_3, h_pTOrder_JetpT_4, h_pTOrder_JetpT_5};
         std::vector<TH1F*> v_CSVOrder_JetCSV = {h_CSVOrder_JetCSV_1, h_CSVOrder_JetCSV_2, h_CSVOrder_JetCSV_3, h_CSVOrder_JetCSV_4};
+        std::vector<TH1F*> v_CMVAOrder_JetCMVA = {h_CMVAOrder_JetCMVA_1, h_CMVAOrder_JetCMVA_2, h_CMVAOrder_JetCMVA_3, h_CMVAOrder_JetCMVA_4};
         fillHistogramsFromJetList(jetList_Central_pTOrder, v_pTOrder_JetpT, eventWeight);
         fillHistogramsFromJetList(jetList_CentralpT40_CSVOrder, v_CSVOrder_JetCSV, eventWeight);
         
