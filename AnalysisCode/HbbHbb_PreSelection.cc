@@ -371,9 +371,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
                 {
                   ++nCbJets;
 		  if( nCbJets<= 4 && isData!=1)  {
-			eventWeight=eventWeight*jet_btagCMVAMSF[j];
 		        if (sigmabTagUnc_string=="bTagp1") eventWeight=eventWeight*jet_btagCMVAMSFUp[j];
 		        if (sigmabTagUnc_string=="bTagm1") eventWeight=eventWeight*jet_btagCMVAMSFDown[j];  
+			if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1")    eventWeight=eventWeight*jet_btagCMVAMSF[j];
+
 		  }	
 	
                   jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
