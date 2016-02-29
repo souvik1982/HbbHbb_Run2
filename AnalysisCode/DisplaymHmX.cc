@@ -99,12 +99,12 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
   drawRegion(isData);
 }
 
-void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=120, double sigma_H1_mass_=20, double mean_H2_mass_=125, double sigma_H2_mass_=20)
+void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, double mean_H1_mass_=120, double sigma_H1_mass_=20, double mean_H2_mass_=125, double sigma_H2_mass_=20)
 {
+  std::vector<TFile*> v_files;
   for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
-  TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
+  // TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   //TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
-  std::vector <double> mean_gen={ 400, 600,   800, 1000};
   std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1};// kAzure+3, kPink+2, kGray+2,kBlue+1};
 
   
@@ -115,22 +115,22 @@ void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=120, doubl
   myStyle->SetOptStat(0);
   
   TLegend *leg=new TLegend(0.6, 0.7, 0.89, 0.89);
- /* for (unsigned int i=0; i<v_files.size(); ++i)
+  for (unsigned int i=0; i<v_files.size(); ++i)
   {
     TH1F *h_pTOrder_JetpT_1=(TH1F*)v_files.at(i)->Get("h_pTOrder_JetpT_1");
     h_pTOrder_JetpT_1->SetLineColor(v_colors.at(i));
     h_pTOrder_JetpT_1->SetLineWidth(2);
     leg->AddEntry(h_pTOrder_JetpT_1, ("Signal m_{X} = "+itoa(mean_gen.at(i))+" GeV").c_str());
   }
-  h_pTOrder_JetpT_1=(TH1F*)f_data->Get("h_pTOrder_JetpT_1");
+  /*h_pTOrder_JetpT_1=(TH1F*)f_data->Get("h_pTOrder_JetpT_1");
   h_pTOrder_JetpT_1->SetLineColor(kBlack);
   h_pTOrder_JetpT_1->SetLineWidth(2);
   leg->AddEntry(h_pTOrder_JetpT_1, "13 TeV Data");
   h_pTOrder_JetpT_1=(TH1F*)f_ttbar->Get("h_pTOrder_JetpT_1");
   h_pTOrder_JetpT_1->SetLineColor(kRed);
   h_pTOrder_JetpT_1->SetLineWidth(2);
-  leg->AddEntry(h_pTOrder_JetpT_1, "t#bar{t}");
- */ 
+  leg->AddEntry(h_pTOrder_JetpT_1, "t#bar{t}");*/
+
   // Plot mH1
   first=true;
   TCanvas *c_H1_mass=new TCanvas("c_H1_mass", "c_H1_mass", 700, 700);
@@ -139,7 +139,7 @@ void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=120, doubl
   {
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass", v_colors.at(i));
   }
-  DisplayHistogram_mH_forFile(f_data, "h_H1_mass", kBlack);
+  // DisplayHistogram_mH_forFile(f_data, "h_H1_mass", kBlack);
   //DisplayHistogram_mH_forFile(f_ttbar, "h_H1_mass", kRed);
   leg->Draw();
   c_H1_mass->SaveAs("c_H1_mass.png");
@@ -152,7 +152,7 @@ void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=120, doubl
   {
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H2_mass", v_colors.at(i));
   }
-  DisplayHistogram_mH_forFile(f_data, "h_H2_mass", kBlack);
+  // DisplayHistogram_mH_forFile(f_data, "h_H2_mass", kBlack);
   //DisplayHistogram_mH_forFile(f_ttbar, "h_H2_mass", kRed);
   leg->Draw();
   c_H2_mass->SaveAs("c_H2_mass.png");
@@ -163,12 +163,12 @@ void DisplaymHmX(std::vector<std::string> files, double mean_H1_mass_=120, doubl
   {
     TCanvas *c_mH1_mH2_asym=new TCanvas("c_mH1_mH2_asym", "c_mH1_mH2_asym", 700, 700);
     DisplaymH1vsmH2_ForFile(v_files.at(i));
-    c_mH1_mH2_asym->SaveAs(("c_mH1_mH2_asym_"+itoa(mean_gen.at(i))+".png").c_str());
+    c_mH1_mH2_asym->SaveAs(("c_mH1_mH2_asym_"+files.at(i)+".png").c_str());
     delete c_mH1_mH2_asym;
   }
   
   TCanvas *c_mH1_mH2_asym_Data=new TCanvas("c_mH1_mH2_asym_Data", "c_mH1_mH2_asym_Data", 700, 700);
-  DisplaymH1vsmH2_ForFile(f_data, true);
+  // DisplaymH1vsmH2_ForFile(f_data, true);
   c_mH1_mH2_asym_Data->SaveAs("c_mH1_mH2_asym_Data.png");
   delete c_mH1_mH2_asym_Data;
   

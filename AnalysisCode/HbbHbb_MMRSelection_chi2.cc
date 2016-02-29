@@ -47,7 +47,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   tree->SetBranchAddress("eventWeight", &(eventWeight));                
   tree->SetBranchAddress("nJet", &(nJets));                       
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));          
-  tree->SetBranchAddress("Jet_btagCMVA2", &(jet_btagCMVA));        
+  tree->SetBranchAddress("Jet_btagCMVAV2", &(jet_btagCMVA));        
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                    
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                  
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                  
@@ -60,6 +60,8 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   tree->SetBranchAddress("GenBQuarkFromH_phi", &(genBQuarkFromH_phi));   
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));
   tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));
+  
+  TH1F * hJet_pt_H = new TH1F("hJet_pt_H","; jet pt (GeV)", 600, 0., 1200.);
 	
   TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 300, 0., 300.);
   TH1F *h_H1_pT = new TH1F("h_H1_pT", "; H1 p_{T} (GeV/c)", 800, 0., 800.);
@@ -362,6 +364,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   h_mX_SB->Write();
   h_mX_SB_biasCorrected->Write();
   h_mX_SB_kinFit->Write();
+  hJet_pt_H->Write(); 
   h_Cuts.Write();
 
   tFile2->Write();
@@ -408,4 +411,5 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   delete h_mX_SB;
   delete h_mX_SB_biasCorrected;
   delete h_mX_SB_kinFit;
+  delete hJet_pt_H;
 }

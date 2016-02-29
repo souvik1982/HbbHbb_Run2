@@ -1,12 +1,14 @@
 {
   std::vector<std::string> files={
-                                   "Histograms_Graviton300GeV.root",
-                                   "Histograms_Graviton400GeV.root",
-                                   "Histograms_Graviton600GeV.root",
-                                   "Histograms_Graviton800GeV.root",
-                                   "Histograms_Graviton1000GeV.root",
-                                   "Histograms_Graviton1200GeV.root"
+                                   "Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root",
+                                   "Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root",
+                                   "Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root",
+                                   "Histograms_GluGluToBulkGravitonToHHTo4B_M-750_narrow_13TeV-madgraph.root",
+                                   "Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"
                                  };
+                                 
+  std::vector<double> mean_gen={400, 500, 650, 750, 900};
+  
   gROOT->LoadMacro("../../DisplaymHmX.cc");
-  DisplaymHmX(files, 150, 20, 125, 20);
+  DisplaymHmX(files, mean_gen, 115, 23, 115, 23);
 }
