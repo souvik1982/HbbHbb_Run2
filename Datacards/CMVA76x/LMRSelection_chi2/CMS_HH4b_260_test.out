@@ -1,0 +1,8 @@
+Info in <Minuit2>: MinuReal time 0:00:00, CP time 0.030
+
+
+ --- MaxLikelihoodFit ---
+Best fit r: 0.12534  -0.0207407/+11.7399  (68% CL)
+nll S+B -> -0.00445281  nll B -> -0.00344717
+Done in 0.00 min (cpu), 0.00 min (real)
+nosErrors>: Minos error calculation failed for all parameters

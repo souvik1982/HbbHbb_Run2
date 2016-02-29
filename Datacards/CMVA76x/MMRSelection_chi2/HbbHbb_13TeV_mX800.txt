@@ -1,0 +1,35 @@
+# X -> HH -> bbbb 
+# 1/16/2016
+# Souvik Das
+
+imax 1 number of channels
+jmax * number of backgrounds
+kmax * number of systematic uncertainty sources
+----------
+shapes signal HbbHbb w_signal_800.root HbbHbb:signal    
+shapes background HbbHbb w_background_GaussExp.root HbbHbb:background
+shapes data_obs HbbHbb w_data.root HbbHbb:data_obs
+----------
+# Observation
+bin       HbbHbb
+observation -1
+----------
+# Expectation
+bin             HbbHbb      HbbHbb     
+process         signal      background 
+process         0           1          
+rate            103.272         460
+----------
+lumi      lnN     1.027    - 
+bgFloat   lnU     -          2.00
+trig lnN 1.02638 - 
+JEC lnN 1.01328 - 
+JER lnN 1.0065 - 
+btag lnN 1.11048 - 
+sg_p0 param 803.186 -0.504014/+1.80618 
+sg_p1 param 24.142 -3.13235/+0.880335 
+sg_p2 param 1.56648 -0.266611/+0.0980783 
+sg_p3 param 0.916546 -0.183685/+0.0226924 
+bg_p0   param   524.264 12.5337
+bg_p1   param   81.9413 9.5705
+bg_p2   param   0.357266 0.0513292

@@ -14,10 +14,10 @@
 
 double jet_pT_cut1=30.;
 
-double mean_H1_mass_=120;
-double sigma_H1_mass_=20;
-double mean_H2_mass_=120;
-double sigma_H2_mass_=20;
+double mean_H1_mass_=115;
+double sigma_H1_mass_=23;
+double mean_H2_mass_=115;
+double sigma_H2_mass_=23;
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
@@ -26,7 +26,7 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   return jet_p4;
 }
 
-void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, std::string bTagSF="nominal")
+void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
 {
 
   std::string inputfilename="../PreSelected_"+sample+".root";
@@ -47,7 +47,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, std::string 
   tree->SetBranchAddress("eventWeight", &(eventWeight));                
   tree->SetBranchAddress("nJet", &(nJets));                       
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));          
-  tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));        
+  tree->SetBranchAddress("Jet_btagCMVA2", &(jet_btagCMVA));        
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                    
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                  
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                  
@@ -61,8 +61,6 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, std::string 
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));
   tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));
 	
-  TH1F * hJet_pt_H = new TH1F("hJet_pt_H","; jet pt (GeV)", 600, 0., 1200.);
-
   TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 300, 0., 300.);
   TH1F *h_H1_pT = new TH1F("h_H1_pT", "; H1 p_{T} (GeV/c)", 800, 0., 800.);
   TH1F *h_H2_mass = new TH1F("h_H2_mass", "; m_{H2} (GeV)", 300, 0., 300.);
@@ -109,24 +107,6 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, std::string 
   TFile *tFile1=new TFile((histfilename).c_str(), "READ");
   TH1F h_Cuts=*((TH1F*)((TH1F*)tFile1->Get("h_Cuts"))->Clone("h_Cuts"));
   tFile1->Close();
-
- BtagCalibration calib("cMVAv2","/uscms_data/d3/cvernier/4b/HbbHbb_Run2/HbbHbb_Run2/AnalysisCode/PDFs/cMVAv2.csv");
-
-  BtagCalibrationReader csv_calib_l(&calib,BtagEntry::OP_LOOSE,"incl","central");
-  BtagCalibrationReader csv_calib_bc(&calib,BtagEntry::OP_LOOSE,"ttbar","central");
-  if(bTagSF=="up"){
-        std::cout<< " UP "<<std::endl;
-        BtagCalibrationReader csv_calib_l(&calib,BtagEntry::OP_LOOSE,"comb","up");
-        BtagCalibrationReader csv_calib_bc(&calib,BtagEntry::OP_LOOSE,"mujets","up");
-        }
-  else if(bTagSF=="down"){
-        BtagCalibrationReader csv_calib_l(&calib,BtagEntry::OP_LOOSE,"comb","down");
-        BtagCalibrationReader csv_calib_bc(&calib,BtagEntry::OP_LOOSE,"mujets","down");
-        }
-
-
-
-
   
   double nCut4=0, nCut5=0, nCutGen=0;
   for (int i=0; i<tree->GetEntries(); ++i)
@@ -203,38 +183,16 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, std::string 
     if (foundHH)
     {
       nCut4+=eventWeight;
-      
+
       double chi=pow(chi2_old, 0.5);
       h_chi->Fill(chi, eventWeight);
-
-      double jet_scalefactor1=1.;
-      if ( jet_pT[H1jet1_i]<670. && TMath::Abs(jet_flavor[H1jet1_i])==5) jet_scalefactor1 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
-      if ( jet_pT[H1jet1_i]<670. && TMath::Abs(jet_flavor[H1jet1_i])==4) jet_scalefactor1 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
-      if (TMath::Abs(jet_flavor[H1jet1_i])<4 && jet_pT[H1jet1_i] > 20.&& jet_pT[H1jet1_i]<1000.) jet_scalefactor1 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H1jet1_i], jet_pT[H1jet1_i] );
-
-      double jet_scalefactor2=1.;
-      if ( jet_pT[H1jet2_i]<670. && TMath::Abs(jet_flavor[H1jet2_i])==5) jet_scalefactor2 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
-      if ( jet_pT[H1jet2_i]<670. && TMath::Abs(jet_flavor[H1jet2_i])==4) jet_scalefactor2 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
-      if (TMath::Abs(jet_flavor[H1jet2_i])<4 && jet_pT[H1jet2_i] > 20.&& jet_pT[H1jet2_i]<1000.) jet_scalefactor2 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H1jet2_i], jet_pT[H1jet2_i] );
-
-       double jet_scalefactor3=1.;
-      if ( jet_pT[H2jet1_i]<670. && TMath::Abs(jet_flavor[H2jet1_i])==5) jet_scalefactor3 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
-      if ( jet_pT[H2jet1_i]<670. && TMath::Abs(jet_flavor[H2jet1_i])==4) jet_scalefactor3 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
-      if (TMath::Abs(jet_flavor[H2jet1_i])<4 && jet_pT[H2jet1_i] > 20.&& jet_pT[H2jet1_i]<1000.) jet_scalefactor3 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H2jet1_i], jet_pT[H2jet1_i] );
-
-       double jet_scalefactor4=1.;
-      if ( jet_pT[H2jet2_i]<670. && TMath::Abs(jet_flavor[H2jet2_i])==5) jet_scalefactor4 = csv_calib_bc.eval( BtagEntry::FLAV_B,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
-      if ( jet_pT[H2jet2_i]<670. && TMath::Abs(jet_flavor[H2jet2_i])==4) jet_scalefactor4 = csv_calib_bc.eval( BtagEntry::FLAV_C,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
-      if (TMath::Abs(jet_flavor[H2jet2_i])<4 && jet_pT[H2jet2_i] > 20.&& jet_pT[H2jet2_i]<1000.) jet_scalefactor4 = csv_calib_l.eval(BtagEntry::FLAV_UDSG,jet_eta[H2jet2_i], jet_pT[H2jet2_i] );
-
-      eventWeight = eventWeight*jet_scalefactor1*jet_scalefactor2*jet_scalefactor3*jet_scalefactor4;
-	    
-      hJet_pt_H->Fill(jet_pT[H1jet1_i]);
+      
+	    hJet_pt_H->Fill(jet_pT[H1jet1_i]);
       hJet_pt_H->Fill(jet_pT[H1jet2_i]);
       hJet_pt_H->Fill(jet_pT[H2jet1_i]);
       hJet_pt_H->Fill(jet_pT[H2jet2_i]);
 
-	    TLorentzVector jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
+      TLorentzVector jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
 	    TLorentzVector jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
 	    TLorentzVector jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
 	    TLorentzVector jet4_p4=fillTLorentzVector(jet_regressed_pT[H2jet2_i], jet_eta[H2jet2_i], jet_phi[H2jet2_i], jet_mass[H2jet2_i]);
@@ -274,7 +232,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, std::string 
       h_H1_pT_biasCorrected->Fill(pTH1_biasCorrected, eventWeight);
       h_H2_mass_biasCorrected->Fill(mH2_biasCorrected, eventWeight);
       h_H2_pT_biasCorrected->Fill(pTH2_biasCorrected, eventWeight);
-      h_mH1_mH2_asym_biasCorrected->Fill((pTH1_biasCorrected>pTH2_biasCorrected)?mH1_biasCorrected:mH2_biasCorrected, (pTH1_biasCorrected>pTH2_biasCorrected)?mH2_biasCorrected:mH1_biasCorrected, eventWeight);
+      h_mH1_mH2_asym_biasCorrected->Fill(mH1_biasCorrected, mH2_biasCorrected, eventWeight);
       
       TLorentzVector b1_p4;
       TLorentzVector b2_p4;
@@ -404,7 +362,6 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, std::string 
   h_mX_SB->Write();
   h_mX_SB_biasCorrected->Write();
   h_mX_SB_kinFit->Write();
-   hJet_pt_H->Write();	
   h_Cuts.Write();
 
   tFile2->Write();

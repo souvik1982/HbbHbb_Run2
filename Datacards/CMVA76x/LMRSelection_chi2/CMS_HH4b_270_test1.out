@@ -1,0 +1,7 @@
+Error in <ROOT::Math::FReal time 0:00:00, CP time 0.020
+
+
+ --- MaxLikelihoodFit ---
+Best fit r: 0.991438  -0.991438/+19.0086  (68% CL)
+nll S+B -> -0.178922  nll B -> -0.101107
+Done in 0.00 min (cpu), 0.00 min (real)

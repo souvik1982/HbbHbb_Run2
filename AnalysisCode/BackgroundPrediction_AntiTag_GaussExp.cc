@@ -15,6 +15,168 @@
 
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV 
 int iPos = 20;
+#include "CMS_lumi.h"
+#include <iostream>
+
+void 
+CMS_lumi( TPad* pad, int iPeriod, int iPosX )
+{            
+  bool outOfFrame    = false;
+  if( iPosX/10==0 ) 
+    {
+      outOfFrame = true;
+    }
+  int alignY_=3;
+  int alignX_=2;
+  if( iPosX/10==0 ) alignX_=1;
+  if( iPosX==0    ) alignX_=1;
+  if( iPosX==0    ) alignY_=1;
+  if( iPosX/10==1 ) alignX_=1;
+  if( iPosX/10==2 ) alignX_=2;
+  if( iPosX/10==3 ) alignX_=3;
+  if( iPosX == 0  ) relPosX = 0.14;
+  int align_ = 10*alignX_ + alignY_;
+
+  float H = pad->GetWh();
+  float W = pad->GetWw();
+  float l = pad->GetLeftMargin();
+  float t = pad->GetTopMargin();
+  float r = pad->GetRightMargin();
+  float b = pad->GetBottomMargin();
+
+  pad->cd();
+
+  TString lumiText;
+  if( iPeriod==1 )
+    {
+      lumiText += lumi_7TeV;
+      lumiText += " (7 TeV)";
+    }
+  else if ( iPeriod==2 )
+    {
+      lumiText += lumi_8TeV;
+      lumiText += " (8 TeV)";
+    }
+  else if( iPeriod==3 ) 
+    {
+      lumiText = lumi_8TeV; 
+      lumiText += " (8 TeV)";
+      lumiText += " + ";
+      lumiText += lumi_7TeV;
+      lumiText += " (7 TeV)";
+    }
+  else if ( iPeriod==4 )
+    {
+      lumiText += lumi_13TeV;
+      lumiText += " (13 TeV)";
+    }
+  else if ( iPeriod==7 )
+    { 
+      if( outOfFrame ) lumiText += "#scale[0.85]{";
+      lumiText += lumi_13TeV; 
+      lumiText += " (13 TeV)";
+      lumiText += " + ";
+      lumiText += lumi_8TeV; 
+      lumiText += " (8 TeV)";
+      lumiText += " + ";
+      lumiText += lumi_7TeV;
+      lumiText += " (7 TeV)";
+      if( outOfFrame) lumiText += "}";
+    }
+  else if ( iPeriod==12 )
+    {
+      lumiText += "8 TeV";
+    }
+  else if ( iPeriod==0 )
+    {
+      lumiText += lumi_sqrtS;
+    }
+   
+  std::cout << lumiText << endl;
+
+  TLatex latex;
+  latex.SetNDC();
+  latex.SetTextAngle(0);
+  latex.SetTextColor(kBlack);    
+
+  float extraTextSize = extraOverCmsTextSize*cmsTextSize;
+
+  latex.SetTextFont(42);
+  latex.SetTextAlign(31); 
+  latex.SetTextSize(lumiTextSize*t);    
+  latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
+
+  if( outOfFrame )
+    {
+      latex.SetTextFont(cmsTextFont);
+      latex.SetTextAlign(11); 
+      latex.SetTextSize(cmsTextSize*t);    
+      latex.DrawLatex(l,1-t+lumiTextOffset*t,cmsText);
+    }
+  
+  pad->cd();
+
+  float posX_=0;
+  if( iPosX%10<=1 )
+    {
+      posX_ =   l + relPosX*(1-l-r);
+    }
+  else if( iPosX%10==2 )
+    {
+      posX_ =  l + 0.5*(1-l-r);
+    }
+  else if( iPosX%10==3 )
+    {
+      posX_ =  1-r - relPosX*(1-l-r);
+    }
+  float posY_ = 1-t - relPosY*(1-t-b);
+  if( !outOfFrame )
+    {
+      if( drawLogo )
+	{
+	  posX_ =   l + 0.045*(1-l-r)*W/H;
+	  posY_ = 1-t - 0.045*(1-t-b);
+	  float xl_0 = posX_;
+	  float yl_0 = posY_ - 0.15;
+	  float xl_1 = posX_ + 0.15*H/W;
+	  float yl_1 = posY_;
+	  TASImage* CMS_logo = new TASImage("CMS-BW-label.png");
+	  TPad* pad_logo = new TPad("logo","logo", xl_0, yl_0, xl_1, yl_1 );
+	  pad_logo->Draw();
+	  pad_logo->cd();
+	  CMS_logo->Draw("X");
+	  pad_logo->Modified();
+	  pad->cd();
+	}
+      else
+	{
+	  latex.SetTextFont(cmsTextFont);
+	  latex.SetTextSize(cmsTextSize*t);
+	  latex.SetTextAlign(align_);
+	  latex.DrawLatex(posX_, posY_, cmsText);
+	  if( writeExtraText ) 
+	    {
+	      latex.SetTextFont(extraTextFont);
+	      latex.SetTextAlign(align_);
+	      latex.SetTextSize(extraTextSize*t);
+	      latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, extraText);
+	    }
+	}
+    }
+  else if( writeExtraText )
+    {
+      if( iPosX==0) 
+	{
+	  posX_ =   l +  relPosX*(1-l-r);
+	  posY_ =   1-t+lumiTextOffset*t;
+	}
+      latex.SetTextFont(extraTextFont);
+      latex.SetTextSize(extraTextSize*t);
+      latex.SetTextAlign(align_);
+      latex.DrawLatex(posX_, posY_, extraText);      
+    }
+  return;
+}
 
 void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, double rebin,
                                            double fit_lo, double fit_hi, 
@@ -25,16 +187,16 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
                                            std::string log="lin")
 {
   gROOT->SetStyle("Plain");
-  gROOT->LoadMacro("tdrstyle.C");
+  //gROOT->LoadMacro("tdrstyle.C");
   gStyle->SetPadGridX(0);
   gStyle->SetPadGridY(0);
   gStyle->SetOptStat(0000);
-  //gROOT->LoadMacro("CMS_lumi.C");
-  /*writeExtraText = false;       // if extra text
+  //gROOT->LoadMacro("/uscms_data/d3/cvernier/4b/HbbHbb_Run2/HbbHbb_Run2/AnalysisCode/CMS_lumi.C");
+  writeExtraText = true;       // if extra text
   extraText  = "Preliminary";  // default extra text is "Preliminary"
   lumi_8TeV  = "17.9 fb^{-1}"; // default is "19.7 fb^{-1}"
   lumi_13TeV  = "2.2 fb^{-1}";  // default is "5.1 fb^{-1}"
- */
+ 
 
   TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   TH1F *h_mX_SB=(TH1F*)f_data->Get(hist1.c_str());
@@ -45,6 +207,8 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   h_mX_SR->Scale(1./h_mX_SR->GetSumOfWeights());
   h_mX_SB->GetXaxis()->SetRangeUser(plot_lo, plot_hi);
   h_mX_SR->GetXaxis()->SetRangeUser(plot_lo, plot_hi);
+  h_mX_SR->Sumw2();
+  h_mX_SB->Sumw2();
   
   RooRealVar *x;
   x=new RooRealVar("x", "m_{X} (GeV)", plot_lo, plot_hi);
@@ -79,29 +243,48 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   TH1F *h_ratio=(TH1F*)h_mX_SR->Clone("h_ratio");
   h_ratio->Divide(h_mX_SB);
   h_ratio->SetTitle("; m_{X} (GeV); SR/SB");
-  
-  TCanvas *c_AntiTag_GaussExp=new TCanvas("c_AntiTag_GaussExp", "c_AntiTag_GaussExp", 700, 700);
-  TPad *p_1=new TPad("p_1", "p_1", 0, 0.35, 1, 1);
-  TPad *p_2=new TPad("p_2", "p_2", 0, 0, 1, 0.35);
+
+  double xPad = 0.3;
+  TCanvas *c_AntiTag_GaussExp=new TCanvas("c_AntiTag_GaussExp", "c_AntiTag_GaussExp", 700*(1.-xPad), 700);	
+  c_AntiTag_GaussExp->SetFillStyle(4000);
+  c_AntiTag_GaussExp->SetFrameFillColor(0);
+
+  TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
+  p_1->SetFillStyle(4000);
+  p_1->SetFrameFillColor(0);
+  TPad* p_2 = new TPad("p_2", "p_2",0,0,1,xPad);
+  p_2->SetBottomMargin((1.-xPad)/xPad*0.13);
+  p_2->SetTopMargin(0.06);
   p_2->SetFillColor(0);
   p_2->SetBorderMode(0);
   p_2->SetBorderSize(2);
-  p_2->SetTopMargin(0.018);
-  p_2->SetBottomMargin(0.30);
   p_2->SetFrameBorderMode(0);
-  p_1->Draw();
+  p_2->SetFrameBorderMode(0);
+
+  /*TPad *p_1=new TPad("p_1", "p_1", 0, 0.35, 1, 1);
+    TPad *p_2=new TPad("p_2", "p_2", 0, 0, 1, 0.35);
+    p_2->SetFillColor(0);
+    p_2->SetBorderMode(0);
+    p_2->SetBorderSize(2);
+    p_2->SetTopMargin(0.018);
+    p_2->SetBottomMargin(0.30);
+    p_2->SetFrameBorderMode(0);
+    */ p_1->Draw();
   p_2->Draw();
   p_1->cd();
   double max1=h_mX_SR->GetMaximum();
   double max2=h_mX_SB->GetMaximum();
   double maxy=(max1>max2) ? max1 : max2;
-  if (log=="log") bC_plot->GetYaxis()->SetRangeUser(1e-4, maxy*1.5);
+  if (log=="log") bC_plot->GetYaxis()->SetRangeUser(1e-4, maxy*3.5);
   else bC_plot->GetYaxis()->SetRangeUser(0, maxy*1.5);
   bC_plot->SetTitle("; m_{X} (GeV); Normalized units");
+  bC_plot->GetYaxis()->SetLabelSize(0.03);
+  bC_plot->GetYaxis()->SetTitleOffset(1.2);
+
   bC_plot->Draw();
   bS_plot->Draw("same");
   if (log=="log") p_1->SetLogy();
-  
+
   TPaveText *pave = new TPaveText(0.60, 0.60, 0.89, 0.69, "NDC");
   pave->SetBorderSize(0);
   pave->SetTextSize(0.03);
@@ -117,8 +300,9 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   //sprintf(name,"SR #chi^{2}/ndof = %.2f",bS_plot->chiSquare());
   //pave->AddText(name);
   pave->Draw();
-  
-  TLegend *leg = new TLegend(0.65,0.73,0.89,0.89);
+
+
+  TLegend *leg = new TLegend(0.85625,0.7721654,0.5765625,0.8903839,NULL,"brNDC");
   leg->SetBorderSize(0);
   leg->SetTextSize(0.035);
   leg->SetLineColor(1);
@@ -134,30 +318,61 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   h_mX_SR->SetMarkerStyle(20);
   leg->AddEntry(h_mX_SR, "Data shape in SR", "lep");
   leg->Draw();
-  
+
+  CMS_lumi( p_1, iPeriod, iPos );	
+
   p_2->cd();
-  h_ratio->GetYaxis()->SetRangeUser(0, 2.);
-  h_ratio->GetYaxis()->SetLabelSize(0.06);
-  h_ratio->GetYaxis()->SetTitleSize(0.05);
-  h_ratio->GetXaxis()->SetTitleSize(0.1);
-  h_ratio->GetXaxis()->SetTitleOffset(1.0);
-  h_ratio->GetXaxis()->SetLabelSize(0.1);
-  h_ratio->SetMarkerStyle(20);
-  h_ratio->SetLineColor(kBlack);
-  h_ratio->Draw();
-  TLine *m_one_line = new TLine(plot_lo,1,plot_hi,1);
-  m_one_line->Draw("same");
-  
+  /*h_ratio->GetYaxis()->SetRangeUser(0, 2.);
+    h_ratio->GetYaxis()->SetLabelSize(0.06);
+    h_ratio->GetYaxis()->SetTitleSize(0.05);
+    h_ratio->GetXaxis()->SetTitleSize(0.1);
+    h_ratio->GetXaxis()->SetTitleOffset(1.0);
+    h_ratio->GetXaxis()->SetLabelSize(0.1);
+    h_ratio->SetMarkerStyle(20);
+    h_ratio->SetLineColor(kBlack);
+    h_ratio->Draw();
+    TLine *m_one_line = new TLine(plot_lo,1,plot_hi,1);
+    m_one_line->Draw("same");
+    */
+  RooHist *hpull;
+  hpull = bC_plot->pullHist();
+  RooPlot* frameP = x->frame() ;
+  frameP->SetTitle("; m_{X} (GeV); Pull");
+  frameP->addPlotable(hpull,"P");
+  frameP->GetYaxis()->SetTitleSize(0.07);
+  frameP->GetYaxis()->SetTitleOffset(0.5);
+  frameP->GetXaxis()->SetTitleSize(0.09);
+  frameP->GetXaxis()->SetTitleOffset(1.0);
+  frameP->GetXaxis()->SetLabelSize(0.07);
+  frameP->GetYaxis()->SetLabelSize(0.06);
+  frameP->Draw();
+  RooHist *hpull2;
+  hpull2 = bS_plot->pullHist();
+
+  hpull2->SetMarkerColor(kBlue+1);
+  hpull2->SetLineColor(kBlue+1);
+  RooPlot* frameP22 = x->frame() ;
+  frameP22->addPlotable(hpull2,"P");
+  frameP22->Draw("same");	
+
+
+
+  TLine *line=new TLine(fit_lo, 0, fit_hi, 0);
+  line->SetLineWidth(2);
+  line->Draw();
+
+
+
   c_AntiTag_GaussExp->SaveAs("c_AntiTag_GaussExp.png");
   c_AntiTag_GaussExp->SaveAs("c_AntiTag_GaussExp.pdf");
-  
-   
+
+
   std::cout<<" === === "<<std::endl;
   std::cout<<"chi^2/ndof of bC = "<<bC_plot->chiSquare()<<std::endl;
   std::cout<<"chi^2/ndof of bS = "<<bS_plot->chiSquare()<<std::endl;
   std::cout<<" === === "<<std::endl;
-  
+
 }
-  
-  
-  
+
+
+
