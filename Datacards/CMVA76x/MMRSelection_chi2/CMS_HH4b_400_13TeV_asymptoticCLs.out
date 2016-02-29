@@ -1,0 +1,6 @@
+>>> including systematics
+Will use a-priori expected background instead of a-posteriori one.
+>>> method used to compute upper limit is Asymptotic
+>>> random number generator seed is 123456
+Error when running the combination:
+	File /uscms_data/d3/cvernier/4b/HbbHbb_Run2/HbbHbb_Run2/Datacards/CMVA76x/MMRSelection_chi2/HbbHbb_13TeV_mX400.txt does not exist

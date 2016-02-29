@@ -1,0 +1,31 @@
+imax 1 number of channels
+jmax * number of backgrounds
+kmax * number of systematic uncertainty sources
+----------
+shapes signal HbbHbb w_signal_270.root HbbHbb:signal_fixed
+shapes background * background_pdfs.root backgrounds:roomultipdf
+shapes data_obs HbbHbb w_data.root HbbHbb:data_obs
+----------
+## Observation
+bin                     HbbHbb
+observation              -1
+----------
+bin             HbbHbb          HbbHbb
+process         signal      background
+process         0               1
+rate            29.2552          8953
+lumi            lnN     1.046            -    
+bgFloat   lnU     -          2.00
+JEC lnN 1.05462 - 
+JER lnN 1.00393 - 
+trig lnN 1.09613 - 
+bTag lnN 1.14503 - 
+sg_p0 param 270.164 -0.207007/+0.285376 
+sg_p1 param 5 -0.00878778/+0.00878778 
+sg_p2 param 10 -4.75052/+4.75052 
+sg_p3 param 169.538 -3.32319/+1.67497 
+sg_p4 param 0.5 -0.00491848/+0.0105889 
+pdf_index discrete
+
+
+
