@@ -76,7 +76,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float vType;
   float puWeight, genWeight;
   int nJets;
-  float jet_btagCSV[100], jet_btagCMVA[100], jet_btagCMVASFM[100], jet_btagCMVASFMUp[100], jet_btagCMVASFMDown[100];
+  float jet_btagCSV[100], jet_btagCMVA[100], jet_btagCMVAMSF[100], jet_btagCMVAMSFUp[100], jet_btagCMVAMSFDown[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100], jet_flavor[100];
   float jet_corrJERUp[100], jet_corrJERDown[100], jet_corrJECUp[100], jet_corrJECDown[100] , jet_corrJER[100], jet_corrJEC[100];
   int nGenHiggsBoson;	
@@ -163,9 +163,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("nJet", &(nJets));                              tree->SetBranchStatus("nJet", 1); 
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));                 tree->SetBranchStatus("Jet_btagCSV", 1); 
   tree->SetBranchAddress("Jet_btagCMVAV2", &(jet_btagCMVA));               tree->SetBranchStatus("Jet_btagCMVAV2", 1);
-  tree->SetBranchAddress("Jet_btagCMVAV2MSF_Up", &(jet_btagCMVASFMDown));               tree->SetBranchStatus("Jet_btagCMVAV2MSF_Up", 1);
-  tree->SetBranchAddress("Jet_btagCMVAV2MSF_Down", &(jet_btagCMVASFMUp));               tree->SetBranchStatus("Jet_btagCMVAV2MSF_Down", 1);
-  tree->SetBranchAddress("Jet_btagCMVAV2MSF", &(jet_btagCMVASFM));               tree->SetBranchStatus("Jet_btagCMVAV2MSF", 1);	
+  tree->SetBranchAddress("Jet_btagCMVAV2MSF_Up", &(jet_btagCMVAMSFDown));               tree->SetBranchStatus("Jet_btagCMVAV2MSF_Up", 1);
+  tree->SetBranchAddress("Jet_btagCMVAV2MSF_Down", &(jet_btagCMVAMSFUp));               tree->SetBranchStatus("Jet_btagCMVAV2MSF_Down", 1);
+  tree->SetBranchAddress("Jet_btagCMVAV2MSF", &(jet_btagCMVAMSF));               tree->SetBranchStatus("Jet_btagCMVAV2MSF", 1);	
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                           tree->SetBranchStatus("Jet_pt", 1);
   tree->SetBranchAddress("Jet_rawPt", &(jet_rawpT));                     tree->SetBranchStatus("Jet_rawPt", 1);
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                         tree->SetBranchStatus("Jet_eta", 1); 
@@ -354,13 +354,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         for (unsigned int j=0; j<(unsigned int)nJets; ++j)
         {
 
-	    jet_btagCMVA[j] = jet_btagCMVA[j]*jet_btagCMVASFM[j];	
   	    if (sigmaJECUnc_string=="JECp1") jet_pT[j] = jet_rawpT[j]*jet_corrJER[j]*jet_corrJECUp[j];
             if (sigmaJECUnc_string=="JECm1") jet_pT[j] = jet_rawpT[j]*jet_corrJER[j]*jet_corrJECDown[j];
             if (sigmaJERUnc_string=="JERp1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERUp[j];
             if (sigmaJERUnc_string=="JERm1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERDown[j];
-	    if (sigmabTagUnc_string=="bTagp1") jet_btagCMVA[j] = jet_btagCMVA[j]*jet_btagCMVASFMUp[j]/jet_btagCMVASFM[j]; 	
-	    if (sigmabTagUnc_string=="bTagm1") jet_btagCMVA[j] = jet_btagCMVA[j]*jet_btagCMVASFMDown[j]/jet_btagCMVASFM[j];        
 	      
           if (fabs(jet_eta[j])<jet_eta_cut) 
           {
@@ -373,6 +370,12 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
                 if (jet_btagCMVA[j]>jet_btag_cut)
                 {
                   ++nCbJets;
+		  if( nCbJets<= 4 && isData!=1)  {
+			eventWeight=eventWeight*jet_btagCMVAMSF[j];
+		        if (sigmabTagUnc_string=="bTagp1") eventWeight=eventWeight*jet_btagCMVAMSFUp[j];
+		        if (sigmabTagUnc_string=="bTagm1") eventWeight=eventWeight*jet_btagCMVAMSFDown[j];  
+		  }	
+	
                   jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
                   if (jet_btagCSV[j]>0) jetList_CentralpT40btag_CSVOrder[jet_btagCSV[j]]=j;
                   jetList_CentralpT40btag_CMVAOrder[jet_btagCMVA[j]]=j;
