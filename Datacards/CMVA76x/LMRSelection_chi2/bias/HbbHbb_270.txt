@@ -13,19 +13,17 @@ observation              -1
 bin             HbbHbb          HbbHbb
 process         signal      background
 process         0               1
-rate            29.2552          8953
-lumi            lnN     1.046            -    
+rate            11.7138          1800
+lumi            lnN     1.027            -    
 bgFloat   lnU     -          2.00
-JEC lnN 1.05462 - 
-JER lnN 1.00393 - 
 trig lnN 1.09613 - 
-bTag lnN 1.14503 - 
-sg_p0 param 270.164 -0.207007/+0.285376 
-sg_p1 param 5 -0.00878778/+0.00878778 
-sg_p2 param 10 -4.75052/+4.75052 
-sg_p3 param 169.538 -3.32319/+1.67497 
-sg_p4 param 0.5 -0.00491848/+0.0105889 
+JEC lnN 1.04371 - 
+JER lnN 1.00488 - 
+bTag lnN 1.10582 - 
+sg_p0 param 269.288 -0.250562/+0.483771 
+sg_p1 param 5.46888 -0.222627/+0.81875 
+sg_p2 param 9.01666 -178.206/+178.206 
+sg_p3 param 146.777 -16.7804/+13.0253 
+sg_p4 param 0.654809 -0.0729233/+0.0451184 
 pdf_index discrete
-
-
 

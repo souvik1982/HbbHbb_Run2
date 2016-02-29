@@ -22,7 +22,7 @@ void BiasStudies(int mass, int ievt, float scale=1)
   
   hist->Fit("funG");
 
-  std::cout<< mass <<"   "<<ievt<<"  mean "<< funG->GetParameter(1) << " width "<<funG->GetParameter(2) <<std::endl;	
+  std::cout<< " ASDASD"<<mass <<"   "<<ievt<<"  mean "<< funG->GetParameter(1) << " width "<<funG->GetParameter(2) <<std::endl;	
 
 
   c1->SaveAs(Form("Bias_Graviton%d_mu%d.png",mass, ievt));
