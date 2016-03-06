@@ -20,9 +20,9 @@
 #include "TDRStyle.h"
 
 double mean_H1_mass_=115;
-double sigma_H1_mass_=23; // 12;
+double sigma_H1_mass_=17; // 12;
 double mean_H2_mass_=115;
-double sigma_H2_mass_=23; // 13;
+double sigma_H2_mass_=17; // 13;
 
 double chi_1=1;
 double chi_2=2;
@@ -80,7 +80,7 @@ void drawRegion(bool isData=false)
   
   TArrow *arrow1=new TArrow(mean_H1_mass_, mean_H2_mass_+sigma_H2_mass_*chi_2*4., mean_H1_mass_, mean_H2_mass_, 0.02); arrow1->SetLineWidth(3); arrow1->SetLineColor(kBlack); arrow1->Draw();
   TPaveText *mod1=new TPaveText(mean_H1_mass_-marg, mean_H2_mass_+sigma_H2_mass_*chi_2*2.-marg, mean_H1_mass_+marg, mean_H2_mass_+sigma_H2_mass_*chi_2*2.+marg);
-  mod1->SetBorderSize(0); mod1->SetFillColor(0); mod1->AddText("SR"); mod1->SetLineColor(kBlack); mod1->Draw("ARC");
+  mod1->SetBorderSize(0); mod1->SetFillColor(0); mod1->AddText("SR"); mod1->SetLineColor(kBlue); mod1->Draw("ARC");
   TArrow *arrow2_1=new TArrow(mean_H1_mass_+sigma_H1_mass_*chi_2*3., mean_H2_mass_, mean_H1_mass_-sigma_H1_mass_*chi_2/2., mean_H2_mass_+sigma_H2_mass_*chi_2/2., 0.02); arrow2_1->SetLineWidth(3); arrow2_1->SetLineColor(kBlack);     
   TArrow *arrow2_2=new TArrow(mean_H1_mass_+sigma_H1_mass_*chi_2*3.5, mean_H2_mass_, mean_H1_mass_+sigma_H1_mass_*chi_2/2., mean_H2_mass_-sigma_H2_mass_*chi_2/2., 0.02); arrow2_2->SetLineWidth(3); arrow2_2->SetLineColor(kBlack);
   TLine *arrow2_3=new TLine(mean_H1_mass_+sigma_H1_mass_*chi_2*3.5, mean_H2_mass_, mean_H1_mass_+sigma_H1_mass_*chi_2*3.5, mean_H2_mass_); arrow2_3->SetLineWidth(3); arrow2_3->SetLineColor(kBlack);
@@ -95,29 +95,20 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
   TH2F *h_mH1_mH2_asym=(TH2F*)file->Get("h_mH1_mH2_asym");
   h_mH1_mH2_asym->RebinX(2);
   h_mH1_mH2_asym->RebinY(2);
-  h_mH1_mH2_asym->GetYaxis()->SetTitleOffset(1.3);
   h_mH1_mH2_asym->Draw("box");
-  
   drawRegion(isData);
 }
 
-void DisplaymHmX()//std::vector<std::string> files)
+void DisplaymHmX_LMR()//std::vector<std::string> files)
 {
   std::vector<TFile*> v_files;
-  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
-   //v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
-  //v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-350_narrow_13TeV-madgraph.root"));
-  //v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
+   v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
+   v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-350_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
   v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-450_narrow_13TeV-madgraph.root"));
    v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root"));
 // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-550_narrow_13TeV-madgraph.root"));
- // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
-  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
-//  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph.root"));
-  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
-v_files.push_back(new TFile("Histograms_RSGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_RSGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
 
  //v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-1000_narrow_13TeV-madgraph.root"));
   //v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-1200_narrow_13TeV-madgraph.root"));
@@ -125,7 +116,7 @@ v_files.push_back(new TFile("Histograms_RSGravTohhTohbbhbb_narrow_M-1000_13TeV-m
  // for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
   TFile *f_data=new TFile("Histograms_BTagCSV_Skim.root");
   //TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
-    std::vector <double> mean_gen={  450, 500, 700, 800, 900, 1000, 1200};
+    std::vector <double> mean_gen={  260, 300, 350, 400, 450, 500};
  std::vector<int> v_colors = {kAzure+1, kAzure+3, kRed+1, kPink+1, kPink+3, kGreen+2, kGreen+3, kBlue+1, kGray+2};
   //std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1, kAzure+3, kPink+2, kGray+2,kBlue+1};
 

@@ -40,11 +40,11 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   TH1F *h_mX_SR_biasCorrected=(TH1F*)file->Get("h_mX_SR_biasCorrected");
   TH1F *h_mX_SR_kinFit=(TH1F*)file->Get("h_mX_SR_kinFit");
   
-  double n=h_mX_SR->GetSumOfWeights();
+  /*double n=h_mX_SR->GetSumOfWeights();
   h_mX_SR->Scale(1./n);
   h_mX_SR_biasCorrected->Scale(1./n);
   h_mX_SR_kinFit->Scale(1./n);
-  
+  */
   h_mX_SR->Rebin(10);
   h_mX_SR_biasCorrected->Rebin(10);
   h_mX_SR_kinFit->Rebin(10);
@@ -57,18 +57,20 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   h_mX_SR_biasCorrected->SetLineWidth(2);
   h_mX_SR_kinFit->SetLineWidth(2);
   
-  h_mX_SR->SetLineColor(kBlue);
+  h_mX_SR->SetLineColor(kBlue+1);
+  h_mX_SR->Smooth(100);
   h_mX_SR->SetLineStyle(7);
   h_mX_SR_biasCorrected->SetLineColor(kGreen);
   h_mX_SR_biasCorrected->SetLineStyle(7);
-  h_mX_SR_kinFit->SetLineColor(kRed);
+  h_mX_SR_kinFit->Smooth(200);
+  h_mX_SR_kinFit->SetLineColor(kRed+1);
   
   if (first)
   {
     h_mX_SR_kinFit->SetMaximum(h_mX_SR_kinFit->GetMaximum()*1.2);
     h_mX_SR_kinFit->GetYaxis()->SetTitle("Normalized Units");
     h_mX_SR_kinFit->GetYaxis()->SetTitleOffset(1.4);
-    h_mX_SR_kinFit->Draw("hist");
+    h_mX_SR_kinFit->DrawNormalized("hist");
     TLegend *leg=new TLegend(0.5, 0.7, 0.89, 0.89);
     leg->SetLineColor(0);
     leg->SetFillColor(0);
@@ -78,11 +80,11 @@ void DisplayKinFitForFile(TFile *file, double xLine)
     leg->Draw();
     first=false;
   }
-  else h_mX_SR_kinFit->Draw("hist same");
+  else h_mX_SR_kinFit->DrawNormalized("hist same");
   //h_mX_SR_biasCorrected->Draw("hist same");
-  h_mX_SR->Draw("hist same");
+  h_mX_SR->DrawNormalized("hist same");
   
-  TLine *line=new TLine(xLine, 0, xLine, h_mX_SR_kinFit->GetMaximum()*0.9);
+  TLine *line=new TLine(xLine, 0, xLine, 0.1);
   line->Draw();
   
 }
@@ -191,18 +193,20 @@ void DisplayXpT_ForFile(TFile *f)
 void DisplayKinFit()
 {
   std::vector<TFile*> v_files;
-  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton260GeV.root"));
-  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton270GeV.root"));
-  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_Graviton300GeV.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton400GeV.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton600GeV.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton800GeV.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton1000GeV.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_Graviton1200GeV.root"));
-  // v_files.push_back(new TFile("Histograms_Graviton1600GeV.root"));
-  // v_files.push_back(new TFile("Histograms_Graviton2000GeV.root"));
-  // v_files.push_back(new TFile("Histograms_Graviton3000GeV.root"));
-  std::vector <double> mean_gen={260, 270, 300, 400, 600, 800, 1000, 1200}; // , 1200, 1600, 2000, 3000};
+  //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
+  //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-270_narrow_13TeV-madgraph.root"));
+  //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_RSGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_RSGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
+
+  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-1600_narrow_13TeV-madgraph.root"));
+  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-2000_narrow_13TeV-madgraph.root"));
+  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-3000_narrow_13TeV-madgraph.root"));
+  std::vector <double> mean_gen={400, 500, 700, 900, 1000, 1200}; // , 1200, 1600, 2000, 3000};
   
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();
@@ -317,7 +321,7 @@ void DisplayKinFit()
   c_H1H2_meanSigma->SaveAs("c_H1H2_meanSigma.png");
   
   TCanvas *c_KinFit=new TCanvas("c_KinFit", "c_KinFit", 1000, 700);
-  for (unsigned int i=3; i<v_files.size(); ++i)
+  for (unsigned int i=0; i<v_files.size(); ++i)
   {
     DisplayKinFitForFile(v_files.at(i), mean_gen.at(i));
   }
@@ -331,7 +335,7 @@ void DisplayKinFit()
   TGraph *g_meanDiff_biasCorrected = new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(meanDiff_biasCorrected.at(0)));
   g_meanDiff_biasCorrected->SetMarkerColor(kGreen);
   TGraph *g_meanDiff_kinFit = new TGraph(v_files.size()-dontwant, &(mean_gen.at(dontwant)), &(meanDiff_kinFit.at(0)));
-  g_meanDiff_kinFit->SetMarkerColor(kRed);
+  g_meanDiff_kinFit->SetMarkerColor(kRed+1);
   TCanvas *c_meanDiff=new TCanvas("c_meanDiff", "c_meanDiff", 700, 700);
   g_mean->Draw("A*");
   g_meanDiff_biasCorrected->Draw("SAME*");
