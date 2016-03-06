@@ -12,10 +12,10 @@
 #include "HbbHbb_Component_SignalPurity.cc"
 #include "HbbHbb_Component_KinFit.cc"
 
-double mean_H1_mass_=124;
-double sigma_H1_mass_=15; // 12;
-double mean_H2_mass_=117;
-double sigma_H2_mass_=20; // 13;
+double mean_H1_mass_=115;
+double sigma_H1_mass_=17; // 12;
+double mean_H2_mass_=115;
+double sigma_H2_mass_=17; // 13;
 
 /* to check against existing selection
 double mean_H1_mass_=125;
@@ -50,7 +50,7 @@ void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
   float genBQuarkFromH_pT[100],genBQuarkFromH_eta[100],genBQuarkFromH_phi[100],genBQuarkFromH_mass[100];
   float jet_regressed_pT[100];
   std::vector<unsigned int> *jetIndex_CentralpT40_CSVOrder=0;
-  std::vector<unsigned int> *jetIndex_CentralpT40btag_CSVOrder=0;
+  std::vector<unsigned int> *jetIndex_CentralpT40btag_CMVAOrder=0;
   
   // Retrieve variables
   tree->SetBranchAddress("evt", &evt);
@@ -60,14 +60,14 @@ void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
   	
   tree->SetBranchAddress("nJet", &(nJets));                       
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));          
-  tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));        
+  tree->SetBranchAddress("Jet_btagCMVAV2", &(jet_btagCMVA));        
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                    
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                  
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                  
   tree->SetBranchAddress("Jet_mass", &(jet_mass));
   tree->SetBranchAddress("Jet_regressed_pt", &(jet_regressed_pT));
   tree->SetBranchAddress("jetIndex_CentralpT40_CSVOrder", &(jetIndex_CentralpT40_CSVOrder));
-  tree->SetBranchAddress("jetIndex_CentralpT40btag_CSVOrder", &(jetIndex_CentralpT40btag_CSVOrder));
+  tree->SetBranchAddress("jetIndex_CentralpT40btag_CMVAOrder", &(jetIndex_CentralpT40btag_CMVAOrder));
   tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   
@@ -138,27 +138,27 @@ void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
     double m_diff_old=100.;	
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
-    for (unsigned int j=0; j<jetIndex_CentralpT40btag_CSVOrder->size(); ++j)
+    for (unsigned int j=0; j<jetIndex_CentralpT40btag_CMVAOrder->size(); ++j)
     { 	
-      unsigned int j_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(j);
+      unsigned int j_jetIndex=jetIndex_CentralpT40btag_CMVAOrder->at(j);
       TLorentzVector jet1_p4, jet2_p4, jet3_p4, jet4_p4;
       jet1_p4=fillTLorentzVector(jet_regressed_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
-      for (unsigned int k=0; k<jetIndex_CentralpT40btag_CSVOrder->size(); ++k)
+      for (unsigned int k=0; k<jetIndex_CentralpT40btag_CMVAOrder->size(); ++k)
       {
-        unsigned int k_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(k);
+        unsigned int k_jetIndex=jetIndex_CentralpT40btag_CMVAOrder->at(k);
         if (k!=j)
         {
           jet2_p4=fillTLorentzVector(jet_regressed_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k_jetIndex], jet_mass[k_jetIndex]);
-          for (unsigned int l=0; l<jetIndex_CentralpT40btag_CSVOrder->size(); ++l)
+          for (unsigned int l=0; l<jetIndex_CentralpT40btag_CMVAOrder->size(); ++l)
           {
-            unsigned int l_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(l);
+            unsigned int l_jetIndex=jetIndex_CentralpT40btag_CMVAOrder->at(l);
             if (l!=j && l!=k)
             {
               jet3_p4=fillTLorentzVector(jet_regressed_pT[l_jetIndex], jet_eta[l_jetIndex], jet_phi[l_jetIndex], jet_mass[l_jetIndex]);
               for (unsigned int m=0; m<jetIndex_CentralpT40_CSVOrder->size(); ++m)
               {
                 unsigned int m_jetIndex=jetIndex_CentralpT40_CSVOrder->at(m);
-                if (m_jetIndex!=j_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=l_jetIndex && jet_btagCSV[m_jetIndex]<0.6)
+                if (m_jetIndex!=j_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=l_jetIndex && jet_btagCMVA[m_jetIndex]<0.18)
                 {
                   jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
                    
@@ -174,7 +174,8 @@ void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
                   double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                   
-                  if (chi2<chi2_old)
+            //      if (chi2<chi2_old)
+            	 if (chi2<chi2_old && ((81.<mH1 && mH1<149.) && (81.<mH2 && mH2<149.)))
                   // if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
                   {
                     H1jet1_i=j_jetIndex;

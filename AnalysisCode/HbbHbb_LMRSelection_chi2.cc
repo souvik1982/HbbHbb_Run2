@@ -66,9 +66,9 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
   tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));
 
   // Book histograms
-  TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 300, 0., 300.);
+  TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 100, 50., 250.);
   TH1F *h_H1_pT = new TH1F("h_H1_pT", "; H1 p_{T} (GeV/c)", 800, 0., 800.);
-  TH1F *h_H2_mass = new TH1F("h_H2_mass", "; m_{H2} (GeV)", 300, 0., 300.);
+  TH1F *h_H2_mass = new TH1F("h_H2_mass", "; m_{H2} (GeV)", 100, 50., 250.);
   TH1F *h_H2_pT = new TH1F("h_H2_pT", "; H2 p_{T} (GeV/c)", 800, 0., 800.);
   TH1F *h_HH_balance = new TH1F("h_HH_balance", "; (#vec{p}_{H1} + #vec{p}_{H2} - #vec{p}_{X}^{gen})_{T} GeV", 200, 0, 200.);
   TH2F *h_mH1_mH2_asym = new TH2F("h_mH1_mH2_asym", "; m_{H1} (GeV); m_{H2} (GeV)", 300, 0., 300., 300, 0., 300.);
@@ -174,7 +174,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
                     
                     double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   
-                    if (chi2<chi2_old && ((80.<mH1 && mH1<150.) && (80.<mH2 && mH2<150.)))
+                    if (chi2<chi2_old && ((81.<mH1 && mH1<149.) && (81.<mH2 && mH2<149.)))
                     {
                       H1jet1_i=j_jetIndex;
                       H1jet2_i=k_jetIndex;
@@ -223,7 +223,8 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
       
       h_H1_mass->Fill(mH1, eventWeight);
       h_H1_pT->Fill(pTH1, eventWeight);
-      h_H2_mass->Fill(mH2, eventWeight);
+      h_H1_mass->Fill(mH2, eventWeight);
+      h_H2_mass->Fill(mH2, eventWeight);	
       h_H2_pT->Fill(pTH2, eventWeight);
       h_mH1_mH2_asym->Fill(mH1, mH2, eventWeight);
       
