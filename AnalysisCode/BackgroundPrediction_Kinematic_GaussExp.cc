@@ -16,7 +16,7 @@
 
 // Plot cosmetics
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV 
-int iPos = 22;
+int iPos = 11;
 
 #include "CMS_lumi.h"
 #include <iostream>
@@ -205,9 +205,9 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   gStyle->SetOptStat(0000);
   writeExtraText = true;       // if extra text
   extraText  = "Preliminary";  // default extra text is "Preliminary"
-  lumi_13TeV  = "2.2 fb^{-1}";  // default is "5.1 fb^{-1}"
+  lumi_13TeV  = "2.3 fb^{-1}";  // default is "5.1 fb^{-1}"
   
-  TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
+  TFile *f_data=new TFile("Histograms_BTagCSV_Skim.root");
   TH1F *h_mX_SR=(TH1F*)f_data->Get(hist.c_str());
   h_mX_SR->Rebin(rebin);
   double nEventsSR=((TH1F*)f_data->Get("h_mX_SR_kinFit"))->GetSumOfWeights();
@@ -248,21 +248,23 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
 
   
   double xPad = 0.3;
-  TCanvas *c_Background=new TCanvas("c_Background", "c_Background", 700*(1.-xPad), 700);
+  TCanvas *c_Background=new TCanvas("c_Background", "c_Background", 800*(1.-xPad), 600);
   c_Background->SetFillStyle(4000);
   c_Background->SetFrameFillColor(0);
 
-  TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
-  p_1->SetFillStyle(4000);
-  p_1->SetFrameFillColor(0);
-  TPad* p_2 = new TPad("p_2", "p_2",0,0,1,xPad);
-  p_2->SetBottomMargin((1.-xPad)/xPad*0.13);
-  p_2->SetTopMargin(0.06);
-  p_2->SetFillColor(0);
-  p_2->SetBorderMode(0);
-  p_2->SetBorderSize(2);
-  p_2->SetFrameBorderMode(0);
-  p_2->SetFrameBorderMode(0);	
+   TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
+        p_1->SetFillStyle(4000);
+        p_1->SetFrameFillColor(0);
+        p_1->SetBottomMargin(0.02);
+
+        TPad* p_2 = new TPad("p_2", "p_2",0,0,1,xPad);
+        p_2->SetBottomMargin((1.-xPad)/xPad*0.13);
+        p_2->SetTopMargin(0.03);
+        p_2->SetFillColor(0);
+        p_2->SetBorderMode(0);
+        p_2->SetBorderSize(2);
+        p_2->SetFrameBorderMode(0);
+        p_2->SetFrameBorderMode(0);
 
   p_1->Draw();
   p_2->Draw();
@@ -271,6 +273,10 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   if (log=="log") data_plot->GetYaxis()->SetRangeUser(1e-4, h_mX_SR->GetMaximum()*5.);
   else data_plot->GetYaxis()->SetRangeUser(0, h_mX_SR->GetMaximum()*1.5);
   data_plot->Draw();
+  data_plot->GetXaxis()->SetLabelOffset(0.03);
+  data_plot->GetYaxis()->SetLabelFont(42);
+  data_plot->GetYaxis()->SetTitleFont(42);
+
   data_plot->GetYaxis()->SetTitleOffset(1.25);
   data_plot->SetTitle(("; m_{X} (GeV); Events / "+itoa(h_mX_SR->GetBinWidth(1))+" GeV").c_str());
   if (log=="log") p_1->SetLogy();
@@ -304,7 +310,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   leg->SetFillStyle(0);
   h_mX_SR->SetMarkerStyle(20);
   if (hist.substr(0,7)=="h_mX_SB") leg->AddEntry(h_mX_SR, "Data in SB", "lep");
-  else leg->AddEntry(h_mX_SR, "Data in SR", "lep"); 
+   else leg->AddEntry(h_mX_SR, "Data in SR", "lep"); 
   leg->Draw();
 
   CMS_lumi( p_1, iPeriod, iPos );
@@ -313,15 +319,28 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   RooHist *hpull;
   hpull = data_plot->pullHist();
   RooPlot* frameP = x->frame() ;
+	
   frameP->SetTitle("; m_{X} (GeV); Pull");
   frameP->addPlotable(hpull,"P");
-  frameP->GetYaxis()->SetTitleSize(0.07);
-  frameP->GetYaxis()->SetTitleOffset(0.5);
-  frameP->GetXaxis()->SetTitleSize(0.09);
-  frameP->GetXaxis()->SetTitleOffset(1.0);
-  frameP->GetXaxis()->SetLabelSize(0.07);
-  frameP->GetYaxis()->SetLabelSize(0.06);
+  frameP->GetYaxis()->SetRangeUser(-5,5);
+  frameP->GetXaxis()->SetRangeUser(fit_lo, fit_hi);
+  frameP->SetTitle("");
+  frameP->GetYaxis()->SetTitle("Pull");
+  frameP->GetYaxis()->SetTitleFont(42);
+  frameP->GetYaxis()->SetLabelFont(42);
+  frameP->GetXaxis()->SetTitleFont(42);
+  frameP->GetXaxis()->SetLabelFont(42);	
+  frameP->GetYaxis()->SetTitleSize((1.-xPad)/xPad*0.06);
+  frameP->GetYaxis()->SetTitleOffset(1.2/((1.-xPad)/xPad));
+  frameP->GetXaxis()->SetTitleSize((1.-xPad)/xPad*0.055);
+  frameP->GetXaxis()->SetLabelSize((1.-xPad)/xPad*0.045);
+  frameP->GetYaxis()->SetLabelSize((1.-xPad)/xPad*0.027);
   frameP->Draw();
+
+
+
+  frameP->Draw();
+
 
   TLine *line=new TLine(fit_lo, 0, fit_hi, 0);
   line->SetLineWidth(2);

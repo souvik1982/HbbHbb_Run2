@@ -224,12 +224,12 @@ void BackgroundPrediction_Kinematic_Bern(double plot_lo, double plot_hi, double 
 
 i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   bg_p3->setConstant(1);
-  bg_p4=new RooRealVar("bg_p4", "bg_p4", 0., 5.);
+  bg_p4=new RooRealVar("bg_p4", "bg_p4", -10., 10.);
   	
-  bg_p5=new RooRealVar("bg_p5", "bg_p5", 0., 5.);
-  bg_p6=new RooRealVar("bg_p6", "bg_p6", 0., 5.);
-  bg_p7=new RooRealVar("bg_p7", "bg_p7", 0., 5.);
-  bg_p8=new RooRealVar("bg_p8", "bg_p8", 0., 5.);
+  bg_p5=new RooRealVar("bg_p5", "bg_p5", -10., 10.);
+  bg_p6=new RooRealVar("bg_p6", "bg_p6", -10., 10.);
+  bg_p7=new RooRealVar("bg_p7", "bg_p7", -10., 10.);
+  bg_p8=new RooRealVar("bg_p8", "bg_p8", -10., 5.);
   /*//bg_p9=new RooRealVar("bg_p9", "bg_p9", 0., 5.);
   // bg_p10=new RooRealVar("bg_p10", "bg_p10", 0., 5.);
   */ // RooBernstein bg_pol("bg_pol", "bg_pol", *x, RooArgList(*bg_p4, *bg_p5, *bg_p6));
@@ -243,7 +243,7 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   RooRealVar bg_p0("bg_p0", "bg_p0", 0.); //gaussexp_mean_lo, gaussexp_mean_hi);
   bg_p0.setConstant(1); 
   RooRealVar bg_p1("bg_p1", "bg_p1",1. , 100.);//gaussexp_width_lo, gaussexp_width_hi);
-  RooRealVar bg_p2("bg_p2", "bg_p2", 210., 300.); ///210., 300. 
+  RooRealVar bg_p2("bg_p2", "bg_p2", 310., 600.); ///210., 300. 
 //  RooRealVar bg_p3("bg_p3", "bg_p3",  -5., 5.);
 //  RooRealVar bg_p4("bg_p4", "bg_p4",   -5., 5.);
 /*  bg_p3.setConstant(1);
@@ -262,7 +262,7 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   //RooGaussian bg_gauss("background", "Background Prediction PDF", *x, bg_p0, bg_p1);	
   //GaussExp bg("background", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2);
   //GaussExpPol bg("bg", "bg", *x, bg_p0, bg_p1, bg_p2, bg_p3, bg_p4, bg_p5,bg_p6,bg_p7,bg_p8);
-  RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5, *bg_p6, *bg_p7));// *bg_p8));
+  RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5, *bg_p6));
   //RooGenericPdf bg("bg","bg",bg_gauss*bg_pol,RooArgSet( *x, bg_p0, bg_p1, bg_p2,*bg_p3, *bg_p4, *bg_p5));	
   //RooAddPdf bg("bg", "bg", RooArgList(bg_gauss, bg_pol), *bg_p7);  	
   //bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save(), RooFit::Minimizer("Minuit","simplex"));
