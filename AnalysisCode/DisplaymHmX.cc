@@ -19,11 +19,6 @@
 
 #include "TDRStyle.h"
 
-double mean_H1_mass_=120;
-double sigma_H1_mass_=20;
-double mean_H2_mass_=120;
-double sigma_H2_mass_=20;
-
 double chi_1=1;
 double chi_2=2;
 
@@ -68,7 +63,7 @@ void drawRegion(bool isData=false, double mean_H1_mass=125, double sigma_H1_mass
   circle1->SetLineWidth(3); 
   circle1->SetLineColor(kBlack);
   circle1->SetFillColor(kRed);
-  if (!isData) circle1->SetFillStyle(0);
+  circle1->SetFillStyle(0);
   circle1->Draw();
   
   TEllipse *circle2=new TEllipse(mean_H1_mass, mean_H2_mass, sigma_H1_mass*chi_2, sigma_H2_mass*chi_2, 90., 180.); circle2->SetLineWidth(3); circle2->SetNoEdges(); circle2->SetLineColor(kBlack); circle2->SetFillStyle(0); circle2->Draw();
@@ -86,6 +81,7 @@ void drawRegion(bool isData=false, double mean_H1_mass=125, double sigma_H1_mass
   TLine *arrow2_3=new TLine(mean_H1_mass+sigma_H1_mass*chi_2*4., mean_H2_mass, mean_H1_mass+sigma_H1_mass*chi_2*5., mean_H2_mass); arrow2_3->SetLineWidth(3); arrow2_3->SetLineColor(kBlack);
   arrow2_1->Draw(); arrow2_2->Draw(); arrow2_3->Draw();
   TPaveText *mod2=new TPaveText(mean_H1_mass+sigma_H1_mass*chi_2*5.-marg, mean_H2_mass+marg, mean_H1_mass+sigma_H1_mass*chi_2*5.+marg, mean_H2_mass-marg);
+
   mod2->SetBorderSize(0); mod2->SetFillColor(0); mod2->AddText("SB"); mod2->SetLineColor(kBlack); mod2->Draw("ARC");
   
 }
@@ -95,7 +91,9 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
   TH2F *h_mH1_mH2_asym=(TH2F*)file->Get("h_mH1_mH2_asym");
   h_mH1_mH2_asym->RebinX(2);
   h_mH1_mH2_asym->RebinY(2);
-  h_mH1_mH2_asym->Draw("colz");
+  h_mH1_mH2_asym->GetYaxis()->SetTitleOffset(1.3);
+  h_mH1_mH2_asym->Draw("box");
+  
   drawRegion(isData);
 }
 
@@ -106,7 +104,6 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, d
   // TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
   //TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
   std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1};// kAzure+3, kPink+2, kGray+2,kBlue+1};
-
   
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();
@@ -172,42 +169,41 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, d
   c_mH1_mH2_asym_Data->SaveAs("c_mH1_mH2_asym_Data.png");
   delete c_mH1_mH2_asym_Data;
   
- // TCanvas *c_mH1_mH2_asym_ttbar=new TCanvas("c_mH1_mH2_asym_ttbar", "c_mH1_mH2_asym_ttbar", 700, 700);
- // DisplaymH1vsmH2_ForFile(f_ttbar);
- // c_mH1_mH2_asym_ttbar->SaveAs("c_mH1_mH2_asym_ttbar.png");
- // delete c_mH1_mH2_asym_ttbar;
-  
-  
-  // Plot mX in SB region for Data and ttbar
- /* first=true;
-  double lumi=2150; // /pb
-  double xsec_ttbar=831.76; // pb
-  double init_ttbar=((TH1F*)f_ttbar->Get("Count"))->GetBinContent(1);
-  TH1F *h_mX_SB_kinFit_data=(TH1F*)f_data->Get("h_mX_SB_kinFit");
-  TH1F *h_mX_SB_kinFit_ttbar=(TH1F*)f_ttbar->Get("h_mX_SB_kinFit");
-  h_mX_SB_kinFit_data->Rebin(40);
-  h_mX_SB_kinFit_ttbar->Rebin(40);
-  h_mX_SB_kinFit_data->GetXaxis()->SetRangeUser(150, 1600);
-  h_mX_SB_kinFit_ttbar->GetXaxis()->SetRangeUser(150, 1600);
-  h_mX_SB_kinFit_data->SetLineColor(kBlack);
-  h_mX_SB_kinFit_ttbar->SetLineColor(kRed+2);
-  h_mX_SB_kinFit_ttbar->SetFillColor(kRed);
-  h_mX_SB_kinFit_data->SetLineWidth(2);
-  h_mX_SB_kinFit_ttbar->SetLineWidth(2);
-  h_mX_SB_kinFit_ttbar->Scale(lumi*xsec_ttbar/init_ttbar);
-  TCanvas *c_mX_SB_kinFit=new TCanvas("c_mX_SB_kinFit", "c_mX_SB_kinFit", 700, 700);
-  h_mX_SB_kinFit_data->Draw("ep9");
-  h_mX_SB_kinFit_ttbar->Draw("hist same");
-  leg=new TLegend(0.6, 0.7, 0.89, 0.89);
-  leg->AddEntry(h_mX_SB_kinFit_data, "13 TeV Data");
-  leg->AddEntry(h_mX_SB_kinFit_ttbar, "t#bar{t} MC at NLO");
-  leg->Draw();
-  c_mX_SB_kinFit->SaveAs("c_mX_SB_kinFit.png");
-  int bin1=h_mX_SB_kinFit_data->FindBin(200.);
-  int bin2=h_mX_SB_kinFit_data->FindBin(1600.);
-  double nDataEvents=h_mX_SB_kinFit_data->Integral(bin1, bin2);
-  double nttbarEvents=h_mX_SB_kinFit_ttbar->Integral(bin1, bin2);
-  std::cout<<"nttbarEvents/nDataEvents = "<<nttbarEvents<<"/"<<nDataEvents<<" = "<<nttbarEvents/nDataEvents<<std::endl;r
+  // TCanvas *c_mH1_mH2_asym_ttbar=new TCanvas("c_mH1_mH2_asym_ttbar", "c_mH1_mH2_asym_ttbar", 700, 700);
+  // DisplaymH1vsmH2_ForFile(f_ttbar);
+  // c_mH1_mH2_asym_ttbar->SaveAs("c_mH1_mH2_asym_ttbar.png");
+  // delete c_mH1_mH2_asym_ttbar;
+   
+  // Plot mX in SB region for Data and ttbar                                                                            
+  /* first=true;                                                                                                        
+  double lumi=2150; // /pb                                                                                              
+  double xsec_ttbar=831.76; // pb                                                                                       
+  double init_ttbar=((TH1F*)f_ttbar->Get("Count"))->GetBinContent(1);                                                   
+  TH1F *h_mX_SB_kinFit_data=(TH1F*)f_data->Get("h_mX_SB_kinFit");                                                       
+  TH1F *h_mX_SB_kinFit_ttbar=(TH1F*)f_ttbar->Get("h_mX_SB_kinFit");                                                     
+  h_mX_SB_kinFit_data->Rebin(40);                                                                                       
+  h_mX_SB_kinFit_ttbar->Rebin(40);                                                                                      
+  h_mX_SB_kinFit_data->GetXaxis()->SetRangeUser(150, 1600);                                                             
+  h_mX_SB_kinFit_ttbar->GetXaxis()->SetRangeUser(150, 1600);                                                            
+  h_mX_SB_kinFit_data->SetLineColor(kBlack);                                                                            
+  h_mX_SB_kinFit_ttbar->SetLineColor(kRed+2);                                                                           
+  h_mX_SB_kinFit_ttbar->SetFillColor(kRed);                                                                             
+  h_mX_SB_kinFit_data->SetLineWidth(2);                                                                                 
+  h_mX_SB_kinFit_ttbar->SetLineWidth(2);                                                                                
+  h_mX_SB_kinFit_ttbar->Scale(lumi*xsec_ttbar/init_ttbar);                                                              
+  TCanvas *c_mX_SB_kinFit=new TCanvas("c_mX_SB_kinFit", "c_mX_SB_kinFit", 700, 700);                                    
+  h_mX_SB_kinFit_data->Draw("ep9");                                                                                     
+  h_mX_SB_kinFit_ttbar->Draw("hist same");                                                                              
+  leg=new TLegend(0.6, 0.7, 0.89, 0.89);                                                                                
+  leg->AddEntry(h_mX_SB_kinFit_data, "13 TeV Data");                                                                    
+  leg->AddEntry(h_mX_SB_kinFit_ttbar, "t#bar{t} MC at NLO");                                                            
+  leg->Draw();                                                                                                          
+  c_mX_SB_kinFit->SaveAs("c_mX_SB_kinFit.png");                                                                         
+  int bin1=h_mX_SB_kinFit_data->FindBin(200.);                                                                          
+  int bin2=h_mX_SB_kinFit_data->FindBin(1600.);                                                                         
+  double nDataEvents=h_mX_SB_kinFit_data->Integral(bin1, bin2);                                                         
+  double nttbarEvents=h_mX_SB_kinFit_ttbar->Integral(bin1, bin2);                                                       
+  std::cout<<"nttbarEvents/nDataEvents = "<<nttbarEvents<<"/"<<nDataEvents<<" = "<<nttbarEvents/nDataEvents<<std::endl; 
 
   */
 }    

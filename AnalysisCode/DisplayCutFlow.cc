@@ -253,15 +253,9 @@ void cumEff(int npoint)
 
 void DisplayCutFlow()
 {
-	gROOT->SetStyle("Plain");
-	gStyle->SetPadGridX(0);
-	gStyle->SetPadGridY(0);
-	gStyle->SetOptStat(0);
 
 
   gROOT->SetStyle("Plain");
-  gStyle->SetPadGridX(0);
-  gStyle->SetPadGridY(0);
   gStyle->SetOptStat(0000);
   writeExtraText = true;       // if extra text
   extraText  = "Preliminary";  // default extra text is "Preliminary"

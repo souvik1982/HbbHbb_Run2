@@ -345,6 +345,14 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
       sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
       sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
     }
+    else if (mass=="750")
+    {
+      rangeLo=580., rangeHi=830.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 720., 780.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 20., 35.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+    }	
     else if (mass=="800")
     {
       rangeLo=650., rangeHi=900.; 
@@ -462,12 +470,20 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
     }
     else if (mass=="700")
     {
-      rangeLo=620., rangeHi=810.;
+      rangeLo=640., rangeHi=800.;
       sg_p0=new RooRealVar("sg_p0", "sg_p0", 690., 740.);
       sg_p1=new RooRealVar("sg_p1", "sg_p1", 15., 25.);
       sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
       sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
     }
+    else if (mass=="750")
+    {
+      rangeLo=620., rangeHi=830.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 720., 780.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 20., 35.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+    }	
     else if (mass=="800")
     {
       rangeLo=720., rangeHi=920.; 
@@ -510,7 +526,6 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
     }
   }
   x=new RooRealVar("x", "m_{X} (_13TeV-madgraph)", rangeLo-100., rangeHi+100.);
-  // RevCrystalBall signal("signal", "Signal Prediction", *x, *sg_p0, *sg_p1, *sg_p2, *sg_p3);
   ExpGaussExp signal("signal", "Signal Prediction", *x, *sg_p0, *sg_p1, *sg_p2, *sg_p3);
   RooDataHist signalHistogram("signalHistogram", "Signal Histogram", RooArgList(*x), h);
   signal.fitTo(signalHistogram, RooFit::Range(rangeLo, rangeHi), RooFit::Save());
@@ -541,7 +556,6 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
     RooRealVar signal_p1("signal_p1", "signal_p1", sg_p1->getVal());
     RooRealVar signal_p2("signal_p2", "signal_p2", sg_p2->getVal());
     RooRealVar signal_p3("signal_p3", "signal_p3", sg_p3->getVal());
-    // RevCrystalBall signal_fixed("signal", "Signal Prediction Fixed", *x, signal_p0, signal_p1, signal_p2, signal_p3);
     ExpGaussExp signal_fixed("signal", "Signal Prediction Fixed", *x, signal_p0, signal_p1, signal_p2, signal_p3);
     RooWorkspace *w=new RooWorkspace("HbbHbb");
     w->import(signal_fixed);
@@ -795,6 +809,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithoutRegressio
   masses.push_back("550");
   masses.push_back("650");	
   masses.push_back("700");
+  masses.push_back("750");	
   masses.push_back("800");
   masses.push_back("900");
   masses.push_back("1000");
@@ -952,6 +967,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithoutRegressio
     h_mX_SR_JECm1->Rebin(rebin);
     h_mX_SR_JECp1->SetLineColor(kRed);
     h_mX_SR_JECm1->SetLineColor(kRed+2);
+	
     h_mX_SR->GetXaxis()->SetRangeUser(0, 1200);
     h_mX_SR_JECp1->GetXaxis()->SetRangeUser(0, 1200);
     h_mX_SR_JECm1->GetXaxis()->SetRangeUser(0, 1200);
@@ -985,13 +1001,16 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithoutRegressio
     h_mX_SR_KinFit->Rebin(rebin);
     h_mX_SR_JECp1_KinFit->Rebin(rebin);
     h_mX_SR_JECm1_KinFit->Rebin(rebin);
+    std::cout<<" asd "<<std::endl;	
     h_mX_SR_JECp1_KinFit->SetLineColor(kRed);
     h_mX_SR_JECm1_KinFit->SetLineColor(kRed+2);
     h_mX_SR_KinFit->GetXaxis()->SetRangeUser(0, 1200);
     h_mX_SR_JECp1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
     h_mX_SR_JECm1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
     h_mX_SR_JERp1_KinFit->Rebin(rebin);
+    std::cout<<" asd "<<std::endl;	
     h_mX_SR_JERm1_KinFit->Rebin(rebin);
+    std::cout<<" asd "<<std::endl;	
     h_mX_SR_JERp1_KinFit->SetLineColor(kAzure+1);
     h_mX_SR_JERm1_KinFit->SetLineColor(kBlue+1);
     h_mX_SR_JERp1_KinFit->GetXaxis()->SetRangeUser(0, 1200);

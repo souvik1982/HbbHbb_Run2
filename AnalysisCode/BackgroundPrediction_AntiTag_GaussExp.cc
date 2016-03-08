@@ -14,7 +14,7 @@
 #include <TF1.h>
 
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV 
-int iPos = 20;
+int iPos = 22;
 #include "CMS_lumi.h"
 #include <iostream>
 
@@ -195,10 +195,10 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   writeExtraText = true;       // if extra text
   extraText  = "Preliminary";  // default extra text is "Preliminary"
   lumi_8TeV  = "17.9 fb^{-1}"; // default is "19.7 fb^{-1}"
-  lumi_13TeV  = "2.2 fb^{-1}";  // default is "5.1 fb^{-1}"
+  lumi_13TeV  = "2.3 fb^{-1}";  // default is "5.1 fb^{-1}"
  
 
-  TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
+  TFile *f_data=new TFile("Histograms_BTagCSV_Skim.root");
   TH1F *h_mX_SB=(TH1F*)f_data->Get(hist1.c_str());
   TH1F *h_mX_SR=(TH1F*)f_data->Get(hist2.c_str());
   h_mX_SB->Rebin(rebin);
