@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-#include "../TDRStyle.h"
+#include "TDRStyle.h"
 
 bool first=true;
 
@@ -74,9 +74,9 @@ void DisplayKinFitForFile(TFile *file, double xLine)
     TLegend *leg=new TLegend(0.5, 0.7, 0.89, 0.89);
     leg->SetLineColor(0);
     leg->SetFillColor(0);
-    leg->AddEntry(h_mX_SR, "m_{X} Signal Peak");
+    leg->AddEntry(h_mX_SR, "m_{X} before Kinematic Fit");
    // leg->AddEntry(h_mX_SR_biasCorrected, "m_{X} w/ Bias Correct.");
-    leg->AddEntry(h_mX_SR_kinFit, "m_{X} w/ Kinematic Fit");
+    leg->AddEntry(h_mX_SR_kinFit, "m_{X} after Kinematic Fit");
     leg->Draw();
     first=false;
   }
@@ -196,17 +196,17 @@ void DisplayKinFit()
   //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
   //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-270_narrow_13TeV-madgraph.root"));
   //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
-  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_RSGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_RSGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
+  //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-450_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("Histograms_RSGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("Histograms_RSGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
 
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-1600_narrow_13TeV-madgraph.root"));
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-2000_narrow_13TeV-madgraph.root"));
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-3000_narrow_13TeV-madgraph.root"));
-  std::vector <double> mean_gen={400, 500, 700, 900, 1000, 1200}; // , 1200, 1600, 2000, 3000};
+  std::vector <double> mean_gen={450, 650, 800, 1000, 1200}; // , 1200, 1600, 2000, 3000};
   
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();
@@ -215,7 +215,7 @@ void DisplayKinFit()
   myStyle->SetOptStat(0);
   
   std::vector <double> mean, meanDiff_biasCorrected, meanDiff_kinFit, sigma, sigma_biasCorrected, sigma_kinFit;
-  int dontwant=3;
+  int dontwant=0;
   std::cout<<"Fitting peaks"<<std::endl;
   for (unsigned int i=dontwant; i<v_files.size(); ++i)
   {
