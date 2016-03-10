@@ -19,6 +19,8 @@
 
 #include "TDRStyle.h"
 
+#include "CMS_lumi.c"
+
 double chi_1=1;
 double chi_2=2;
 
@@ -73,35 +75,35 @@ void drawRegion(bool isData=false, double mean_H1_mass=125, double sigma_H1_mass
   TLine *line3=new TLine(mean_H1_mass, mean_H2_mass-sigma_H2_mass*chi_2, mean_H1_mass, mean_H2_mass-sigma_H2_mass*chi_1); line3->SetLineWidth(3); line3->SetLineColor(kBlack); line3->Draw();
   TLine *line4=new TLine(mean_H1_mass, mean_H2_mass+sigma_H2_mass*chi_2, mean_H1_mass, mean_H2_mass+sigma_H2_mass*chi_1); line4->SetLineWidth(3); line4->SetLineColor(kBlack); line4->Draw();
   
-  TArrow *arrow1=new TArrow(mean_H1_mass, mean_H2_mass+sigma_H2_mass*chi_2*4., mean_H1_mass, mean_H2_mass, 0.02); arrow1->SetLineWidth(3); arrow1->SetLineColor(kBlack); arrow1->Draw();
-  TPaveText *mod1=new TPaveText(mean_H1_mass-marg, mean_H2_mass+sigma_H2_mass*chi_2*4.-marg, mean_H1_mass+marg, mean_H2_mass+sigma_H2_mass*chi_2*4.+marg);
-  mod1->SetBorderSize(0); mod1->SetFillColor(0); mod1->AddText("SR"); mod1->SetLineColor(kBlue); mod1->Draw("ARC");
-  TArrow *arrow2_1=new TArrow(mean_H1_mass+sigma_H1_mass*chi_2*4., mean_H2_mass, mean_H1_mass-sigma_H1_mass*chi_2/2., mean_H2_mass+sigma_H2_mass*chi_2/2., 0.02); arrow2_1->SetLineWidth(3); arrow2_1->SetLineColor(kBlack);     
-  TArrow *arrow2_2=new TArrow(mean_H1_mass+sigma_H1_mass*chi_2*4., mean_H2_mass, mean_H1_mass+sigma_H1_mass*chi_2/2., mean_H2_mass-sigma_H2_mass*chi_2/2., 0.02); arrow2_2->SetLineWidth(3); arrow2_2->SetLineColor(kBlack);
-  TLine *arrow2_3=new TLine(mean_H1_mass+sigma_H1_mass*chi_2*4., mean_H2_mass, mean_H1_mass+sigma_H1_mass*chi_2*5., mean_H2_mass); arrow2_3->SetLineWidth(3); arrow2_3->SetLineColor(kBlack);
+  TArrow *arrow1=new TArrow(mean_H1_mass, mean_H2_mass+sigma_H2_mass*chi_2*3.5, mean_H1_mass, mean_H2_mass, 0.02); arrow1->SetLineWidth(3); arrow1->SetLineColor(kBlack); arrow1->Draw();
+  TPaveText *mod1=new TPaveText(mean_H1_mass-marg, mean_H2_mass+sigma_H2_mass*chi_2*3.5-marg, mean_H1_mass+marg, mean_H2_mass+sigma_H2_mass*chi_2*3.5+marg);
+  mod1->SetBorderSize(0); mod1->SetFillColor(0); mod1->AddText("SR"); mod1->SetLineColor(kBlack); mod1->Draw("ARC");
+  TArrow *arrow2_1=new TArrow(mean_H1_mass+sigma_H1_mass*chi_2*2.5, mean_H2_mass, mean_H1_mass-sigma_H1_mass*chi_2/2., mean_H2_mass+sigma_H2_mass*chi_2/2., 0.02); arrow2_1->SetLineWidth(3); arrow2_1->SetLineColor(kBlack);     
+  TArrow *arrow2_2=new TArrow(mean_H1_mass+sigma_H1_mass*chi_2*2.5, mean_H2_mass, mean_H1_mass+sigma_H1_mass*chi_2/2., mean_H2_mass-sigma_H2_mass*chi_2/2., 0.02); arrow2_2->SetLineWidth(3); arrow2_2->SetLineColor(kBlack);
+  TLine *arrow2_3=new TLine(mean_H1_mass+sigma_H1_mass*chi_2*2.5, mean_H2_mass, mean_H1_mass+sigma_H1_mass*chi_2*3.5, mean_H2_mass); arrow2_3->SetLineWidth(3); arrow2_3->SetLineColor(kBlack);
   arrow2_1->Draw(); arrow2_2->Draw(); arrow2_3->Draw();
-  TPaveText *mod2=new TPaveText(mean_H1_mass+sigma_H1_mass*chi_2*5.-marg, mean_H2_mass+marg, mean_H1_mass+sigma_H1_mass*chi_2*5.+marg, mean_H2_mass-marg);
+  TPaveText *mod2=new TPaveText(mean_H1_mass+sigma_H1_mass*chi_2*3.5-marg, mean_H2_mass+marg, mean_H1_mass+sigma_H1_mass*chi_2*3.5+marg, mean_H2_mass-marg);
 
   mod2->SetBorderSize(0); mod2->SetFillColor(0); mod2->AddText("SB"); mod2->SetLineColor(kBlack); mod2->Draw("ARC");
   
 }
 
-void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false)
+void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false, double mean_H1_mass=125, double sigma_H1_mass=20, double mean_H2_mass=125, double sigma_H2_mass=20)
 {
   TH2F *h_mH1_mH2_asym=(TH2F*)file->Get("h_mH1_mH2_asym");
-  h_mH1_mH2_asym->RebinX(2);
-  h_mH1_mH2_asym->RebinY(2);
-  h_mH1_mH2_asym->GetYaxis()->SetTitleOffset(1.3);
+  h_mH1_mH2_asym->RebinX(4);
+  h_mH1_mH2_asym->RebinY(4);
+  h_mH1_mH2_asym->GetYaxis()->SetTitleOffset(1.5);
   h_mH1_mH2_asym->Draw("box");
   
-  drawRegion(isData);
+  drawRegion(isData, mean_H1_mass, sigma_H1_mass, mean_H1_mass, sigma_H1_mass);
 }
 
-void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, double mean_H1_mass_=120, double sigma_H1_mass_=20, double mean_H2_mass_=125, double sigma_H2_mass_=20)
+void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, double mean_H1_mass, double sigma_H1_mass, double mean_H2_mass, double sigma_H2_mass)
 {
   std::vector<TFile*> v_files;
   for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
-  // TFile *f_data=new TFile("Histograms_Data_BTagCSV_2015_Skim.root");
+  TFile *f_data=new TFile("Histograms_BTagCSV_Skim.root");
   //TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
   std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1};// kAzure+3, kPink+2, kGray+2,kBlue+1};
   
@@ -156,16 +158,19 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, d
   delete c_H2_mass;
   
   // Plot mH1 vs mH2
+  writeExtraText = true;       // if extra text
+	extraText  = "Preliminary";  // default extra text is "Preliminary"
+	lumi_13TeV  = "2.3 fb^{-1}";  // default is "5.1 fb^{-1}"
   for (unsigned int i=0; i<v_files.size(); ++i)
   {
     TCanvas *c_mH1_mH2_asym=new TCanvas("c_mH1_mH2_asym", "c_mH1_mH2_asym", 700, 700);
-    DisplaymH1vsmH2_ForFile(v_files.at(i));
+    DisplaymH1vsmH2_ForFile(v_files.at(i), false, mean_H1_mass, sigma_H1_mass, mean_H2_mass, sigma_H2_mass);
     c_mH1_mH2_asym->SaveAs(("c_mH1_mH2_asym_"+files.at(i)+".png").c_str());
     delete c_mH1_mH2_asym;
   }
-  
   TCanvas *c_mH1_mH2_asym_Data=new TCanvas("c_mH1_mH2_asym_Data", "c_mH1_mH2_asym_Data", 700, 700);
-  // DisplaymH1vsmH2_ForFile(f_data, true);
+  DisplaymH1vsmH2_ForFile(f_data, true, mean_H1_mass, sigma_H1_mass, mean_H2_mass, sigma_H2_mass);
+  CMS_lumi(c_mH1_mH2_asym_Data, 4, 11);
   c_mH1_mH2_asym_Data->SaveAs("c_mH1_mH2_asym_Data.png");
   delete c_mH1_mH2_asym_Data;
   
