@@ -1048,7 +1048,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithoutRegressio
     v_sg_p1.push_back(par_KinFit.sg_p1); v_sg_p1_err.push_back(par_KinFit.sg_p1_err);
     v_sg_p2.push_back(par_KinFit.sg_p2); v_sg_p2_err.push_back(par_KinFit.sg_p2_err);
     v_sg_p3.push_back(par_KinFit.sg_p3); v_sg_p3_err.push_back(par_KinFit.sg_p3_err);
-    leg=new TLegend(0.55, 0.60, 0.91, 0.90);
+    leg=new TLegend(0.59, 0.60, 0.91, 0.90);
     leg->SetFillStyle(0);
     h_mX_SR_KinFit->SetLineColor(kBlack);
     h_mX_SR_KinFit->SetLineWidth(2);
@@ -1056,8 +1056,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithoutRegressio
     if (focus)
     {
       leg->AddEntry(h_mX_SR_KinFit, "ExpGaussExp fit", "L");
-      leg->AddEntry(h_mX_SR_KinFit, ("m_{X} = "+masses.at(i)+" GeV Signal").c_str(), "LEP");
-      leg->AddEntry((TObject*)0, ("Fit #chi^{2}/n = "+ftoa2(plot_KinFit->chiSquare())).c_str(), "");
+      leg->AddEntry(h_mX_SR_KinFit, ("m_{X} = "+masses.at(i)+" GeV signal").c_str(), "LEP");
     }
     RooPlot *plot_JECp1_KinFit, *plot_JECm1_KinFit;
     Params par_JERp1_KinFit, par_JERm1_KinFit;

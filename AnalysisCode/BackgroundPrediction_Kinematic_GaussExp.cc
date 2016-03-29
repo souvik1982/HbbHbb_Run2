@@ -224,7 +224,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   
   RooPlot *data_plot=x->frame();
   pred.plotOn(data_plot);
-  bg.plotOn(data_plot, RooFit::VisualizeError(*r_bg, 1), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
+  bg.plotOn(data_plot, RooFit::VisualizeError(*r_bg, 1), RooFit::FillColor(kGreen+1), RooFit::FillStyle(3001));
   bg.plotOn(data_plot, RooFit::LineColor(kBlack));
   pred.plotOn(data_plot, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
   

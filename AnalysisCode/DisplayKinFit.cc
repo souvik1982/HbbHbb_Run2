@@ -43,15 +43,15 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   /*double n=h_mX_SR->GetSumOfWeights();
   h_mX_SR->Scale(1./n);
   h_mX_SR_biasCorrected->Scale(1./n);
-  h_mX_SR_kinFit->Scale(1./n);
-  */
+  h_mX_SR_kinFit->Scale(1./n);*/
+  
   h_mX_SR->Rebin(10);
   h_mX_SR_biasCorrected->Rebin(10);
   h_mX_SR_kinFit->Rebin(10);
   
-  h_mX_SR->GetXaxis()->SetRangeUser(200, 1400);
-  h_mX_SR_biasCorrected->GetXaxis()->SetRangeUser(200, 1400);
-  h_mX_SR_kinFit->GetXaxis()->SetRangeUser(200, 1400);
+  h_mX_SR->GetXaxis()->SetRangeUser(250, 1400);
+  h_mX_SR_biasCorrected->GetXaxis()->SetRangeUser(250, 1400);
+  h_mX_SR_kinFit->GetXaxis()->SetRangeUser(250, 1400);
   
   h_mX_SR->SetLineWidth(2);
   h_mX_SR_biasCorrected->SetLineWidth(2);
@@ -62,7 +62,7 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   h_mX_SR->SetLineStyle(7);
   h_mX_SR_biasCorrected->SetLineColor(kGreen);
   h_mX_SR_biasCorrected->SetLineStyle(7);
-  h_mX_SR_kinFit->Smooth(200);
+  h_mX_SR_kinFit->Smooth(100);
   h_mX_SR_kinFit->SetLineColor(kRed+1);
   
   if (first)
@@ -71,17 +71,18 @@ void DisplayKinFitForFile(TFile *file, double xLine)
     h_mX_SR_kinFit->GetYaxis()->SetTitle("Normalized Units");
     h_mX_SR_kinFit->GetYaxis()->SetTitleOffset(1.4);
     h_mX_SR_kinFit->DrawNormalized("hist");
+    // h_mX_SR_kinFit->DrawNormalized("hist");
     TLegend *leg=new TLegend(0.5, 0.7, 0.89, 0.89);
     leg->SetLineColor(0);
     leg->SetFillColor(0);
     leg->AddEntry(h_mX_SR, "m_{X} before Kinematic Fit");
-   // leg->AddEntry(h_mX_SR_biasCorrected, "m_{X} w/ Bias Correct.");
+    // leg->AddEntry(h_mX_SR_biasCorrected, "m_{X} w/ Bias Correct.");
     leg->AddEntry(h_mX_SR_kinFit, "m_{X} after Kinematic Fit");
     leg->Draw();
     first=false;
   }
   else h_mX_SR_kinFit->DrawNormalized("hist same");
-  //h_mX_SR_biasCorrected->Draw("hist same");
+  //h_mX_SR_biasCorrected->DrawNormalized("hist same");
   h_mX_SR->DrawNormalized("hist same");
   
   TLine *line=new TLine(xLine, 0, xLine, 0.1);

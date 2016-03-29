@@ -370,7 +370,7 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
   {
 	  if (mass=="270")
 	  {       
-		  rangeLo=250, rangeHi=600.;
+		  rangeLo=250, rangeHi=350.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 260., 280.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 8.);
 		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 9., 530.);
@@ -982,8 +982,8 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
     if (focus)
     {
       leg->AddEntry(h_mX_SR_KinFit, "Gauss+Gauss fit", "L");
-      leg->AddEntry(h_mX_SR_KinFit, ("m_{X} = "+masses.at(i)+" GeV Signal").c_str(), "LEP");
-      leg->AddEntry((TObject*)0, ("#chi^{2}/n = "+ftoa2(plot_KinFit->chiSquare())).c_str(), "");
+      leg->AddEntry(h_mX_SR_KinFit, ("m_{X} = "+masses.at(i)+" GeV signal").c_str(), "LEP");
+      // leg->AddEntry((TObject*)0, ("#chi^{2}/n = "+ftoa2(plot_KinFit->chiSquare())).c_str(), "");
     }
     RooPlot *plot_JECp1_KinFit, *plot_JECm1_KinFit;
 		Params par_JERp1_KinFit, par_JERm1_KinFit;
