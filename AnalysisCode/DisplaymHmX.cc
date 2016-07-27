@@ -103,9 +103,9 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, d
 {
   std::vector<TFile*> v_files;
   for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
-  TFile *f_data=new TFile("Histograms_BTagCSV_Skim.root");
+  TFile *f_data=new TFile("Histograms_BTagCSV.root");
   //TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
-  std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1};// kAzure+3, kPink+2, kGray+2,kBlue+1};
+  std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1, kAzure+3, kPink+2};//, kGray+2,kBlue+1};
   
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();
@@ -136,6 +136,7 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, d
 
   for (int i=v_files.size()-1; i>=0; --i)
   {
+     std::cout<<" here "<<std::endl;	
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass", v_colors.at(i));
   }
   // DisplayHistogram_mH_forFile(f_data, "h_H1_mass", kBlack);
@@ -143,7 +144,7 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, d
   leg->Draw();
   c_H1_mass->SaveAs("c_H1_mass.png");
   delete c_H1_mass;
-  
+  std::cout<<" here "<<std::endl; 
   // Plot mH2
   first=true;
   TCanvas *c_H2_mass=new TCanvas("c_H2_mass", "c_H2_mass", 700, 700);
@@ -160,7 +161,7 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, d
   // Plot mH1 vs mH2
   writeExtraText = true;       // if extra text
 	extraText  = "Preliminary";  // default extra text is "Preliminary"
-	lumi_13TeV  = "2.3 fb^{-1}";  // default is "5.1 fb^{-1}"
+	lumi_13TeV  = "4.0 fb^{-1} 2016";  // default is "5.1 fb^{-1}"
   for (unsigned int i=0; i<v_files.size(); ++i)
   {
     TCanvas *c_mH1_mH2_asym=new TCanvas("c_mH1_mH2_asym", "c_mH1_mH2_asym", 700, 700);

@@ -70,8 +70,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   int evt;
   int isData, nTrueInt;
   float trigger_HLT_HH4bLowLumi;
-  int trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v; 
-  int trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v;
+  int trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v; 
+  int trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v;
   float vType;
   float puWeight, genWeight;
   int nJets;
@@ -87,13 +87,14 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float met_pT, met_phi;
   
   float jet_corr[100], 
-        rho,
+        nPVs,
         jet_mt[100], 
         jet_leadTrackPt[100], 
         jet_leptonPtRel[100], 
         jet_leptonPt[100], 
         jet_leptonDeltaR[100],
         jet_neHEF[100],
+	jet_chHEF[100],
         jet_neEmEF[100], 
         jet_chMult[100], 
         jet_vtxPt[100], 
@@ -126,16 +127,16 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     // b jet regression variables
     reader->AddVariable("Jet_pt",            &this_Jet_pt);
     reader->AddVariable("Jet_corr",          &this_Jet_corr);
-    reader->AddVariable("rho",               &this_rho);
+    reader->AddVariable("nPVs",               &this_rho);
     reader->AddVariable("Jet_eta",           &this_Jet_eta); 
     reader->AddVariable("Jet_mt",            &this_Jet_mt); 
     reader->AddVariable("Jet_leadTrackPt",   &this_Jet_leadTrackPt); 
     reader->AddVariable("Jet_leptonPtRel",   &this_Jet_leptonPtRel); 
     reader->AddVariable("Jet_leptonPt",      &this_Jet_leptonPt); 
     reader->AddVariable("Jet_leptonDeltaR",  &this_Jet_leptonDeltaR);
-    reader->AddVariable("Jet_neHEF",         &this_Jet_neHEF);
+    reader->AddVariable("Jet_chHEF+Jet_neHEF",         &this_Jet_neHEF);
     reader->AddVariable("Jet_neEmEF",        &this_Jet_neEmEF); 
-    reader->AddVariable("Jet_chMult",        &this_Jet_chMult);
+    //reader->AddVariable("Jet_chMult",        &this_Jet_chMult);
     reader->AddVariable("Jet_vtxPt",         &this_Jet_vtxPt); 
     reader->AddVariable("Jet_vtxMass",       &this_Jet_vtxMass);
     reader->AddVariable("Jet_vtx3dL",        &this_Jet_vtx3dL); 
@@ -152,8 +153,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("nTrueInt",&nTrueInt);				                      tree->SetBranchStatus("nTrueInt",1);   
   tree->SetBranchAddress("isData", &isData);                                tree->SetBranchStatus("isData", 1);
   tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT_HH4bLowLumi", 1);
-  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v",1);
-  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v",1);
+  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1);
+  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1);
   tree->SetBranchAddress("Vtype", &(vType));                                tree->SetBranchStatus("Vtype", 1); 
   tree->SetBranchAddress("puWeight", &(puWeight));                          tree->SetBranchStatus("puWeight", 1); 
   tree->SetBranchAddress("genWeight", &(genWeight));                        tree->SetBranchStatus("genWeight", 1);
@@ -195,12 +196,13 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   if (regressionFile!="")
   {
     tree->SetBranchAddress("Jet_corr", &(jet_corr));                     
-    tree->SetBranchAddress("rho", &(rho));                               
+    tree->SetBranchAddress("nPVs", &(nPVs));                               
     tree->SetBranchAddress("Jet_leadTrackPt", &(jet_leadTrackPt));        
     tree->SetBranchAddress("Jet_leptonPtRel", &(jet_leptonPtRel));       
     tree->SetBranchAddress("Jet_leptonPt", &(jet_leptonPt));             
     tree->SetBranchAddress("Jet_leptonDeltaR", &(jet_leptonDeltaR));     
     tree->SetBranchAddress("Jet_neHEF", &(jet_neHEF));                   
+    tree->SetBranchAddress("Jet_chHEF", &(jet_chHEF));
     tree->SetBranchAddress("Jet_neEmEF", &(jet_neEmEF));                 
     tree->SetBranchAddress("Jet_chMult", &(jet_chMult));                 
     tree->SetBranchAddress("Jet_vtxPt", &(jet_vtxPt));                   
@@ -294,9 +296,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     h_MET->Fill(met_pT, eventWeight);
     h_MET_phi->Fill(met_phi, eventWeight);
     
-    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v!=1) nTrig1+=1;
-    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v==1) nTrig12+=1;
-    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v!=1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v==1) nTrig2+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v!=1) nTrig1+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig12+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v!=1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig2+=1;
     
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
@@ -329,7 +331,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
       	    Double = TurnOnQuadUp(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
     }
     */		
-    if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v==1)
+    if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1)
     {
       //if(sigmaTrigUnc_string == "Trigm1" || sigmaTrigUnc_string == "Trigp1") eventWeight = eventWeight*(Double+quad-Double*quad); //P(A||B) = P(A)+P(B)-P(A&B) = P(A)+P(B)-P(A)*(B));
       nCut1+=eventWeight;
@@ -434,7 +436,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
               if (isData!=1) this_Jet_corr = jet_corr[jetIndex];
               else this_Jet_corr = jet_pT[jetIndex]/jet_rawpT[jetIndex];
               
-              this_rho = rho;
+              this_rho = nPVs;
               this_Jet_eta = jet_eta[jetIndex];
               
               TLorentzVector jet;
@@ -445,7 +447,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
               this_Jet_leptonPtRel = jet_leptonPtRel[jetIndex];
               this_Jet_leptonPt = jet_leptonPt[jetIndex];
               this_Jet_leptonDeltaR = jet_leptonDeltaR[jetIndex];
-              this_Jet_neHEF = jet_neHEF[jetIndex];
+              this_Jet_neHEF = jet_neHEF[jetIndex]+jet_chHEF[jetIndex];
               this_Jet_neEmEF = jet_neEmEF[jetIndex];
               this_Jet_chMult = jet_chMult[jetIndex];
               this_Jet_vtxPt = jet_vtxPt[jetIndex];
@@ -457,7 +459,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
               
               //std::cout<<"Jet pT = "<<this_Jet_pt<<", corr = "<<this_Jet_corr<<", regressed pT = "<<regressedJetpT<<std::endl;
               
-              jet_regressed_pT[jetIndex]=regressedJetpT;
+              jet_regressed_pT[jetIndex]=regressedJetpT * jet_pT[jetIndex];
             }
           }
           
@@ -538,9 +540,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::cout<<"========================"<<std::endl;
   
   std::cout<<"=== Trigger Report === "<<std::endl;
-  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v = "<<nTrig1/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
-  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v = "<<nTrig12/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
-  std::cout<<"trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v = "<<nTrig2/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v = "<<nTrig1/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v = "<<nTrig12/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v = "<<nTrig2/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
   
   delete h_Count;
   delete h_nCbJets;
