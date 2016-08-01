@@ -1,4 +1,4 @@
-setenv dir /eos/uscms/store/user/lpchbb/HeppyNtuples/V22reHLT/
+setenv dir /eos/uscms/store/user/lpchbb/HeppyNtuples/V23/
 
 root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "BTagCSV0")'
 root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "BTagCSV1")'
