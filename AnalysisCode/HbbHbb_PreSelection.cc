@@ -85,6 +85,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float genBQuarkFromH_pT[100], genBQuarkFromH_eta[100], genBQuarkFromH_phi[100], genBQuarkFromH_mass[100];
   float jet_MCpT[100], jet_MCeta[100], jet_MCphi[100], jet_MCmass[100];
   float met_pT, met_phi;
+
+  int isMC;
+  std::size_t findGrav = sample.find("Grav");std::size_t findRad = sample.find("Radion");
+  if ( findGrav !=std::string::npos || findRad !=std::string::npos ) isMC = 1;
+  else isMC = 0;
   
   float jet_corr[100], 
         nPVs,
@@ -150,29 +155,37 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchStatus("*", 0);
   tree->SetBranchStatus("evt", 1);
   tree->SetBranchAddress("run", &run);                                      tree->SetBranchStatus("run", 1);  
-  tree->SetBranchAddress("nTrueInt",&nTrueInt);				                      tree->SetBranchStatus("nTrueInt",1);   
+  if(isMC==1){ tree->SetBranchAddress("nTrueInt",&nTrueInt);				                      tree->SetBranchStatus("nTrueInt",1);  } 
   tree->SetBranchAddress("isData", &isData);                                tree->SetBranchStatus("isData", 1);
-  tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT_HH4bLowLumi", 1);
-  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1);
-  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1);
+
+
+  // Different name for MC and data
+  if(isMC==1){ tree->SetBranchAddress("HLT2_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT2_HH4bLowLumi", 1); }
+  else {  tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT_HH4bLowLumi", 1); }
+  if(isMC==1){ tree->SetBranchAddress("HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1); }
+  else { tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1); }
+
+  if(isMC==1){ tree->SetBranchAddress("HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v);  tree->SetBranchStatus("HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1); }
+  else { tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1); }
+
   tree->SetBranchAddress("Vtype", &(vType));                                tree->SetBranchStatus("Vtype", 1); 
-  tree->SetBranchAddress("puWeight", &(puWeight));                          tree->SetBranchStatus("puWeight", 1); 
-  tree->SetBranchAddress("genWeight", &(genWeight));                        tree->SetBranchStatus("genWeight", 1);
+  if(isMC==1){ tree->SetBranchAddress("puWeight", &(puWeight));                          tree->SetBranchStatus("puWeight", 1); }
+  if(isMC==1){  tree->SetBranchAddress("genWeight", &(genWeight));                        tree->SetBranchStatus("genWeight", 1); }
   tree->SetBranchAddress("nJet", &(nJets));                                 tree->SetBranchStatus("nJet", 1); 
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));                    tree->SetBranchStatus("Jet_btagCSV", 1); 
   tree->SetBranchAddress("Jet_btagCMVAV2", &(jet_btagCMVA));                tree->SetBranchStatus("Jet_btagCMVAV2", 1);
-  tree->SetBranchAddress("Jet_btagCMVAV2MSF_Up", &(jet_btagCMVAMSFUp));     tree->SetBranchStatus("Jet_btagCMVAV2MSF_Up", 1);
-  tree->SetBranchAddress("Jet_btagCMVAV2MSF_Down", &(jet_btagCMVAMSFDown)); tree->SetBranchStatus("Jet_btagCMVAV2MSF_Down", 1);
-  tree->SetBranchAddress("Jet_btagCMVAV2MSF", &(jet_btagCMVAMSF));          tree->SetBranchStatus("Jet_btagCMVAV2MSF", 1);	
+  if(isMC==1){ tree->SetBranchAddress("Jet_btagCMVAV2M_SF_up", &(jet_btagCMVAMSFUp));     tree->SetBranchStatus("Jet_btagCMVAV2M_SF_up", 1);
+  tree->SetBranchAddress("Jet_btagCMVAV2M_SF_down", &(jet_btagCMVAMSFDown)); tree->SetBranchStatus("Jet_btagCMVAV2M_SF_down", 1);
+  tree->SetBranchAddress("Jet_btagCMVAV2M_SF", &(jet_btagCMVAMSF));          tree->SetBranchStatus("Jet_btagCMVAV2M_SF", 1); }	
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                              tree->SetBranchStatus("Jet_pt", 1);
   tree->SetBranchAddress("Jet_rawPt", &(jet_rawpT));                        tree->SetBranchStatus("Jet_rawPt", 1);
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                            tree->SetBranchStatus("Jet_eta", 1); 
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                            tree->SetBranchStatus("Jet_phi", 1); 
   tree->SetBranchAddress("Jet_mass", &(jet_mass));                          tree->SetBranchStatus("Jet_mass", 1);
-  tree->SetBranchAddress("Jet_mcPt", &(jet_MCpT));                          tree->SetBranchStatus("Jet_mcPt", 1);
+  if(isMC==1){ tree->SetBranchAddress("Jet_mcPt", &(jet_MCpT));                          tree->SetBranchStatus("Jet_mcPt", 1);
   tree->SetBranchAddress("Jet_mcEta", &(jet_MCeta));                        tree->SetBranchStatus("Jet_mcEta", 1);
   tree->SetBranchAddress("Jet_mcPhi", &(jet_MCphi));                        tree->SetBranchStatus("Jet_mcPhi", 1);
-  tree->SetBranchAddress("Jet_mcM", &(jet_MCmass));                         tree->SetBranchStatus("Jet_mcM", 1);
+  tree->SetBranchAddress("Jet_mcM", &(jet_MCmass));                         tree->SetBranchStatus("Jet_mcM", 1); 
   tree->SetBranchAddress("nGenHiggsBoson", &(nGenHiggsBoson));              tree->SetBranchStatus("nGenHiggsBoson",1);
   tree->SetBranchAddress("GenHiggsBoson_pt", &(genHiggsBoson_pT));          tree->SetBranchStatus("GenHiggsBoson_pt",1);
   tree->SetBranchAddress("GenHiggsBoson_eta", &(genHiggsBoson_eta));        tree->SetBranchStatus("GenHiggsBoson_eta",1);
@@ -182,17 +195,18 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));        tree->SetBranchStatus("GenBQuarkFromH_pt", 1);
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));      tree->SetBranchStatus("GenBQuarkFromH_eta", 1);
   tree->SetBranchAddress("GenBQuarkFromH_phi", &(genBQuarkFromH_phi));      tree->SetBranchStatus("GenBQuarkFromH_phi", 1);
-  tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));    tree->SetBranchStatus("GenBQuarkFromH_mass", 1);
+  tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));    tree->SetBranchStatus("GenBQuarkFromH_mass", 1); }
   tree->SetBranchAddress("met_pt", &(met_pT));                              tree->SetBranchStatus("met_pt", 1);
   tree->SetBranchAddress("met_phi", &(met_phi));                            tree->SetBranchStatus("met_phi", 1);
   tree->SetBranchAddress("Jet_corr", &(jet_corrJEC));
   tree->SetBranchAddress("Jet_corr_JECUp", &(jet_corrJECUp));
   tree->SetBranchAddress("Jet_corr_JECDown", &(jet_corrJECDown));
-  tree->SetBranchAddress("Jet_corr_JER", &(jet_corrJER));
+ if(isMC==1){  tree->SetBranchAddress("Jet_corr_JER", &(jet_corrJER));
   tree->SetBranchAddress("Jet_corr_JERUp", &(jet_corrJERUp));
   tree->SetBranchAddress("Jet_corr_JERDown", &(jet_corrJERDown));
-  tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));// tree->SetBranchStatus("Jet_Flavour", 1);
-
+  tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));// tree->SetBranchStatus("Jet_Flavour", 1); 
+    }
+    
   if (regressionFile!="")
   {
     tree->SetBranchAddress("Jet_corr", &(jet_corr));                     

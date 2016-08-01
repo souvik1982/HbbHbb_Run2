@@ -6,7 +6,7 @@ import array
 f = open('fittedFunctions.h', 'w')
 
 ROOT.gROOT.LoadMacro("tdrstyleTrigger.C")
-ROOT.setTDRStyle()
+#ROOT.setTDRStyle()
 
 minTurnOn_funct   = 0
 maxTurnOn_funct   = 1.05
@@ -357,7 +357,8 @@ ROOT.gStyle.SetOptFit(0)
 minRatio    = 0.5
 maxRatio    = 1.5
 
-fileName    = "ZvvHighPt_V20_SingleMuon.root"
+fileName    = "/eos/uscms/store/user/lpchbb/HeppyNtuples/V23/SingleMuonRunC.root"
+#fileName    = "ZvvHighPt_V20_SingleMuon.root"
 #fileName    = "/scratch/sdonato/VHbbRun2/V20/CMSSW_7_1_5/src/Xbb/env_turnOnMET90/ZvvHighPt_V20_TT_TuneCUETP8M1_13TeV-powheg-pythia8.root"
 #fileData    = "/gpfs/ddn/srm/cms/store/user/arizzi/VHBBHeppyV20/SingleMuon/VHBB_HEPPY_V20_SingleMuon__Run2015D-16Dec2015-v1/160210_081323/0000/tree*.root"
 
@@ -400,7 +401,8 @@ functionMax = 1
 #var             = "-log(1-Jet_btagCSV[aJCidx[0]])"
 var             = "Jet_btagCSV[aJCidx[0]]"
 preselection    = preselection + "&&"+ trigger
-trigger         = "ntrgObjects_hltTripleCSV0p67>=3"
+# old ! trigger         = "ntrgObjects_hltTripleCSV0p67>=3"
+trigger = "ntrgObjects_hltBTagCaloCSVp087Triple>=3"
 binning         = (Nbins,functionMin,functionMax)
 ped             = "QuaJet_CSV3"
 title           = "CSV_{3}"
