@@ -1,28 +1,27 @@
-//#include "fittedFunctions_RunC.h"
-#include "fittedFunctions_RunB.h"
-//#include "fittedFunctions_RunB-1.h"
+#include "fittedFunctions_RunD.h"
 //#include"fittedFunctions.h.GoodOld"
 #include "../TDRStyle.h"
+#include "test.h"
 
-TString runName = "RunB";
+TString runName = "RunD";
 //-log(1-CSV3+1.e-7
 
-double TurnOnQuad(float pt1, float pt2, float pt3, float pt4, float CSV3) {
+double TurnOnQuad(float sumpt, float pt2, float pt4, float CSV3) {
 	if(isnan(CSV3)) CSV3=0;
         CSV3=CSV3>1?1:CSV3;CSV3=CSV3<0?0:CSV3;
-	return QuaJet_L1->Eval(pt1+pt2+pt3+pt4)*QuaJet_CaloPt4->Eval(pt4)*QuaJet_CSV3->Eval(CSV3)*QuaJet_PFPt4->Eval(pt4);
+	return QuaJet_L1->Eval(sumpt)*QuaJet_CaloPt4->Eval(pt4)*QuaJet_CSV3->Eval(CSV3)*QuaJet_PFPt4->Eval(pt4);
 }
 
-double TurnOnQuadUp(float pt1, float pt2, float pt3, float pt4, float CSV3) {
+double TurnOnQuadUp(float sumpt, float pt2, float pt4, float CSV3) {
 	if(isnan(CSV3)) CSV3=0;
         CSV3=CSV3>1?1:CSV3;CSV3=CSV3<0?0:CSV3;
-	return QuaJet_L1Up->Eval(pt1+pt2+pt3+pt4)*QuaJet_CaloPt4Up->Eval(pt4)*QuaJet_CSV3Up->Eval(CSV3)*QuaJet_PFPt4Up->Eval(pt4);
+	return QuaJet_L1Up->Eval(sumpt)*QuaJet_CaloPt4Up->Eval(pt4)*QuaJet_CSV3Up->Eval(CSV3)*QuaJet_PFPt4Up->Eval(pt4);
 }
 
-double TurnOnQuadDown(float pt1, float pt2, float pt3, float pt4, float CSV3) {
+double TurnOnQuadDown(float sumpt, float pt2, float pt4, float CSV3) {
 	if(isnan(CSV3)) CSV3=0;
         CSV3=CSV3>1?1:CSV3;CSV3=CSV3<0?0:CSV3;
-	return QuaJet_L1Down->Eval(pt1+pt2+pt3+pt4)*QuaJet_CaloPt4Down->Eval(pt4)*QuaJet_CSV3Down->Eval(CSV3)*QuaJet_PFPt4Down->Eval(pt4);
+	return QuaJet_L1Down->Eval(sumpt)*QuaJet_CaloPt4Down->Eval(pt4)*QuaJet_CSV3Down->Eval(CSV3)*QuaJet_PFPt4Down->Eval(pt4);
 }
 
 void Quadplots_fit_test_singleBtag(){
@@ -61,10 +60,10 @@ void Quadplots_fit_test_singleBtag(){
   /*  c1->SetLogy();
     gPad->RedrawAxis();
   //  mainPad->cd();   
-  //  tree->Draw("run  >> h(200,275600,276500)","HLT_BIT_HLT_IsoMu18_v && HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v","");
+  //  tree->Draw("run  >> h(200,275600,276500)","HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v","");
     tree->Draw("run  >> h(200,275600,276500)","","");
-    tree->Draw("run  >> h1(200,275600,276500)","HLT_BIT_HLT_IsoMu18_v","same");
-    tree->Draw("run  >> h2(200,275600,276500)","!HLT_BIT_HLT_IsoMu18_v","same");
+    tree->Draw("run  >> h1(200,275600,276500)","HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4","same");
+    tree->Draw("run  >> h2(200,275600,276500)","!HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4","same");
 
     h = (TProfile*) gDirectory->Get("h");h->SetLineColor(kRed);h->GetYaxis()->SetRangeUser(1e3,10e6);
     h = (TProfile*) gDirectory->Get("h2");h->SetLineColor(kBlack);//h->SetMaximum(2.0*h->GetMaximum());
@@ -77,16 +76,16 @@ void Quadplots_fit_test_singleBtag(){
     Long64_t maxEv = tree->GetEntries(); 
 
     //////////////////////////////////////////////////
-    // plots for the single b-tag trigger, starting from (HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30)
+    // plots for the single b-tag trigger, starting from (HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30)
     //////////////////////////////////////////////////
     gPad->RedrawAxis();
     mainPad->cd();   
-    tree->Draw("Jet_pt[3]  >> h(25,0,200)"," TurnOnQuad(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","",maxEv);
+    tree->Draw("Jet_pt[3]  >> h(25,0,200)"," TurnOnQuad(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","",maxEv);
     h = (TProfile*) gDirectory->Get("h");h->SetLineColor(kBlack);h->SetMaximum(2.0*h->GetMaximum());
-    tree->Draw("Jet_pt[3] >> h1(25,0,1)"," 1.0001*(HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && (HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4))","same",maxEv);
+    tree->Draw("Jet_pt[3] >> h1(25,0,1)"," 1.0001*(HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && (HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4))","same",maxEv);
     h1 = (TProfile*) gDirectory->Get("h1");
-    tree->Draw("Jet_pt[3]  >> h2(25,0,200)"," TurnOnQuadUp(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
-    tree->Draw("Jet_pt[3]  >> h3(25,0,200)"," TurnOnQuadDown(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
+    tree->Draw("Jet_pt[3]  >> h2(25,0,200)"," TurnOnQuadUp(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
+    tree->Draw("Jet_pt[3]  >> h3(25,0,200)"," TurnOnQuadDown(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
 
     hU=(TProfile*) gDirectory->Get("h2");
     hU->SetLineStyle(2);
@@ -143,12 +142,12 @@ void Quadplots_fit_test_singleBtag(){
     // return;
     //
     mainPad->cd();
-    tree->Draw("MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))  >> h(25,0,1)"," TurnOnQuad(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","",maxEv);
+    tree->Draw("MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))  >> h(25,0,1)"," TurnOnQuad(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","",maxEv);
     h = (TProfile*) gDirectory->Get("h");h->SetLineColor(kBlack);h->SetMaximum(2.0*h->GetMaximum());
-    tree->Draw("MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))) >> h1(25,0,1)"," 1.0001*(HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && (HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4))","same",maxEv);
+    tree->Draw("MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))) >> h1(25,0,1)"," 1.0001*(HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && (HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4))","same",maxEv);
     h1 = (TProfile*) gDirectory->Get("h1");
-    tree->Draw("MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))  >> h2(25,0,200)"," TurnOnQuadUp(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
-    tree->Draw("MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))  >> h3(25,0,200)"," TurnOnQuadDown(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
+    tree->Draw("MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))  >> h2(25,0,200)"," TurnOnQuadUp(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
+    tree->Draw("MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))  >> h3(25,0,200)"," TurnOnQuadDown(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
 
     hU=(TProfile*) gDirectory->Get("h2");
     hU->SetLineStyle(2);
@@ -200,13 +199,13 @@ void Quadplots_fit_test_singleBtag(){
     //  c1->SaveAs("check_full_CSV3_single.C");
 
     mainPad->cd();
-    tree->Draw("Jet_eta[0]  >> h(25,-4,+4)"," TurnOnQuad(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","",maxEv);
+    tree->Draw("Jet_eta[0]  >> h(25,-4,+4)"," TurnOnQuad(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","",maxEv);
     h = (TProfile*) gDirectory->Get("h");h->SetLineColor(kBlack);h->SetMaximum(2.0*h->GetMaximum());
-    tree->Draw("Jet_eta[0] >> h1(25,0,1)"," 1.0001*(HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && (HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4))","same",maxEv);
+    tree->Draw("Jet_eta[0] >> h1(25,0,1)"," 1.0001*(HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && (HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4))","same",maxEv);
     h1 = (TProfile*) gDirectory->Get("h1");
 
-    tree->Draw("Jet_eta[0] >> h2(25,0,200)"," TurnOnQuadUp(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
-    tree->Draw("Jet_eta[0] >> h3(25,0,200)"," TurnOnQuadDown(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
+    tree->Draw("Jet_eta[0] >> h2(25,0,200)"," TurnOnQuadUp(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
+    tree->Draw("Jet_eta[0] >> h3(25,0,200)"," TurnOnQuadDown(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
 
     hU=(TProfile*) gDirectory->Get("h2");
     hU->SetLineStyle(2);
@@ -262,12 +261,12 @@ void Quadplots_fit_test_singleBtag(){
 
 
     mainPad->cd();
-    tree->Draw("Jet_pt[1]  >> h(25,0,200)"," TurnOnQuad(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","",maxEv);
+    tree->Draw("Jet_pt[1]  >> h(25,0,200)"," TurnOnQuad(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","",maxEv);
     h = (TProfile*) gDirectory->Get("h");h->SetLineColor(kBlack);h->SetMaximum(2.0*h->GetMaximum());
-    tree->Draw("Jet_pt[1] >> h1(25,0,1)"," 1.0001*(HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && (HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4))","same",maxEv);
+    tree->Draw("Jet_pt[1] >> h1(25,0,1)"," 1.0001*(HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && (HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4))","same",maxEv);
     h1 = (TProfile*) gDirectory->Get("h1");
-    tree->Draw("Jet_pt[1]  >> h2(25,0,200)"," TurnOnQuadUp(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
-    tree->Draw("Jet_pt[1]  >> h3(25,0,200)"," TurnOnQuadDown(Jet_pt[0], Jet_pt[1], Jet_pt[2], Jet_pt[3], min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu18_v && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
+    tree->Draw("Jet_pt[1]  >> h2(25,0,200)"," TurnOnQuadUp(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
+    tree->Draw("Jet_pt[1]  >> h3(25,0,200)"," TurnOnQuadDown(Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3], Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$)), Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$)), min(MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))),1-1.e-7))*(HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4 && Alt$(Jet_pt[3],0)>30 && abs(Jet_eta[0])<2.4 && abs(Jet_eta[1])<2.4 && abs(Jet_eta[2])<2.4 && abs(Jet_eta[3])<2.4)","Lhistsame",maxEv);
 
     hU=(TProfile*) gDirectory->Get("h2");
     hU->SetLineStyle(2);
