@@ -3,7 +3,7 @@ import copy
 from math import *
 import array
 
-runName      = "RunB"
+runName      = ""
 
 ffName = "fittedFunctions_" + runName + ".h"
 f = open( ffName , 'w')
@@ -30,6 +30,7 @@ trigger       ="ntrgObjects_hltQuadPFCentralJetLooseID45>=4"
 binning       =(40,0,120)
 preselection  ="1"
 
+maxev = 100000000
 
 def getTitle(fileName):
     file_ = ROOT.TFile.Open(fileName)
@@ -100,11 +101,11 @@ def makeHistos():
     print "trigger=",trigger
     print "preselection=",preselection
     print "binning=",str(binning)
-    tree.Draw(var+">>num"+str(binning),str(preselection+"&&"+trigger))
-    print "Draw:\t",var+">>num"+str(binning),str(preselection+"&&"+trigger)
+    tree.Draw(var+">>num"+str(binning),str(preselection+"&&"+trigger), "",maxev)
+    print "Draw:\t",var+">>num"+str(binning),str(preselection+"&&"+trigger )
     num = ROOT.gDirectory.Get("num")
     num = copy.copy(num)
-    tree.Draw(var+">>den"+str(binning),str(preselection))
+    tree.Draw(var+">>den"+str(binning),str(preselection), "",maxev)
     print "Draw:\t",var+">>den"+str(binning),str(preselection)
     den = ROOT.gDirectory.Get("den")
     den = copy.copy(den)
@@ -363,18 +364,19 @@ ROOT.gStyle.SetOptFit(0)
 minRatio    = 0.5
 maxRatio    = 1.5
 
-fileName     = "root://cmseos.fnal.gov//store/user/lpchbb/HeppyNtuples/V23/SingleMuon" + runName + ".root"
+fileName    ="SingleMuonSkimmed"+runName+".root"
+#fileName     = "root://cmseos.fnal.gov//store/user/lpchbb/HeppyNtuples/V23/SingleMuon" + runName + ".root"
 #fileName    = "ZvvHighPt_V20_SingleMuon.root"
 #fileName    = "/scratch/sdonato/VHbbRun2/V20/CMSSW_7_1_5/src/Xbb/env_turnOnMET90/ZvvHighPt_V20_TT_TuneCUETP8M1_13TeV-powheg-pythia8.root"
 #fileData    = "/gpfs/ddn/srm/cms/store/user/arizzi/VHBBHeppyV20/SingleMuon/VHBB_HEPPY_V20_SingleMuon__Run2015D-16Dec2015-v1/160210_081323/0000/tree*.root"
 
-preselection = "HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4" #"HLT_BIT_HLT_IsoMu18_v"
+preselection = "HLT_BIT_HLT_IsoMu24_v" # && Jet_puId>=4" #"HLT_BIT_HLT_IsoMu18_v"
 
 parametersTurnOn_funct = ()
 #################### L1 #########################
 parametersTurnOn_funct = (200,100,0.01,1)
 
-Nbins       = 50
+Nbins       =  50
 functionMin = 110
 functionMax = 310
 var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
@@ -387,11 +389,11 @@ doPlots()
 ##################### CaloPt4 #########################
 parametersTurnOn_funct = (100,20,0.01,1)
 
-Nbins       = 35
+Nbins       = 70
 functionMin = 35
 functionMax = 105
-#var             = "Jet_pt[3]"
-var             = "Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$))"
+var             = "Jet_pt[3]"
+#var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
 trigger         = "ntrgObjects_hltQuadCentralJet45>=4"
 binning         = (Nbins,functionMin,functionMax)
@@ -402,12 +404,15 @@ doPlots()
 
 ##################### CSV3 #########################
 parametersTurnOn_funct = (100,20,0.01,1)
-Nbins       = 24
-functionMin =  0.4 #CSVL =  0.460 
+Nbins       = 100
+functionMin = 0. #CSVL =  0.460 
 functionMax = 1
 #var             = "-log(1-Jet_btagCSV[aJCidx[0]])"
 #var             = "Jet_btagCSV[aJCidx[0]]"
 var             = "MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))"
+#var              = "CSVsorted[2]"
+#var              = "Jet_btagCSV[2]"
+#var             = "Sum$(CSV(Jet_btagCSV,Jet_eta,Jet_puId,2,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
 # old ! trigger         = "ntrgObjects_hltTripleCSV0p67>=3"
 trigger = "ntrgObjects_hltBTagCaloCSVp087Triple>=3"
@@ -419,11 +424,11 @@ doPlots()
 ###################### PFPt4 ########################
 parametersTurnOn_funct = (0,20,0.01,1)
 
-Nbins       = 50
+Nbins       = 30#25
 functionMin = 40
-functionMax = 140
-#var             = "Jet_pt[3]"
-var             = "Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$))"
+functionMax = 100#140
+var             = "Jet_pt[3]"
+#var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
 trigger         = "ntrgObjects_hltQuadPFCentralJetLooseID45>=4"
 binning         = (Nbins,functionMin,functionMax)

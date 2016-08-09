@@ -1,4 +1,5 @@
-setenv dir /eos/uscms/store/user/lpchbb/HeppyNtuples/V23/
+setenv dir /eos/uscms/store/user/lpchbb/HeppyNtuples/V23
+
 root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph","JEC","JER","Trig","bTag")'
 #root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B_M-270_narrow_13TeV-madgraph","JEC","JER","Trig","bTag")'
 root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph","JEC","JER","Trig","bTag")'
@@ -15,6 +16,8 @@ root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B
 root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph","JEC","JER","Trig","bTag")'
 root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph","JEC","JER","Trig","bTag")'
 root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph","JEC","JER","Trig","bTag")'
-#root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B_M-1600_narrow_13TeV-madgraph","JEC","JER","Trig","bTag")'
-#root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B_M-2000_narrow_13TeV-madgraph","JEC","JER","Trig","bTag")'
-#root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B_M-3000_narrow_13TeV-madgraph","JEC","JER","Trig","bTag")'
+root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph","JEC","JER","Trig","bTag")'
+##root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B_M-1600_narrow_13TeV-madgraph","JEC","JER","Trig","bTag")'
+##root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B_M-2000_narrow_13TeV-madgraph","JEC","JER","Trig","bTag")'
+ ##root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "GluGluToBulkGravitonToHHTo4B_M-3000_narrow_13TeV-madgraph","JEC","JER","Trig","bTag")'
+

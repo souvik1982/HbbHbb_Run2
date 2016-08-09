@@ -5,7 +5,7 @@ import array
 
 runName      = "RunB"
 
-ffName = "fittedFunctions_" + runName + ".h"
+ffName = "fittedFunctions2_" + runName + ".h"
 f = open( ffName , 'w')
 
 ROOT.gROOT.LoadMacro("tdrstyleTrigger.C")
@@ -29,7 +29,6 @@ var           ="Jet_pt[3]"
 trigger       ="ntrgObjects_hltQuadPFCentralJetLooseID45>=4"
 binning       =(40,0,120)
 preselection  ="1"
-
 
 def getTitle(fileName):
     file_ = ROOT.TFile.Open(fileName)
@@ -188,10 +187,10 @@ def confidenceInterval(graph, function):
     fitUp.SetLineColor(ROOT.kRed)
     fitUp.SetLineStyle(2)
     fitDown = function.Clone("fitDown")
-    fitDown.SetLineStyle(2) 
+    fitDown.SetLineStyle(2)
     print "Fit1"
-    fit.FixParameter(4,0)
-    fit.FixParameter(5,0)
+#    fit.FixParameter(4,0)
+#    fit.FixParameter(5,0)
     graph.Fit(fit,"","",fit.GetXmin(),fit.GetXmax())
 #    fit.ReleaseParameter(4)
 #    fit.ReleaseParameter(5)
@@ -294,7 +293,6 @@ def confidenceInterval(graph, function):
                 print "excess_down:",excess_down            
                 print "excess_squared:",excess_squared            
             excess_squared += (excess_up**2 + excess_down**2)
-        print "test: ", graph.GetN()    
         fit_goodness = excess_squared/ graph.GetN()
         print "ped: ",ped
         print "nsigma: ",nsigma
@@ -313,7 +311,7 @@ def doPlots():
 
     #function = ROOT.TF1("turnonPt","1-(0.5-0.5*erf( (x-[0])/[1]))*([3])-[2] ",functionMin,functionMax)
 #    function = ROOT.TF1("turnonPt","1-(0.5-0.5*TMath::Erf( (x-[0])/[1]))*[3]-[2] ",functionMin,functionMax)
-    function = ROOT.TF1("turnonPt","1-(0.5-0.5*TMath::Erf( (x-[0])*(1+[4]**2)/[1]))*[3]-[2] ",functionMin,functionMax)
+    function = ROOT.TF1("turnonPt","1-(0.5-0.5*TMath::Erf( (x-[0])/[1]))*[3]-[2] ",functionMin,functionMax)
 #    function = ROOT.TF1("turnonPt","1-(0.5-0.5*TMath::Erf( (x-[0])/([1])*(x-[0]>[5]) + ((x-[0])/([1]+[4]) + [5]*(1/[1]+[4]-1/[1]))*(x-[0]<=[5]) ))*[3]-[2] ",functionMin,functionMax)
 #    function = ROOT.TF1("turnonPt","1-(0.5-0.5*TMath::Erf( (x-[0])*(1+[4]*x**2)/([1]+[5]*x**2)))*([3])-[2] ",functionMin,functionMax)
 #    function = ROOT.TF1("turnonPt","(0.5+0.5*TMath::Erf( (x-[0])*(x-[0]>[5])/[1] + (x-[0])*(x-[0]<[5])/[2] + [5]*(1/[1]-1/[2])*(x-[0]<[5]) ))*[4]+[3] ",functionMin,functionMax)
@@ -347,13 +345,13 @@ def doPlots():
     TurnOn_functUp.Draw("same")
     TurnOn_functDown.Draw("same")
 
-    #c1.SaveAs("turnOn_"+ped+"_"+runName+".C")
+    #c1.SaveAs("turnOn_"+ped+".C")
     c1.SaveAs("turnOn_"+ped+"_"+runName+".pdf")
-    #c1.SaveAs("turnOn_"+ped+"_"+runName+".root")
-
+    #c1.SaveAs("turnOn_"+ped+".root")
     f.write(('TF1* %s = new TF1("%s","'%(ped,ped)           + str(TurnOn_funct.GetExpFormula("P"))+'");\n'))
     f.write(('TF1* %sUp = new TF1("%sUp","'%(ped,ped)       + str(TurnOn_functUp.GetExpFormula("P"))+'");\n'))
     f.write(('TF1* %sDown = new TF1("%sDown","'%(ped,ped)   + str(TurnOn_functDown.GetExpFormula("P"))+'");\n'))
+	
 
 ROOT.gROOT.SetBatch()
 ROOT.gStyle.SetOptStat(0)
@@ -365,43 +363,59 @@ maxRatio    = 1.5
 
 fileName     = "root://cmseos.fnal.gov//store/user/lpchbb/HeppyNtuples/V23/SingleMuon" + runName + ".root"
 #fileName    = "ZvvHighPt_V20_SingleMuon.root"
-#fileName    = "/scratch/sdonato/VHbbRun2/V20/CMSSW_7_1_5/src/Xbb/env_turnOnMET90/ZvvHighPt_V20_TT_TuneCUETP8M1_13TeV-powheg-pythia8.root"
+#fileName    = "ZvvHighPt_V20_TT_TuneCUETP8M1_13TeV-powheg-pythia8.root"
 #fileData    = "/gpfs/ddn/srm/cms/store/user/arizzi/VHBBHeppyV20/SingleMuon/VHBB_HEPPY_V20_SingleMuon__Run2015D-16Dec2015-v1/160210_081323/0000/tree*.root"
 
-preselection = "HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4" #"HLT_BIT_HLT_IsoMu18_v"
+preselection = "HLT_BIT_HLT_IsoMu24_v && Jet_puId>=4"
 
 parametersTurnOn_funct = ()
 #################### L1 #########################
-parametersTurnOn_funct = (200,100,0.01,1)
+parametersTurnOn_funct = (200,100,0.01,1,1E-3,1E-3)
 
 Nbins       = 50
 functionMin = 110
 functionMax = 310
 var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
-trigger         = "ntrgObjects_hltQuadCentralJet45>=1"
+trigger         = "ntrgObjects_hltQuadCentralJet30>=1"
 binning         = (Nbins,functionMin,functionMax)
-ped             = "QuaJet_L1"
+ped             = "DoubleJet_L1"
 title           = "p^{T}_{1}+p^{T}_{2}+p^{T}_{3}+p^{T}_{4}"
 doPlots()
 
-##################### CaloPt4 #########################
-parametersTurnOn_funct = (100,20,0.01,1)
+##################### CaloPt4 ###et######################
+parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
 
-Nbins       = 35
+Nbins       = 40
 functionMin = 35
-functionMax = 105
+functionMax = 85
 #var             = "Jet_pt[3]"
 var             = "Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
-trigger         = "ntrgObjects_hltQuadCentralJet45>=4"
+trigger         = "ntrgObjects_hltQuadCentralJet30>=4"
 binning         = (Nbins,functionMin,functionMax)
-ped             = "QuaJet_CaloPt4"
+ped             = "DoubleJet_CaloPt4"
 title           = "p^{T}_{4}"
 doPlots()
 
+##################### CaloPt2 #########################
+parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
+
+Nbins       = 30
+functionMin = 60
+functionMax = 120
+var             = "Jet_pt[1]"
+var             = "Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$))"
+preselection    = preselection + "&&"+ trigger
+trigger         = "ntrgObjects_hltDoubleCentralJet90>=2"
+binning         = (Nbins,functionMin,functionMax)
+ped             = "DoubleJet_CaloPt2"
+title           = "p^{T}_{2}"
+doPlots()
+
+
 
 ##################### CSV3 #########################
-parametersTurnOn_funct = (100,20,0.01,1)
+parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
 Nbins       = 24
 functionMin =  0.4 #CSVL =  0.460 
 functionMax = 1
@@ -409,26 +423,41 @@ functionMax = 1
 #var             = "Jet_btagCSV[aJCidx[0]]"
 var             = "MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))"
 preselection    = preselection + "&&"+ trigger
-# old ! trigger         = "ntrgObjects_hltTripleCSV0p67>=3"
+#trigger         = "ntrgObjects_hltTripleCSV0p67>=3"
 trigger = "ntrgObjects_hltBTagCaloCSVp087Triple>=3"
 binning         = (Nbins,functionMin,functionMax)
-ped             = "QuaJet_CSV3"
+ped             = "DoubleJet_CSV3"
 title           = "CSV_{3}"
 doPlots()
 
 ###################### PFPt4 ########################
-parametersTurnOn_funct = (0,20,0.01,1)
+parametersTurnOn_funct = (0,20,0.01,1,1E-3,1E-3)
 
 Nbins       = 50
-functionMin = 40
-functionMax = 140
+functionMin = 25
+functionMax = 125
 #var             = "Jet_pt[3]"
 var             = "Sum$(Pt4(Jet_pt,Jet_eta,3,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
-trigger         = "ntrgObjects_hltQuadPFCentralJetLooseID45>=4"
+trigger         = "ntrgObjects_hltQuadPFCentralJetLooseID30>=4"
 binning         = (Nbins,functionMin,functionMax)
-ped             = "QuaJet_PFPt4"
+ped             = "DoubleJet_PFPt4"
 title           = "p^{T}_{4}"
+doPlots()
+
+###################### PFPt2 ########################
+parametersTurnOn_funct = (0,20,0.01,1,1E-3,1E-3)
+
+Nbins       = 50
+functionMin = 80
+functionMax = 180
+#var             = "Jet_pt[1]"
+var             = "Sum$(Pt4(Jet_pt,Jet_eta,1,Iteration$,Length$))"
+preselection    = preselection + "&&"+ trigger
+trigger         = "ntrgObjects_hltDoublePFCentralJetLooseID90>=2"
+binning         = (Nbins,functionMin,functionMax)
+ped             = "DoubleJet_PFPt2"
+title           = "p^{T}_{2}"
 doPlots()
 
 ##############################################
