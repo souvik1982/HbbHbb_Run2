@@ -1,9 +1,9 @@
-#include "fittedFunctions_RunD.h"
+#include "fittedFunctions_RunC.h"
 //#include"fittedFunctions.h.GoodOld"
 #include "../TDRStyle.h"
 #include "test.h"
 
-TString runName = "RunD";
+TString runName = "RunC";
 //-log(1-CSV3+1.e-7
 
 double TurnOnQuad(float sumpt, float pt2, float pt4, float CSV3) {
