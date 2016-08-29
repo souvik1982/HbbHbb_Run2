@@ -10,5 +10,5 @@
   std::vector<double> mean_gen={400, 500, 650, 750, 900};
   
   gROOT->LoadMacro("../../DisplaymHmX.cc");
-  DisplaymHmX(files, mean_gen, 120, 20, 120, 20);
+  DisplaymHmX(files, mean_gen, 125, 20, 125, 20);
 }

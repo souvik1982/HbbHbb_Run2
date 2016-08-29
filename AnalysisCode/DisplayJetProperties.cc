@@ -21,7 +21,7 @@ std::string itoa(int i)
 }
 
 // Display histogram for file 
-void DisplayHistogram_forFile(TFile *file, std::string histogramName, int color)
+TH1* DisplayHistogram_forFile(TFile *file, std::string histogramName, int color)
 {
   TH1F *h=(TH1F*)file->Get(histogramName.c_str());
   h->Scale(1./h->GetSumOfWeights());
@@ -35,6 +35,7 @@ void DisplayHistogram_forFile(TFile *file, std::string histogramName, int color)
     first=false;
   }
   h->Draw("hist same");
+  return h;
 }
 
 void DisplayJetProperties()
@@ -92,7 +93,7 @@ void DisplayJetProperties()
   DisplayHistogram_forFile(f_data, "h_pTOrder_JetpT_1", kBlack);
   //DisplayHistogram_forFile(f_ttbar, "h_pTOrder_JetpT_1", kRed);
   leg->Draw();
-  TArrow *line=new TArrow(40., 0.14, 40., 0); line->SetLineWidth(3);
+  TArrow *line=new TArrow(30., 0.14, 30., 0); line->SetLineWidth(3);
   line->Draw();
   c_pTOrder_JetpT_1->SaveAs("c_pTOrder_JetpT_1.pdf");
   

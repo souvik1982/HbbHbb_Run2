@@ -14,10 +14,10 @@
 
 double jet_pT_cut1=30.;
 
-double mean_H1_mass_=120;
-double sigma_H1_mass_=20;
-double mean_H2_mass_=120;
-double sigma_H2_mass_=20;
+double mean_H1_mass_=115;//120;
+double sigma_H1_mass_=30;//25;
+double mean_H2_mass_=115;//120;
+double sigma_H2_mass_=30;//25;
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
@@ -58,12 +58,14 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
   tree->SetBranchAddress("Jet_regressed_pt", &(jet_regressed_pT));
  // tree->SetBranchAddress("jetIndex_CentralpT40btag_CMVAOrder", &(jetIndex_CentralpT40btag_CMVAOrder));
   tree->SetBranchAddress("jetIndex_CentralpT40btag_CMVAOrder", &(jetIndex_CentralpT40btag_CMVAOrder));	
+  if(type!="Data"){
   tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   
   tree->SetBranchAddress("GenBQuarkFromH_phi", &(genBQuarkFromH_phi));   
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));
   tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));
+  }
 
   // Book histograms
   TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 100, 50., 250.);
@@ -362,7 +364,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
   h_kinFitchi2->Write();
   h_chi->Write();
   h_chi_biasCorrected->Write();
-  h_mX_SR->Write();
+   if(type!="Data"){ h_mX_SR->Write();
   h_mX_SR_biasCorrected->Write();
   h_mX_SR_purity5->Write();
   h_mX_SR_purity0->Write();
@@ -370,17 +372,17 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
   h_mX_SR_purity2->Write();
   h_mX_SR_purity3->Write();
   h_mX_SR_purity4->Write();
-  h_mX_SR_kinFit->Write();
+  h_mX_SR_kinFit->Write(); }
   h_HH_balance_kinFit->Write();        
-  h_mX_SR_kinFit_purity0->Write();
+  if(type!="Data"){ h_mX_SR_kinFit_purity0->Write();
   h_mX_SR_kinFit_purity1->Write();
   h_mX_SR_kinFit_purity2->Write();
   h_mX_SR_kinFit_purity3->Write();
   h_mX_SR_kinFit_purity4->Write();
-  h_mX_SR_kinFit_purity5->Write();
+  h_mX_SR_kinFit_purity5->Write(); }
   h_mX_SB->Write();
   h_mX_SB_biasCorrected->Write();
-  h_mX_SB_kinFit->Write();
+  h_mX_SB_kinFit->Write(); 
   h_Cuts.Write();
 
   tFile2->Write();

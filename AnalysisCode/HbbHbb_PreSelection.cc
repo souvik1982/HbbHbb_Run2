@@ -208,7 +208,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));// tree->SetBranchStatus("Jet_Flavour", 1); 
     }
     
-  tree->SetBranchAddress("btagWeightCMVAV2", &(btagWeightsCMVAV2));
+  if(isMC==1){ tree->SetBranchAddress("btagWeightCMVAV2", &(btagWeightsCMVAV2));}
 
   if (regressionFile!="")
   {
@@ -236,6 +236,12 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   TH1F *h_pTOrder_JetpT_3=new TH1F("h_pTOrder_JetpT_3", "; Jet pT 3 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 350.);
   TH1F *h_pTOrder_JetpT_4=new TH1F("h_pTOrder_JetpT_4", "; Jet pT 4 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
   TH1F *h_pTOrder_JetpT_5=new TH1F("h_pTOrder_JetpT_5", "; Jet pT 5 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
+ 
+  TH1F *h_pTreg_JetpT_1=new TH1F("h_pTreg_JetpT_1", "; Jet pT 1 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 800.);
+  TH1F *h_pTreg_JetpT_2=new TH1F("h_pTreg_JetpT_2", "; Jet pT 2 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 500.);
+  TH1F *h_pTreg_JetpT_3=new TH1F("h_pTreg_JetpT_3", "; Jet pT 3 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 350.);
+  TH1F *h_pTreg_JetpT_4=new TH1F("h_pTreg_JetpT_4", "; Jet pT 4 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
+  TH1F *h_pTreg_JetpT_5=new TH1F("h_pTreg_JetpT_5", "; Jet pT 5 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
   TH1F *h_CSVOrder_JetCSV_1=new TH1F("h_CSVOrder_JetCSV_1", "; Jet CSV 1 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
   TH1F *h_CSVOrder_JetCSV_2=new TH1F("h_CSVOrder_JetCSV_2", "; Jet CSV 2 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
   TH1F *h_CSVOrder_JetCSV_3=new TH1F("h_CSVOrder_JetCSV_3", "; Jet CSV 3 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
@@ -247,7 +253,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   
   TH1F *hSF =new TH1F("hSF"," ", 100, 0., 2.);
   TH1F *hWeight =new TH1F("hWeight"," ", 100, 0., 2.);
- 
+
+  TH1F *hWeightH =new TH1F("hWeightH","Weight High", 100, 0., 5.);
+  TH1F *hWeightL =new TH1F("hWeightL","Weight Low", 100, 0., 5.);
+  TH1F *h_pt_spike=new TH1F("h_pt_spike", "pt in spike; Jet pT 1 for jets with |#eta|<2.5 (GeV); Events", 100, 0., 800.);
+
   TH1F *h_GenX_mass=new TH1F("h_GenX_mass", "; m_{X}^{GEN} (GeV); Events", 1800, 200, 2000);
   TH1F *h_dR_genHbb=new TH1F("h_dR_genHbb", "; #Delta R(b#bar{b}}; Events", 1000, 0., 5.);
   
@@ -361,6 +371,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         
         // Order the jets by pT, CSV, and CMVA
         JetList jetList_Central_pTOrder;
+        JetList jetList_Central_pTreg;
         JetList jetList_CentralpT40_CSVOrder;
         JetList jetList_CentralpT40btag_pTOrder;
         JetList jetList_CentralpT40btag_CSVOrder;
@@ -403,12 +414,13 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
 	//std::cout<<eventWeight << "<--- from SF from shape corr --->"<<btagWeightsCMVAV2<<std::endl;
 	if(nCbJets>3) {
 	hSF->Fill(eventWeight);
-        hWeight->Fill(btagWeightsCMVAV2);
+        if(isMC==1){  hWeight->Fill(btagWeightsCMVAV2); }
 	}
         h_nCbJets->Fill(nCbJets, eventWeight);
         
         // Fill jet pT order histograms
         std::vector<TH1F*> v_pTOrder_JetpT = {h_pTOrder_JetpT_1, h_pTOrder_JetpT_2, h_pTOrder_JetpT_3, h_pTOrder_JetpT_4, h_pTOrder_JetpT_5};
+        std::vector<TH1F*> v_pTreg_JetpT = {h_pTreg_JetpT_1, h_pTreg_JetpT_2, h_pTreg_JetpT_3, h_pTreg_JetpT_4, h_pTreg_JetpT_5};
         std::vector<TH1F*> v_CSVOrder_JetCSV = {h_CSVOrder_JetCSV_1, h_CSVOrder_JetCSV_2, h_CSVOrder_JetCSV_3, h_CSVOrder_JetCSV_4};
         std::vector<TH1F*> v_CMVAOrder_JetCMVA = {h_CMVAOrder_JetCMVA_1, h_CMVAOrder_JetCMVA_2, h_CMVAOrder_JetCMVA_3, h_CMVAOrder_JetCMVA_4};
         fillHistogramsFromJetList(jetList_Central_pTOrder, v_pTOrder_JetpT, eventWeight);
@@ -475,22 +487,34 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
               this_Jet_vtx3deL = jet_vtx3deL[jetIndex];
               double regressedJetpT=(reader->EvaluateRegression("BDTG method"))[0];
               
+              if( jet_pT[jetIndex]>400 ) jet_regressed_pT[jetIndex] = jet_pT[jetIndex];
+              else jet_regressed_pT[jetIndex]=regressedJetpT;// * jet_pT[jetIndex];
+              if(jet_pT[jetIndex]<400) hWeightL->Fill( regressedJetpT/jet_pT[jetIndex] );
+              if(jet_pT[jetIndex]>500) hWeightH->Fill( regressedJetpT/jet_pT[jetIndex] );  
+              if(regressedJetpT>450 && regressedJetpT<500) h_pt_spike->Fill( jet_pT[jetIndex] );            
+
               //std::cout<<"Jet pT = "<<this_Jet_pt<<", corr = "<<this_Jet_corr<<", regressed pT = "<<regressedJetpT<<std::endl;
-              
-              jet_regressed_pT[jetIndex]=regressedJetpT;// * jet_pT[jetIndex];
             }
+
           }
-          
+
+          for (unsigned int j=0; j<jetIndex_CentralpT40btag_CMVAOrder.size(); ++j)
+          {
+              int jetIndex = jetIndex_CentralpT40btag_CMVAOrder.at(j);
+              jetList_Central_pTreg[jet_regressed_pT[jetIndex]]=jetIndex;
+          }
+          fillHistogramsFromJetList(jetList_Central_pTreg, v_pTreg_JetpT, eventWeight);
           //
           // std::cout<<"Writing out the regressed jet pT "<<std::endl;
           // for (unsigned int j=0; j<(unsigned int)nJets; ++j) std::cout<<"jet_regressed_pT["<<j<<"]="<<jet_regressed_pT[j]=jet_pT[j]<<std::endl;
-          
+
           // Write out tree
           outtree->Fill();
           
         } // nCbJets>=3
         
         if (nCbJets>=4) nCut3+=eventWeight;
+        
         
         jetIndex_CentralpT40btag_pTOrder.clear();
         jetIndex_CentralpT40btag_CSVOrder.clear();
@@ -529,6 +553,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   h_pTOrder_JetpT_3->Write();
   h_pTOrder_JetpT_4->Write();
   h_pTOrder_JetpT_5->Write();
+  h_pTreg_JetpT_1->Write();
+  h_pTreg_JetpT_2->Write();
+  h_pTreg_JetpT_3->Write();
+  h_pTreg_JetpT_4->Write();
+  h_pTreg_JetpT_5->Write();
   h_CSVOrder_JetCSV_1->Write();
   h_CSVOrder_JetCSV_2->Write();
   h_CSVOrder_JetCSV_3->Write();
@@ -538,8 +567,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   h_CMVAOrder_JetCMVA_3->Write();
   h_CMVAOrder_JetCMVA_4->Write();
   hSF->Write();
-  hWeight->Write();
-	
+  if(isMC==1){ hWeight->Write(); }
+  hWeightH->Write(); hWeightL->Write(); h_pt_spike->Write(); 
+
   h_GenX_mass->Write();
   h_dR_genHbb->Write();
   h_MET->Write();
@@ -571,6 +601,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   delete h_pTOrder_JetpT_3;
   delete h_pTOrder_JetpT_4;
   delete h_pTOrder_JetpT_5;
+  delete h_pTreg_JetpT_1;
+  delete h_pTreg_JetpT_2;
+  delete h_pTreg_JetpT_3;
+  delete h_pTreg_JetpT_4;
+  delete h_pTreg_JetpT_5;
   delete h_CSVOrder_JetCSV_1;
   delete h_CSVOrder_JetCSV_2;
   delete h_CSVOrder_JetCSV_3;

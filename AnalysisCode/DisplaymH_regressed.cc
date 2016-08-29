@@ -57,7 +57,7 @@ void DisplayHistogram_mH_forFile(TFile *file, std::string histogramName, int col
   leg->AddEntry(h, (name+" #bar{x}="+ftoa(f->GetParameter(1))+", #sigma="+ftoa(f->GetParameter(2))).c_str());
 }
 
-void DisplaymH_regressed_biasCorrected()
+void DisplaymH_regressed()
 {
   std::vector<TFile*> v_files;
   v_files.push_back(new TFile("PreselectedWithoutRegression/LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
@@ -100,7 +100,7 @@ void DisplaymH_regressed_biasCorrected()
     first=true;
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass", kBlue, leg, "AK4");
     first=false;
-    DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass_biasCorrected", kRed, leg, "BiasCorr");
+    //DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass_biasCorrected", kRed, leg, "BiasCorr");
     DisplayHistogram_mH_forFile(v_files_regressed.at(i), "h_H1_mass", kGreen, leg, "Regressed");
     leg->Draw();
     c_H1_mass->SaveAs(("c_H1_mass_"+itoa(mean_gen.at(i))+".png").c_str());
