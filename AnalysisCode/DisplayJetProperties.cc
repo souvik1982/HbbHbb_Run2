@@ -43,20 +43,20 @@ void DisplayJetProperties()
   std::vector<TFile*> v_files;
  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-350_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-350_narrow_13TeV-madgraph.root"));
  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-450_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-450_narrow_13TeV-madgraph.root"));
  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-550_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-550_narrow_13TeV-madgraph.root"));
  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root"));
  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-750_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-750_narrow_13TeV-madgraph.root"));
  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
  v_files.push_back(new TFile("Histograms_BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
  v_files.push_back(new TFile("Histograms_BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root"));
   //v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph.root"));
  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-1000_narrow_13TeV-madgraph.root"));
  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-1200_narrow_13TeV-madgraph.root"));
@@ -65,7 +65,7 @@ void DisplayJetProperties()
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-3000_narrow_13TeV-madgraph.root"));*/
   TFile *f_data=new TFile("Histograms_BTagCSV.root");
   //TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
-  std::vector <double> mean_gen={260, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 900, 1000, 1200, 1400};//, 1600, 2000, 3000};
+  std::vector <double> mean_gen={260, 300, 400, 500, 600, 700, 800, 1000, 1200 };//, 1600, 2000, 3000};
   std::vector<int> v_colors = {kAzure+1, kAzure+3, kRed+1, kPink+1, kPink+3, kGreen+2, kGreen+3, kBlue+1, kGray+2, kCyan, kCyan+2, kRed-4, kRed-7, kYellow-4, kGreen-4, kGreen };
   
   gROOT->SetStyle("Plain");

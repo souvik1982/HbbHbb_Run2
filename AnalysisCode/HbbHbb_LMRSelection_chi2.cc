@@ -14,10 +14,57 @@
 
 double jet_pT_cut1=30.;
 
-double mean_H1_mass_=115;//120;
-double sigma_H1_mass_=30;//25;
-double mean_H2_mass_=115;//120;
-double sigma_H2_mass_=30;//25;
+double mean_H1_mass_=120;//120;
+double sigma_H1_mass_=20;//25;
+double mean_H2_mass_=120;//115;
+double sigma_H2_mass_=20;//30;
+
+float mass_mean( int mass )
+{
+    if( mass == 260 ) return 243;
+    else if( mass == 300 ) return 276;
+    else if( mass == 350 ) return 318;
+    else if( mass == 400 ) return 363;
+    else if( mass == 450 ) return 413;
+    else if( mass == 500 ) return 463;
+    else if( mass == 550 ) return 530;
+    else return mass; 
+}
+
+float mass_mean_reg( int mass )
+{
+    if( mass == 260 ) return 257;
+    else if( mass == 300 ) return 291;
+    else if( mass == 350 ) return 336;
+    else if( mass == 400 ) return 387;
+    else if( mass == 450 ) return 433;
+    else if( mass == 500 ) return 481;
+    else if( mass == 550 ) return 531;
+    else return mass; 
+}
+float mass_sigma( int mass )
+{
+    if( mass == 260 ) return 20;
+    else if( mass == 300 ) return 25;
+    else if( mass == 350 ) return 31;
+    else if( mass == 400 ) return 36;
+    else if( mass == 450 ) return 32;
+    else if( mass == 500 ) return 35;
+    else if( mass == 550 ) return 35;
+    else return 30; 
+}
+
+float mass_sigma_reg( int mass )
+{
+    if( mass == 260 ) return 18;
+    else if( mass == 300 ) return 22;
+    else if( mass == 350 ) return 26;
+    else if( mass == 400 ) return 24;
+    else if( mass == 450 ) return 27;
+    else if( mass == 500 ) return 31;
+    else if( mass == 550 ) return 30;
+    else return 30; 
+}
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
@@ -26,13 +73,13 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   return jet_p4;
 }
 
-void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
+void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, int signal_mass = 300, bool reg = false  )
 {
 
   std::string inputfilename="../PreSelected_"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
-  std::cout<<"Opened input file "<<inputfilename<<std::endl;
+  //std::cout<<"Opened input file "<<inputfilename<<std::endl;
   
   // Book variables
   int evt;
@@ -116,14 +163,16 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
   TH1F h_Cuts=*((TH1F*)((TH1F*)tFile1->Get("h_Cuts"))->Clone("h_Cuts"));
   tFile1->Close();
 
- 
-  
+  float SR_tot=0, SB_tot=0;
+  int masses[]={260,300,350,400,450,500,550};
+  std::map<int,float> SB_m, SR_m;
+  for( auto m : masses ){ SR_m[m]=0; SB_m[m]=0; }
   // Event loop
   double nCut4=0, nCut5=0, nCutGen=0;
   for (int i=0; i<tree->GetEntries(); ++i)
   {
-    tree->GetEvent(i);
-    
+      tree->GetEvent(i);
+
     bool foundHH=false;
     double chi2_old=200.;
     double m_diff_old=100.;		
@@ -272,11 +321,17 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
           std::cout<<"ERROR: This is a signal sample without 4 gen b from H."<<std::endl;
         }
       }
-      
+
       double oppSign=(mH1-mean_H1_mass_)*(mH2-mean_H2_mass_);
       if (chi<=1)                                                                        // Signal Region
       {
         nCut5+=eventWeight;
+        SR_tot++;
+        for( auto m : masses )
+        {
+            if( !reg  && X_p4.M() > mass_mean(m)-mass_sigma(m)*3 &&  X_p4.M() < mass_mean(m)+mass_sigma(m)*3 ) SR_m[m]++;
+            else if( reg  && X_p4.M() > mass_mean_reg(m)-mass_sigma_reg(m)*3 &&  X_p4.M() < mass_mean_reg(m)+mass_sigma_reg(m)*3 ) SR_m[m]++;
+        }
         
         // Apply kinematic constraint
         // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
@@ -330,6 +385,13 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
       }
       else if (1<chi && chi<2. && oppSign<0)                                   // Sideband Region
       {
+
+        SB_tot++;        
+        for( auto m : masses )
+        {
+            if( !reg  && X_p4.M() > mass_mean(m)-mass_sigma(m)*3 &&  X_p4.M() < mass_mean(m)+mass_sigma(m)*3 ) SB_m[m]++;
+            else if( reg  && X_p4.M() > mass_mean_reg(m)-mass_sigma_reg(m)*3 &&  X_p4.M() < mass_mean_reg(m)+mass_sigma_reg(m)*3 ) SB_m[m]++;
+        }
         // Apply kinematic constraint
         // jet1_p4, jet2_p4, jet3_p4, jet4_p4 will change values
         double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
@@ -342,6 +404,10 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
       
     }
   } // Event loop
+
+  if(type!="Data") std::cout << signal_mass <<  "   " << SR_m[signal_mass] << std::endl;
+  else for( auto m : masses ) std::cout << m << "   " << SB_m[m]*SR_tot/SB_tot << std::endl;
+  
 
   h_Cuts.Fill(9, nCut4); // HH Candidates
   h_Cuts.Fill(11, nCut5); // SR
@@ -387,13 +453,13 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample)
 
   tFile2->Write();
   tFile2->Close();
-  std::cout<<"Wrote output file "<<histfilename<<std::endl;
+  //std::cout<<"Wrote output file "<<histfilename<<std::endl;
 
-  std::cout<<"=== Cut Efficiencies === "<<std::endl;
+  /*std::cout<<"=== Cut Efficiencies === "<<std::endl;
   std::cout<<"Number of events after finding HH candidate (btag && pT>40 GeV && |eta|<2.5)  = "<<nCut4<<std::endl;
   std::cout<<"Number of events in SR = "<<nCut5<<std::endl;
   std::cout<<"========================"<<std::endl;
-  
+  */
   delete h_H1_mass;
   delete h_H1_pT;
   delete h_H2_mass;

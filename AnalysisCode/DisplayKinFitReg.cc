@@ -52,10 +52,10 @@ void DisplayKinFitForFile(TFile *file, TFile *fileR, double xLine)
   h_mX_SR_kf->SetLineWidth(2);
   h_mX_SR_kf_reg->SetLineWidth(2);
   
-  h_mX_SR->SetLineColor(kBlue+1);
+  h_mX_SR->SetLineColor(kBlack);
 //  h_mX_SR->Smooth(100);
   h_mX_SR->SetLineStyle(7);
-  h_mX_SR_kf->SetLineColor(kGreen+1);
+  h_mX_SR_kf->SetLineColor(kBlue+1);
   h_mX_SR_kf->SetLineStyle(7);
  // h_mX_SR_kf_reg->Smooth(200);
   h_mX_SR_kf_reg->SetLineColor(kRed+1);
@@ -430,15 +430,52 @@ std::vector<TFile*> v_files_reg;
     delete c_HH_balance;
   }
 
+
+  std::vector<TFile*> v_files1;
+ // v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
+  //v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-270_narrow_13TeV-madgraph.root"));
+v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
+//  v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-350_narrow_13TeV-madgraph.root"));
+//  v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
+  v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-450_narrow_13TeV-madgraph.root"));
+//  v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root"));
+ // v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-550_narrow_13TeV-madgraph.root"));
+    v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
+ // v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root"));
+//  v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
+    v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-750_narrow_13TeV-madgraph.root"));
+  v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
+//  v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
+//  v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
+//  v_files1.push_back(new TFile("PreselectedWithoutRegression/Histograms_BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root"));
+
+std::vector<TFile*> v_files_reg1;
+ // v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
+  //v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-270_narrow_13TeV-madgraph.root"));
+  v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
+ // v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-350_narrow_13TeV-madgraph.root"));
+//  v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
+  v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-450_narrow_13TeV-madgraph.root"));
+//  v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root"));
+ // v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-550_narrow_13TeV-madgraph.root"));
+    v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
+ // v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root"));
+//  v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
+    v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-750_narrow_13TeV-madgraph.root"));
+  v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
+//  v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
+//  v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
+//  v_files_reg1.push_back(new TFile("PreselectedWithRegression/Histograms_BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root"));
+
   std::vector<int> v_colors = {kAzure+1, kAzure+3, kRed+1, kPink+1, kPink+3, kGreen+2, kGreen+3, kBlue+1, kGray+2, kCyan, kCyan+2, kRed-4, kRed-7, kYellow-4, kGreen-4, kGreen };
   leg=new TLegend(0.6, 0.5, 0.89, 0.89);
   // Plot the 1st highest pT jets with |eta| < 2.5  
   first=true;
   TCanvas *c_pTOrder_JetpT_1=new TCanvas("c_pTOrder_JetpT_1", "c_pTOrder_JetpT_1", 700, 700);
-  for (unsigned int i=0; i<v_files.size(); ++i)
+  for (unsigned int i=0; i<v_files1.size(); ++i)
   {
-    TH1* h = DisplayHistogram_forFile(v_files.at(i), "h_pTreg_JetpT_1", v_colors.at(i));
-    DisplayHistogram_forFile(v_files_reg.at(i), "h_pTreg_JetpT_1", v_colors.at(i), true );
+    TH1* h = DisplayHistogram_forFile(v_files1.at(i), "h_pTreg_JetpT_1", v_colors.at(i));
+    DisplayHistogram_forFile(v_files_reg1.at(i), "h_pTreg_JetpT_1", v_colors.at(i), true );
     leg->AddEntry(h, ("Signal m_{X} = "+itoa(mean_gen.at(i))+" GeV").c_str());
     
   }
@@ -451,10 +488,10 @@ std::vector<TFile*> v_files_reg;
   c_pTOrder_JetpT_1->SaveAs("c_reg_JetpT_1.pdf");
  
   first=true;
-  for (unsigned int i=0; i<v_files.size(); ++i)
+  for (unsigned int i=0; i<v_files1.size(); ++i)
   {
-    DisplayHistogram_forFile(v_files.at(i), "h_pTreg_JetpT_2", v_colors.at(i));
-    DisplayHistogram_forFile(v_files_reg.at(i), "h_pTreg_JetpT_2", v_colors.at(i), true );
+    DisplayHistogram_forFile(v_files1.at(i), "h_pTreg_JetpT_2", v_colors.at(i));
+    DisplayHistogram_forFile(v_files_reg1.at(i), "h_pTreg_JetpT_2", v_colors.at(i), true );
     
   }
   DisplayHistogram_forFile(f_data, "h_pTreg_JetpT_2", kBlack);
@@ -464,10 +501,10 @@ std::vector<TFile*> v_files_reg;
   c_pTOrder_JetpT_1->SaveAs("c_reg_JetpT_2.pdf");
 
   first=true;
-  for (unsigned int i=0; i<v_files.size(); ++i)
+  for (unsigned int i=0; i<v_files1.size(); ++i)
   {
-    DisplayHistogram_forFile(v_files.at(i), "h_pTreg_JetpT_3", v_colors.at(i));
-    DisplayHistogram_forFile(v_files_reg.at(i), "h_pTreg_JetpT_3", v_colors.at(i), true );
+    DisplayHistogram_forFile(v_files1.at(i), "h_pTreg_JetpT_3", v_colors.at(i));
+    DisplayHistogram_forFile(v_files_reg1.at(i), "h_pTreg_JetpT_3", v_colors.at(i), true );
     
   }
   DisplayHistogram_forFile(f_data, "h_pTreg_JetpT_3", kBlack);
@@ -477,10 +514,10 @@ std::vector<TFile*> v_files_reg;
   c_pTOrder_JetpT_1->SaveAs("c_reg_JetpT_3.pdf");
 
   first=true;
-  for (unsigned int i=0; i<v_files.size(); ++i)
+  for (unsigned int i=0; i<v_files1.size(); ++i)
   {
-    DisplayHistogram_forFile(v_files.at(i), "h_pTreg_JetpT_4", v_colors.at(i));
-    DisplayHistogram_forFile(v_files_reg.at(i), "h_pTreg_JetpT_4", v_colors.at(i), true );
+    DisplayHistogram_forFile(v_files1.at(i), "h_pTreg_JetpT_4", v_colors.at(i));
+    DisplayHistogram_forFile(v_files_reg1.at(i), "h_pTreg_JetpT_4", v_colors.at(i), true );
     
   }
   DisplayHistogram_forFile(f_data, "h_pTreg_JetpT_4", kBlack);

@@ -13,7 +13,7 @@
 
 #include "TDRStyle.h"
 
-bool first;
+bool first, low;
 
 std::string itoa(int i) 
 {
@@ -49,7 +49,9 @@ void DisplayHistogram_mH_forFile(TFile *file, std::string histogramName, int col
     first=false;
   }
   h->Draw("same");
-  TF1 *f=new TF1("f", "gaus", h->GetMean()-(1.5*h->GetRMS()), h->GetMean()+(1.5*h->GetRMS()));
+  TF1 *f;
+  if( low ) f=new TF1("f", "gaus", h->GetMean()-(1.5*h->GetRMS()), h->GetMean()+(1.5*h->GetRMS()));
+  else  f=new TF1("f", "gaus", h->GetMean()-(1.*h->GetRMS()), h->GetMean()+(1.25*h->GetRMS()));
   f->SetParLimits(1, h->GetMean()-(3*h->GetRMS()), h->GetMean()+(3*h->GetRMS()));
   f->SetParLimits(2, 0, 3*h->GetRMS());
   f->SetLineColor(color);
@@ -98,6 +100,8 @@ void DisplaymH_regressed()
     leg->SetFillColor(0);
     leg->AddEntry((TObject*)0, ("m_{X} = "+itoa(mean_gen.at(i))+" GeV").c_str(), "");
     first=true;
+    if( mean_gen.at(i) <375 ) low = true;
+    else low = false;
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass", kBlue, leg, "AK4");
     first=false;
     //DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass_biasCorrected", kRed, leg, "BiasCorr");

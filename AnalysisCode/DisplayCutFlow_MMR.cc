@@ -259,7 +259,7 @@ void DisplayCutFlow_MMR()
   gStyle->SetOptStat(0000);
   writeExtraText = true;       // if extra text
   extraText  = "Preliminary";  // default extra text is "Preliminary"
-  lumi_13TeV  = "4.0 fb^{-1} (2016)";  // default is "5.1 fb^{-1}"
+  lumi_13TeV  = "9.23 fb^{-1} (2016)";  // default is "5.1 fb^{-1}"
 
 
 	//int n=10;

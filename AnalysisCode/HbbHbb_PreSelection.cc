@@ -487,8 +487,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
               this_Jet_vtx3deL = jet_vtx3deL[jetIndex];
               double regressedJetpT=(reader->EvaluateRegression("BDTG method"))[0];
               
-              if( jet_pT[jetIndex]>400 ) jet_regressed_pT[jetIndex] = jet_pT[jetIndex];
-              else jet_regressed_pT[jetIndex]=regressedJetpT;// * jet_pT[jetIndex];
+             // if( jet_pT[jetIndex]>400 ) jet_regressed_pT[jetIndex] = jet_pT[jetIndex];
+              jet_regressed_pT[jetIndex]=regressedJetpT;// * jet_pT[jetIndex];
               if(jet_pT[jetIndex]<400) hWeightL->Fill( regressedJetpT/jet_pT[jetIndex] );
               if(jet_pT[jetIndex]>500) hWeightH->Fill( regressedJetpT/jet_pT[jetIndex] );  
               if(regressedJetpT>450 && regressedJetpT<500) h_pt_spike->Fill( jet_pT[jetIndex] );            

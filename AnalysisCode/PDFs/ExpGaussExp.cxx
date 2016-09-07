@@ -10,7 +10,7 @@
 
 #include "Riostream.h" 
 
-#include "ExpGaussExp.h" 
+#include "PDFs/ExpGaussExp.h" 
 #include "RooAbsReal.h" 
 #include "RooAbsCategory.h" 
 #include <math.h> 

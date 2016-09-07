@@ -163,11 +163,12 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, d
   // Plot mH1 vs mH2
   writeExtraText = true;       // if extra text
 	extraText  = "Preliminary";  // default extra text is "Preliminary"
-	lumi_13TeV  = "9.3 fb^{-1} 2016";  // default is "5.1 fb^{-1}"
+	lumi_13TeV  = "9.23 fb^{-1} 2016";  // default is "5.1 fb^{-1}"
   for (unsigned int i=0; i<v_files.size(); ++i)
   {
     TCanvas *c_mH1_mH2_asym=new TCanvas("c_mH1_mH2_asym", "c_mH1_mH2_asym", 700, 700);
     DisplaymH1vsmH2_ForFile(v_files.at(i), false, mean_H1_mass, sigma_H1_mass, mean_H2_mass, sigma_H2_mass);
+    CMS_lumi(c_mH1_mH2_asym, 4, 11, false );
     c_mH1_mH2_asym->SaveAs(("c_mH1_mH2_asym_"+files.at(i)+".png").c_str());
     delete c_mH1_mH2_asym;
   }
