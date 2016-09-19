@@ -1,4 +1,4 @@
-TString runName = "RunD";
+TString runName = "";
 
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
@@ -9,19 +9,19 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 }
 
 
-
-void TE_presel()
+void TE_presel( TString run = "RunB", TString folder = "VHBB_HEPPY_V24_SingleMuon__Run2016B-PromptReco-v2/160910_205020/", TString subfolder = "0000/",  TString file = "tree_31" )
 {
 
-    TString fileName = "root://cmseos.fnal.gov//store/user/lpchbb/HeppyNtuples/V23/SingleMuon" + runName + ".root";
+ TString fileName = "root://cmseos.fnal.gov//store/user/lpchbb/HeppyNtuples/V24/SingleMuon/" + folder + subfolder + file + ".root";
+
   //  TFile *_file0 = TFile::Open(fileName);
     TChain *tree=new TChain("tree");
     tree->Add(fileName);
   // TChain* tree = (TChain*) _file0->Get("tree");
-
-    int HLT_BIT_HLT_IsoMu24_v, Vtype;
-    int nJet, Jet_puId[100], HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v, ntrgObjects_hltQuadCentralJet45, ntrgObjects_hltBTagCaloCSVp087Triple, ntrgObjects_hltQuadPFCentralJetLooseID45,ntrgObjects_hltQuadCentralJet30, ntrgObjects_hltDoubleCentralJet90, ntrgObjects_hltQuadPFCentralJetLooseID30, ntrgObjects_hltDoublePFCentralJetLooseID90, HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v;
-    Float_t  jet_pt[100], Jet_eta[100], Jet_btagCSV[100], vLeptons_pt[100], Jet_btagCMVAV2[100], Jet_phi[100], Jet_mass[100];
+    runName = run+"_"+file;
+    Int_t HLT_BIT_HLT_IsoMu24_v;
+    Int_t nJet, Jet_puId[100], HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v, ntrgObjects_hltQuadCentralJet45, ntrgObjects_hltBTagCaloCSVp087Triple, ntrgObjects_hltQuadPFCentralJetLooseID45,ntrgObjects_hltQuadCentralJet30, ntrgObjects_hltDoubleCentralJet90, ntrgObjects_hltQuadPFCentralJetLooseID30, ntrgObjects_hltDoublePFCentralJetLooseID90, HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v;
+    Float_t  jet_pt[100], Jet_eta[100], Jet_btagCSV[100], vLeptons_pt[100], Jet_btagCMVAV2[100], Jet_phi[100], Jet_mass[100], Vtype;
     tree->SetBranchStatus("*",0);
     tree->SetBranchAddress("Jet_pt", &(jet_pt)); tree->SetBranchStatus("Jet_pt", 1);
     tree->SetBranchAddress("Jet_eta", &(Jet_eta)); tree->SetBranchStatus("Jet_eta", 1);
@@ -44,10 +44,11 @@ void TE_presel()
    tree->SetBranchAddress("Vtype", &(Vtype)); tree->SetBranchStatus("Vtype", 1);
   tree->SetBranchAddress("Jet_btagCMVAV2", &(Jet_btagCMVAV2)); tree->SetBranchStatus("Jet_btagCMVAV2", 1);
 
+   if( tree->GetEntries() == 0 ) return;
   Float_t  jet_pt_[100], Jet_eta_[100], Jet_btagCSV_[100], Jet_btagCMVAV2_[100], LPt_mass;
-  int  Jet_puId_[100], diHiggs, diHiggsTight;
+  Int_t  Jet_puId_[100], diHiggs, diHiggsTight;
   //TFile *outfile=new TFile("TTbarSkimmed"+runName+".root", "recreate");  
-  TFile *outfile=new TFile("SingleMuonSkimmed"+runName+".root", "recreate");  
+    TFile *outfile=new TFile(run+"/"+subfolder+"SingleMuonSkimmed"+runName+".root", "recreate");  
 
   TTree *outtree=tree->CloneTree(0);
   Float_t CSVsorted[100],  CMVAVsorted[100];
@@ -58,33 +59,18 @@ void TE_presel()
     outtree->Branch("diHiggs",&diHiggs,"diHiggs/I");
     outtree->Branch("diHiggsTight",&diHiggsTight,"diHiggsTight/I");
 
-    outtree->SetBranchAddress("Jet_pt", &(jet_pt_)); tree->SetBranchStatus("Jet_pt", 1);
-    outtree->SetBranchAddress("Jet_eta", &(Jet_eta_)); tree->SetBranchStatus("Jet_eta", 1);
-    outtree->SetBranchAddress("Jet_btagCSV", &(Jet_btagCSV_)); tree->SetBranchStatus("Jet_btagCSV", 1);
+    outtree->SetBranchAddress("Jet_pt", &(jet_pt_)); outtree->SetBranchStatus("Jet_pt", 1);
+    outtree->SetBranchAddress("Jet_eta", &(Jet_eta_)); outtree->SetBranchStatus("Jet_eta", 1);
+    outtree->SetBranchAddress("Jet_btagCSV", &(Jet_btagCSV_)); outtree->SetBranchStatus("Jet_btagCSV", 1);
 
-    outtree->SetBranchAddress("Jet_puId", &(Jet_puId_)); tree->SetBranchStatus("Jet_puId", 1);  
-    outtree->SetBranchAddress("Jet_btagCMVAV2", &(Jet_btagCMVAV2_)); tree->SetBranchStatus("Jet_btagCMVAV2", 1);
-
- /* outtree->Branch("Jet_pt",&Jet_pt,"Jet_pt/F");
-  outtree->Branch("Jet_eta",&Jet_eta,"Jet_eta/F");
-  outtree->Branch("Jet_btagCSV",&Jet_btagCSV,"Jet_btagCSV/F");
-  outtree->Branch("HLT_BIT_HLT_IsoMu24_v",&HLT_BIT_HLT_IsoMu24_v,"HLT_BIT_HLT_IsoMu24_v/i");
-  outtree->Branch("Jet_puId",&Jet_puId,"Jet_puId/i");
-  outtree->Branch("ntrgObjects_hltQuadCentralJet30",&ntrgObjects_hltQuadCentralJet30,"ntrgObjects_hltQuadCentralJet30/i");
-  outtree->Branch("ntrgObjects_hltDoubleCentralJet90",&ntrgObjects_hltDoubleCentralJet90,"ntrgObjects_hltDoubleCentralJet90/i");
-  outtree->Branch("ntrgObjects_hltQuadPFCentralJetLooseID30",&ntrgObjects_hltQuadPFCentralJetLooseID30,"ntrgObjects_hltQuadPFCentralJetLooseID30/i");
-  outtree->Branch("ntrgObjects_hltDoublePFCentralJetLooseID90",&ntrgObjects_hltDoublePFCentralJetLooseID90,"ntrgObjects_hltDoublePFCentralJetLooseID90/i");
-  outtree->Branch("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v,"HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v/i");
-  outtree->Branch("nJet",&nJet,"nJet/i");
-  outtree->Branch("ntrgObjects_hltQuadCentralJet45",&ntrgObjects_hltQuadCentralJet45,"ntrgObjects_hltQuadCentralJet45/i");
-  outtree->Branch("ntrgObjects_hltBTagCaloCSVp087Triple",&ntrgObjects_hltBTagCaloCSVp087Triple,"ntrgObjects_hltBTagCaloCSVp087Triple/i");
-  outtree->Branch("ntrgObjects_hltQuadPFCentralJetLooseID45",&ntrgObjects_hltQuadPFCentralJetLooseID45,"ntrgObjects_hltQuadPFCentralJetLooseID45/i");*/
+    outtree->SetBranchAddress("Jet_puId", &(Jet_puId_)); outtree->SetBranchStatus("Jet_puId", 1);  
+    outtree->SetBranchAddress("Jet_btagCMVAV2", &(Jet_btagCMVAV2_)); outtree->SetBranchStatus("Jet_btagCMVAV2", 1);
 
   Long64_t nEvents = tree->GetEntries(); 
   int shout = nEvents/10;
   for (Int_t i=0; i<nEvents; ++i)
   {
-        if( i >= shout ){ std::cout << "Event " << i << "/" << nEvents << std::endl; shout=shout+nEvents/10; }
+     //   if( i >= shout ){ std::cout << "Event " << i << "/" << nEvents << std::endl; shout=shout+nEvents/10; }
 
       tree->GetEvent(i);
       if( ! ( HLT_BIT_HLT_IsoMu24_v ) ) continue;
@@ -95,7 +81,6 @@ void TE_presel()
       //CSVsorted[0] = Jet_btagCSV[GoodJets[0]]; CSVsorted[1] = Jet_btagCSV[GoodJets[1]]; CSVsorted[2] = Jet_btagCSV[GoodJets[2]]; CSVsorted[3] = Jet_btagCSV[GoodJets[3]];
         //float CSVsorted[4] = { Jet_btagCSV[GoodJets[0]], Jet_btagCSV[GoodJets[1]], Jet_btagCSV[GoodJets[2]], Jet_btagCSV[GoodJets[3]] };
         //std::cout << "here" << std::endl;
-
         for( Int_t j=0; j<counter; ++j )
         {
             jet_pt_[j]=jet_pt[GoodJets[j]];
@@ -193,12 +178,12 @@ void TE_presel()
 
 
 
-      /*  HLT_BIT_HLT_IsoMu24_v_ = HLT_BIT_HLT_IsoMu24_v;
+      /*  HLT2_BIT_HLT_IsoMu24_v_ = HLT2_BIT_HLT_IsoMu24_v;
         ntrgObjects_hltQuadCentralJet30_  = ntrgObjects_hltQuadCentralJet30;
         ntrgObjects_hltDoubleCentralJet90_ =ntrgObjects_hltDoubleCentralJet90;
         ntrgObjects_hltQuadPFCentralJetLooseID30_ = ntrgObjects_hltQuadPFCentralJetLooseID30;
         ntrgObjects_hltDoublePFCentralJetLooseID90_ = ntrgObjects_hltDoublePFCentralJetLooseID90;
-        HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v_ = HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v;
+        HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v_ = HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v;
         ntrgObjects_hltQuadCentralJet45_ = ntrgObjects_hltQuadCentralJet45;
         ntrgObjects_hltBTagCaloCSVp087Triple_ = ntrgObjects_hltBTagCaloCSVp087Triple;
         ntrgObjects_hltQuadPFCentralJetLooseID45_ = ntrgObjects_hltQuadPFCentralJetLooseID45;*/

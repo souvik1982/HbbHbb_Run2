@@ -3,7 +3,8 @@ import copy
 from math import *
 import array
 
-runName      = "RunD"
+runName      = ""
+fitName      = "_v0"
 
 ffName = "fittedFunctions2_" + runName + ".h"
 f = open( ffName , 'w')
@@ -348,7 +349,7 @@ def doPlots():
     TurnOn_functDown.Draw("same")
 
     #c1.SaveAs("turnOn_"+ped+".C")
-    c1.SaveAs("turnOn_"+ped+"_"+runName+".pdf")
+    c1.SaveAs("turnOn_"+ped+"_"+runName+fitName+".pdf")
     #c1.SaveAs("turnOn_"+ped+".root")
     f.write(('TF1* %s = new TF1("%s","'%(ped,ped)           + str(TurnOn_funct.GetExpFormula("P"))+'");\n'))
     f.write(('TF1* %sUp = new TF1("%sUp","'%(ped,ped)       + str(TurnOn_functUp.GetExpFormula("P"))+'");\n'))
@@ -363,41 +364,72 @@ ROOT.gStyle.SetOptFit(0)
 minRatio    = 0.5
 maxRatio    = 1.5
 
-fileName     = "root://cmseos.fnal.gov//store/user/lpchbb/HeppyNtuples/V23/SingleMuon" + runName + ".root"
+fileName    ="SingleMuonSkimmed"+runName+".root"
+#fileName     = "root://cmseos.fnal.gov//store/user/lpchbb/HeppyNtuples/V23/SingleMuon" + runName + ".root"
 #fileName    = "ZvvHighPt_V20_SingleMuon.root"
 #fileName    = "ZvvHighPt_V20_TT_TuneCUETP8M1_13TeV-powheg-pythia8.root"
 #fileData    = "/gpfs/ddn/srm/cms/store/user/arizzi/VHBBHeppyV20/SingleMuon/VHBB_HEPPY_V20_SingleMuon__Run2015D-16Dec2015-v1/160210_081323/0000/tree*.root"
 
-preselection = "HLT_BIT_HLT_IsoMu24_v"
+preselection = "HLT_BIT_HLT_IsoMu24_v  && Vtype==2  && CSVsorted[2]>0.6"
 
 parametersTurnOn_funct = ()
-#################### L1 #########################
+#################### L1 low #########################
 parametersTurnOn_funct = (200,100,0.01,1,1E-3,1E-3)
 
-Nbins       = 50
-functionMin = 110
-functionMax = 310
-var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
+Nbins       = 30#50
+functionMin = 60#100
+functionMax = 120#200
+#var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
+var             = "Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
 trigger         = "ntrgObjects_hltQuadCentralJet30>=1"
 binning         = (Nbins,functionMin,functionMax)
-ped             = "DoubleJet_L1"
-title           = "p^{T}_{1}+p^{T}_{2}+p^{T}_{3}+p^{T}_{4}"
+ped             = "DoubleJet_L1l"
+title           = "p^{T}_{2}+p^{T}_{3}+p^{T}_{4}"
 doPlots()
 
-##################### CaloPt4 ###et######################
+#################### L1 high#########################
+parametersTurnOn_funct = (200,100,0.01,1,1E-3,1E-3)
+
+Nbins       = 50#50
+functionMin = 120#200
+functionMax = 270#350
+#var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
+var             = "Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
+trigger         = "ntrgObjects_hltQuadCentralJet30>=1"
+binning         = (Nbins,functionMin,functionMax)
+ped             = "DoubleJet_L1h"
+title           = "p^{T}_{2}+p^{T}_{3}+p^{T}_{4}"
+doPlots()
+##################### CaloPt4 low ###et######################
 parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
 
-Nbins       = 40
-functionMin = 35
-functionMax = 85
-#var             = "Jet_pt[3]"
-var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
+Nbins       = 30#60
+functionMin = 15#25
+functionMax = 45#85
+var             = "Jet_pt[3]"
+#var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
 trigger         = "ntrgObjects_hltQuadCentralJet30>=4"
 binning         = (Nbins,functionMin,functionMax)
-ped             = "DoubleJet_CaloPt4"
+ped             = "DoubleJet_CaloPt4l"
 title           = "p^{T}_{4}"
 doPlots()
+
+##################### CaloPt4 high ###et######################
+parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
+
+Nbins       = 50
+functionMin = 40
+functionMax = 95
+var             = "Jet_pt[3]"
+#var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
+#preselection    = preselection + "&&"+ trigger
+trigger         = "ntrgObjects_hltQuadCentralJet30>=4"
+binning         = (Nbins,functionMin,functionMax)
+ped             = "DoubleJet_CaloPt4h"
+title           = "p^{T}_{4}"
+doPlots()
+
 
 ##################### CaloPt2 #########################
 parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
@@ -405,8 +437,8 @@ parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
 Nbins       = 30
 functionMin = 60
 functionMax = 120
-#var             = "Jet_pt[1]"
-var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,1,Iteration$,Length$))"
+var             = "Jet_pt[1]"
+#var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,1,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
 trigger         = "ntrgObjects_hltDoubleCentralJet90>=2"
 binning         = (Nbins,functionMin,functionMax)
@@ -423,8 +455,8 @@ functionMin =  0.4 #CSVL =  0.460
 functionMax = 1
 #var             = "-log(1-Jet_btagCSV[aJCidx[0]])"
 #var             = "Jet_btagCSV[aJCidx[0]]"
-#var             = "MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))"
-var             = "Sum$(CSV(Jet_btagCSV,Jet_eta,Jet_puId,2,Iteration$,Length$))"
+var             = "MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))"
+#var             = "Sum$(CSV(Jet_btagCSV,Jet_eta,Jet_puId,2,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
 #trigger         = "ntrgObjects_hltTripleCSV0p67>=3"
 trigger = "ntrgObjects_hltBTagCaloCSVp087Triple>=3"
@@ -436,11 +468,11 @@ doPlots()
 ###################### PFPt4 ########################
 parametersTurnOn_funct = (0,20,0.01,1,1E-3,1E-3)
 
-Nbins       = 50
-functionMin = 25
-functionMax = 125
-#var             = "Jet_pt[3]"
-var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
+Nbins       = 60
+functionMin = 20#25
+functionMax = 80#125
+var             = "Jet_pt[3]"
+#var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
 trigger         = "ntrgObjects_hltQuadPFCentralJetLooseID30>=4"
 binning         = (Nbins,functionMin,functionMax)
@@ -454,8 +486,8 @@ parametersTurnOn_funct = (0,20,0.01,1,1E-3,1E-3)
 Nbins       = 50
 functionMin = 80
 functionMax = 180
-#var             = "Jet_pt[1]"
-var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,1,Iteration$,Length$))"
+var             = "Jet_pt[1]"
+#var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,1,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
 trigger         = "ntrgObjects_hltDoublePFCentralJetLooseID90>=2"
 binning         = (Nbins,functionMin,functionMax)

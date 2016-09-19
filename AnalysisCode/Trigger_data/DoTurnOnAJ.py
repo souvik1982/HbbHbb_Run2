@@ -6,7 +6,7 @@ import array
 runName      = ""
 fitName      = "_1B"
 
-ffName = "fittedFunctions3_" + runName + ".h"
+ffName = "fittedFunctions3_.h"
 f = open( ffName , 'w')
 
 ROOT.gROOT.LoadMacro("tdrstyleTrigger.C")
@@ -350,7 +350,7 @@ title           = "p^{T}_{2}+p^{T}_{3}+p^{T}_{4}"
 #################### L1 high#########################
 parametersTurnOn_funct = (200,100,0.01,1,1E-3,1E-3)
 
-Nbins       = 20#50
+Nbins       = 15#50
 functionMin = 100#200
 functionMax = 400#350
 var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
@@ -378,9 +378,9 @@ title           = "p^{T}_{4}"
 ##################### CaloPt4 high ###et######################
 parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
 
-Nbins       = 25
+Nbins       = 15
 functionMin = 20
-functionMax = 120
+functionMax = 110
 var             = "Jet_pt[3]"
 #var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
 #preselection    = preselection + "&&"+ trigger
@@ -472,7 +472,7 @@ doPlots()
 #################### L1 high #########################
 parametersTurnOn_funct = (200,100,0.01,1)
 
-Nbins           = 10#50
+Nbins           = 20#50
 functionMin     =  300#120
 functionMax     =  600#270
 var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
@@ -501,7 +501,7 @@ doPlots()
 ##################### CaloPt4 high #########################
 parametersTurnOn_funct = (100,20,0.01,1)
 
-Nbins       = 30#140#70
+Nbins       = 15#140#70
 functionMin = 40#30#35
 functionMax = 100#100#105
 var             = "Jet_pt[3]"

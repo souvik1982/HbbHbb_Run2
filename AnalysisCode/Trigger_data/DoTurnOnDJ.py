@@ -6,7 +6,7 @@ import array
 runName      = ""
 fitName      = "_1B"
 
-ffName = "fittedFunctions2_" + runName + ".h"
+ffName = "fittedFunctions2_.h"
 f = open( ffName , 'w')
 
 ROOT.gROOT.LoadMacro("tdrstyleTrigger.C")
@@ -352,9 +352,9 @@ doPlots()
 #################### L1 high#########################
 parametersTurnOn_funct = (200,100,0.01,1,1E-3,1E-3)
 
-Nbins       = 20#50
-functionMin = 100#200
-functionMax = 500#350
+Nbins       = 10#50
+functionMin = 200#200
+functionMax = 600#350
 var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
 #var             = "Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
 trigger         = "ntrgObjects_hltQuadCentralJet30>=1"
@@ -398,7 +398,7 @@ parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
 
 Nbins       = 20
 functionMin = 20
-functionMax = 220
+functionMax = 240
 var             = "Jet_pt[1]"
 #var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,1,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
@@ -412,8 +412,8 @@ doPlots()
 
 ##################### CSV3 #########################
 parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
-Nbins       = 5
-functionMin =  0.8 #CSVL =  0.460 
+Nbins       = 8
+functionMin =  0.76 #CSVL =  0.460 
 functionMax = 1
 #var             = "-log(1-Jet_btagCSV[aJCidx[0]])"
 #var             = "Jet_btagCSV[aJCidx[0]]"
@@ -430,9 +430,9 @@ doPlots()
 ###################### PFPt4 ########################
 parametersTurnOn_funct = (0,20,0.01,1,1E-3,1E-3)
 
-Nbins       = 50
-functionMin = 20#25
-functionMax = 120#125
+Nbins       = 30
+functionMin = 40#25
+functionMax = 130#125
 var             = "Jet_pt[3]"
 #var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
@@ -445,9 +445,9 @@ doPlots()
 ###################### PFPt2 ########################
 parametersTurnOn_funct = (0,20,0.01,1,1E-3,1E-3)
 
-Nbins       = 20
+Nbins       = 15
 functionMin = 20
-functionMax = 180
+functionMax = 200
 var             = "Jet_pt[1]"
 #var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,1,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger

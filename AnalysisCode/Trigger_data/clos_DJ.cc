@@ -102,8 +102,8 @@ void PlotHistos( TH1* histos[4], TString name, TString XAxis, TString Title )
     ratioPad.Draw();
 
     mainPad.cd();
-    TLegend *leg  = new TLegend(0.5,0.8,0.8,0.9);
    histos[0]->SetTitle(Title);
+    TLegend *leg  = new TLegend(0.5,0.75,0.85,0.9);
     histos[0]->Draw(""); histos[1]->Draw("histsame"); histos[2]->Draw("Lhistsame"); histos[3]->Draw("Lhistsame");
     histos[0]->SetLineColor( kRed );
     histos[0]->GetYaxis()->SetLabelSize(20);

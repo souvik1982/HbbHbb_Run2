@@ -6,7 +6,7 @@ import array
 runName      = ""
 fitName      = "_1B"
 
-ffName = "fittedFunctions_" + runName + ".h"
+ffName = "fittedFunctions_.h"
 f = open( ffName , 'w')
 
 ROOT.gROOT.LoadMacro("tdrstyleTrigger.C")
@@ -351,8 +351,8 @@ doPlots()
 parametersTurnOn_funct = (200,100,0.01,1)
 
 Nbins           =  20#50
-functionMin     =  100#120
-functionMax     =  500#270
+functionMin     =  200#120
+functionMax     =  600#270
 var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
 #var             = "Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
 trigger         = "ntrgObjects_hltQuadCentralJet45>=1"
@@ -416,7 +416,7 @@ parametersTurnOn_funct = (0,20,0.01,1)
 
 Nbins       = 20#100#50
 functionMin = 20#30#40
-functionMax = 180#130#140
+functionMax = 100#130#140
 var             = "Jet_pt[3]"
 #var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
