@@ -1000,7 +1000,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithoutRegressio
     c_mX_SR->SaveAs(("SignalFits"+reg+"/c_mX_SR_"+masses.at(i)+".png").c_str());
     
     TCanvas *c_mX_SR_KinFit=new TCanvas(("c_mX_SR_KinFit_"+masses.at(i)).c_str(), ("c_mX_SR_KinFit_"+masses.at(i)).c_str(), 700, 700);
-    h_mX_SR_KinFit->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" _13TeV-madgraph); m_{X} (_13TeV-madgraph)").c_str());
+    h_mX_SR_KinFit->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" _13TeV-madgraph); m_{X} (GeV)").c_str());
     h_mX_SR_KinFit->Rebin(rebin);
     h_mX_SR_JECp1_KinFit->Rebin(rebin);
     h_mX_SR_JECm1_KinFit->Rebin(rebin);

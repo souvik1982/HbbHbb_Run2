@@ -14,7 +14,7 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 //#include "Trigger/Double76.h"
 //##include "Trigger/Quad76.h"
 //#include "Trigger_ttbar/trig.h"
-#include "Trigger_data/trig.h"
+#include "Trigger_data_G/trig.h"
 #include <TSystem.h>
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"

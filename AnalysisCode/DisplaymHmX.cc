@@ -60,6 +60,39 @@ void DisplayHistogram_mH_forFile(TFile *file, std::string histogramName, int col
   h->Draw("hist same");
 }
 
+void Plot_Purity_forFile(TFile *file, TString smass = "600", int mass = 600 )
+{
+  std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1, kAzure+3, kPink+2};//, kGray+2,kBlue+1};
+  std::vector<TString> v_leg = { "Purity = 4",  "Purity = 3",  "Purity = 2",  "Purity = 1",  "Purity = 0",  "Purity = -1" };
+  TCanvas c( "c", "c"+smass ); c.cd();
+  c.SetLogy();
+  std::vector<TString> histogramNames = { "h_mX_SR_purity4", "h_mX_SR_purity3", "h_mX_SR_purity2", "h_mX_SR_purity1", "h_mX_SR_purity0", "h_mX_SR_purity5" };
+  TH1 *h;
+  TLegend *leg=new TLegend(0.6, 0.7, 0.89, 0.89);
+  bool _first = true;
+  for( int i = 0; i < 6; i++ )
+  {
+      h=(TH1F*)file->Get( histogramNames.at(i) );
+      //h->Scale(1./h->GetSumOfWeights());
+      h->SetLineColor( v_colors.at(i) );
+      h->SetLineWidth(2);
+      h->Rebin(10);
+      h->GetXaxis()->SetRangeUser( mass - 250, mass + 250 );
+      leg->AddEntry( h, v_leg.at(i) );
+      if (_first)
+      {
+          h->SetMaximum(h->GetMaximum()*5);
+          h->GetYaxis()->SetTitleOffset(1.6);
+          h->Draw("hist");
+          _first=false;
+      }
+      h->Draw("hist same");
+  }
+  leg->Draw();
+  c.SaveAs( "c_pur_mx"+smass+".pdf" );
+}
+
+
 void drawRegion(bool isData=false, double mean_H1_mass=125, double sigma_H1_mass=20, double mean_H2_mass=125, double sigma_H2_mass=20)
 {
   TEllipse *circle1=new TEllipse(mean_H1_mass, mean_H2_mass, sigma_H1_mass*chi_1, sigma_H2_mass*chi_1); 
@@ -101,7 +134,7 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false, double mean_H1_mass
   drawRegion(isData, mean_H1_mass, sigma_H1_mass, mean_H1_mass, sigma_H1_mass);
 }
 
-void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, double mean_H1_mass, double sigma_H1_mass, double mean_H2_mass, double sigma_H2_mass)
+void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, std::vector<TString> s_mean_gen, double mean_H1_mass, double sigma_H1_mass, double mean_H2_mass, double sigma_H2_mass)
 {
   std::vector<TFile*> v_files;
   for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
@@ -160,6 +193,16 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, d
   c_H2_mass->SaveAs("c_H2_mass.png");
   delete c_H2_mass;
   
+ // Plot mH1
+
+  for (int i=v_files.size()-1; i>=0; --i)
+  {
+   //  std::cout<<" here "<<std::endl;	
+    Plot_Purity_forFile(v_files.at(i), s_mean_gen.at(i), mean_gen.at(i) );//, "h_mX_SR_purity0", v_colors.at(i));
+  }
+
+
+
   // Plot mH1 vs mH2
   writeExtraText = true;       // if extra text
 	extraText  = "Preliminary";  // default extra text is "Preliminary"

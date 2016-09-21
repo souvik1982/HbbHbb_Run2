@@ -44,9 +44,9 @@ void DisplayKinFitForFile(TFile *file, TFile *fileR, double xLine)
   h_mX_SR->Rebin(10);
   h_mX_SR_kf->Rebin(10);
   h_mX_SR_kf_reg->Rebin(10);
-  h_mX_SR->GetXaxis()->SetRangeUser(200, 1000);
-  h_mX_SR_kf->GetXaxis()->SetRangeUser(200, 1000);
-  h_mX_SR_kf_reg->GetXaxis()->SetRangeUser(200, 1000);
+  h_mX_SR->GetXaxis()->SetRangeUser(200, 750 );
+  h_mX_SR_kf->GetXaxis()->SetRangeUser(200, 750 );
+  h_mX_SR_kf_reg->GetXaxis()->SetRangeUser(200, 750 );
   
   h_mX_SR->SetLineWidth(2);
   h_mX_SR_kf->SetLineWidth(2);
@@ -67,7 +67,7 @@ void DisplayKinFitForFile(TFile *file, TFile *fileR, double xLine)
     TH1* tmp = h_mX_SR_kf_reg->DrawNormalized("hist");
     tmp->SetMaximum(0.35);
     h_mX_SR_kf_reg->SetMaximum(h_mX_SR_kf_reg->GetMaximum()*1.4);
-    TLegend *leg=new TLegend(0.5, 0.7, 0.89, 0.89);
+    TLegend *leg=new TLegend(0.4, 0.75, 0.89, 0.89);
     leg->SetLineColor(0);
     leg->SetFillColor(0);
     leg->AddEntry(h_mX_SR, "m_{X} Signal Peak");
@@ -252,6 +252,7 @@ std::vector<TFile*> v_files_reg;
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-2000_narrow_13TeV-madgraph.root"));
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-3000_narrow_13TeV-madgraph.root"));
   std::vector <double> mean_gen={300,450,600, 750, 900 };// , 1200, 1600, 2000, 3000};
+  
  
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();
@@ -365,10 +366,11 @@ std::vector<TFile*> v_files_reg;
   g_sigma_H2->Draw("A*");
   c_H1H2_meanSigma->SaveAs("c_H1H2_meanSigma.png");
   
-  TCanvas *c_KinFit=new TCanvas("c_KinFit", "c_KinFit", 1000, 700);
-  for (unsigned int i=0; i<v_files.size(); ++i)
+  TCanvas *c_KinFit=new TCanvas("c_KinFit", "c_KinFit", 700, 1000);
+  std::vector<int> choice = { 0, 2 };
+  for (unsigned int i=0; i<choice.size(); ++i)
   {
-    DisplayKinFitForFile(v_files.at(i), v_files_reg.at(i), mean_gen.at(i));
+    DisplayKinFitForFile(v_files.at( choice.at(i) ), v_files_reg.at( choice.at(i) ), mean_gen.at( choice.at(i) ) );
   }
   c_KinFit->SaveAs("c_KinFit.png");
   

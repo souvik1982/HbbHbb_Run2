@@ -41,21 +41,21 @@ TH1* DisplayHistogram_forFile(TFile *file, std::string histogramName, int color)
 void DisplayJetProperties()
 {
   std::vector<TFile*> v_files;
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
 // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-350_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
 // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-450_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root"));
 // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-550_narrow_13TeV-madgraph.root"));
  v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
 // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
 // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-750_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph.root"));
-// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
- v_files.push_back(new TFile("Histograms_BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph.root"));
+ v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
+// v_files.push_back(new TFile("Histograms_BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
+//; v_files.push_back(new TFile("Histograms_BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
 // v_files.push_back(new TFile("Histograms_BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root"));
   //v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph.root"));
  // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-1000_narrow_13TeV-madgraph.root"));
@@ -65,7 +65,7 @@ void DisplayJetProperties()
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-3000_narrow_13TeV-madgraph.root"));*/
   TFile *f_data=new TFile("Histograms_BTagCSV.root");
   //TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
-  std::vector <double> mean_gen={260, 300, 400, 500, 600, 700, 800, 1000, 1200 };//, 1600, 2000, 3000};
+  std::vector <double> mean_gen={300, 600, 900 };//, 1600, 2000, 3000};
   std::vector<int> v_colors = {kAzure+1, kAzure+3, kRed+1, kPink+1, kPink+3, kGreen+2, kGreen+3, kBlue+1, kGray+2, kCyan, kCyan+2, kRed-4, kRed-7, kYellow-4, kGreen-4, kGreen };
   
   gROOT->SetStyle("Plain");
@@ -227,7 +227,7 @@ void DisplayJetProperties()
   for (int i=v_files.size()-1; i>=0; --i)
   {
     ((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->Rebin(4);
-    ((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->GetXaxis()->SetRangeUser(0, 3.);
+    ((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->GetXaxis()->SetRangeUser(0, 4.);
     DisplayHistogram_forFile(v_files.at(i), "h_dR_genHbb", v_colors.at(i));
     int binx0=((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->FindBin(0.);
     int binx1=((TH1F*)(v_files.at(i)->Get("h_dR_genHbb")))->FindBin(0.4);
@@ -237,7 +237,7 @@ void DisplayJetProperties()
     std::cout<<"mX = "<<mean_gen.at(i)<<", % of events with dR > 0.4 = "<<integral2/integral1*100.<<"%"<<std::endl;
   }
   leg->Draw();
-  line=new TArrow(0.4, 0.02, 0.4, 0); line->SetLineWidth(3);
+  line=new TArrow(1.5, 0.02, 1.5, 0); line->SetLineWidth(3);
   line->Draw();
   c_dR_genHbb->SaveAs("c_dR_genHbb.pdf");
   
