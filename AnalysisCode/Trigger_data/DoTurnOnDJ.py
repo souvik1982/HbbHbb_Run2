@@ -230,20 +230,18 @@ def confidenceInterval(graph, function):
     for i in range(len(parameters)):
 
         parameters[i] = fit.GetParameter(i)
-      #  if i in [0]: #  x0 can go down
-      #      parametersUp[i] = fit.GetParameter(i)   + fitResult.LowerError(i)
-      #      parametersDown[i] = fit.GetParameter(i) + fitResult.UpperError(i)
-        # el
-       # if i in [1]: # check-me!
-      #      parametersUp[i] = fit.GetParameter(i)   + fitResult.UpperError(i)
-       #     parametersDown[i] = fit.GetParameter(i) + fitResult.LowerError(i)
-       # el
-        if i in [2]: # check-me!
+        if i in [0]: #  x0 can go down
+            parametersUp[i] = fit.GetParameter(i)   + fitResult.LowerError(i)
+            parametersDown[i] = fit.GetParameter(i) + fitResult.UpperError(i)
+        elif i in [1]: # check-me!
+            parametersUp[i] = fit.GetParameter(i)   + fitResult.UpperError(i)
+            parametersDown[i] = fit.GetParameter(i) + fitResult.LowerError(i)
+        elif i in [2]: # check-me!
             parametersUp[i] = fit.GetParameter(i)   + min(fitResult.LowerError(i),-0.02)
             parametersDown[i] = fit.GetParameter(i) + max(fitResult.UpperError(i),+0.02)
-        #elif i in [3]: # global efficiency can go up
-        #parametersUp[i] = fit.GetParameter(i)   + min(fitResult.LowerError(i),-0.02)*nsigma
-        #parametersDown[i] = fit.GetParameter(i) + max(fitResult.UpperError(i),+0.02)*nsigma
+        elif i in [3]: # global efficiency can go up
+            parametersUp[i] = fit.GetParameter(i)   + min(fitResult.LowerError(i),-0.02) 
+            parametersDown[i] = fit.GetParameter(i) + max(fitResult.UpperError(i),+0.02)
         else: # fix the other parameters
             parametersUp[i] = fit.GetParameter(i)
             parametersDown[i] = fit.GetParameter(i)
@@ -352,7 +350,7 @@ doPlots()
 #################### L1 high#########################
 parametersTurnOn_funct = (200,100,0.01,1,1E-3,1E-3)
 
-Nbins       = 10#50
+Nbins       = 20#50
 functionMin = 200#200
 functionMax = 600#350
 var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
@@ -398,7 +396,7 @@ parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
 
 Nbins       = 20
 functionMin = 20
-functionMax = 240
+functionMax = 220
 var             = "Jet_pt[1]"
 #var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,1,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
@@ -412,8 +410,8 @@ doPlots()
 
 ##################### CSV3 #########################
 parametersTurnOn_funct = (100,20,0.01,1,1E-3,1E-3)
-Nbins       = 8
-functionMin =  0.76 #CSVL =  0.460 
+Nbins       = 60 #64
+functionMin =  0.75 #CSVL =  0.460 
 functionMax = 1
 #var             = "-log(1-Jet_btagCSV[aJCidx[0]])"
 #var             = "Jet_btagCSV[aJCidx[0]]"
@@ -445,7 +443,7 @@ doPlots()
 ###################### PFPt2 ########################
 parametersTurnOn_funct = (0,20,0.01,1,1E-3,1E-3)
 
-Nbins       = 15
+Nbins       = 30
 functionMin = 20
 functionMax = 200
 var             = "Jet_pt[1]"

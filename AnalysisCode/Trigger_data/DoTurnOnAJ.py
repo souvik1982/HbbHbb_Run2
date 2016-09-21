@@ -230,20 +230,18 @@ def confidenceInterval(graph, function):
     for i in range(len(parameters)):
 
         parameters[i] = fit.GetParameter(i)
-      #  if i in [0]: #  x0 can go down
-      #      parametersUp[i] = fit.GetParameter(i)   + fitResult.LowerError(i)
-      #      parametersDown[i] = fit.GetParameter(i) + fitResult.UpperError(i)
-        # el
-       # if i in [1]: # check-me!
-      #      parametersUp[i] = fit.GetParameter(i)   + fitResult.UpperError(i)
-       #     parametersDown[i] = fit.GetParameter(i) + fitResult.LowerError(i)
-       # el
-        if i in [2]: # check-me!
+        if i in [0]: #  x0 can go down
+            parametersUp[i] = fit.GetParameter(i)   + fitResult.LowerError(i)
+            parametersDown[i] = fit.GetParameter(i) + fitResult.UpperError(i)
+        elif i in [1]: # check-me!
+            parametersUp[i] = fit.GetParameter(i)   + fitResult.UpperError(i)
+            parametersDown[i] = fit.GetParameter(i) + fitResult.LowerError(i)
+        elif i in [2]: # check-me!
             parametersUp[i] = fit.GetParameter(i)   + min(fitResult.LowerError(i),-0.02)
             parametersDown[i] = fit.GetParameter(i) + max(fitResult.UpperError(i),+0.02)
-        #elif i in [3]: # global efficiency can go up
-        #parametersUp[i] = fit.GetParameter(i)   + min(fitResult.LowerError(i),-0.02)*nsigma
-        #parametersDown[i] = fit.GetParameter(i) + max(fitResult.UpperError(i),+0.02)*nsigma
+        elif i in [3]: # global efficiency can go up
+            parametersUp[i] = fit.GetParameter(i)   + min(fitResult.LowerError(i),-0.02)
+            parametersDown[i] = fit.GetParameter(i) + max(fitResult.UpperError(i),+0.02)
         else: # fix the other parameters
             parametersUp[i] = fit.GetParameter(i)
             parametersDown[i] = fit.GetParameter(i)
@@ -501,7 +499,7 @@ doPlots()
 ##################### CaloPt4 high #########################
 parametersTurnOn_funct = (100,20,0.01,1)
 
-Nbins       = 15#140#70
+Nbins       = 20#140#70
 functionMin = 40#30#35
 functionMax = 100#100#105
 var             = "Jet_pt[3]"
