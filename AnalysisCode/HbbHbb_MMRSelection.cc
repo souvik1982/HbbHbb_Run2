@@ -132,26 +132,22 @@ void HbbHbb_MMRSelection(std::string type, std::string sample)
   
     for (unsigned int j=0; j<jetIndex_CentralpT40btag_CSVOrder->size(); ++j)
     {
-      unsigned int j_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(j);
       TLorentzVector jet1_p4, jet2_p4, jet3_p4, jet4_p4;
       jet1_p4=fillTLorentzVector(jet_regressed_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
       if (jet1_p4.Pt()>jet_pT_cut1)
       {
         for (unsigned int k=0; k<jetIndex_CentralpT40btag_CSVOrder->size(); ++k)
         {
-          unsigned int k_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(k);
           jet2_p4=fillTLorentzVector(jet_regressed_pT[k_jetIndex], jet_eta[k_jetIndex], jet_phi[k_jetIndex], jet_mass[k_jetIndex]);
           if (k_jetIndex!=j_jetIndex && jet2_p4.Pt()>jet_pT_cut1)
           {
             for (unsigned int l=0; l<jetIndex_CentralpT40btag_CSVOrder->size(); ++l)
             {
-              unsigned int l_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(l);
               jet3_p4=fillTLorentzVector(jet_regressed_pT[l_jetIndex], jet_eta[l_jetIndex], jet_phi[l_jetIndex], jet_mass[l_jetIndex]);
               if (l_jetIndex!=k_jetIndex && l_jetIndex!=j_jetIndex && jet3_p4.Pt()>jet_pT_cut1)
               {
                 for (unsigned int m=0; m<jetIndex_CentralpT40btag_CSVOrder->size(); ++m)
                 {
-                  unsigned int m_jetIndex=jetIndex_CentralpT40btag_CSVOrder->at(m);
                   jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
                   if (m_jetIndex!=l_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=j_jetIndex && jet4_p4.Pt()>jet_pT_cut1)
                   {

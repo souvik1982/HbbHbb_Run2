@@ -60,22 +60,28 @@ void DisplayHistogram_mH_forFile(TFile *file, std::string histogramName, int col
 void DisplaymH_regressed_biasCorrected()
 {
   std::vector<TFile*> v_files;
-  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection/Histograms_Graviton300GeV.root"));
-  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection/Histograms_Graviton400GeV.root"));
-  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection/Histograms_Graviton600GeV.root"));
-  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection/Histograms_Graviton800GeV.root"));
-  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection/Histograms_Graviton1000GeV.root"));
-  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection/Histograms_Graviton1200GeV.root"));
+  v_files.push_back(new TFile("PreselectedWithoutRegression/LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("PreselectedWithoutRegression/LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("PreselectedWithoutRegression/LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection_chi2/Histograms_BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("PreselectedWithoutRegression/MMRSelection_chi2/Histograms_BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root"));
   
   std::vector<TFile*> v_files_regressed;
-  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection/Histograms_Graviton300GeV_regressed.root"));
-  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection/Histograms_Graviton400GeV_regressed.root"));
-  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection/Histograms_Graviton600GeV_regressed.root"));
-  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection/Histograms_Graviton800GeV_regressed.root"));
-  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection/Histograms_Graviton1000GeV_regressed.root"));
-  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection/Histograms_Graviton1200GeV_regressed.root"));
+  v_files_regressed.push_back(new TFile("PreselectedWithRegression/LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
+  v_files_regressed.push_back(new TFile("PreselectedWithRegression/LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
+  v_files_regressed.push_back(new TFile("PreselectedWithRegression/LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
+  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root"));
+  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root"));
+  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
+  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph.root"));
+  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection_chi2/Histograms_BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
+  v_files_regressed.push_back(new TFile("PreselectedWithRegression/MMRSelection_chi2/Histograms_BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root"));
   
-  std::vector <double> mean_gen={300, 400, 600, 800, 1000, 1200};
+  std::vector <double> mean_gen={260,300,400,500, 600, 700, 800, 1000, 1400};
   
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();

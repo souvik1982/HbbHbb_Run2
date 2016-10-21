@@ -14,10 +14,71 @@
 
 double jet_pT_cut1=30.;
 
-double mean_H1_mass_=120;
-double sigma_H1_mass_=20;
-double mean_H2_mass_=120;
+double mean_H1_mass_=125;// 120 125;
+double sigma_H1_mass_=20; //20
+double mean_H2_mass_=125;//125;
 double sigma_H2_mass_=20;
+
+float mass_mean( int mass )
+{
+    if( mass == 400 ) return 380;
+    else if( mass == 450 ) return 425;
+    else if( mass == 500 ) return 476;
+    else if( mass == 550 ) return 524;
+    else if( mass == 600 ) return 573;
+    else if( mass == 650 ) return 623;
+    else if( mass == 700 ) return 674;
+    else if( mass == 750 ) return 720;
+    else if( mass == 800 ) return 772;
+    else if( mass == 900 ) return 871;
+    else return mass; 
+}
+
+float mass_mean_reg( int mass )
+{
+    if( mass == 400 ) return 388;
+    else if( mass == 450 ) return 434;
+    else if( mass == 500 ) return 482;
+    else if( mass == 550 ) return 540;
+    else if( mass == 600 ) return 589;
+    else if( mass == 650 ) return 638;
+    else if( mass == 700 ) return 689;
+    else if( mass == 750 ) return 737;
+    else if( mass == 800 ) return 787;
+    else if( mass == 900 ) return 886;
+
+    else return mass; 
+}
+float mass_sigma( int mass )
+{
+    if( mass == 400 ) return 21;
+    else if( mass == 450 ) return 25;
+    else if( mass == 500 ) return 28;
+    else if( mass == 550 ) return 30;
+    else if( mass == 600 ) return 32;
+    else if( mass == 650 ) return 34;
+    else if( mass == 700 ) return 35;
+    else if( mass == 750 ) return 39;
+    else if( mass == 800 ) return 39;
+    else if( mass == 900 ) return 42;
+    else return 30; 
+}
+
+float mass_sigma_reg( int mass )
+{
+    if( mass == 400 ) return 23;
+    else if( mass == 450 ) return 24;
+    else if( mass == 500 ) return 28;
+    else if( mass == 550 ) return 29;
+    else if( mass == 600 ) return 31;
+    else if( mass == 650 ) return 33;
+    else if( mass == 700 ) return 35;
+    else if( mass == 750 ) return 38;
+    else if( mass == 800 ) return 40;
+    else if( mass == 900 ) return 45;
+    else return 30; 
+}
+
 
 TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
 {
@@ -26,13 +87,13 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   return jet_p4;
 }
 
-void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
+void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, int signal_mass = 300, bool reg = false  )
 {
 
   std::string inputfilename="../PreSelected_"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
-  std::cout<<"Opened input file "<<inputfilename<<std::endl;
+  //std::cout<<"Opened input file "<<inputfilename<<std::endl;
   
   int evt;
   float eventWeight;
@@ -54,13 +115,15 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   tree->SetBranchAddress("Jet_mass", &(jet_mass));
   tree->SetBranchAddress("Jet_regressed_pt", &(jet_regressed_pT));
   tree->SetBranchAddress("jetIndex_CentralpT40btag_CMVAOrder", &(jetIndex_CentralpT40btag_CMVAOrder));
+  if(type!="Data"){
   tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   
   tree->SetBranchAddress("GenBQuarkFromH_phi", &(genBQuarkFromH_phi));   
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));
   tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));
-  
+   }
+
   TH1F * hJet_pt_H = new TH1F("hJet_pt_H","; jet pt (GeV)", 600, 0., 1200.);
 	
   TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 300, 0., 300.);
@@ -109,7 +172,11 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   TFile *tFile1=new TFile((histfilename).c_str(), "READ");
   TH1F h_Cuts=*((TH1F*)((TH1F*)tFile1->Get("h_Cuts"))->Clone("h_Cuts"));
   tFile1->Close();
-  
+
+  float SR_tot=0, SB_tot=0;
+  int masses[]={400,450,500,550,600,650,700,750,800,900};
+  std::map<int,float> SB_m, SR_m;
+  for( auto m : masses ){ SR_m[m]=0; SB_m[m]=0; }
   double nCut4=0, nCut5=0, nCutGen=0;
   for (int i=0; i<tree->GetEntries(); ++i)
   {
@@ -264,7 +331,14 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
       if (chi<=1)                                                                        // Signal Region
       {
         nCut5+=eventWeight;
+         SR_tot++;
+        for( auto m : masses )
+        {
+            if( !reg  && X_p4.M() > mass_mean(m)-mass_sigma(m)*3 &&  X_p4.M() < mass_mean(m)+mass_sigma(m)*3 ) SR_m[m]++;
+            else if( reg  && X_p4.M() > mass_mean_reg(m)-mass_sigma_reg(m)*3 &&  X_p4.M() < mass_mean_reg(m)+mass_sigma_reg(m)*3 ) SR_m[m]++;
+        }
         
+
         double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
         h_kinFitchi2->Fill(kinFitchi2, eventWeight);
         TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
@@ -313,6 +387,13 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
       }
       else if (1<chi && chi<2 && oppSign<0)                                   // Sideband Region
       {
+
+        SB_tot++;        
+        for( auto m : masses )
+        {
+            if( !reg  && X_p4.M() > mass_mean(m)-mass_sigma(m)*3 &&  X_p4.M() < mass_mean(m)+mass_sigma(m)*3 ) SB_m[m]++;
+            else if( reg  && X_p4.M() > mass_mean_reg(m)-mass_sigma_reg(m)*3 &&  X_p4.M() < mass_mean_reg(m)+mass_sigma_reg(m)*3 ) SB_m[m]++;
+        }
         double kinFitchi2=constrainHH_signalMeasurement(&jet1_p4, &jet2_p4, &jet3_p4, &jet4_p4);
         TLorentzVector X_p4_kinFit=(jet1_p4+jet2_p4+jet3_p4+jet4_p4);
         
@@ -324,6 +405,10 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
     }
   } // Event loop
 
+  if(type!="Data") std::cout << signal_mass <<  "   " << SR_m[signal_mass] << std::endl;
+  else for( auto m : masses ) std::cout << m << "   " << SB_m[m]*SR_tot/SB_tot << std::endl;
+ 
+ 
   h_Cuts.Fill(9, nCut4); // HH Candidates
   h_Cuts.Fill(11, nCut5); // SR
 
@@ -345,7 +430,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   h_kinFitchi2->Write();
   h_chi->Write();
   h_chi_biasCorrected->Write();
-  h_mX_SR->Write();
+   if(type!="Data"){h_mX_SR->Write();
   h_mX_SR_biasCorrected->Write();
   h_mX_SR_purity5->Write();
   h_mX_SR_purity0->Write();
@@ -353,14 +438,14 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
   h_mX_SR_purity2->Write();
   h_mX_SR_purity3->Write();
   h_mX_SR_purity4->Write();
-  h_mX_SR_kinFit->Write();
+  h_mX_SR_kinFit->Write();}
   h_HH_balance_kinFit->Write();        
-  h_mX_SR_kinFit_purity0->Write();
+   if(type!="Data"){h_mX_SR_kinFit_purity0->Write();
   h_mX_SR_kinFit_purity1->Write();
   h_mX_SR_kinFit_purity2->Write();
   h_mX_SR_kinFit_purity3->Write();
   h_mX_SR_kinFit_purity4->Write();
-  h_mX_SR_kinFit_purity5->Write();
+  h_mX_SR_kinFit_purity5->Write(); }
   h_mX_SB->Write();
   h_mX_SB_biasCorrected->Write();
   h_mX_SB_kinFit->Write();
@@ -369,12 +454,12 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample )
 
   tFile2->Write();
   tFile2->Close();
-  std::cout<<"Wrote output file "<<histfilename<<std::endl;
+  /*std::cout<<"Wrote output file "<<histfilename<<std::endl;
 
   std::cout<<"=== Cut Efficiencies === "<<std::endl;
   std::cout<<"Number of events after finding HH candidate (btag && pT>40 GeV && |eta|<2.5)  = "<<nCut4<<std::endl;
   std::cout<<"Number of events in SR = "<<nCut5<<std::endl;
-  std::cout<<"========================"<<std::endl;
+  std::cout<<"========================"<<std::endl;*/
   
   delete h_H1_mass;
   delete h_H1_pT;

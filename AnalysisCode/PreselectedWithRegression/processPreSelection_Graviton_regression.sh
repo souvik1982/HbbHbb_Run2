@@ -1,4 +1,4 @@
-setenv dir /eos/uscms/store/user/souvik/HbbHbb_Run2/V14
+setenv dir root://cmseos.fnal.gov//store/user/souvik/HbbHbb_Run2/V14
 
 root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton260GeV", "TMVARegression_BDTG.weights.xml")'
 root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton270GeV", "TMVARegression_BDTG.weights.xml")'
