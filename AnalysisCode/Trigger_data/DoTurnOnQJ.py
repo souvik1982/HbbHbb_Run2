@@ -3,8 +3,25 @@ import copy
 from math import *
 import array
 
-runName      = ""
-fitName      = "_1B"
+
+import CMS_lumi, tdrstyle
+import array
+
+#set the tdr style
+tdrstyle.setTDRStyle()
+
+#change the CMS_lumi variables (see CMS_lumi.py)
+CMS_lumi.lumi_7TeV = "4.8 fb^{-1}"
+CMS_lumi.lumi_13TeV = "7.1 fb^{-1} (RunG)"
+CMS_lumi.writeExtraText = 1
+CMS_lumi.extraText = "Preliminary"
+CMS_lumi.lumi_sqrtS = "RunG 13 TeV" # used with iPeriod = 0, e.g. for simulation-only plots (default is an empty string)
+iPeriod =4
+iPos = 11
+
+
+runName      = "RunG"
+fitName      = "_G"
 
 ffName = "fittedFunctions_.h"
 f = open( ffName , 'w')
@@ -233,12 +250,12 @@ def confidenceInterval(graph, function):
         if i in [0]: #  x0 can go down
             parametersUp[i] = fit.GetParameter(i)   + fitResult.LowerError(i)
             parametersDown[i] = fit.GetParameter(i) + fitResult.UpperError(i)
-        elif i in [1]: # check-me!
-            parametersUp[i] = fit.GetParameter(i)   + fitResult.UpperError(i)
-            parametersDown[i] = fit.GetParameter(i) + fitResult.LowerError(i)
-        elif i in [2]: # check-me!
-            parametersUp[i] = fit.GetParameter(i)   + min(fitResult.LowerError(i),-0.02)
-            parametersDown[i] = fit.GetParameter(i) + max(fitResult.UpperError(i),+0.02)
+#        elif i in [1]: # check-me!
+#            parametersUp[i] = fit.GetParameter(i)   + fitResult.UpperError(i)
+#            parametersDown[i] = fit.GetParameter(i) + fitResult.LowerError(i)
+#        elif i in [2]: # check-me!
+#            parametersUp[i] = fit.GetParameter(i)   + min(fitResult.LowerError(i),-0.02)
+#            parametersDown[i] = fit.GetParameter(i) + max(fitResult.UpperError(i),+0.02)
         elif i in [3]: # global efficiency can go up
             parametersUp[i] = fit.GetParameter(i)   + min(fitResult.LowerError(i),-0.02)
             parametersDown[i] = fit.GetParameter(i) + max(fitResult.UpperError(i),+0.02)
@@ -291,7 +308,7 @@ def doPlots():
 
     TurnOn_funct = function.Clone("TurnOn_funct")
 
-    c1 = ROOT.TCanvas("c1","",1280,720)
+    c1 = ROOT.TCanvas("c1","",700,700)
 
     TurnOn_funct,TurnOn_functUp,TurnOn_functDown = confidenceInterval(turnOn,TurnOn_funct)
 
@@ -304,7 +321,7 @@ def doPlots():
     TurnOn_funct.Draw("same")
     TurnOn_functUp.Draw("same")
     TurnOn_functDown.Draw("same")
-
+    CMS_lumi.CMS_lumi(c1, iPeriod, iPos)
     #c1.SaveAs("turnOn_"+ped+"_"+runName+".C")
     c1.SaveAs("turnOn_"+ped+"_"+runName+fitName+".pdf")
     #c1.SaveAs("turnOn_"+ped+"_"+runName+".root")
@@ -321,7 +338,7 @@ ROOT.gStyle.SetOptFit(0)
 minRatio    = 0.5
 maxRatio    = 1.5
 
-fileName    ="SingleMuonSkimmed"+runName+".root"
+fileName    ="/eos/uscms/store/user/cvernier/SingleMuonSkimmed"+runName+".root"
 #fileName     = "root://cmseos.fnal.gov//store/user/lpchbb/HeppyNtuples/V23/SingleMuon" + runName + ".root"
 #fileName    = "ZvvHighPt_V20_SingleMuon.root"
 #fileName    = "/scratch/sdonato/VHbbRun2/V20/CMSSW_7_1_5/src/Xbb/env_turnOnMET90/ZvvHighPt_V20_TT_TuneCUETP8M1_13TeV-powheg-pythia8.root"
@@ -330,21 +347,22 @@ fileName    ="SingleMuonSkimmed"+runName+".root"
 #preselection = "HLT_BIT_HLT_IsoMu24_v&& Vtype==2&& CSVsorted[2]>0.6 " # && CMVAVsorted[3]>0.185"# && Jet_puId>=4" #"HLT_BIT_HLT_IsoMu18_v"
 preselection = "HLT_BIT_HLT_IsoMu24_v&& Vtype==2 && CMVAVsorted[3]>0.185 && diHiggs"# && LPt_mass > 400"# && diHiggs"#"
 
+
 parametersTurnOn_funct = ()
 #################### L1 low #########################
-parametersTurnOn_funct = (200,100,0.01,1)
+parametersTurnOn_funct = (100,50,0.01,1)
 
-Nbins           =  10#50
-functionMin     =  200#100
-functionMax     =  400#200
+Nbins           =  20#50
+functionMin     =  210#100
+functionMax     =  600#200
 var             = "Jet_pt[0]+Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
 #var             = "Jet_pt[1]+Jet_pt[2]+Jet_pt[3]"
 trigger         = "ntrgObjects_hltQuadCentralJet45>=1"
 binning         = (Nbins,functionMin,functionMax)
-ped             = "QuaJet_L1l"
+ped             = "QuaJet_L1"
 title           = "p^{T}_{1}+p^{T}_{2}+p^{T}_{3}+p^{T}_{4}"
 doPlots()
-
+'''
 #################### L1 high #########################
 parametersTurnOn_funct = (200,100,0.01,1)
 
@@ -358,22 +376,23 @@ binning         = (Nbins,functionMin,functionMax)
 ped             = "QuaJet_L1h"
 title           = "p^{T}_{1}+p^{T}_{2}+p^{T}_{3}+p^{T}_{4}"
 doPlots()
+'''
 ##################### CaloPt4 low #########################
 parametersTurnOn_funct = (100,20,0.01,1)
 
-Nbins       = 8#140#70
-functionMin = 35#30#35
-functionMax = 75#100#105
+Nbins       = 25#140#70
+functionMin = 40#30#35
+functionMax = 175#100#105
 var             = "Jet_pt[3]"
 #var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger
 trigger         = "ntrgObjects_hltQuadCentralJet45>=4"
 binning         = (Nbins,functionMin,functionMax)
-ped             = "QuaJet_CaloPt4l"
+ped             = "QuaJet_CaloPt4"
 title           = "p^{T}_{4}"
 doPlots()
 
-
+'''
 ##################### CaloPt4 high #########################
 parametersTurnOn_funct = (100,20,0.01,1)
 
@@ -388,16 +407,17 @@ binning         = (Nbins,functionMin,functionMax)
 ped             = "QuaJet_CaloPt4h"
 title           = "p^{T}_{4}"
 doPlots()
-
+'''
 
 ##################### CSV3 #########################
 parametersTurnOn_funct = (100,20,0.01,1)
-Nbins       = 7#80#24
-functionMin = 0.79#0.2#0.4 #CSVL =  0.460 
+Nbins       = 12#80#24
+functionMin = 0.72#0.2#0.4 #CSVL =  0.460 
 functionMax = 1.0#1.0#1.0
 #var             = "-log(1-Jet_btagCSV[aJCidx[0]])"
 #var             = "Jet_btagCSV[aJCidx[0]]"
 var             = "MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)&&Jet_btagCSV!=MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV)))"
+#var             = "MaxIf$(Jet_btagCSV,Jet_btagCSV!=Max$(Jet_btagCSV))"
 #var              = "CSVsorted[2]"
 #var              = "Jet_btagCSV[2]"
 #var             = "Sum$(CSV(Jet_btagCSV,Jet_eta,Jet_puId,2,Iteration$,Length$))"
@@ -410,11 +430,11 @@ title           = "CSV_{3}"
 doPlots()
 
 ###################### PFPt4 ########################
-parametersTurnOn_funct = (0,20,0.01,1)
+parametersTurnOn_funct = (100,20,0.01,1)
 
-Nbins       = 15#100#50
+Nbins       = 20#100#50
 functionMin = 45#30#40
-functionMax = 75#130#140
+functionMax = 200#130#140
 var             = "Jet_pt[3]"
 #var             = "Sum$(Pt4(Jet_pt,Jet_eta,Jet_puId,3,Iteration$,Length$))"
 preselection    = preselection + "&&"+ trigger

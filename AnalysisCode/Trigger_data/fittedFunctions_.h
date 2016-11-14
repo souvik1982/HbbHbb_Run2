@@ -1,0 +1,12 @@
+TF1* QuaJet_L1 = new TF1("QuaJet_L1","(1-((0.5-(0.5*TMath::Erf((x-195.877)*((1+sq(0))/69.9309))))*2))-0.00506127");
+TF1* QuaJet_L1Up = new TF1("QuaJet_L1Up","(1-((0.5-(0.5*TMath::Erf((x-189.057)*((1+sq(0))/69.9309))))*1.98))-0.00506127");
+TF1* QuaJet_L1Down = new TF1("QuaJet_L1Down","(1-((0.5-(0.5*TMath::Erf((x-202.411)*((1+sq(0))/69.9309))))*2.02))-0.00506127");
+TF1* QuaJet_CaloPt4 = new TF1("QuaJet_CaloPt4","(1-((0.5-(0.5*TMath::Erf((x-37.2939)*((1+sq(0))/19.5017))))*1.14212))-1.50174e-12");
+TF1* QuaJet_CaloPt4Up = new TF1("QuaJet_CaloPt4Up","(1-((0.5-(0.5*TMath::Erf((x-35.3386)*((1+sq(0))/19.5017))))*1.12212))-1.50174e-12");
+TF1* QuaJet_CaloPt4Down = new TF1("QuaJet_CaloPt4Down","(1-((0.5-(0.5*TMath::Erf((x-39.0542)*((1+sq(0))/19.5017))))*1.16212))-1.50174e-12");
+TF1* QuaJet_CSV3 = new TF1("QuaJet_CSV3","(1-((0.5-(0.5*TMath::Erf((x-0.762439)*((1+sq(0))/0.0105339))))*0.419395))-0.180613");
+TF1* QuaJet_CSV3Up = new TF1("QuaJet_CSV3Up","(1-((0.5-(0.5*TMath::Erf((x-0.750149)*((1+sq(0))/0.0105339))))*0.399395))-0.180613");
+TF1* QuaJet_CSV3Down = new TF1("QuaJet_CSV3Down","(1-((0.5-(0.5*TMath::Erf((x-0.779783)*((1+sq(0))/0.0105339))))*0.439395))-0.180613");
+TF1* QuaJet_PFPt4 = new TF1("QuaJet_PFPt4","(1-((0.5-(0.5*TMath::Erf((x-46.5954)*((1+sq(0))/2.10924))))*1.39475))-0.00518259");
+TF1* QuaJet_PFPt4Up = new TF1("QuaJet_PFPt4Up","(1-((0.5-(0.5*TMath::Erf((x-45.2209)*((1+sq(0))/2.10924))))*1.37475))-0.00518259");
+TF1* QuaJet_PFPt4Down = new TF1("QuaJet_PFPt4Down","(1-((0.5-(0.5*TMath::Erf((x-50.115)*((1+sq(0))/2.10924))))*1.41475))-0.00518259");
