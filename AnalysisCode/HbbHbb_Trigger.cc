@@ -14,7 +14,7 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 //#include "Trigger/Double76.h"
 //##include "Trigger/Quad76.h"
 //#include "Trigger_ttbar/trig.h"
-#include "Trigger_ttbar/trig.h"
+#include "Trigger_data/trig.h"
 #include <TSystem.h>
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"
@@ -25,10 +25,10 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 double pi=3.14159265358979;
 
 // Hardcoded configuration parameters
-double jet_pT_cut=30.;
+double jet_pT_cut=35.;
 double jet_pT_ttbar_cut=20.;
 double jet_eta_cut=2.5;
-double jet_btag_cut=0.185;//0.460; //0.605;
+double jet_btag_cut=0.800;//0.185;//0.460; //0.605;
 /////////////////////////////////////
 
 typedef std::map<double, int> JetList;
@@ -80,8 +80,8 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
   int evt;
   int isData, nTrueInt;
   float trigger_HLT_HH4bLowLumi;
-  int trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v; 
-  int trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v;
+  int trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v; 
+  int trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v;
   float vType;
   float puWeight, genWeight;
   int nJets;
@@ -172,13 +172,13 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
 
 
   // Different name for MC and data
-  if(isMC==1){ tree->SetBranchAddress("HLT2_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT2_HH4bLowLumi", 1); }
+  if(isMC==1){ tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT_HH4bLowLumi", 1); }
   else {  tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT_HH4bLowLumi", 1); }
-  if(isMC==1){ tree->SetBranchAddress("HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1); }
-  else { tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1); }
+  if(isMC==1){ tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1); }
+  else { tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1); }
 
-  if(isMC==1){ tree->SetBranchAddress("HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v);  tree->SetBranchStatus("HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1); }
-  else { tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1); }
+  if(isMC==1){ tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v);  tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1); }
+  else { tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1); }
 
   tree->SetBranchAddress("Vtype", &(vType));                                tree->SetBranchStatus("Vtype", 1); 
   if(isMC==1){ tree->SetBranchAddress("puWeight", &(puWeight));                          tree->SetBranchStatus("puWeight", 1); }
@@ -305,7 +305,7 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
     tree->GetEvent(i);
    
     eventWeight=1;	 
-  //  if (isData!=1) eventWeight=puWeight;//weight2( nTrueInt )*genWeight/fabs(genWeight);
+    if (isData!=1) eventWeight=puWeight;//weight2( nTrueInt )*genWeight/fabs(genWeight);
     if (isData!=1) eventWeight*=genWeight/fabs(genWeight);
     if (isData!=1)
     {
@@ -329,23 +329,12 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
     h_MET->Fill(met_pT, eventWeight);
     h_MET_phi->Fill(met_phi, eventWeight);
     
-    if (trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v!=1) nTrig1+=1;
-    if (trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig12+=1;
-    if (trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v!=1 && trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig2+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v!=1) nTrig1+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig12+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v!=1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig2+=1;
     
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
-    float max1 =-1 ;
-    float max2=-1;
-    float max3=-1;	
-    float max4=-1;	
-    for (int i=0; i<8;i++)
-    {
-	    if(max1 < jet_btagCSV[i]) { max4=max3;max3=max2; max2=max1; max1=jet_btagCSV[i];}
-	    else if (max2  < jet_btagCSV[i]){max4=max3;max3=max2; max2 = jet_btagCSV[i];}
-	    else if (max3  < jet_btagCSV[i]) {max4=max3;max3 = jet_btagCSV[i];}
-	    else if (max4  < jet_btagCSV[i]) max4 = jet_btagCSV[i];
-    }
     
     /*std::cout<<max1<<"   "<<max2<<"  "<<max3<<std::endl;
     std::cout<<"pt order "<<std::endl;	
@@ -364,15 +353,14 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
       	    Double = TurnOnQuadUp(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
     }
     */		
-   // if (trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1 || trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1)
+   // if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1)
     {
       //if(sigmaTrigUnc_string == "Trigm1" || sigmaTrigUnc_string == "Trigp1") eventWeight = eventWeight*(Double+quad-Double*quad); //P(A||B) = P(A)+P(B)-P(A&B) = P(A)+P(B)-P(A)*(B));
       nCut1+=eventWeight;
       
-      if (vType==-1)
+      if (vType==-1 || vType==4)
       {
         nCut2+=eventWeight;
-        
         // Order the jets by pT, CSV, and CMVA
         JetList jetList_Central_pTOrder;
         JetList jetList_CentralpT40_CSVOrder;
@@ -381,6 +369,7 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
         JetList jetList_CentralpT40btag_CMVAOrder;
         int nCbJets=0;
         int nCVMAM=0;
+	sumpt=0;
         for (unsigned int j=0; j<(unsigned int)nJets; ++j)
         {
           if (sigmaJECUnc_string=="JECp1") jet_pT[j] = jet_rawpT[j]*jet_corrJECUp[j]*jet_corrJER[j];
@@ -390,47 +379,64 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
 	      
           if (fabs(jet_eta[j])<jet_eta_cut) 
           {
-            jetList_Central_pTOrder[jet_pT[j]]=j;
+	    if (jet_pT[j]> 40.) sumpt=sumpt+jet_pT[j];
             if (jet_pT[j]>jet_pT_cut)
-            {
-              if (jet_btagCMVA[j]>jet_btag_cut) ++nCVMAM;
+            {	
+	       jetList_Central_pTOrder[jet_pT[j]]=j;
+
+	      //sumpt=sumpt+jet_pT[j];
+              if (jet_btagCSV[j]>jet_btag_cut) ++nCVMAM;
               if (jet_btagCSV[j]>-1)
               { 
                // ++nCbJets; 
-                jetList_CentralpT40_CSVOrder[jet_btagCMVA[j]]=j;
+                jetList_CentralpT40_CSVOrder[jet_btagCSV[j]]=j;
                 if (jet_btagCMVA[j]>jet_btag_cut)
                 {
                   
-                  ++nCbJets;
+                  nCbJets++;
                   if( nCbJets<= 4 && isData!=1)
-                  {	/*
+                  {	
                       if (sigmabTagUnc_string=="bTagp1") eventWeight=eventWeight*(jet_btagCMVAMSFUp[j]);
                       if (sigmabTagUnc_string=="bTagm1") eventWeight=eventWeight*(jet_btagCMVAMSFDown[j]);
-                      if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" ) eventWeight=eventWeight*jet_btagCMVAMSF[j];*/
+                      if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" ) eventWeight=eventWeight*jet_btagCMVAMSF[j];
                   }  
                   jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
                   if (jet_btagCSV[j]>0) jetList_CentralpT40btag_CSVOrder[jet_btagCSV[j]]=j;
-                  jetList_CentralpT40btag_CMVAOrder[jet_btagCMVA[j]]=j;
+                  jetList_CentralpT40btag_CMVAOrder[jet_btagCSV[j]+0.0000001*j]=j;
+	//	  std::cout<<  nCbJets << "  cmva "<<jet_btagCMVA[j] << "  "<<j<< "  "<< jet_pT[j]<<std::endl;
                 }
               }
             }
           }
         }
 
- 
-          if (  nCbJets>=4  )// &&  nCVMAM>=4)
-          {         
-              int GoodJets[100]; int counter = 0;
-              float CSV[100];
-              for( int j=0; j<nJets; ++j ) if( fabs(jet_eta[j])<2.6 && (jet_puId[j]>=4)){ GoodJets[counter]=j; CSV[counter]=jet_btagCSV[j]; counter++; }
-              float pt4 = jet_pT[GoodJets[3]];
-              float pt2 = jet_pT[GoodJets[1]];
+          if (  nCbJets>=4 )// && jetIndex_Central_pTOrder.size()>3)// &&  nCVMAM>=4)
+          {   
+              fillIndexVectorFromJetList(jetList_CentralpT40btag_CMVAOrder, &jetIndex_CentralpT40btag_CMVAOrder);
+              fillIndexVectorFromJetList(jetList_Central_pTOrder, &jetIndex_Central_pTOrder);	
+	      int ajetIndex = jetIndex_CentralpT40btag_CMVAOrder.at(2);
+              float CSV3 = jet_btagCMVA[ajetIndex];
+	      float CSV1 = jet_btagCMVA[jetIndex_CentralpT40btag_CMVAOrder.at(0)];
+	      float CSV2 = jet_btagCMVA[jetIndex_CentralpT40btag_CMVAOrder.at(1)];	
+	      float CSV4 = jet_btagCMVA[jetIndex_CentralpT40btag_CMVAOrder.at(3)];	
+	      //std::cout<< " CSV3:  "<< CSV3 << "  CSV1  "<<jet_btagCMVA[jetIndex_CentralpT40btag_CMVAOrder.at(0)]<< "  CSV 2 "<< jet_btagCMVA[jetIndex_CentralpT40btag_CMVAOrder.at(1)]<<std::endl;
+	      float pt2= jet_pT[jetIndex_Central_pTOrder.at(1)];
+	      float pt4= jet_pT[jetIndex_Central_pTOrder.at(3)];
+//	      int GoodJets[100]; int counter = 0;
+ //             float CSV[100];
+ //             for( int j=0; j<nJets; ++j ) if( fabs(jet_eta[j])<2.4 && (jet_puId[j]>=4)){ GoodJets[counter]=j; CSV[counter]=jet_btagCSV[j]; counter++; }
+  //            float pt4 = jet_pT[GoodJets[3]];
+   //           float pt2 = jet_pT[GoodJets[1]];
 
-              float sumpt =jet_pT[GoodJets[0]]+jet_pT[GoodJets[1]]+jet_pT[GoodJets[2]]+jet_pT[GoodJets[3]];
-              std::sort( CSV, CSV+counter, std::greater<float>() );
-              float CSV3 = CSV[2];
+
+//              float sumpt =jet_pT[GoodJets[0]]+jet_pT[GoodJets[1]]+jet_pT[GoodJets[2]]+jet_pT[GoodJets[3]];
+//              std::sort( CSV, CSV+counter, std::greater<float>() );
+ //             float CSV3 = TMath::Min(CSV[2], (float) 0.9999999999); 
+	      
               //CSV3=-log(1-CSV3+1.e-7);
-              if( counter >=4 && pt4>30 ) {// at least 4 good jets
+              //if( counter >=4 && pt4>30 ) 
+              {// at least 4 good jets
+
 
 
                     //////////////////////////////////////////////////////////////////////////
@@ -442,7 +448,6 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
                   double chi2_old=200.;
                   int H1jet1_i=-1, H1jet2_i=-1;
                   int H2jet1_i=-1, H2jet2_i=-1;
-                  double jet_pT_cut1=45.;
 
                   double mean_H1_mass_=120;//125;
                   double sigma_H1_mass_=25;
@@ -450,28 +455,33 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
                   double sigma_H2_mass_=25; 
                   //std::cout<<"evt = "<<evt<<std::endl;
                   //std::cout<<"counter = "<<counter<<std::endl;
-
+		  unsigned int counter=jetIndex_CentralpT40btag_CMVAOrder.size();
                   for (unsigned int j=0; j<counter; ++j)
                   {
+		      unsigned int jetIndex = jetIndex_CentralpT40btag_CMVAOrder.at(j);
                       TLorentzVector jet1_p4, jet2_p4, jet3_p4, jet4_p4;
-                      jet1_p4=fillTLorentzVector(jet_pT[GoodJets[j]], jet_eta[GoodJets[j]], jet_phi[GoodJets[j]], jet_mass[GoodJets[j]]);
-                      if (jet1_p4.Pt()>jet_pT_cut1)
+                      jet1_p4=fillTLorentzVector(jet_pT[jetIndex], jet_eta[jetIndex], jet_phi[jetIndex], jet_mass[jetIndex]);
+                      if (jet1_p4.Pt()>jet_pT_cut)
                       {
                           for (unsigned int k=0; k<counter; ++k)
-                          {
-                              jet2_p4=fillTLorentzVector(jet_pT[GoodJets[k]], jet_eta[GoodJets[k]], jet_phi[GoodJets[k]], jet_mass[GoodJets[k]]);
-                              if (GoodJets[k]!=GoodJets[j] && jet2_p4.Pt()>jet_pT_cut1)
+                          {	
+			      unsigned int kjetIndex = jetIndex_CentralpT40btag_CMVAOrder.at(k);
+                              jet2_p4=fillTLorentzVector(jet_pT[kjetIndex], jet_eta[kjetIndex], jet_phi[kjetIndex], jet_mass[kjetIndex]);
+                              if (kjetIndex!=jetIndex && jet2_p4.Pt()>jet_pT_cut)
                               {
                                   for (unsigned int l=0; l<counter; ++l)
                                   {
-                                      jet3_p4=fillTLorentzVector(jet_pT[GoodJets[l]], jet_eta[GoodJets[l]], jet_phi[GoodJets[l]], jet_mass[GoodJets[l]]);
-                                      if (GoodJets[l]!=GoodJets[k] && GoodJets[l]!=GoodJets[j] && jet3_p4.Pt()>jet_pT_cut1)
+				      unsigned int ljetIndex = jetIndex_CentralpT40btag_CMVAOrder.at(l);
+                                      jet3_p4=fillTLorentzVector(jet_pT[ljetIndex], jet_eta[ljetIndex], jet_phi[ljetIndex], jet_mass[ljetIndex]);
+                                      if (ljetIndex!=kjetIndex && ljetIndex!=jetIndex && jet3_p4.Pt()>jet_pT_cut)
                                       {
                                           for (unsigned int m=0; m<counter; ++m)
                                           {
-                                              jet4_p4=fillTLorentzVector(jet_pT[GoodJets[m]], jet_eta[GoodJets[m]], jet_phi[GoodJets[m]], jet_mass[GoodJets[m]]);
-                                              if (GoodJets[m]!=GoodJets[l] && GoodJets[m]!=GoodJets[k] && GoodJets[m]!=GoodJets[j] && jet4_p4.Pt()>jet_pT_cut1)
+					      unsigned int mjetIndex = jetIndex_CentralpT40btag_CMVAOrder.at(m);
+                                              jet4_p4=fillTLorentzVector(jet_pT[mjetIndex], jet_eta[mjetIndex], jet_phi[mjetIndex], jet_mass[mjetIndex]);
+                                              if (mjetIndex!=ljetIndex && mjetIndex!=kjetIndex && mjetIndex!=jetIndex && jet4_p4.Pt()>jet_pT_cut)
                                               {
+				
 
                                                   TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
                                                   TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
@@ -484,15 +494,15 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
 
                                                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());                   
                                                   double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
-                                                  if ( (isLMR && chi2<chi2_old && ((81.<mH1 && mH1<149.) && (81.<mH2 && mH2    <149.))) ||             
-                                                  (!isLMR && chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5) )//&& deltaR1<1.5 && deltaR2<1.5)
+                                                 if ( (isLMR && m_diff<m_diff_old && ((81.<mH1 && mH1<149.) && (81.<mH2 && mH2    <149.))) ||             
+                                                  (!isLMR  && deltaR1<1.5 && deltaR2<1.5) )//&& deltaR1<1.5 && deltaR2<1.5)
                                                   {
-                                                      H1jet1_i=GoodJets[j];
-                                                      H1jet2_i=GoodJets[k];
-                                                      H2jet1_i=GoodJets[l];
-                                                      H2jet2_i=GoodJets[m];
+                                                      H1jet1_i=jetIndex;
+                                                      H1jet2_i=kjetIndex;
+                                                      H2jet1_i=ljetIndex;
+                                                      H2jet2_i=mjetIndex;
                                                       m_diff_old=m_diff;
-                                                      chi2_old=chi2;
+                                                   //   chi2_old=chi2;
                                                       foundHH=true;
                                                   }
                                               } // Conditions on 4th jet
@@ -510,50 +520,41 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
                     ///////////////////////////////////////////////////////////////
 
 
+		if(nCbJets>=4 && foundHH){
+		nCut3+=eventWeight;
+                 //  if( !foundHH ) continue;
+               //  if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;   
+                    //if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v )    nCut4+=eventWeight; //|| trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;
+                  if ( trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
+                //    if ( trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
 
-                   if( !foundHH ) continue;
-                  nCut3+=eventWeight;
-               //  if (trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;   
-                 if (trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v || trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;
-                //  if ( trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
-                 //   if ( trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
 
-
-
-                   // float weight = 0, weightUp=0, weightDown=0;
-                   //  weight += TurnOnDouble( sumpt, pt2, pt4, CSV3 ); weightUp += TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 ); weightDown += TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 );
-                   //  weight += TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUp += TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDown += TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );
-                  //  weight-=TurnOnDouble( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUp-=TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDown-=TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//*/
-                   //     weight-=TurnOnDouble( sumpt, pt2, pt4, CSV3 )*TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUp-=TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 )*TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDown-=TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 )*TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//*/
-                   //  weight+=TurnOnDouble( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUp+=TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDown+=TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//*/
-
-                 float weight = 0, weightUp = 0, weightDown = 0; 
+               float weight = 0, weightUp = 0, weightDown = 0; 
                float  weightT, weightUpT, weightDownT;
-                 weightT = TurnOnDouble( sumpt, pt2, pt4, CSV3 ); weightUpT = TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 );
-                 weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
+                weightT = TurnOnDouble( sumpt, pt2, pt4, CSV1, CSV2, CSV3,CSV4 ); weightUpT = TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 );
+                weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
 
-                 weightT = TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUpT = TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );
-                 weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
+             //    weightT = TurnOnQuad( sumpt, pt2, pt4, CSV1, CSV2, CSV3, CSV4 ); weightUpT = TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );
+             //    weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
 
-                 weightT=TurnOnDouble( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUpT=TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT=TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//*/
-                 //    weightT=TurnOnDouble( sumpt, pt2, pt4, CSV3 )*TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUpT=TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 )*TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT=TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 )*TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//*/
-                weight-=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
-                 weightUp=weight+sqrt(weightUp); weightDown=weight-sqrt(weightDown);  
+                //weightT=TurnOnQuad( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUpT=TurnOnQuadUp( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT=TurnOnQuadDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//
+
+//                     weightT=TurnOnDouble( sumpt, pt2, pt4, CSV3 )*TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUpT=TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 )*TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT=TurnOnQuadDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//
+         //       weight-=weightT;
+//		weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
+ //               weightUp=weight+sqrt(weightUp); weightDown=weight-sqrt(weightDown);  
 
                  nCut5+=eventWeight*weight;
                  nCut5u+=eventWeight*weightUp;
                  nCut5d+=eventWeight*weightDown;
-
+		}
               }// else std::cout<<"strange"<<std::endl;
 
           }
 
 
-      jetIndex_CentralpT40btag_pTOrder.clear();
-      jetIndex_CentralpT40btag_CSVOrder.clear();
         jetIndex_CentralpT40btag_CMVAOrder.clear();
         jetIndex_Central_pTOrder.clear();
-        jetIndex_CentralpT40_CSVOrder.clear();
         
       } // vType==-1
     } // Trigger
@@ -571,11 +572,11 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
   h_Cuts->Fill(13, nCut5u); // Weight  Down
    h_Cuts->Fill(15, nCut5d); // Weight Up
 
-  std::cout << nCut3<< std::endl;
-  std::cout << nCut4<< std::endl;
-  std::cout << nCut5 << std::endl;
-  std::cout << nCut5u << std::endl;
-  std::cout <<  nCut5d << std::endl;
+  std::cout << (float)nCut4/nCut3<< std::endl;
+  //std::cout << nCu<< std::endl;
+  std::cout << (float) nCut5/nCut3 << std::endl;
+  std::cout << (float)nCut5u/nCut3 << std::endl;
+  std::cout << (float) nCut5d/nCut3 << std::endl;
 
                   
   std::string histfilename="Histograms_Trigger_"+sample+".root";
