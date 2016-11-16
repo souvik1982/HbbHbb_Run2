@@ -25,7 +25,7 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 double pi=3.14159265358979;
 
 // Hardcoded configuration parameters
-double jet_pT_cut=35.;
+double jet_pT_cut=30.;
 double jet_pT_ttbar_cut=20.;
 double jet_eta_cut=2.5;
 double jet_btag_cut=0.800;//0.185;//0.460; //0.605;
@@ -379,12 +379,11 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
 	      
           if (fabs(jet_eta[j])<jet_eta_cut) 
           {
-	    if (jet_pT[j]> 40.) sumpt=sumpt+jet_pT[j];
+	    if (jet_pT[j]> 30) sumpt=sumpt+jet_pT[j];
             if (jet_pT[j]>jet_pT_cut)
             {	
 	       jetList_Central_pTOrder[jet_pT[j]]=j;
 
-	      //sumpt=sumpt+jet_pT[j];
               if (jet_btagCSV[j]>jet_btag_cut) ++nCVMAM;
               if (jet_btagCSV[j]>-1)
               { 
@@ -392,6 +391,7 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
                 jetList_CentralpT40_CSVOrder[jet_btagCSV[j]]=j;
                 if (jet_btagCMVA[j]>jet_btag_cut)
                 {
+		  //sumpt=sumpt+jet_pT[j];
                   
                   nCbJets++;
                   if( nCbJets<= 4 && isData!=1)
@@ -523,26 +523,26 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
 		if(nCbJets>=4 && foundHH){
 		nCut3+=eventWeight;
                  //  if( !foundHH ) continue;
-               //  if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;   
-                    //if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v )    nCut4+=eventWeight; //|| trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;
-                  if ( trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
-                //    if ( trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
+                //if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;   
+                  //if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;
+                  //if ( trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
+                 if ( trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
 
 
                float weight = 0, weightUp = 0, weightDown = 0; 
                float  weightT, weightUpT, weightDownT;
-                weightT = TurnOnDouble( sumpt, pt2, pt4, CSV1, CSV2, CSV3,CSV4 ); weightUpT = TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 );
-                weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
+               //weightT = TurnOnDouble( sumpt, pt2, pt4, CSV1, CSV2, CSV3,CSV4 ); weightUpT = TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 );
+               //weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
 
-             //    weightT = TurnOnQuad( sumpt, pt2, pt4, CSV1, CSV2, CSV3, CSV4 ); weightUpT = TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );
-             //    weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
+               weightT = TurnOnQuad( sumpt, pt2, pt4, CSV1, CSV2, CSV3, CSV4 ); weightUpT = TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );
+               weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
 
-                //weightT=TurnOnQuad( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUpT=TurnOnQuadUp( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT=TurnOnQuadDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//
+              // weightT=TurnOnQuad( sumpt, pt2, pt4, CSV1, CSV2, CSV3, CSV4  )*QaD_TurnOnQuad( sumpt, pt2, pt4, CSV1, CSV2, CSV3, CSV4  ); weightUpT=TurnOnQuadUp( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT=TurnOnQuadDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//
 
 //                     weightT=TurnOnDouble( sumpt, pt2, pt4, CSV3 )*TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUpT=TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 )*TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT=TurnOnQuadDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//
-         //       weight-=weightT;
-//		weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
- //               weightUp=weight+sqrt(weightUp); weightDown=weight-sqrt(weightDown);  
+                //weight-=weightT;
+		//weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
+                //weightUp=weight+sqrt(weightUp); weightDown=weight-sqrt(weightDown);  
 
                  nCut5+=eventWeight*weight;
                  nCut5u+=eventWeight*weightUp;
