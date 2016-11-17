@@ -389,7 +389,7 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
               { 
                // ++nCbJets; 
                 jetList_CentralpT40_CSVOrder[jet_btagCSV[j]]=j;
-                if (jet_btagCMVA[j]>jet_btag_cut)
+                if (jet_btagCSV[j]>jet_btag_cut)
                 {
 		  //sumpt=sumpt+jet_pT[j];
                   
@@ -415,10 +415,10 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
               fillIndexVectorFromJetList(jetList_CentralpT40btag_CMVAOrder, &jetIndex_CentralpT40btag_CMVAOrder);
               fillIndexVectorFromJetList(jetList_Central_pTOrder, &jetIndex_Central_pTOrder);	
 	      int ajetIndex = jetIndex_CentralpT40btag_CMVAOrder.at(2);
-              float CSV3 = jet_btagCMVA[ajetIndex];
-	      float CSV1 = jet_btagCMVA[jetIndex_CentralpT40btag_CMVAOrder.at(0)];
-	      float CSV2 = jet_btagCMVA[jetIndex_CentralpT40btag_CMVAOrder.at(1)];	
-	      float CSV4 = jet_btagCMVA[jetIndex_CentralpT40btag_CMVAOrder.at(3)];	
+              float CSV3 = jet_btagCSV[ajetIndex];
+	      float CSV1 = jet_btagCSV[jetIndex_CentralpT40btag_CMVAOrder.at(0)];
+	      float CSV2 = jet_btagCSV[jetIndex_CentralpT40btag_CMVAOrder.at(1)];	
+	      float CSV4 = jet_btagCSV[jetIndex_CentralpT40btag_CMVAOrder.at(3)];	
 	      //std::cout<< " CSV3:  "<< CSV3 << "  CSV1  "<<jet_btagCMVA[jetIndex_CentralpT40btag_CMVAOrder.at(0)]<< "  CSV 2 "<< jet_btagCMVA[jetIndex_CentralpT40btag_CMVAOrder.at(1)]<<std::endl;
 	      float pt2= jet_pT[jetIndex_Central_pTOrder.at(1)];
 	      float pt4= jet_pT[jetIndex_Central_pTOrder.at(3)];
@@ -525,7 +525,7 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
                  //  if( !foundHH ) continue;
                 //if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;   
                   //if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;
-                  //if ( trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
+                 //if ( trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
                  if ( trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
 
 
