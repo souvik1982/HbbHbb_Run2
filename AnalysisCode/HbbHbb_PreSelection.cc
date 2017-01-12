@@ -70,8 +70,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   int evt;
   int isData, nTrueInt;
   float trigger_HLT_HH4bLowLumi;
-  int trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v; 
-  int trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v;
+  int trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v; 
+  int trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v;
   float vType;
   float puWeight, genWeight;
   int nJets;
@@ -150,6 +150,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     reader->AddVariable("Jet_vtx3deL",       &this_Jet_vtx3deL);
     reader->BookMVA("BDTG method", regressionFile);
   }
+
   
   // Retrieve variables
   tree->SetBranchAddress("evt", &evt);
@@ -160,14 +161,15 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("isData", &isData);                                tree->SetBranchStatus("isData", 1);
 
 
-  // Different name for MC and data
-  if(isMC==1){ tree->SetBranchAddress("HLT2_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT2_HH4bLowLumi", 1); }
-  else {  tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT_HH4bLowLumi", 1); }
-  if(isMC==1){ tree->SetBranchAddress("HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1); }
-  else { tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1); }
 
-  if(isMC==1){ tree->SetBranchAddress("HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v);  tree->SetBranchStatus("HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1); }
-  else { tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1); }
+  // Different name for MC and data
+  if(isMC==1){ tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT_HH4bLowLumi", 1); }
+  else {  tree->SetBranchAddress("HLT_HH4bLowLumi", &trigger_HLT_HH4bLowLumi);      tree->SetBranchStatus("HLT_HH4bLowLumi", 1); }
+  if(isMC==1){ tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1); }
+  else { tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v",1); }
+
+  if(isMC==1){ tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v);  tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1); }
+  else { tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",&trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v); tree->SetBranchStatus("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v",1); }
 
   tree->SetBranchAddress("Vtype", &(vType));                                tree->SetBranchStatus("Vtype", 1); 
   if(isMC==1){ tree->SetBranchAddress("puWeight", &(puWeight));                          tree->SetBranchStatus("puWeight", 1); }
@@ -228,6 +230,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     tree->SetBranchAddress("Jet_vtx3DSig", &(jet_vtx3deL));              
     tree->SetBranchAddress("Jet_vtxNtracks", &(jet_vtxNtrk));
   }           
+
   
   TH1F *h_nCbJets=new TH1F("h_nCbJets", "; #Jets with |#eta|<2.5, p_{T} > 30 GeV, CMVA > CMVAM; Events", 10, 0., 10.);
   
@@ -275,15 +278,17 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   
   // Output tree in new file
   std::string outfilename="PreSelected_"+sample+".root";
+
   TFile *outfile=new TFile(outfilename.c_str(), "recreate");
   TTree *outtree=tree->CloneTree(0);
+
   float jet_regressed_pT[100];
   std::vector<unsigned int> jetIndex_CentralpT40btag_pTOrder;
   std::vector<unsigned int> jetIndex_CentralpT40btag_CSVOrder;
   std::vector<unsigned int> jetIndex_CentralpT40btag_CMVAOrder;
   std::vector<unsigned int> jetIndex_CentralpT40_CSVOrder;	
   std::vector<unsigned int> jetIndex_Central_pTOrder;
-  outtree->Branch("Jet_regressed_pt", jet_regressed_pT, "Jet_regressed_pt[nJet]/F");
+  outtree->Branch("Jet_regressed_pt", &jet_regressed_pT, "Jet_regressed_pt[nJet]/F");
   outtree->Branch("jetIndex_CentralpT40btag_pTOrder", &jetIndex_CentralpT40btag_pTOrder);
   outtree->Branch("jetIndex_CentralpT40btag_CSVOrder", &jetIndex_CentralpT40btag_CSVOrder);
   outtree->Branch("jetIndex_CentralpT40btag_CMVAOrder", &jetIndex_CentralpT40btag_CMVAOrder);
@@ -293,6 +298,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
  
   // Loop over events 
   int nEvents=tree->GetEntries();
+  std::cout<<nEvents<<std::endl;
   double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0;
   double nTrig1=0, nTrig12=0, nTrig2=0;
   for (int i=0; i<nEvents; ++i)
@@ -324,13 +330,13 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     
     h_MET->Fill(met_pT, eventWeight);
     h_MET_phi->Fill(met_phi, eventWeight);
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v!=1) nTrig1+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig12+=1;
+    if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v!=1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig2+=1;
     
-    if (trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v!=1) nTrig1+=1;
-    if (trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig12+=1;
-    if (trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v!=1 && trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig2+=1;
-    
-    // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
-    // std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
+	
+   //  std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
+   //  std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
     float max1 =-1 ;
     float max2=-1;
     float max3=-1;	
@@ -360,12 +366,12 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
       	    Double = TurnOnQuadUp(jet_pT[0], jet_pT[1], jet_pT[2], jet_pT[3], CSV3);
     }
     */		
-    if (trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1 || trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1)
+    if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1 || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1)
     {
       //if(sigmaTrigUnc_string == "Trigm1" || sigmaTrigUnc_string == "Trigp1") eventWeight = eventWeight*(Double+quad-Double*quad); //P(A||B) = P(A)+P(B)-P(A&B) = P(A)+P(B)-P(A)*(B));
       nCut1+=eventWeight;
       
-      if (vType==-1)
+      if (vType==-1)// || vType ==4)
       {
         nCut2+=eventWeight;
         
@@ -398,10 +404,12 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
                   if( nCbJets<= 4 && isData!=1)
                   {
 	
-	
+		      double tmp = 0.937935;	
                       if (sigmabTagUnc_string=="bTagp1") eventWeight=eventWeight*(jet_btagCMVAMSFUp[j]);
                       if (sigmabTagUnc_string=="bTagm1") eventWeight=eventWeight*(jet_btagCMVAMSFDown[j]);
-                      if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" ) eventWeight=eventWeight*jet_btagCMVAMSF[j];
+                      if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" && jet_pT[j]<300.) eventWeight=eventWeight*jet_btagCMVAMSF[j];
+		      else if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" && jet_pT[j]>300.) eventWeight=eventWeight*tmp; 
+                      //
                   }  
                   jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
                   if (jet_btagCSV[j]>0) jetList_CentralpT40btag_CSVOrder[jet_btagCSV[j]]=j;
@@ -590,9 +598,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   std::cout<<"========================"<<std::endl;
   
   std::cout<<"=== Trigger Report === "<<std::endl;
-  std::cout<<"trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v = "<<nTrig1/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
-  std::cout<<"trigger_HLT2_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v && trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v = "<<nTrig12/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
-  std::cout<<"trigger_HLT2_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v = "<<nTrig2/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v = "<<nTrig1/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v = "<<nTrig12/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
+  std::cout<<"trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v = "<<nTrig2/(nTrig1+nTrig12+nTrig2)*100.<<"%"<<std::endl;
   
   delete h_Count;
   delete h_nCbJets;
