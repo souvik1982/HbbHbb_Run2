@@ -35,9 +35,12 @@
 #include "RooFitResult.h"
 #include "RooCBShape.h"
 #include "RooGaussian.h"
+#include "CMS_lumi.C"
+#include "tdrstyle.C"
 
-
-int rebin=5;
+int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV
+int iPos =11;
+int rebin=3;
 ofstream outfile;
 std::string reg;
  
@@ -362,31 +365,22 @@ gErrorIgnoreLevel = kWarning;
   {
 	  if (mass=="270")
 	  {       
-		  rangeLo=250, rangeHi=600.;
+		  rangeLo=250, rangeHi=350.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 260., 280.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 8.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 9., 530.);
+		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 9., 350.);
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 300.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.5, 1.);
 
 	  }
 	  if (mass=="260")
 	  {       
-		  rangeLo=250., rangeHi=630.;
+		  rangeLo=250., rangeHi=350.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 250., 270.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 6.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 8., 590.);
+		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 8., 350.);
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 300.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.5, 1.);
-	  }
-	  if (mass=="600")
-	  {       
-		  rangeLo=550., rangeHi=660.;
-		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 580., 630.);
-		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 40.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 500., 650.);
-		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 130.);
-		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.7, 1.);
 	  }
 	  if (mass=="500")
 	  {       
@@ -397,37 +391,28 @@ gErrorIgnoreLevel = kWarning;
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
 	  }
-	         if (mass=="550")
-          {
-                  rangeLo=350., rangeHi=650.;
-                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 530., 580.);
-                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 30.);
-                  sg_p2=new RooRealVar("sg_p2", "sg_p2", 400., 590.);
-                  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
-                  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
-          }
 
 	  if (mass=="350")
 	  {
-		  rangeLo=250., rangeHi=550.;
-		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 320., 380.);
-		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 15.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 200., 420.);
-		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
-		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
+		  rangeLo=300., rangeHi=430.;
+		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 330., 380.);
+		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 9.);
+		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 100., 430.);
+		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
+		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.65, 1.);
 	  }
 	  if (mass=="400")
 	  {
-		  rangeLo=300., rangeHi=600.;
+		  rangeLo=350., rangeHi=450.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 370., 430.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 15.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 220.,460.);
+		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 220.,450.);
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
 	  }
 	  if (mass=="450")
 	  {
-		  rangeLo=300., rangeHi=600.;
+		  rangeLo=350., rangeHi=550.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 420., 480.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 25.);
 		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 380., 490.);
@@ -436,10 +421,10 @@ gErrorIgnoreLevel = kWarning;
 	  }
 	  if (mass=="300")
 	  {
-		  rangeLo=250., rangeHi=600.;
+		  rangeLo=250., rangeHi=350.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 290., 320.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 9.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 170., 360.);
+		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 170., 350.);
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 130.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
 	  }
@@ -725,30 +710,38 @@ double lnN(double b, double a, double c)
 	return err;
 }
 
-int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegression", std::string _reg = "",//edWithoutRegression",
+int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegression", std::string _reg = "reg",
                            std::string dir_selection="LMRSelection_chi2",
                            std::string file_histograms="Histograms_GluGluToBulkGravitonToHHTo4B_M-",
+			   int _mass=260,
                            bool focus=true)//false)
 {
     reg = _reg;
 
     std::vector<std::string> masses;
-	masses.push_back("260");
+    string _massstring;          // string which will contain the result
+    ostringstream convert;   // stream used for the conversion
+    convert << _mass;      // insert the textual representation of 'Number' in the characters in the stream
+    _massstring = convert.str(); // set 'Result' to the contents of the stream
+    masses.push_back(_massstring);
+      writeExtraText = true;       // if extra text
+    extraText  = "Simulation";  // default extra text is "Preliminary"
+    lumi_13TeV  = "22.0 fb^{-1}"; // default is "19.7 fb^{-1}"
+/*	masses.push_back("260");
 //	masses.push_back("270");
 	masses.push_back("300");
 	masses.push_back("350");
 	masses.push_back("400");
         masses.push_back("450");
   	masses.push_back("500");
-    //    masses.push_back("550");
+  */  //    masses.push_back("550");
 	//masses.push_back("600");
 
 	gROOT->SetStyle("Plain");
 	gStyle->SetOptStat(000000000);
-	gSystem->Load("PDFs/ExpGaussExp_cxx.so");
 
 	// Calculate nSignal events given production cross section, branching fractions and efficiency
-	double totalLumi=923; // /pb
+	double totalLumi=22040; // /pb
 	double prodXsec_1=1.; // pb
 
 	// Interpolation Plots
@@ -760,7 +753,7 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 	std::vector<double> v_zero;
 
 	// Write to an HTML File
-	outfile.open("SignalFits_LMR/index.html");
+	outfile.open("SignalFits_LMR"+reg+"/index.html");
 	outfile<<"<html>"<<std::endl;
 	outfile<<"<head>"<<std::endl;
 	// outfile<<"<base href=\"https://cmslpcweb.fnal.gov/uscms_data/souvik/SignalSystematics\" target=\"_blank\">"<<std::endl;
@@ -924,9 +917,48 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 		leg->SetFillColor(0);
 		leg->Draw();
 		c_mX_SR->SaveAs(("SignalFits_LMR"+reg+"/c_mX_SR_"+masses.at(i)+".png").c_str());
+	
 
-		TCanvas *c_mX_SR_KinFit=new TCanvas(("c_mX_SR_KinFit_"+masses.at(i)).c_str(), ("c_mX_SR_KinFit_"+masses.at(i)).c_str(), 700, 700);
-		h_mX_SR_KinFit->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" GeV); m_{X} (GeV)").c_str());
+
+  double xPad = 0.3;
+        TCanvas *c_mX_SR_KinFit=new TCanvas(("c_mX_SR_KinFit_"+masses.at(i)).c_str(), ("c_mX_SR_KinFit_"+masses.at(i)).c_str(), 700*(1.-xPad), 700);
+        TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
+        p_1->SetFillStyle(4000);
+        p_1->SetFrameFillColor(0);
+        p_1->SetBottomMargin(0.02);
+        p_1->SetTopMargin(0.06);
+
+        TPad* p_2 = new TPad("p_2", "p_2",0,0,1,xPad);
+        p_2->SetBottomMargin((1.-xPad)/xPad*0.13);
+        p_2->SetTopMargin(0.03);
+        p_2->SetFillColor(0);
+        p_2->SetBorderMode(0);
+        p_2->SetBorderSize(2);
+        p_2->SetFrameBorderMode(0);
+        p_2->SetFrameBorderMode(0);
+
+        p_1->Draw();
+        p_2->Draw();
+        p_1->cd();
+
+
+        h_mX_SR_KinFit->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" GeV); m_{X} (GeV)").c_str());
+
+        leg = new TLegend(0.75,0.75,0.5,0.9,NULL,"brNDC");
+        leg->SetBorderSize(0);
+        leg->SetTextSize(0.035);
+        leg->SetTextFont(42);
+        leg->SetLineColor(1);
+        leg->SetLineStyle(1);
+        leg->SetLineWidth(2);
+        leg->SetFillColor(0);
+        leg->SetFillStyle(0);
+        leg->SetTextFont(42);
+
+
+        leg->AddEntry(h_mX_SR_KinFit, "Signal MC");
+
+
 		h_mX_SR_KinFit->Rebin(rebin);
 		h_mX_SR_JECp1_KinFit->Rebin(rebin);
 		h_mX_SR_JECm1_KinFit->Rebin(rebin);
@@ -956,8 +988,8 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 
 
 
-		leg=new TLegend(0.7, 0.5, 0.9, 0.9);
-		leg->AddEntry(h_mX_SR_KinFit, "Baseline");
+	//	leg=new TLegend(0.7, 0.5, 0.9, 0.9);
+		//leg->AddEntry(h_mX_SR_KinFit, "Baseline");
 		Params par_KinFit, par_JECp1_KinFit, par_JECm1_KinFit;
 		RooPlot *plot_KinFit=fitSignal(h_mX_SR_KinFit, masses.at(i), kBlack, leg, par_KinFit, true);
 		v_sg_p0.push_back(par_KinFit.sg_p0); v_sg_p0_err.push_back(par_KinFit.sg_p0_err);
@@ -998,7 +1030,13 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
                         plot_bTagUp_KinFit=fitSignal(h_mX_SR_bTagUp_KinFit, masses.at(i), kGreen+3, leg, par_bTagUp_KinFit, true);
 		}
 		std::cout<<" fit done " <<std::endl;
-		plot_KinFit->SetMaximum(plot_KinFit->GetMaximum()*1.2);
+		plot_KinFit->SetTitle("");
+		  plot_KinFit->GetXaxis()->SetRangeUser(_mass-100, _mass+150);
+    plot_KinFit->GetXaxis()->SetLabelOffset(0.03);
+    plot_KinFit->GetXaxis()->SetNdivisions(505);
+    plot_KinFit->SetMaximum(plot_KinFit->GetMaximum()*1.2);
+    plot_KinFit->Draw();
+
 		plot_KinFit->Draw();
 		if (!focus) 
 		{
@@ -1014,6 +1052,36 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 		plot_KinFit->Draw("same");
 		leg->SetFillColor(0);
 		leg->Draw();
+
+
+		
+        CMS_lumi(p_1, iPeriod, iPos );
+
+        p_2->cd();
+        RooHist* hpull;
+        hpull = plot_KinFit->pullHist();
+        RooRealVar* x=new RooRealVar("x", "m_{X} (GeV)", 0, 1200);
+
+        RooPlot* frameP = x->frame() ;
+        frameP->SetTitle("");
+        frameP->GetXaxis()->SetRangeUser(_mass-100, _mass+150);
+
+        frameP->addPlotable(hpull,"P");
+        frameP->GetYaxis()->SetRangeUser(-5,5);
+        frameP->GetYaxis()->SetNdivisions(505);
+        frameP->GetXaxis()->SetNdivisions(505);
+        frameP->GetYaxis()->SetTitle("Pull");
+
+        frameP->GetYaxis()->SetTitleSize((1.-xPad)/xPad*0.06);
+        frameP->GetYaxis()->SetTitleOffset(1.2/((1.-xPad)/xPad));
+        frameP->GetXaxis()->SetTitleSize((1.-xPad)/xPad*0.06);
+        frameP->GetXaxis()->SetLabelSize((1.-xPad)/xPad*0.05);
+        frameP->GetYaxis()->SetLabelSize((1.-xPad)/xPad*0.05);
+
+
+        frameP->Draw();
+
+        
 		c_mX_SR_KinFit->SaveAs(("SignalFits_LMR"+reg+"/c_mX_SR_KinFit_"+masses.at(i)+".png").c_str());
 
 		outfile<<"<br/><hr/>"<<std::endl;
@@ -1032,13 +1100,13 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 		outfile<<"   <img src='"<<("c_mX_SR_"+masses.at(i)+".png")<<"'/><br/>"<<std::endl;
 		outfile<<"   <h2 align='center'>Without Kin-Fit. Fitted to an Exp-Gauss-Exp function.</h2><br/>"<<std::endl;
 		outfile<<"   === Baseline plot === </br>"<<std::endl;
-		outfile<<"   norm = "<<h_mX_SR->GetSumOfWeights()*totalLumi*prodXsec_1/nSignal_init<<" <br/>"<<std::endl;
+		/*outfile<<"   norm = "<<h_mX_SR->GetSumOfWeights()*totalLumi*prodXsec_1/nSignal_init<<" <br/>"<<std::endl;
 		outfile<<"   sg_p0 = "<<par.sg_p0<<" +- "<<par.sg_p0_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p1 = "<<par.sg_p1<<" +- "<<par.sg_p1_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p2 = "<<par.sg_p2<<" +- "<<par.sg_p2_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p3 = "<<par.sg_p3<<" +- "<<par.sg_p3_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p4 = "<<par.sg_p4<<" +- "<<par.sg_p4_err<<" <br/>"<<std::endl;
-		if (!focus) 
+		*/if (!focus) 
 		{
 			outfile<<"   <center><input type='button' onclick=\"return toggleMe('"<<masses.at(i)<<"')\" value='Systematics'></center><br/>"<<std::endl;
 			outfile<<"   <div id=\""<<masses.at(i)<<"\" style=\"display:none\">"<<std::endl;
@@ -1066,12 +1134,12 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 		outfile<<"   <h2 align='center'>With Kin-Fit. Fitted to an Exp-Gauss-Exp function.</h2><br/>"<<std::endl;
 		outfile<<"   === Baseline plot === </br>"<<std::endl;
 		outfile<<"   norm = "<<h_mX_SR_KinFit->GetSumOfWeights()*totalLumi*prodXsec_1/nSignal_init<<" <br/>"<<std::endl;
-		outfile<<"   sg_p0 = "<<par_KinFit.sg_p0<<" +- "<<par_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+		/*outfile<<"   sg_p0 = "<<par_KinFit.sg_p0<<" +- "<<par_KinFit.sg_p0_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p1 = "<<par_KinFit.sg_p1<<" +- "<<par_KinFit.sg_p1_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p2 = "<<par_KinFit.sg_p2<<" +- "<<par_KinFit.sg_p2_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p3 = "<<par_KinFit.sg_p3<<" +- "<<par_KinFit.sg_p3_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p4 = "<<par_KinFit.sg_p4<<" +- "<<par_KinFit.sg_p4_err<<" <br/>"<<std::endl;
-		if (!focus) 
+		*/if (!focus) 
 		{
 			outfile<<"   <center><input type='button' onclick=\"return toggleMe('"<<masses.at(i)<<"_KinFit')\" value='Systematics'></center><br/>"<<std::endl;
 			outfile<<"   <div id=\""<<masses.at(i)<<"_KinFit\" style=\"display:none\">"<<std::endl;
@@ -1188,23 +1256,20 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 			double sg_p4_errSyst_max=(*std::max_element(sg_p4_errSyst, sg_p4_errSyst+7))-par_KinFit.sg_p4;
 			outfile<<"   Uncertainty on sg_p4 = "<<par_KinFit.sg_p4<<" +- "<<sg_p4_errStat<<" (stat) - "<<sg_p4_errSyst_min<<" + "<<sg_p4_errSyst_max<<" (syst); -"<<quad(sg_p4_errStat/2., sg_p4_errSyst_min)<<"/+"<<quad(sg_p4_errStat/2., sg_p4_errSyst_max)<<" (total) <br/>"<<std::endl;
 		
-
+	}
 
 		outfile<<"JEC       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JECp1_KinFit->GetSumOfWeights(), h_mX_SR_JECm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
 		outfile<<"JER       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JERp1_KinFit->GetSumOfWeights(), h_mX_SR_JERm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
 	//	outfile<<"trig lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_Trigp1_KinFit->GetSumOfWeights(), h_mX_SR_Trigm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
 		outfile<<"bTag lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_bTagUp_KinFit->GetSumOfWeights(), h_mX_SR_bTagDown_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
 
-		outfile<<"sg_p0     param   "<<par_KinFit.sg_p0<<" -"<<quad(sg_p0_errStat/2., sg_p0_errSyst_min)<<"/+"<<quad(sg_p0_errStat/2., sg_p0_errSyst_max)<<" <br/>"<<std::endl;
+	/*	outfile<<"sg_p0     param   "<<par_KinFit.sg_p0<<" -"<<quad(sg_p0_errStat/2., sg_p0_errSyst_min)<<"/+"<<quad(sg_p0_errStat/2., sg_p0_errSyst_max)<<" <br/>"<<std::endl;
 		outfile<<"sg_p1     param   "<<par_KinFit.sg_p1<<" -"<<quad(sg_p1_errStat/2., sg_p1_errSyst_min)<<"/+"<<quad(sg_p1_errStat/2., sg_p1_errSyst_max)<<" <br/>"<<std::endl;
 		outfile<<"sg_p2     param   "<<par_KinFit.sg_p2<<"  -"<<quad(sg_p2_errStat/2., sg_p2_errSyst_min)<<"/+"<<quad(sg_p2_errStat/2., sg_p2_errSyst_max)<<" <br/>"<<std::endl;
 		outfile<<"sg_p3     param   "<<par_KinFit.sg_p3<<"  -"<<quad(sg_p3_errStat/2., sg_p3_errSyst_min)<<"/+"<<quad(sg_p3_errStat/2., sg_p3_errSyst_max)<<" <br/>"<<std::endl;
 		outfile<<"sg_p4     param   "<<par_KinFit.sg_p4<<"  -"<<quad(sg_p4_errStat/2., sg_p4_errSyst_min)<<"/+"<<quad(sg_p4_errStat/2., sg_p4_errSyst_max)<<" <br/>"<<std::endl;
-	
+	*/
 
-
-
-	}
 	outfile<<"   </div>"<<std::endl;
 	outfile<<"  </td>"<<std::endl;
 

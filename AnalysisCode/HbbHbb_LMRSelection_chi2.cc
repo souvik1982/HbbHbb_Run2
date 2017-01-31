@@ -225,7 +225,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, int signal_m
                     
                     double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   
-                    if (chi2<chi2_old && ((81.<mH1 && mH1<149.) && (81.<mH2 && mH2<149.)))
+                    if (chi2<chi2_old && ((89.<mH1 && mH1<149.) && (89.<mH2 && mH2<149.)))
                     {
                       H1jet1_i=j_jetIndex;
                       H1jet2_i=k_jetIndex;
@@ -438,7 +438,8 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, int signal_m
   h_mX_SR_purity2->Write();
   h_mX_SR_purity3->Write();
   h_mX_SR_purity4->Write();
-  h_mX_SR_kinFit->Write(); }
+  //h_mX_SR_kinFit->Write(); 
+  }
   h_HH_balance_kinFit->Write();        
   if(type!="Data"){ h_mX_SR_kinFit_purity0->Write();
   h_mX_SR_kinFit_purity1->Write();
@@ -448,6 +449,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, int signal_m
   h_mX_SR_kinFit_purity5->Write(); }
   h_mX_SB->Write();
   h_mX_SB_biasCorrected->Write();
+  h_mX_SR_kinFit->Write(); 
   h_mX_SB_kinFit->Write(); 
   h_Cuts.Write();
 

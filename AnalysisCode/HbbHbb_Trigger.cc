@@ -14,7 +14,8 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 //#include "Trigger/Double76.h"
 //##include "Trigger/Quad76.h"
 //#include "Trigger_ttbar/trig.h"
-#include "Trigger_data/trig.h"
+#include "trigger_tt/trig.h"
+//#include "trigger-testerror/trig.h"
 #include <TSystem.h>
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"
@@ -27,7 +28,7 @@ double pi=3.14159265358979;
 // Hardcoded configuration parameters
 double jet_pT_cut=30.;
 double jet_pT_ttbar_cut=20.;
-double jet_eta_cut=2.5;
+double jet_eta_cut=2.4;
 double jet_btag_cut=0.800;//0.185;//0.460; //0.605;
 /////////////////////////////////////
 
@@ -186,9 +187,9 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
   tree->SetBranchAddress("nJet", &(nJets));                                 tree->SetBranchStatus("nJet", 1); 
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));                    tree->SetBranchStatus("Jet_btagCSV", 1); 
   tree->SetBranchAddress("Jet_btagCMVAV2", &(jet_btagCMVA));                tree->SetBranchStatus("Jet_btagCMVAV2", 1);
-  if(isMC==1){ tree->SetBranchAddress("Jet_btagCMVAV2M_SF_up", &(jet_btagCMVAMSFUp));     tree->SetBranchStatus("Jet_btagCMVAV2M_SF_up", 1);
-  tree->SetBranchAddress("Jet_btagCMVAV2M_SF_down", &(jet_btagCMVAMSFDown)); tree->SetBranchStatus("Jet_btagCMVAV2M_SF_down", 1);
-  tree->SetBranchAddress("Jet_btagCMVAV2M_SF", &(jet_btagCMVAMSF));          tree->SetBranchStatus("Jet_btagCMVAV2M_SF", 1); }	
+  if(isMC==1){ tree->SetBranchAddress("Jet_btagCSVM_SF_up", &(jet_btagCMVAMSFUp));     tree->SetBranchStatus("Jet_btagCSVM_SF_up", 1);
+  tree->SetBranchAddress("Jet_btagCSVM_SF_down", &(jet_btagCMVAMSFDown)); tree->SetBranchStatus("Jet_btagCSVM_SF_down", 1);
+  tree->SetBranchAddress("Jet_btagCSVM_SF", &(jet_btagCMVAMSF));          tree->SetBranchStatus("Jet_btagCSVM_SF", 1); }	
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                              tree->SetBranchStatus("Jet_pt", 1);
   tree->SetBranchAddress("Jet_rawPt", &(jet_rawpT));                        tree->SetBranchStatus("Jet_rawPt", 1);
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                            tree->SetBranchStatus("Jet_eta", 1); 
@@ -297,7 +298,7 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
  
   // Loop over events 
   int nEvents=tree->GetEntries();
-  double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0,nCut5u=0,nCut5d=0;
+  double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0,nCut5u=0,nCut5d=0, c=0;
   double nTrig1=0, nTrig12=0, nTrig2=0;
   for (int i=0; i<nEvents; ++i)
   {
@@ -369,7 +370,7 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
         JetList jetList_CentralpT40btag_CMVAOrder;
         int nCbJets=0;
         int nCVMAM=0;
-	sumpt=0;
+	float sumpt=0;
         for (unsigned int j=0; j<(unsigned int)nJets; ++j)
         {
           if (sigmaJECUnc_string=="JECp1") jet_pT[j] = jet_rawpT[j]*jet_corrJECUp[j]*jet_corrJER[j];
@@ -377,14 +378,14 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
           if (sigmaJERUnc_string=="JERp1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERUp[j];
           if (sigmaJERUnc_string=="JERm1") jet_pT[j] = jet_rawpT[j]*jet_corrJEC[j]*jet_corrJERDown[j];
 	      
-          if (fabs(jet_eta[j])<jet_eta_cut) 
+          if (fabs(jet_eta[j])<jet_eta_cut ) 
           {
 	    if (jet_pT[j]> 30) sumpt=sumpt+jet_pT[j];
             if (jet_pT[j]>jet_pT_cut)
             {	
 	       jetList_Central_pTOrder[jet_pT[j]]=j;
 
-              if (jet_btagCSV[j]>jet_btag_cut) ++nCVMAM;
+              if (jet_btagCMVA[j]>0.185) ++nCVMAM;
               if (jet_btagCSV[j]>-1)
               { 
                // ++nCbJets; 
@@ -398,7 +399,7 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
                   {	
                       if (sigmabTagUnc_string=="bTagp1") eventWeight=eventWeight*(jet_btagCMVAMSFUp[j]);
                       if (sigmabTagUnc_string=="bTagm1") eventWeight=eventWeight*(jet_btagCMVAMSFDown[j]);
-                      if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" ) eventWeight=eventWeight*jet_btagCMVAMSF[j];
+                      //if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" ) eventWeight=eventWeight*jet_btagCMVAMSF[j];
                   }  
                   jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
                   if (jet_btagCSV[j]>0) jetList_CentralpT40btag_CSVOrder[jet_btagCSV[j]]=j;
@@ -520,29 +521,30 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
                     ///////////////////////////////////////////////////////////////
 
 
-		if(nCbJets>=4 && foundHH){
+		if(nCbJets >=4 && foundHH){
+		c++;
 		nCut3+=eventWeight;
                  //  if( !foundHH ) continue;
                 //if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v && trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;   
-                  //if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;
-                 //if ( trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
-                 if ( trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
+                 if (trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v || trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v ) nCut4+=eventWeight;
+ //                if ( trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
+ //                if ( trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nCut4+=eventWeight;
 
 
                float weight = 0, weightUp = 0, weightDown = 0; 
                float  weightT, weightUpT, weightDownT;
-               //weightT = TurnOnDouble( sumpt, pt2, pt4, CSV1, CSV2, CSV3,CSV4 ); weightUpT = TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 );
-               //weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
-
-               weightT = TurnOnQuad( sumpt, pt2, pt4, CSV1, CSV2, CSV3, CSV4 ); weightUpT = TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );
+               weightT = TurnOnDouble( sumpt, pt2, pt4,CSV1,CSV2,CSV3,CSV4); weightUpT = TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnDoubleDown( sumpt, pt2, pt4, CSV3 );
                weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
 
-              // weightT=TurnOnQuad( sumpt, pt2, pt4, CSV1, CSV2, CSV3, CSV4  )*QaD_TurnOnQuad( sumpt, pt2, pt4, CSV1, CSV2, CSV3, CSV4  ); weightUpT=TurnOnQuadUp( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT=TurnOnQuadDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//
+
+              weightT = TurnOnQuad( sumpt, pt2, pt4,CSV1,CSV2,CSV3,CSV4); weightUpT = TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT = TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );
+              weight+=weightT;weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
+              weightT=TurnOnQuad( sumpt, pt2, pt4,CSV1,CSV2,CSV3,CSV4)*QaD_TurnOnQuad( sumpt, pt2, pt4,CSV1,CSV2,CSV3,CSV4); weightUpT=TurnOnQuadUp( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT=TurnOnQuadDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//
 
 //                     weightT=TurnOnDouble( sumpt, pt2, pt4, CSV3 )*TurnOnQuad( sumpt, pt2, pt4, CSV3 ); weightUpT=TurnOnDoubleUp( sumpt, pt2, pt4, CSV3 )*TurnOnQuadUp( sumpt, pt2, pt4, CSV3 ); weightDownT=TurnOnQuadDown( sumpt, pt2, pt4, CSV3 )*QaD_TurnOnQuadDown( sumpt, pt2, pt4, CSV3 );//
-                //weight-=weightT;
-		//weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
-                //weightUp=weight+sqrt(weightUp); weightDown=weight-sqrt(weightDown);  
+               weight-=weightT;
+		weightUp+=pow(weightUpT-weightT,2);weightDown+=pow(weightDownT-weightT,2);
+                weightUp=weight+sqrt(weightUp); weightDown=weight-sqrt(weightDown);  
 
                  nCut5+=eventWeight*weight;
                  nCut5u+=eventWeight*weightUp;
@@ -573,7 +575,7 @@ void HbbHbb_Trigger(std::string dir, std::string sample,
    h_Cuts->Fill(15, nCut5d); // Weight Up
 
   std::cout << (float)nCut4/nCut3<< std::endl;
-  //std::cout << nCu<< std::endl;
+  std::cout << c<< std::endl;
   std::cout << (float) nCut5/nCut3 << std::endl;
   std::cout << (float)nCut5u/nCut3 << std::endl;
   std::cout << (float) nCut5d/nCut3 << std::endl;

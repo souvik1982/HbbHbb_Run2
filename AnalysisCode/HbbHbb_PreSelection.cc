@@ -87,9 +87,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float met_pT, met_phi;
 
   int isMC;
-  std::size_t findGrav = sample.find("Grav");std::size_t findRad = sample.find("Radion");
+  std::size_t findGrav = sample.find("Grav");std::size_t findRad = sample.find("Radion"); 
   if ( findGrav !=std::string::npos || findRad !=std::string::npos ) isMC = 1;
   else isMC = 0;
+  isMC=1;
   float btagWeightsCMVAV2;	
   
   float jet_corr[100], 

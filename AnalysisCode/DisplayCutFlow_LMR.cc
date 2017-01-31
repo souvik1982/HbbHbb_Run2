@@ -208,7 +208,7 @@ void pushBackHistograms(Samples &sample, TFile *file, TFile * old, bool MC=true)
 
 void signalEff(int npoint)
 {
-        int massPtsStd[9]={260, 270, 300, 350, 400, 450,  500, 550, 650};
+        int massPtsStd[8]={260, 270, 300, 350, 400, 450,  500, 550};
 	int massPts[npoint];
 	for(int i=0; i<npoint; i++) massPts[i]=massPtsStd[i];  
 	std::cout<<" === Signal Efficiencies === "<<std::endl;
@@ -229,7 +229,7 @@ void signalEff(int npoint)
 
 void cumEff(int npoint)
 {
-	int massPtsStd[9]={260, 270, 300, 350, 400, 450,  500, 550, 650};
+	int massPtsStd[8]={260, 270, 300, 350, 400, 450,  500, 550};
 	int massPts[npoint];
 	for(int i=0; i<npoint; i++) massPts[i]=massPtsStd[i];
 
@@ -257,22 +257,22 @@ void DisplayCutFlow_LMR()
 	gStyle->SetOptStat(0);
   writeExtraText = true;       // if extra text
   extraText  = "Simulation" ; //Preliminary";  // default extra text is "Preliminary"
-  lumi_13TeV  = "4.0 fb^{-1} (2016)";  // default is "5.1 fb^{-1}"
+  lumi_13TeV  = "22.04 fb^{-1} (2016)";  // default is "5.1 fb^{-1}"
 
 
 	//int n=10;
-	int massL[8]={260, 300, 350,  450,  500, 550, 600, 650};// 800, 1000, 1200};
+	int massL[8]={260, 270, 300, 350, 400, 450,  500, 550};// 800, 1000, 1200};
 //	int massL[5]={260, 270, 300, 400, 600}; //, 700, 800, 900, 1000, 1100};
   TFile *glugluToX260=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root");
-  //TFile *glugluToX270=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-270_narrow_13TeV-madgraph.root");
+  TFile *glugluToX270=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-270_narrow_13TeV-madgraph.root");
   TFile *glugluToX300=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root");
  TFile *glugluToX350=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-350_narrow_13TeV-madgraph.root");
-  //TFile *glugluToX400=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root");
+  TFile *glugluToX400=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root");
   TFile *glugluToX450=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-450_narrow_13TeV-madgraph.root"); 
   TFile *glugluToX500=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-500_narrow_13TeV-madgraph.root");
   TFile *glugluToX550=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-550_narrow_13TeV-madgraph.root");
-  TFile *glugluToX600=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root");
-  TFile *glugluToX650=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root");
+  //TFile *glugluToX600=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-600_narrow_13TeV-madgraph.root");
+  //TFile *glugluToX650=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root");
  // TFile *glugluToX700=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root");
 //TFile *glugluToX800=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph.root");
 //TFile *glugluToX900=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root");
@@ -280,15 +280,15 @@ void DisplayCutFlow_LMR()
 //TFile *glugluToX1200=new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-1200_narrow_13TeV-madgraph.root");
 
   pushBackHistograms(signals, glugluToX260, glugluToX260);
-  //pushBackHistograms(signals, glugluToX270, glugluToX270);
+  pushBackHistograms(signals, glugluToX270, glugluToX270);
   pushBackHistograms(signals, glugluToX300, glugluToX300 );
   pushBackHistograms(signals, glugluToX350, glugluToX350 );
- // pushBackHistograms(signals, glugluToX400, glugluToX400);
+  pushBackHistograms(signals, glugluToX400, glugluToX400);
   pushBackHistograms(signals, glugluToX450, glugluToX450);
   pushBackHistograms(signals, glugluToX500, glugluToX500);
   pushBackHistograms(signals, glugluToX550, glugluToX550);
-  pushBackHistograms(signals, glugluToX600, glugluToX600);
-  pushBackHistograms(signals, glugluToX650, glugluToX650);
+  //pushBackHistograms(signals, glugluToX600, glugluToX600);
+ // pushBackHistograms(signals, glugluToX650, glugluToX650);
  // pushBackHistograms(signals, glugluToX700, glugluToX700);
 //pushBackHistograms(signals, glugluToX800, glugluToX800);
 //pushBackHistograms(signals, glugluToX900, glugluToX900);

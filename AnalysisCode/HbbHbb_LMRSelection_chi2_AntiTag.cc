@@ -12,10 +12,14 @@
 #include "HbbHbb_Component_SignalPurity.cc"
 #include "HbbHbb_Component_KinFit.cc"
 
-double mean_H1_mass_=115;
-double sigma_H1_mass_=17; // 12;
-double mean_H2_mass_=115;
-double sigma_H2_mass_=17; // 13;
+
+double jet_pT_cut1=40.;
+
+double mean_H1_mass_=120;//120;
+double sigma_H1_mass_=20;//25;
+double mean_H2_mass_=120;//115;
+double sigma_H2_mass_=20;//30;
+
 
 /* to check against existing selection
 double mean_H1_mass_=125;
@@ -158,7 +162,8 @@ void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
               for (unsigned int m=0; m<jetIndex_CentralpT40_CSVOrder->size(); ++m)
               {
                 unsigned int m_jetIndex=jetIndex_CentralpT40_CSVOrder->at(m);
-                if (m_jetIndex!=j_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=l_jetIndex && jet_btagCMVA[m_jetIndex]<0.18)
+                if (m_jetIndex!=j_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=l_jetIndex && jet_btagCMVA[m_jetIndex]<0.18 &&  jet3_p4.Pt()>40.)
+//  && jet2_p4.Pt()>jet_pT_cut1 && jet3_p4.Pt()>jet_pT_cut1 && jet4_p4.Pt()>jet_pT_cut1)
                 {
                   jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
                    

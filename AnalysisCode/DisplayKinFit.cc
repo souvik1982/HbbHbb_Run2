@@ -193,7 +193,7 @@ void DisplayXpT_ForFile(TFile *f)
 void DisplayKinFit()
 {
   std::vector<TFile*> v_files;
-  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
+  //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
   //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-270_narrow_13TeV-madgraph.root"));
 //  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
   v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-350_narrow_13TeV-madgraph.root"));
@@ -205,16 +205,16 @@ void DisplayKinFit()
   v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph.root"));
 //  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-700_narrow_13TeV-madgraph.root"));
   v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-750_narrow_13TeV-madgraph.root"));
-//  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph.root"));
   v_files.push_back(new TFile("MMRSelection_chi2/Histograms_BulkGravTohhTohbbhbb_narrow_M-1000_13TeV-madgraph.root"));
-//  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
-  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root"));
+  v_files.push_back(new TFile("MMRSelection_chi2/Histograms_BulkGravTohhTohbbhbb_narrow_M-1200_13TeV-madgraph.root"));
+  //v_files.push_back(new TFile("MMRSelection_chi2/Histograms_BulkGravTohhTohbbhbb_narrow_M-1400_13TeV-madgraph.root"));
 
 
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-1600_narrow_13TeV-madgraph.root"));
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-2000_narrow_13TeV-madgraph.root"));
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-3000_narrow_13TeV-madgraph.root"));
-  std::vector <double> mean_gen={260,350,450,550,650,750,1000,1400}; // , 1200, 1600, 2000, 3000};
+  std::vector <double> mean_gen={350,450,550,650,750,900,1000,1200}; // , 1200, 1600, 2000, 3000};
  
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();

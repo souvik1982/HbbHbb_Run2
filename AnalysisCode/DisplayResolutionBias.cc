@@ -315,11 +315,11 @@ void Display_phi_ResolutionForFile(std::vector<TFile*> *v)
   
   TCanvas *c_jet_phi_res_vs_pT=new TCanvas("c_jet_phi_res_vs_pT", "c_jet_phi_res_vs_pT", 700, 700);
   h_jet_phi_res_vs_pT->Draw("colz");
-  c_jet_phi_res_vs_pT->SaveAs("c_jet_phi_res_vs_pT.png");
+  c_jet_phi_res_vs_pT->SaveAs("c_jet_phi_res_vs_pT.root");
   
   TCanvas *c_RMS_jet_phi_res_vs_pT=new TCanvas("c_RMS_jet_phi_res_vs_pT", "c_RMS_jet_phi_res_vs_pT", 700, 700);
   h_RMS_jet_phi_res_vs_pT->Draw();
-  c_RMS_jet_phi_res_vs_pT->SaveAs("c_RMS_jet_phi_res_vs_pT.png");
+  c_RMS_jet_phi_res_vs_pT->SaveAs("c_RMS_jet_phi_res_vs_pT.root");
   
   TCanvas *c_phi_Resolution_pT=new TCanvas("c_phi_Resolution_pT", "c_phi_Resolution_pT", 2100, 700);
   c_phi_Resolution_pT->Divide(3,1);
@@ -329,7 +329,7 @@ void Display_phi_ResolutionForFile(std::vector<TFile*> *v)
   h_MEAN_jet_phi_res_vs_pT->Draw();
   c_phi_Resolution_pT->cd(3);
   h_RMS_jet_phi_res_vs_pT->Draw();
-  c_phi_Resolution_pT->SaveAs("c_phi_Resolution_pT.png");
+  c_phi_Resolution_pT->SaveAs("c_phi_Resolution_pT.root");
 } 
 
 void DisplayResolutionBias(std::vector<std::string> files)

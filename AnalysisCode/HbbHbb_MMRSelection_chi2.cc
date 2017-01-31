@@ -184,6 +184,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, int signal_m
     
     bool foundHH=false;
     double chi2_old=200.;
+    double m_diff_old=60.;
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
     for (unsigned int j=0; j<jetIndex_CentralpT40btag_CMVAOrder->size(); ++j)
@@ -228,7 +229,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, int signal_m
                     
                     double mH1=diJet1_p4.M();
                     double mH2=diJet2_p4.M();
-                    
+                    double m_diff=fabs(mH1-mH2); 
                     double chi2=pow((mH1-mean_H1_mass_)/sigma_H1_mass_, 2)+pow((mH2-mean_H2_mass_)/sigma_H2_mass_, 2);
                   
                     if (chi2<chi2_old && deltaR1<1.5 && deltaR2<1.5)
@@ -237,7 +238,8 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, int signal_m
                       H1jet2_i=k_jetIndex;
                       H2jet1_i=l_jetIndex;
                       H2jet2_i=m_jetIndex;
-                      chi2_old=chi2;
+                      m_diff_old=m_diff;
+		      chi2_old= chi2;
                       foundHH=true;
                     }
                   } // Conditions on 4th jet
@@ -438,7 +440,8 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, int signal_m
   h_mX_SR_purity2->Write();
   h_mX_SR_purity3->Write();
   h_mX_SR_purity4->Write();
-  h_mX_SR_kinFit->Write();}
+  //h_mX_SR_kinFit->Write();
+	}
   h_HH_balance_kinFit->Write();        
    if(type!="Data"){h_mX_SR_kinFit_purity0->Write();
   h_mX_SR_kinFit_purity1->Write();
@@ -449,6 +452,7 @@ void HbbHbb_MMRSelection_chi2(std::string type, std::string sample, int signal_m
   h_mX_SB->Write();
   h_mX_SB_biasCorrected->Write();
   h_mX_SB_kinFit->Write();
+  h_mX_SR_kinFit->Write();
   hJet_pt_H->Write(); 
   h_Cuts.Write();
 

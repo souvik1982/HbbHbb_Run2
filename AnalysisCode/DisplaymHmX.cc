@@ -134,11 +134,11 @@ void DisplaymH1vsmH2_ForFile(TFile *file, bool isData=false, double mean_H1_mass
   drawRegion(isData, mean_H1_mass, sigma_H1_mass, mean_H1_mass, sigma_H1_mass);
 }
 
-void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, std::vector<TString> s_mean_gen, double mean_H1_mass, double sigma_H1_mass, double mean_H2_mass, double sigma_H2_mass)
+void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen,  double mean_H1_mass, double sigma_H1_mass, double mean_H2_mass, double sigma_H2_mass)
 {
   std::vector<TFile*> v_files;
   for (unsigned int i=0; i<files.size(); ++i) v_files.push_back(new TFile(files.at(i).c_str()));
-  TFile *f_data=new TFile("Histograms_BTagCSV.root");
+  TFile *f_data=new TFile("Histogram_BTagCSV.root");
   //TFile *f_ttbar=new TFile("Histograms_TT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_Skim.root");
   std::vector<int> v_colors = {kRed+1, kRed+3, kGreen+2, kOrange+2, kAzure+1, kAzure+3, kPink+2};//, kGray+2,kBlue+1};
   
@@ -174,7 +174,7 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, s
    //  std::cout<<" here "<<std::endl;	
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H1_mass", v_colors.at(i));
   }
-   DisplayHistogram_mH_forFile(f_data, "h_H1_mass", kBlack);
+ //  DisplayHistogram_mH_forFile(f_data, "h_H1_mass", kBlack);
   //DisplayHistogram_mH_forFile(f_ttbar, "h_H1_mass", kRed);
   leg->Draw();
   c_H1_mass->SaveAs("c_H1_mass.png");
@@ -187,7 +187,7 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, s
   {
     DisplayHistogram_mH_forFile(v_files.at(i), "h_H2_mass", v_colors.at(i));
   }
-   DisplayHistogram_mH_forFile(f_data, "h_H2_mass", kBlack);
+  // DisplayHistogram_mH_forFile(f_data, "h_H2_mass", kBlack);
   //DisplayHistogram_mH_forFile(f_ttbar, "h_H2_mass", kRed);
   leg->Draw();
   c_H2_mass->SaveAs("c_H2_mass.png");
@@ -198,7 +198,7 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, s
   for (int i=v_files.size()-1; i>=0; --i)
   {
    //  std::cout<<" here "<<std::endl;	
-    Plot_Purity_forFile(v_files.at(i), s_mean_gen.at(i), mean_gen.at(i) );//, "h_mX_SR_purity0", v_colors.at(i));
+    //Plot_Purity_forFile(v_files.at(i), s_mean_gen.at(i), mean_gen.at(i) );//, "h_mX_SR_purity0", v_colors.at(i));
   }
 
 
@@ -206,7 +206,7 @@ void DisplaymHmX(std::vector<std::string> files, std::vector<double> mean_gen, s
   // Plot mH1 vs mH2
   writeExtraText = true;       // if extra text
 	extraText  = "Preliminary";  // default extra text is "Preliminary"
-	lumi_13TeV  = "9.23 fb^{-1} 2016";  // default is "5.1 fb^{-1}"
+	lumi_13TeV  = "22.04 fb^{-1} 2016";  // default is "5.1 fb^{-1}"
   for (unsigned int i=0; i<v_files.size(); ++i)
   {
     TCanvas *c_mH1_mH2_asym=new TCanvas("c_mH1_mH2_asym", "c_mH1_mH2_asym", 700, 700);
