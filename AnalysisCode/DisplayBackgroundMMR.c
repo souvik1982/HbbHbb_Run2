@@ -20,7 +20,7 @@ std::string itoa(int i)
 }
 
 
-void DisplayBackground(){
+void DisplayBackgroundMMR(){
 
 
 
@@ -96,7 +96,7 @@ void DisplayBackground(){
   TH1F* h_mX_SB_kinFit=(TH1F*)ttbar->Get("h_mX_SB_kinFit");	
   std::cout<<" here "<<h_mX_SB_kinFit->GetEntries();
   h_mX_SB_kinFit->Scale(scale_ttbar);
-  h_mX_SB_kinFit->Rebin(10);	
+  h_mX_SB_kinFit->Rebin(40);	
   h_bkg->Add(h_mX_SB_kinFit);
   h_mX_SB_kinFit->SetLineColor(kBlue+1);
   h_mX_SB_kinFit->SetFillColor(kBlue+1);
@@ -105,13 +105,13 @@ void DisplayBackground(){
   TH1F* h_mX_SB_kinFit_st=(TH1F*)singletop->Get("h_mX_SB_kinFit");
   
   h_mX_SB_kinFit_st->Scale(scale_st);
-  h_mX_SB_kinFit_st->Rebin(10);
+  h_mX_SB_kinFit_st->Rebin(40);
   h_bkg->Add(h_mX_SB_kinFit_st);
   h_mX_SB_kinFit_st->SetLineColor(kGreen+1);
   h_mX_SB_kinFit_st->SetFillColor(kGreen+1); 
 
   h_mX_SB_kinFit_zz->Scale(scale_zz);
-  h_mX_SB_kinFit_zz->Rebin(10);
+  h_mX_SB_kinFit_zz->Rebin(40);
   h_bkg->Add(h_mX_SB_kinFit_zz);
   h_mX_SB_kinFit_zz->SetLineColor(kRed+1);
   h_mX_SB_kinFit_zz->SetFillColor(kRed+1);
@@ -157,7 +157,7 @@ void DisplayBackground(){
 
   }
   std::cout<< "integral QCD " << integralQCD<<std::endl;
- */ h_mX_SB_kinFit->GetYaxis()->SetRangeUser(0., hs.GetMaximum()*10.);
+ */ h_mX_SB_kinFit->GetYaxis()->SetRangeUser(0., hs.GetMaximum()*5.);
   //h_mX_SB_kinFit->Scale(b/a);
   h_mX_SB_kinFit->SetTitle("");
   h_mX_SB_kinFit->SetLineColor(kBlue+2);
@@ -171,7 +171,7 @@ void DisplayBackground(){
   h_mX_SB_kinFit->GetXaxis()->SetLabelSize(0.03);
 
   //h_mX_SB_kinFit->Draw("");
-  h_mX_SB_kinFit->GetXaxis()->SetRangeUser(220.,1200.);
+  h_mX_SB_kinFit->GetXaxis()->SetRangeUser(300.,1400.);
   //h_mX_SB_kinFit->SetMarkerStyle(20);
   //h_mX_SB_kinFit->SetMarkerColor(kBlack);
   //h_mX_SB_kinFit->SetLineColor(kBlack);
@@ -191,7 +191,7 @@ void DisplayBackground(){
 
   TFile * fData = new TFile("Histogram_BTagCSV.root");
   TH1F* h_mX_SB_kinFitD=(TH1F*)fData->Get("h_mX_SB_kinFit");	
-  h_mX_SB_kinFitD->Rebin(10);	
+  h_mX_SB_kinFitD->Rebin(40);	
   h_mX_SB_kinFitD->SetMarkerStyle(20);
   h_mX_SB_kinFitD->SetMarkerColor(kBlack);
   h_mX_SB_kinFitD->SetLineColor(kBlack);
@@ -202,7 +202,7 @@ void DisplayBackground(){
 	
   std::cout<<" data integral is : "<<h_mX_SB_kinFitD->Integral(0, 100)<<std::endl;
 
-  leg->AddEntry(h_mX_SB_kinFitD, "Data in SB, LMR_{#chi} ", "lp");
+  leg->AddEntry(h_mX_SB_kinFitD, "Data in SB, MMR_{#chi} ", "lp");
 	
 	
 	
@@ -222,8 +222,8 @@ void DisplayBackground(){
 
 
 
-  c->Print("stackLMR.root");
-  c->Print("stackLMR.pdf");
+  c->Print("stackMMR.root");
+  c->Print("stackMMR.pdf");
   //h_mX_SB_kinFit->Rebin(4);
 
   //sprintf(name,"SB: t#bar{t} contribution =%d",integral/data);
