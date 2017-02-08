@@ -12,7 +12,9 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 #include "TLorentzVector.h"
 #include "TMath.h"
 #include "Trigger/Double76.h"
-#include "Trigger/Quad76.h"
+#include "Trigger/Quad76.h" // to be updated
+#include "PDFs/BTagCalibrationStandalone.cpp"
+
 #include <TSystem.h>
 #if not defined(__CINT__) || defined(__MAKECINT__)
 #include "TMVA/Tools.h"
@@ -24,9 +26,8 @@ double pi=3.14159265358979;
 
 // Hardcoded configuration parameters
 double jet_pT_cut=30.;
-double jet_pT_ttbar_cut=20.;
 double jet_eta_cut=2.5;
-double jet_btag_cut=0.185;//0.460; //0.605;
+double jet_btag_cut=0.4432;// CMVAM https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
 /////////////////////////////////////
 
 typedef std::map<double, int> JetList;
@@ -64,8 +65,30 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   
   if (regressionFile=="") std::cout<<"b jet regression not done. jet_regressed_pT = jet_pT"<<std::endl;
   else std::cout<<"b jet regression done with "<<regressionFile<<" decisions file."<<std::endl;
+
+
   
   // Book variables
+  //
+
+  BTagCalibration calib("DeepCSV","/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/PDFs/deepCSV_BH_Moriond17.csv");		
+  BTagCalibrationReader csv_calib_l(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
+  BTagCalibrationReader csv_calib_c(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
+  BTagCalibrationReader csv_calib_b(BTagEntry::OP_LOOSE,"central",{"up", "down"}); 
+
+
+  csv_calib_l.load(calib,                // calibration instance
+            BTagEntry::FLAV_UDSG,    // btag flavour
+            "incl");               // measurement type
+  csv_calib_c.load(calib,
+	    BTagEntry::FLAV_C,
+	    "comb");
+  csv_calib_b.load(calib,
+            BTagEntry::FLAV_B,
+            "comb");
+
+
+
   int run;
   int evt;
   int isData, nTrueInt;
@@ -405,11 +428,35 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
                   if( nCbJets<= 4 && isData!=1)
                   {
 	
-		      double tmp = 0.937935;	
+	/*	       double jet_scalefactor=1;
+		
+		       if (TMath::Abs(jet_flavor[j])==5 ) jet_scalefactor    = csv_calib_b.eval_auto_bounds("central", BTagEntry::FLAV_B, jet_eta[j], jet_pT[j]); 
+		       else if (TMath::Abs(jet_flavor[j])==4 ) jet_scalefactor    = csv_calib_c.eval_auto_bounds("central", BTagEntry::FLAV_C, jet_eta[j], jet_pT[j]);
+		       else jet_scalefactor    = csv_calib_l.eval_auto_bounds("central", BTagEntry::FLAV_UDSG, jet_eta[j], jet_pT[j]);
+		
+		       if (sigmabTagUnc_string=="bTagp1") {
+		
+	               if (TMath::Abs(jet_flavor[j])==5 ) jet_scalefactor    = csv_calib_b.eval_auto_bounds("up", BTagEntry::FLAV_B, jet_eta[j], jet_pT[j]);
+                       else if (TMath::Abs(jet_flavor[j])==4 ) jet_scalefactor    = csv_calib_c.eval_auto_bounds("up", BTagEntry::FLAV_C, jet_eta[j], jet_pT[j]);
+                       else jet_scalefactor    = csv_calib_l.eval_auto_bounds("up", BTagEntry::FLAV_UDSG, jet_eta[j], jet_pT[j]);
+
+
+			}	
+	
+			 if (sigmabTagUnc_string=="bTagm1") {
+
+			   if (TMath::Abs(jet_flavor[j])==5 ) jet_scalefactor    = csv_calib_b.eval_auto_bounds("down", BTagEntry::FLAV_B, jet_eta[j], jet_pT[j]);
+                       else if (TMath::Abs(jet_flavor[j])==4 ) jet_scalefactor    = csv_calib_c.eval_auto_bounds("down", BTagEntry::FLAV_C, jet_eta[j], jet_pT[j]);
+                       else jet_scalefactor    = csv_calib_l.eval_auto_bounds("down", BTagEntry::FLAV_UDSG, jet_eta[j], jet_pT[j]);
+
+
+				}
+			eventWeight=eventWeight*jet_scalefactor;
+	*/		
+		
                       if (sigmabTagUnc_string=="bTagp1") eventWeight=eventWeight*(jet_btagCMVAMSFUp[j]);
                       if (sigmabTagUnc_string=="bTagm1") eventWeight=eventWeight*(jet_btagCMVAMSFDown[j]);
-                      if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" && jet_pT[j]<300.) eventWeight=eventWeight*jet_btagCMVAMSF[j];
-		      else if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" && jet_pT[j]>300.) eventWeight=eventWeight*tmp; 
+                      if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" ) eventWeight=eventWeight*jet_btagCMVAMSF[j];
                       //
                   }  
                   jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
