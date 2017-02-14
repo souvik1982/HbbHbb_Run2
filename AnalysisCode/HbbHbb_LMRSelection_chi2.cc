@@ -73,10 +73,10 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   return jet_p4;
 }
 
-void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, int signal_mass = 300, bool reg = false  )
+void HbbHbb_LMRSelection_chi2(std::string type, std::string source_dir, std::string dest_dir, std::string sample, int signal_mass = 300, bool reg = false  )
 {
 
-  std::string inputfilename="../PreSelected_"+sample+".root";
+  std::string inputfilename=source_dir+"/PreSelected_"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
   //std::cout<<"Opened input file "<<inputfilename<<std::endl;
@@ -103,8 +103,7 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, int signal_m
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                  
   tree->SetBranchAddress("Jet_mass", &(jet_mass));
   tree->SetBranchAddress("Jet_regressed_pt", &(jet_regressed_pT));
- // tree->SetBranchAddress("jetIndex_CentralpT40btag_CMVAOrder", &(jetIndex_CentralpT40btag_CMVAOrder));
-  tree->SetBranchAddress("jetIndex_CentralpT40btag_CMVAOrder", &(jetIndex_CentralpT40btag_CMVAOrder));	
+  tree->SetBranchAddress("jetIndex_CentralpT40btag_CMVAOrder", &(jetIndex_CentralpT40btag_CMVAOrder));
   if(type!="Data"){
   tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     
@@ -157,9 +156,10 @@ void HbbHbb_LMRSelection_chi2(std::string type, std::string sample, int signal_m
   TH1F *h_mX_SB_kinFit        = new TH1F("h_mX_SB_kinFit", "; m_{X} (GeV)", 3000, 0., 3000.);          h_mX_SB_kinFit->Sumw2();
   
   // Get the h_Cuts histogram
-  std::string histfilename="Histograms_"+sample+".root";
-  gSystem->Exec(("cp ../"+histfilename+" "+histfilename).c_str());
-  TFile *tFile1=new TFile((histfilename).c_str(), "READ");
+  std::string Old_histfilename=source_dir+"/Histograms_PreSelected_"+sample+".root";
+  std::string histfilename=dest_dir+"/Histograms_LMR_chi2_"+sample+".root";
+  gSystem->Exec(("cp "+Old_histfilename+" "+histfilename).c_str());
+  TFile *tFile1=new TFile((Old_histfilename).c_str(), "READ");
   TH1F h_Cuts=*((TH1F*)((TH1F*)tFile1->Get("h_Cuts"))->Clone("h_Cuts"));
   tFile1->Close();
 

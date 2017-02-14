@@ -50,7 +50,7 @@ void fillIndexVectorFromJetList(JetList jetList, std::vector<unsigned int> *inde
   }
 }
 
-void HbbHbb_PreSelection(std::string dir, std::string sample,
+void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::string sample,
                          std::string sigmaJECUnc_string="JEC", 
                          std::string sigmaJERUnc_string="JER", 
                          std::string sigmaTrigUnc_string="Trig",
@@ -58,7 +58,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
                          std::string regressionFile="")
 {
   
-  std::string inputfilename=dir+"/"+sample+".root";
+  std::string inputfilename=source_dir+"/"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
@@ -71,7 +71,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   // Book variables
   //
 
-  BTagCalibration calib("DeepCSV","/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/PDFs/deepCSV_BH_Moriond17.csv");		
+  BTagCalibration calib("DeepCSV","/scratch/malara/WorkingArea/downloaded_file/DeepCSV_Moriond17_B_H.csv");		
   BTagCalibrationReader csv_calib_l(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
   BTagCalibrationReader csv_calib_c(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
   BTagCalibrationReader csv_calib_b(BTagEntry::OP_LOOSE,"central",{"up", "down"}); 
@@ -301,7 +301,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   a_Cuts->SetBinLabel(12, "SR");
   
   // Output tree in new file
-  std::string outfilename="PreSelected_"+sample+".root";
+  std::string outfilename=dest_dir+"/"+"PreSelected_"+sample+".root";
 
   TFile *outfile=new TFile(outfilename.c_str(), "recreate");
   TTree *outtree=tree->CloneTree(0);
@@ -600,7 +600,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   TH1F *h_Count=(TH1F*)file->Get("Count");
   double nInitial=h_Count->GetBinContent(1);
                   
-  std::string histfilename="Histograms_"+sample+".root";
+eroot -l -b -q 'Vskim.cc++("BTagCSV5")'
+  std::string histfilename=dest_dir+"/"+"Histograms_PreSelected_"+sample+".root";
   TFile *tFile=new TFile(histfilename.c_str(), "RECREATE");
   h_Count->Write();
   h_nCbJets->Write();

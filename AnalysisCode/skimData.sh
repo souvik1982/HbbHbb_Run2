@@ -16,9 +16,3 @@ root -l -b -q 'Vskim.cc++("$source_dir","$dest_dir", "tree_",1,100)'
 #root -l -b -q 'Vskim.cc++("$source_dir","$dest_dir", "tree_",901,1000)'
 
 
-#root -l -b -q 'Vskim.cc++("BTagCSV0")'
-#root -l -b -q 'Vskim.cc++("BTagCSV1")'
-#root -l -b -q 'Vskim.cc++("BTagCSV2")'
-#root -l -b -q 'Vskim.cc++("BTagCSV3")'
-#root -l -b -q 'Vskim.cc++("BTagCSV4")'
-#root -l -b -q 'Vskim.cc++("BTagCSV5")'

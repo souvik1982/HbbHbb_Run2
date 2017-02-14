@@ -67,7 +67,7 @@ public:
   BTagEntry(const std::string &func, Parameters p);
   BTagEntry(const TF1* func, Parameters p);
   BTagEntry(const TH1* histo, Parameters p);
-  ~BTagEntry() {}
+ // ~BTagEntry() {}
   static std::string makeCSVHeader();
   std::string makeCSVLine() const;
   static std::string trimStr(std::string str);
@@ -111,7 +111,7 @@ public:
   BTagCalibration() {}
   BTagCalibration(const std::string &tagger);
   BTagCalibration(const std::string &tagger, const std::string &filename);
-  ~BTagCalibration() {}
+ // ~BTagCalibration() {}
 
   std::string tagger() const {return tagger_;}
 
@@ -125,10 +125,8 @@ public:
 
 protected:
   static std::string token(const BTagEntry::Parameters &par);
-
   std::string tagger_;
   std::map<std::string, std::vector<BTagEntry> > data_;
-
 };
 
 #endif  // BTagCalibration_H
