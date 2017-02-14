@@ -1,0 +1,47 @@
+<html>
+<head>
+<script type="text/javascript">
+function toggleMe(a){
+var e=document.getElementById(a);
+if(!e)return true;
+if(e.style.display=="none"){
+e.style.display="block"
+}
+else{
+e.style.display="none"
+}
+return true;
+}
+</script>
+</head>
+<body>
+<h1> Signal with JEC, JER Systematic Uncertainties</h1>
+<br/><hr/>
+<h2> mX = 400 </h2>
+<table border='1'>
+ <tr>
+  <td>
+   Higgs 1 mass
+   <img src='c_H1_mass_400.png'/>
+  </td>
+  <td>
+   Higgs 2 mass
+   <img src='c_H2_mass_400.png'/>
+  </td>
+  <td>
+   <img src='c_mX_SR_400.png'/><br/>
+   <h2 align='center'>Without Kin-Fit. Fitted to an Exp-Gauss-Exp function.</h2><br/>
+   === Baseline plot === </br>
+  </td>
+  <td>
+   <img src='c_mX_SR_KinFit_400.png'/><br/>
+   <h2 align='center'>With Kin-Fit. Fitted to an Exp-Gauss-Exp function.</h2><br/>
+   === Baseline plot === </br>
+   norm = 381.63 <br/>
+JEC       lnN     1  - <br/>
+JER       lnN     1  - <br/>
+bTag lnN     1  - <br/>
+   </div>
+  </td>
+ </tr>
+</table>

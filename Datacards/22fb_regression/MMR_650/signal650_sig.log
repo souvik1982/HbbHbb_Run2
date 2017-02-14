@@ -1,0 +1,208 @@
+
+Processing test.c...
+nSignal_init = 100000
+[#1] INFO:DataHandling -- RooDataHist::adjustBinning(signalHistogram): fit range of variable x expanded to nearest bin boundaries: [440,850] --> [440,850]
+[#0] WARNING:InputArguments -- RooAbsPdf::fitTo(signal) WARNING: a likelihood fit is request of what appears to be weighted data. 
+       While the estimated values of the parameters will always be calculated taking the weights into account, 
+       there are multiple ways to estimate the errors on these parameter values. You are advised to make an 
+       explicit choice on the error calculation: 
+           - Either provide SumW2Error(kTRUE), to calculate a sum-of-weights corrected HESSE error matrix 
+             (error will be proportional to the number of events)
+           - Or provide SumW2Error(kFALSE), to return errors from original HESSE error matrix
+             (which will be proportional to the sum of the weights)
+       If you want the errors to reflect the information contained in the provided dataset, choose kTRUE. 
+       If you want the errors to reflect the precision you would be able to obtain with an unweighted dataset 
+       with 'sum-of-weights' events, choose kFALSE.
+[#1] INFO:Eval -- RooRealVar::setRange(x) new range named 'fit' created with bounds [540,750]
+[#1] INFO:Fitting -- RooAbsOptTestStatistic::ctor(nll_signal_signalHistogram) constructing test statistic for sub-range named fit
+[#1] INFO:Eval -- RooRealVar::setRange(x) new range named 'NormalizationRangeForfit' created with bounds [440,850]
+[#1] INFO:Eval -- RooRealVar::setRange(x) new range named 'fit_nll_signal_signalHistogram' created with bounds [540,750]
+[#1] INFO:Fitting -- RooAbsOptTestStatistic::ctor(nll_signal_signalHistogram) fixing interpretation of coefficients of any RooAddPdf to full domain of observables 
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(signal_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:Minization -- RooMinuit::optimizeConst: activating const optimization
+ **********
+ **   13 **MIGRAD        2000           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=17776.1 FROM MIGRAD    STATUS=INITIATE       61 CALLS          62 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  sg_p0        6.40000e+02   6.00000e+00   0.00000e+00  -9.88458e+01
+   2  sg_p1        3.00000e+01   2.00000e+00   0.00000e+00  -4.28316e+01
+   3  sg_p2        1.90882e+00   5.00000e-01   0.00000e+00   4.45596e+00
+   4  sg_p3        1.07245e+00   7.00000e-01  -7.66455e-01  -2.10172e+02
+                               ERR DEF= 0.5
+ MIGRAD FAILS TO FIND IMPROVEMENT
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=17742.9 FROM MIGRAD    STATUS=CONVERGED     212 CALLS         213 TOTAL
+                     EDM=0.000580136    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  sg_p0        6.38516e+02   5.68768e-01   1.73175e-03   4.57381e-01
+   2  sg_p1        3.33826e+01   4.30272e-01   4.12281e-03   6.09390e-02
+   3  sg_p2        3.35764e+00   3.83235e+00   1.05372e-01  -1.94006e-03
+   4  sg_p3        2.26803e+00   3.23428e-01   1.06040e-02   2.30237e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  4    ERR DEF=0.5
+  3.235e-01 -1.529e-02  6.909e-11 -2.208e-02 
+ -1.529e-02  1.853e-01 -8.240e-11  2.633e-02 
+  6.909e-11 -8.240e-11  7.395e+00 -3.285e-10 
+ -2.208e-02  2.633e-02 -3.285e-10  1.049e-01 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4
+        1  0.12648   1.000 -0.062  0.000 -0.120
+        2  0.19302  -0.062  1.000 -0.000  0.189
+        3  0.00000   0.000 -0.000  1.000 -0.000
+        4  0.21762  -0.120  0.189 -0.000  1.000
+ **********
+ **   18 **HESSE        2000
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=17742.9 FROM HESSE     STATUS=OK             35 CALLS         248 TOTAL
+                     EDM=0.000572498    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  sg_p0        6.38516e+02   5.65152e-01   3.46350e-04  -4.94748e-02
+   2  sg_p1        3.33826e+01   4.23498e-01   1.64912e-04   3.45071e-01
+   3  sg_p2        3.35764e+00   7.14353e-01   5.00000e-01   3.50167e-01
+   4  sg_p3        2.26803e+00   3.17889e-01   2.21310e-01  -3.59697e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  4    ERR DEF=0.5
+  3.194e-01 -1.065e-02 -1.625e-14 -7.219e-03 
+ -1.065e-02  1.795e-01  2.023e-14  8.984e-03 
+ -1.625e-14  2.023e-14  5.269e-01  2.283e-13 
+ -7.219e-03  8.984e-03  2.283e-13  1.014e-01 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4
+        1  0.05802   1.000 -0.044 -0.000 -0.040
+        2  0.07866  -0.044  1.000  0.000  0.067
+        3  0.00000  -0.000  0.000  1.000  0.000
+        4  0.07629  -0.040  0.067  0.000  1.000
+[#1] INFO:Minization -- RooMinuit::optimizeConst: deactivating const optimization
+650
+638.516 +- 0.565152
+33.3826 +- 0.423498
+[#1] INFO:InputArguments -- RooAbsData::plotOn(signalHistogram) INFO: dataset has non-integer weights, auto-selecting SumW2 errors instead of Poisson errors
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(signal) p.d.f was fitted in range and no explicit plot,norm range was specified, using fit range as default
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(signal) only plotting range 'fit_nll_signal_signalHistogram'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(signal) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_signal_signalHistogram'
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(signal_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(signal_Int[x|fit_nll_signal_signalHistogram]_Norm[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing ExpGaussExp::signal_fixed
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::x
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::signal_p0
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::signal_p1
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::signal_p2
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::signal_p3
+ asd 
+ asd 
+ asd 
+[#1] INFO:DataHandling -- RooDataHist::adjustBinning(signalHistogram): fit range of variable x expanded to nearest bin boundaries: [480,850] --> [480,850]
+[#0] WARNING:InputArguments -- RooAbsPdf::fitTo(signal) WARNING: a likelihood fit is request of what appears to be weighted data. 
+       While the estimated values of the parameters will always be calculated taking the weights into account, 
+       there are multiple ways to estimate the errors on these parameter values. You are advised to make an 
+       explicit choice on the error calculation: 
+           - Either provide SumW2Error(kTRUE), to calculate a sum-of-weights corrected HESSE error matrix 
+             (error will be proportional to the number of events)
+           - Or provide SumW2Error(kFALSE), to return errors from original HESSE error matrix
+             (which will be proportional to the sum of the weights)
+       If you want the errors to reflect the information contained in the provided dataset, choose kTRUE. 
+       If you want the errors to reflect the precision you would be able to obtain with an unweighted dataset 
+       with 'sum-of-weights' events, choose kFALSE.
+[#1] INFO:Eval -- RooRealVar::setRange(x) new range named 'fit' created with bounds [580,750]
+[#1] INFO:Fitting -- RooAbsOptTestStatistic::ctor(nll_signal_signalHistogram) constructing test statistic for sub-range named fit
+[#1] INFO:Eval -- RooRealVar::setRange(x) new range named 'NormalizationRangeForfit' created with bounds [480,850]
+[#1] INFO:Eval -- RooRealVar::setRange(x) new range named 'fit_nll_signal_signalHistogram' created with bounds [580,750]
+[#1] INFO:Fitting -- RooAbsOptTestStatistic::ctor(nll_signal_signalHistogram) fixing interpretation of coefficients of any RooAddPdf to full domain of observables 
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(signal_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:Minization -- RooMinuit::optimizeConst: activating const optimization
+ **********
+ **   13 **MIGRAD        2000           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=16370.5 FROM MIGRAD    STATUS=INITIATE       58 CALLS          59 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  sg_p0        6.55000e+02   5.00000e+00   0.00000e+00  -6.16520e+02
+   2  sg_p1        1.75000e+01   1.50000e+00   0.00000e+00  -2.05334e+02
+   3  sg_p2        1.21212e+00   5.00000e-01   0.00000e+00   2.19909e+02
+   4  sg_p3        1.36987e+00   7.00000e-01  -6.54307e-01   6.27927e+01
+                               ERR DEF= 0.5
+ MIGRAD FAILS TO FIND IMPROVEMENT
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=16308.5 FROM HESSE     STATUS=OK             25 CALLS         257 TOTAL
+                     EDM=0.0239065    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  sg_p0        6.58817e+02   3.77262e-01   1.28398e-03   1.88736e-01
+   2  sg_p1        1.97460e+01   3.14311e-01   3.48681e-03   1.06035e+00
+   3  sg_p2        1.49175e+00   2.61647e-02   2.25279e-03   1.07524e+00
+   4  sg_p3        1.28852e+00   5.27191e-02   1.51960e-03  -1.19547e+01
+                               ERR DEF= 0.5
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ FCN=16308.4 FROM MIGRAD    STATUS=CONVERGED     267 CALLS         268 TOTAL
+                     EDM=3.12655e-05    STRATEGY= 1  ERROR MATRIX UNCERTAINTY   0.3 per cent
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  sg_p0        6.58793e+02   3.78062e-01  -9.54531e-04   1.01210e-02
+   2  sg_p1        1.97600e+01   3.14759e-01   1.95662e-03  -2.12068e-02
+   3  sg_p2        1.49161e+00   2.61744e-02  -5.89168e-05   3.73512e-01
+   4  sg_p3        1.29980e+00   5.37272e-02   4.15271e-03  -3.37533e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  4    ERR DEF=0.5
+  1.429e-01 -1.714e-02  7.131e-04 -5.841e-03 
+ -1.714e-02  9.914e-02  1.452e-03  6.867e-03 
+  7.131e-04  1.452e-03  6.851e-04  7.031e-05 
+ -5.841e-03  6.867e-03  7.031e-05  2.887e-03 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4
+        1  0.30365   1.000 -0.144  0.072 -0.288
+        2  0.43696  -0.144  1.000  0.176  0.406
+        3  0.20179   0.072  0.176  1.000  0.050
+        4  0.46727  -0.288  0.406  0.050  1.000
+ **********
+ **   18 **HESSE        2000
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=16308.4 FROM HESSE     STATUS=OK             29 CALLS         297 TOTAL
+                     EDM=0.000124332    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  sg_p0        6.58793e+02   3.93046e-01   1.28555e-03   1.52322e-01
+   2  sg_p1        1.97600e+01   3.59109e-01   3.49709e-03   3.06094e-01
+   3  sg_p2        1.49161e+00   6.63272e-02   2.25131e-03  -4.15180e-01
+   4  sg_p3        1.29980e+00   5.98484e-02   1.52139e-03  -6.79789e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  4    ERR DEF=0.5
+  1.545e-01 -1.961e-02  3.548e-03 -7.615e-03 
+ -1.961e-02  1.291e-01  1.023e-02  1.084e-02 
+  3.548e-03  1.023e-02  4.401e-03  7.894e-04 
+ -7.615e-03  1.084e-02  7.894e-04  3.582e-03 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3      4
+        1  0.38690   1.000 -0.139  0.136 -0.324
+        2  0.60775  -0.139  1.000  0.429  0.504
+        3  0.47429   0.136  0.429  1.000  0.199
+        4  0.56687  -0.324  0.504  0.199  1.000
+[#1] INFO:Minization -- RooMinuit::optimizeConst: deactivating const optimization
+650
+658.793 +- 0.393046
+19.76 +- 0.359109
+[#1] INFO:InputArguments -- RooAbsData::plotOn(signalHistogram) INFO: dataset has non-integer weights, auto-selecting SumW2 errors instead of Poisson errors
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(signal) p.d.f was fitted in range and no explicit plot,norm range was specified, using fit range as default
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(signal) only plotting range 'fit_nll_signal_signalHistogram'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(signal) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_signal_signalHistogram'
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(signal_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(signal_Int[x|fit_nll_signal_signalHistogram]_Norm[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing ExpGaussExp::signal_fixed
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::x
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::signal_p0
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::signal_p1
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::signal_p2
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::signal_p3
