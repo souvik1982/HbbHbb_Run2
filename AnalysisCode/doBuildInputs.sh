@@ -9,12 +9,14 @@ mass=$1
 mkdir MMR_${mass}
 echo
 
-echo " { gSystem->Load(\"PDFs/ExpGaussExp_cxx.so\"); gROOT->LoadMacro(\"Display_SignalFits.cc\"); Display_SignalFits(\"PreselectedWithoutRegression\",\"MMRSelection_chi2\",\"Histograms_GluGluToBulkGravitonToHHTo4B_M-\",${mass},\"true\"); }" > test.c
+echo " { gSystem->Load(\"PDFs/ExpGaussExp_cxx.so\"); gROOT->LoadMacro(\"Display_SignalFits.cc\"); Display_SignalFits(\"PreselectedWithRegression\",\"reg\",\"MMRSelection_chi2\",\"Histograms_GluGluToBulkGravitonToHHTo4B_M-\",${mass},\"true\"); }" > test.c
 echo 
 root -x -b -l -q test.c > MMR_${mass}/signal${mass}_sig.log
-#Display_SignalFits.cc\(\"PreselectedWithoutRegression\",\"MMRSelection_chi2\",\"Histograms_GluGluToBulkGravitonToHHTo4B_M-\",${mass},\"true\"\) > MMR_${mass}/signal${mass}_sig.log
+cp SignalFitsreg/*${mass}* MMR_${mass}/
+cp SignalFitsreg/index.html MMR_${mass}/
+#Display_SignalFits.cc\(\"PreselectedWithRegression\",\"MMRSelection_chi2\",\"Histograms_GluGluToBulkGravitonToHHTo4B_M-\",${mass},\"true\"\) > MMR_${mass}/signal${mass}_sig.log
 echo
-cd PreselectedWithoutRegression/MMRSelection_chi2	
+cd PreselectedWithRegression/MMRSelection_chi2	
 echo "root -x -b -l -q fit_background.c "
 echo
 root -x -b -l -q fit_background.c > ../../MMR_${mass}/data_bkg.log
