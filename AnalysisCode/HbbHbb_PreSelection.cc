@@ -600,7 +600,6 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
   TH1F *h_Count=(TH1F*)file->Get("Count");
   double nInitial=h_Count->GetBinContent(1);
                   
-eroot -l -b -q 'Vskim.cc++("BTagCSV5")'
   std::string histfilename=dest_dir+"/"+"Histograms_PreSelected_"+sample+".root";
   TFile *tFile=new TFile(histfilename.c_str(), "RECREATE");
   h_Count->Write();
