@@ -1,0 +1,117 @@
+
+Processing fit_background.c...
+ Opened data file 
+[#1] INFO:DataHandling -- RooDataHist::adjustBinning(pred): fit range of variable x expanded to nearest bin boundaries: [320,1400] --> [320,1400]
+[#1] INFO:Eval -- RooRealVar::setRange(x) new range named 'fit' created with bounds [320,1400]
+[#1] INFO:Fitting -- RooAbsOptTestStatistic::ctor(nll_background_pred) constructing test statistic for sub-range named fit
+[#1] INFO:Eval -- RooRealVar::setRange(x) new range named 'NormalizationRangeForfit' created with bounds [320,1400]
+[#1] INFO:Eval -- RooRealVar::setRange(x) new range named 'fit_nll_background_pred' created with bounds [320,1400]
+[#1] INFO:Fitting -- RooAbsOptTestStatistic::ctor(nll_background_pred) fixing interpretation of coefficients of any RooAddPdf to full domain of observables 
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:Minization -- RooMinuit::optimizeConst: activating const optimization
+ **********
+ **   13 **MIGRAD        1500           1
+ **********
+ FIRST CALL TO USER FUNCTION AT NEW START POINT, WITH IFLAG=4.
+ START MIGRAD MINIMIZATION.  STRATEGY  1.  CONVERGENCE WHEN EDM .LT. 1.00e-03
+ FCN=13797.6 FROM MIGRAD    STATUS=INITIATE       10 CALLS          11 TOTAL
+                     EDM= unknown      STRATEGY= 1      NO ERROR MATRIX       
+  EXT PARAMETER               CURRENT GUESS       STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  bg_p0        5.00000e+02   1.00000e+01   2.01358e-01  -5.42256e+02
+   2  bg_p1        8.50000e+01   7.00000e+00   2.01358e-01  -1.08536e+03
+   3  bg_p2        1.05500e+00   2.09000e-01   2.01358e-01   2.41282e+03
+                               ERR DEF= 0.5
+ MIGRAD MINIMIZATION HAS CONVERGED.
+ MIGRAD WILL VERIFY CONVERGENCE AND ERROR MATRIX.
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=12467.7 FROM MIGRAD    STATUS=CONVERGED     131 CALLS         132 TOTAL
+                     EDM=4.84277e-05    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                   STEP         FIRST   
+  NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+   1  bg_p0        4.98965e+02   5.81257e+00   4.46745e-03   9.19423e-02
+   2  bg_p1        6.66671e+01   4.11529e+00   4.42414e-03  -9.89988e-02
+   3  bg_p2        2.49961e-01   1.88645e-02   8.84729e-04   1.76993e-01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  3    ERR DEF=0.5
+  3.394e+01  2.024e+01  9.319e-02 
+  2.024e+01  1.704e+01  6.991e-02 
+  9.319e-02  6.991e-02  3.560e-04 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3
+        1  0.86722   1.000  0.841  0.848
+        2  0.91023   0.841  1.000  0.898
+        3  0.91378   0.848  0.898  1.000
+ **********
+ **   18 **HESSE        1500
+ **********
+ COVARIANCE MATRIX CALCULATED SUCCESSFULLY
+ FCN=12467.7 FROM HESSE     STATUS=OK             16 CALLS         148 TOTAL
+                     EDM=4.84021e-05    STRATEGY= 1      ERROR MATRIX ACCURATE 
+  EXT PARAMETER                                INTERNAL      INTERNAL  
+  NO.   NAME      VALUE            ERROR       STEP SIZE       VALUE   
+   1  bg_p0        4.98965e+02   5.78750e+00   8.93490e-04  -2.07071e-02
+   2  bg_p1        6.66671e+01   4.09688e+00   8.84828e-04  -5.51303e-01
+   3  bg_p2        2.49961e-01   1.87841e-02   1.76946e-04  -7.62776e+01
+                               ERR DEF= 0.5
+ EXTERNAL ERROR MATRIX.    NDIM=  25    NPAR=  3    ERR DEF=0.5
+  3.365e+01  2.002e+01  9.225e-02 
+  2.002e+01  1.689e+01  6.923e-02 
+  9.225e-02  6.923e-02  3.529e-04 
+ PARAMETER  CORRELATION COEFFICIENTS  
+       NO.  GLOBAL      1      2      3
+        1  0.86597   1.000  0.840  0.847
+        2  0.90938   0.840  1.000  0.897
+        3  0.91301   0.847  0.897  1.000
+[#1] INFO:Minization -- RooMinuit::optimizeConst: deactivating const optimization
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f was fitted in range and no explicit plot,norm range was specified, using fit range as default
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) only plotting range 'fit_nll_background_pred'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_background_pred'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) only plotting range 'fit_nll_background_pred'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_background_pred'
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x|fit_nll_background_pred]_Norm[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) only plotting range 'fit_nll_background_pred'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_background_pred'
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x|fit_nll_background_pred]_Norm[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) only plotting range 'fit_nll_background_pred'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_background_pred'
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x|fit_nll_background_pred]_Norm[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) only plotting range 'fit_nll_background_pred'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_background_pred'
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x|fit_nll_background_pred]_Norm[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) only plotting range 'fit_nll_background_pred'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_background_pred'
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x|fit_nll_background_pred]_Norm[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) only plotting range 'fit_nll_background_pred'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_background_pred'
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x|fit_nll_background_pred]_Norm[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) only plotting range 'fit_nll_background_pred'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_background_pred'
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x|fit_nll_background_pred]_Norm[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f was fitted in range and no explicit plot,norm range was specified, using fit range as default
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) only plotting range 'fit_nll_background_pred'
+[#1] INFO:Plotting -- RooAbsPdf::plotOn(background) p.d.f. curve is normalized using explicit choice of ranges 'fit_nll_background_pred'
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(background_Int[x|fit_nll_background_pred]_Norm[x]) using numeric integrator RooIntegrator1D to calculate Int(x)
+Fit chi2 = 0.653006
+22.04 fb^{-1} (13 TeV)
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing GaussExp::background
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::x
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::bg_p0
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::bg_p1
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::bg_p2
+[#1] INFO:DataHandling -- RooDataHist::adjustBinning(data_obs): fit range of variable x expanded to nearest bin boundaries: [320,1400] --> [320,1400]
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing dataset data_obs
+[#1] INFO:ObjectHandling -- RooWorkspace::import(HbbHbb) importing RooRealVar::x
+ === RooFit data fit result to be entered in datacard === 
+ Background number of events = 1434
+bg_p0   param   498.965 5.7875
+bg_p1   param   66.6671 4.09688
+bg_p2   param   0.249961 0.0187841

@@ -10,11 +10,14 @@ mass=$1
 mkdir LMR_${mass}
 echo
 
-echo "root -x -b -l -q Display_SignalFits_LMR.cc\(\"PreselectedWithoutRegression\",\"LMRSelection_chi2\",\"Histograms_GluGluToBulkGravitonToHHTo4B_M-\",${mass},\"true\"\) > LMR_${mass}/signal${mass}_sig.log"
+echo "root -x -b -l -q Display_SignalFits_LMR.cc\(\"PreselectedWithRegression\",\"reg\",\"LMRSelection_chi2\",\"Histograms_GluGluToBulkGravitonToHHTo4B_M-\",${mass},\"true\"\) > LMR_${mass}/signal${mass}_sig.log"
 echo
-root -x -b -l -q Display_SignalFits_LMR.cc\(\"PreselectedWithoutRegression\",\"LMRSelection_chi2\",\"Histograms_GluGluToBulkGravitonToHHTo4B_M-\",${mass},\"true\"\) > LMR_${mass}/signal${mass}_sig.log
+root -x -b -l -q Display_SignalFits_LMR.cc\(\"PreselectedWithRegression\",\"reg\",\"LMRSelection_chi2\",\"Histograms_GluGluToBulkGravitonToHHTo4B_M-\",${mass},\"true\"\) > LMR_${mass}/signal${mass}_sig.log
+cp SignalFits_LMRreg/*${mass}* LMR_${mass}/
+cp SignalFits_LMRreg/index.html LMR_${mass}/
+
 echo
-cd PreselectedWithoutRegression/LMRSelection_chi2	
+cd PreselectedWithRegression/LMRSelection_chi2	
 echo "root -x -b -l -q fit_background.c "
 echo
 root -x -b -l -q fit_background.c > ../../LMR_${mass}/data_bkg.log

@@ -4,6 +4,7 @@ dirName="MMR_${mass}"
 dcardName="datacard_${mass}.txt"
 bgLogName="data_bkg.log"
 sig_norm=`grep 'norm =' ${dirName}/index.html | awk '{print $3}'`    
+
 echo ${sig_norm}
 echo "norm"
 bkg_norm=`grep ' Background number of events = ' ${dirName}/${bgLogName} | awk '{print $6}'`
@@ -38,6 +39,7 @@ EOF
 
 #grep 'bias_term_' ${dirName}/${bgLogName} | grep ' param ' >> ${dirName}/${dcardName}
 grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
+
 #grep 'bg_' ${dirName}/${bgLogName} | grep ' param ' >> ${dirName}/${dcardName}
 #grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
 cards+="${dirName}/${dcardName} "
