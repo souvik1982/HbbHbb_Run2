@@ -26,7 +26,7 @@ double pi=3.14159265358979;
 
 // Hardcoded configuration parameters
 double jet_pT_cut=30.;
-double jet_eta_cut=2.5;
+double jet_eta_cut=2.4;
 double jet_btag_cut=0.4432;// CMVAM https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
 /////////////////////////////////////
 
@@ -71,7 +71,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   // Book variables
   //
 
-  BTagCalibration calib("DeepCSV","/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/PDFs/deepCSV_BH_Moriond17.csv");		
+  /*BTagCalibration calib("DeepCSV","/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/PDFs/deepCSV_BH_Moriond17.csv");		
   BTagCalibrationReader csv_calib_l(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
   BTagCalibrationReader csv_calib_c(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
   BTagCalibrationReader csv_calib_b(BTagEntry::OP_LOOSE,"central",{"up", "down"}); 
@@ -87,11 +87,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
             BTagEntry::FLAV_B,
             "comb");
 
-
+*/
 
   int run;
   int evt;
-  int isData, nTrueInt;
+  int isData, nTrueInt, json;
   float trigger_HLT_HH4bLowLumi;
   int trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v; 
   int trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v;
@@ -111,10 +111,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
 
   int isMC;
   std::size_t findGrav = sample.find("Grav");std::size_t findRad = sample.find("Radion"); 
-  if ( findGrav !=std::string::npos || findRad !=std::string::npos ) isMC = 1;
+  if ( findGrav !=std::string::npos || findRad !=std::string::npos ) isMC = 1; //add TT and ZZ
   else isMC = 0;
-  isMC=1;
   float btagWeightsCMVAV2;	
+
+
   
   float jet_corr[100], 
         nPVs,
@@ -152,8 +153,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
         this_Jet_vtx3deL;
   
   TMVA::Reader *reader=new TMVA::Reader("!Color:!Silent");
+	
   if (regressionFile!="")
   {
+
     // b jet regression variables
     reader->AddVariable("Jet_pt",            &this_Jet_pt);
     //reader->AddVariable("Jet_corr",          &this_Jet_corr);
@@ -173,6 +176,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     reader->AddVariable("Jet_vtxNtrk",       &this_Jet_vtxNtrk);
     reader->AddVariable("Jet_vtx3deL",       &this_Jet_vtx3deL);
     reader->BookMVA("BDTG method", regressionFile);
+
   }
 
   
@@ -183,6 +187,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   tree->SetBranchAddress("run", &run);                                      tree->SetBranchStatus("run", 1);  
   if(isMC==1){ tree->SetBranchAddress("nTrueInt",&nTrueInt);				                      tree->SetBranchStatus("nTrueInt",1);  } 
   tree->SetBranchAddress("isData", &isData);                                tree->SetBranchStatus("isData", 1);
+  tree->SetBranchAddress("json",&json); tree->SetBranchStatus("json",1);
+  
 
 
 
@@ -236,8 +242,11 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     
   if(isMC==1){ tree->SetBranchAddress("btagWeightCMVAV2", &(btagWeightsCMVAV2));}
 
+
+
   if (regressionFile!="")
   {
+
     tree->SetBranchAddress("Jet_corr", &(jet_corr));                     
     tree->SetBranchAddress("nPVs", &(nPVs));                               
     tree->SetBranchAddress("Jet_leadTrackPt", &(jet_leadTrackPt));        
@@ -255,7 +264,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     tree->SetBranchAddress("Jet_vtxNtracks", &(jet_vtxNtrk));
   }           
 
-  
+
   TH1F *h_nCbJets=new TH1F("h_nCbJets", "; #Jets with |#eta|<2.5, p_{T} > 30 GeV, CMVA > CMVAM; Events", 10, 0., 10.);
   
   TH1F *h_pTOrder_JetpT_1=new TH1F("h_pTOrder_JetpT_1", "; Jet pT 1 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 800.);
@@ -303,6 +312,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   // Output tree in new file
   std::string outfilename="PreSelected_"+sample+".root";
 
+
   TFile *outfile=new TFile(outfilename.c_str(), "recreate");
   TTree *outtree=tree->CloneTree(0);
 
@@ -322,6 +332,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
  
   // Loop over events 
   int nEvents=tree->GetEntries();
+
   std::cout<<nEvents<<std::endl;
   double nCut0=0, nCut1=0, nCut2=0, nCut3=0, nCut4=0, nCut5=0;
   double nTrig1=0, nTrig12=0, nTrig2=0;
@@ -331,7 +342,9 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     tree->GetEvent(i);
    
     eventWeight=1;	 
-    //if (isData!=1) eventWeight=puWeight;//weight2( nTrueInt )*genWeight/fabs(genWeight);
+    if (isData==1 && json <1) continue;
+    if (isData!=1) eventWeight=puWeight;//weight2( nTrueInt )*genWeight/fabs(genWeight);
+
     
     if (isData!=1)
     {
@@ -357,6 +370,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
     if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v!=1) nTrig1+=1;
     if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v==1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig12+=1;
     if (trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v!=1 && trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v==1) nTrig2+=1;
+
     
 	
    //  std::cout<<"trigger_HLT_HH4bLowLumi = "<<trigger_HLT_HH4bLowLumi<<std::endl;
@@ -395,7 +409,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
       //if(sigmaTrigUnc_string == "Trigm1" || sigmaTrigUnc_string == "Trigp1") eventWeight = eventWeight*(Double+quad-Double*quad); //P(A||B) = P(A)+P(B)-P(A&B) = P(A)+P(B)-P(A)*(B));
       nCut1+=eventWeight;
       
-      if (vType==-1)// || vType ==4)
+      if (vType==-1 || vType ==4)
       {
         nCut2+=eventWeight;
         
