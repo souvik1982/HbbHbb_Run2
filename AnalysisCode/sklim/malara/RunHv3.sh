@@ -21,7 +21,7 @@ do
     fi
     file="tree_"$i
     echo $file
-    #root -l -b -q "../../HbbHbb_PreSelection.cc++(\"$folder$subfolder\",\"$dest_dir\", \"$file\",\"JEC\",\"JER\",\"Trig\",\"bTag\",\"../PreselectedWithRegression/grav_all_upTo1400.xml\")"
+    root -l -b -q "../../HbbHbb_PreSelection.cc++(\"$folder$subfolder\",\"$dest_dir\", \"$file\",\"JEC\",\"JER\",\"Trig\",\"bTag\",\"../../PreselectedWithRegression/grav_all_upTo1400.xml\")"
 done
 
 root -l -b -q "../../countFile.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", $from, $to)"
