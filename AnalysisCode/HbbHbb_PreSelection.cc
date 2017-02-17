@@ -62,12 +62,13 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
-  
+  //tree->Scan();
+
   if (regressionFile=="") std::cout<<"b jet regression not done. jet_regressed_pT = jet_pT"<<std::endl;
   else std::cout<<"b jet regression done with "<<regressionFile<<" decisions file."<<std::endl;
 
 
-  
+
   // Book variables
   //
 
@@ -89,10 +90,11 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
 
 */
 
-  int run;
-  int evt;
-  int isData, nTrueInt, json;
-  float trigger_HLT_HH4bLowLumi;
+  UInt_t run;
+  ULong64_t evt;
+  int isData, nTrueInt;
+  Float_t json;
+  Int_t trigger_HLT_HH4bLowLumi;
   int trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v; 
   int trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v;
   float vType;
@@ -110,13 +112,12 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
   float met_pT, met_phi;
 
   int isMC;
-  std::size_t findGrav = sample.find("Grav");std::size_t findRad = sample.find("Radion"); 
+  std::size_t findGrav = sample.find("Grav");std::size_t findRad = sample.find("Radion");
   if ( findGrav !=std::string::npos || findRad !=std::string::npos ) isMC = 1; //add TT and ZZ
   else isMC = 0;
   float btagWeightsCMVAV2;	
 
-
-  
+ 
   float jet_corr[100], 
         nPVs,
         jet_mt[100], 
@@ -153,7 +154,7 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
         this_Jet_vtx3deL;
   
   TMVA::Reader *reader=new TMVA::Reader("!Color:!Silent");
-	
+
   if (regressionFile!="")
   {
 
@@ -311,7 +312,6 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
   
   // Output tree in new file
   std::string outfilename=dest_dir+"/"+"PreSelected_"+sample+".root";
-
 
   TFile *outfile=new TFile(outfilename.c_str(), "recreate");
   TTree *outtree=tree->CloneTree(0);

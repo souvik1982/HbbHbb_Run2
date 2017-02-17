@@ -4,8 +4,10 @@ export TEST_PATH="/scratch/malara/WorkingArea/IO_file"
 export source_dir="$TEST_PATH/input_file"
 export dest_dir="$TEST_PATH/output_file"
 
-root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_VHBBHeppyV25-BTagCSV-VHBB_HEPPY_V25_BTagCSV__Run2016H-PromptReco-v2-170130_123206-0000","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_VHBBHeppyV25-BTagCSV-VHBB_HEPPY_V25_BTagCSV__Run2016H-PromptReco-v2-170130_123206-0000","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
 
+
+root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_1","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
 
 
 

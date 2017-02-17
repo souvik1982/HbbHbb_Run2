@@ -44,5 +44,3 @@ done
 #done
 
 #hadd -f "SingleMuonSkimmed$run.root" $out_L1
-
-
