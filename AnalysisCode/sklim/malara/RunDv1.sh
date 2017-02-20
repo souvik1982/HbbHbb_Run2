@@ -3,7 +3,7 @@
 from=1
 to=1010
 source_dir="/gpfs/ddn/srm/cms/store/user"
-folder=$source_dir"/anmalara/VHBBHeppyV25/VHBB_HEPPY_V25_BTagCSV__Run2016D-23Sep2016-v1/170206_164949/"
+folder=$source_dir"/anmalara/VHBBHeppyV25/BTagCSV/VHBB_HEPPY_V25_BTagCSV__Run2016D-23Sep2016-v1/170206_164949/"
 
 TEST_PATH="/scratch/malara/WorkingArea/IO_file"
 dest_dir="$TEST_PATH/output_file"
