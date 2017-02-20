@@ -1,9 +1,9 @@
 #!/bin/sh
 
 from=1
-to=1552
+to=1989
 source_dir="/gpfs/ddn/srm/cms/store/user"
-folder=$source_dir"/anmalara/VHBBHeppyV25/BTagCSV/VHBB_HEPPY_V25_BTagCSV__Run2016G-23Sep2016-v1/170206_164902/"
+folder=$source_dir"/anmalara/VHBBHeppyV25/BTagCSV/VHBB_HEPPY_V25_BTagCSV__Run2016B-23Sep2016-v3/170206_165040/"
 
 TEST_PATH="/scratch/malara/WorkingArea/IO_file"
 dest_dir="$TEST_PATH/output_file"
@@ -26,8 +26,9 @@ done
 
 subfolder="0000"
 root -l -b -q "../../countFile.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", $from, 999)"
-
 subfolder="0001"
-root -l -b -q "../../countFile.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", 1000, $to)"
+root -l -b -q "../../countFile.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", 1000, 1999)"
+subfolder="0002"
+root -l -b -q "../../countFile.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", 2000, $to)"
 
 
