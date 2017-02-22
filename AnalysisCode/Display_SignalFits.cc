@@ -36,8 +36,9 @@
 #include "RooCBShape.h"
 #include "RooGaussian.h"
 std::string reg;
-#include "CMS_lumi.C"
-#include "tdrstyle.C"
+std::string dest_dir;
+#include "CMS_lumi.c"
+#include "tdrstyle.h"
 
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV
 int iPos =11;
@@ -567,7 +568,7 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
     ExpGaussExp signal_fixed("signal_fixed", "Signal Prediction Fixed", *x, signal_p0, signal_p1, signal_p2, signal_p3);
     RooWorkspace *w=new RooWorkspace("HbbHbb");
     w->import(signal_fixed);
-    w->SaveAs(("SignalFits"+reg+"/w_signal_"+mass+".root").c_str());
+    w->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/w_signal_"+mass+".root").c_str());
   }
   return plot;
 }
@@ -787,7 +788,7 @@ RooPlot* fitSignal_Gaussian(TH1F *h, std::string mass, int color, TLegend *leg, 
     RooGaussian signal_fixed("signal", "Signal Prediction Fixed", *x, signal_p0, signal_p1);
     RooWorkspace *w=new RooWorkspace("HbbHbb");
     w->import(signal_fixed);
-    w->SaveAs(("SignalFits"+reg+"/w_signal_Gaussian_"+mass+".root").c_str());
+    w->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/w_signal_Gaussian_"+mass+".root").c_str());
   }
   return plot;
 }
@@ -802,12 +803,13 @@ double lnN(double b, double a, double c)
 }
 
 int Display_SignalFits(std::string dir_preselection="PreselectedWithRegression", std::string _reg = "",
-                       std::string dir_selection="MMRSelection_chi2",
+                       std::string dir_selection="MMRSelection_chi2", std::string _dest_dir="/scratch/malara/WorkingArea/IO_file/output_file", 
                        std::string file_histograms="Histograms_GluGluToBulkGravitonToHHTo4B_M-",
 		       int _mass= 350,
                        bool focus=true)//false)
 {
   reg = _reg;
+  dest_dir=_dest_dir;
   std::vector<std::string> masses;
   string _massstring;          // string which will contain the result
   ostringstream convert;   // stream used for the conversion
@@ -837,7 +839,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithRegression",
   gROOT->SetStyle("Plain");
   gStyle->SetOptStat(000000000);
   // gStyle->SetPalette(1);
-  gSystem->Load("PDFs/ExpGaussExp_cxx.so");
+  gSystem->Load("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/ExpGaussExp_cxx.so");
   // Calculate nSignal events given production cross section, branching fractions and efficiency
   double totalLumi=22040; // /pb
   double prodXsec_1=1.; // pb
@@ -850,7 +852,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithRegression",
   std::vector<double> v_zero;
   
   // Write to an HTML File
-  outfile.open("SignalFits"+reg+"/index.html");
+  outfile.open(dest_dir+"/"+"SignalFits"+reg+"/index.html");
   outfile<<"<html>"<<std::endl;
   outfile<<"<head>"<<std::endl;
   // outfile<<"<base href=\"https://cmslpcweb.fnal.gov/uscms_data/souvik/SignalSystematics\" target=\"_blank\">"<<std::endl;
@@ -936,7 +938,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithRegression",
     TH1F *h_mX_SR_Trigm1_KinFit=(TH1F*)file_Trigm1->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_Trigm1_KinFit");	
 */	
 	         TFile *file_bTagDown;
-    if (!focus) file_bTagDown=file;
+    if (focus) file_bTagDown=file;
     else file_bTagDown=new TFile(("Preselection_bTagm1/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_bTagDown=(TH1F*)file_bTagDown->Get("h_H1_mass")->Clone("h_H1_mass_bTagDown");
     TH1F *h_H2_mass_bTagDown=(TH1F*)file_bTagDown->Get("h_H2_mass")->Clone("h_H2_mass_bTagDown");
@@ -944,7 +946,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithRegression",
     TH1F *h_mX_SR_bTagDown_KinFit=(TH1F*)file_bTagDown->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_bTagDown_KinFit");
 
     TFile *file_bTagUp;
-    if (!focus) file_bTagUp=file;
+    if (focus) file_bTagUp=file;
     else file_bTagUp=new TFile(("Preselection_bTagp1/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_bTagUp=(TH1F*)file_bTagUp->Get("h_H1_mass")->Clone("h_H1_mass_bTagUp");
     TH1F *h_H2_mass_bTagUp=(TH1F*)file_bTagUp->Get("h_H2_mass")->Clone("h_H2_mass_bTagUp");;
@@ -964,7 +966,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithRegression",
     threeStatBoxes(h_H1_mass, 
                    h_H1_mass_JECp1, 
                    h_H1_mass_JECm1)->Draw();
-    c_H1_mass->SaveAs(("SignalFits"+reg+"/c_H1_mass_"+masses.at(i)+".png").c_str());
+    c_H1_mass->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/c_H1_mass_"+masses.at(i)+".png").c_str());
     
     TCanvas *c_H2_mass=new TCanvas("c_H2_mass", "c_H2_mass", 700, 700);
     h_H2_mass->SetLineWidth(2);
@@ -976,7 +978,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithRegression",
     threeStatBoxes(h_H2_mass, 
                    h_H2_mass_JECp1, 
                    h_H2_mass_JECm1)->Draw();
-    c_H2_mass->SaveAs(("SignalFits"+reg+"/c_H2_mass_"+masses.at(i)+".png").c_str());
+    c_H2_mass->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/c_H2_mass_"+masses.at(i)+".png").c_str());
     
     TCanvas *c_mX_SR=new TCanvas(("c_mX_SR_"+masses.at(i)).c_str(), ("c_mX_SR_"+masses.at(i)).c_str(), 700, 700);
     h_mX_SR->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" _13TeV-madgraph); m_{X} (_13TeV-madgraph)").c_str());
@@ -1012,7 +1014,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithRegression",
     plot->Draw("same");
     leg->SetFillColor(0);
     leg->Draw();
-    c_mX_SR->SaveAs(("SignalFits"+reg+"/c_mX_SR_"+masses.at(i)+".png").c_str());
+    c_mX_SR->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/c_mX_SR_"+masses.at(i)+".png").c_str());
     
 
      double xPad = 0.3;
@@ -1181,7 +1183,7 @@ int Display_SignalFits(std::string dir_preselection="PreselectedWithRegression",
         frameP->Draw();
         
 	
-    c_mX_SR_KinFit->SaveAs(("SignalFits"+reg+"/c_mX_SR_KinFit_"+masses.at(i)+".png").c_str());
+    c_mX_SR_KinFit->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/c_mX_SR_KinFit_"+masses.at(i)+".png").c_str());
 
     outfile<<"<br/><hr/>"<<std::endl;
     outfile<<"<h2> mX = "<<masses.at(i)<<" </h2>"<<std::endl;

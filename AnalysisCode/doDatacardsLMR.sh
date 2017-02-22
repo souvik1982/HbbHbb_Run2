@@ -1,9 +1,10 @@
 mass=$1
 cards=""
-dirName="LMR_${mass}"
+dirName="/scratch/malara/WorkingArea/IO_file/output_file/LMR_fit/LMR_${mass}"
 dcardName="datacard_${mass}.txt"
 bgLogName="data_bkg.log"
 sig_norm=`grep 'norm =' ${dirName}/index.html | awk '{print $3}'`    
+
 echo ${sig_norm}
 echo "norm"
 
@@ -36,8 +37,10 @@ EOF
 
 #now add the systematics to the card
 #grep 'signal_' ${dirName}/index.html | awk '{print $1 " " $2 " " $3 " " $4}' >>  ${dirName}/${dcardName}
+
 #grep 'bias_term_' ${dirName}/${bgLogName} | grep ' param ' >> ${dirName}/${dcardName}
 grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
+
 #grep 'bg_' ${dirName}/${bgLogName} | grep ' param ' >> ${dirName}/${dcardName}
 #grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
 cards+="${dirName}/${dcardName} "

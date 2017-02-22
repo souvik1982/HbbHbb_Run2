@@ -196,7 +196,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
                                              double gaussexp_width_lo, double gaussexp_width_hi,
                                              double gaussexp_exp_lo, double gaussexp_exp_hi,
                                              std::string hist="h_mX_SB_kinFit", 
-                                             std::string log="lin")
+                                             std::string log="lin", std::string BTag_file="Histograms_BTagCSV_Skim.root", std::string dest_dir="/scratch/malara/WorkingArea/IO_file/output_file")
 {
 
   gROOT->SetStyle("Plain");
@@ -207,7 +207,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   extraText  = "Preliminary";  // default extra text is "Preliminary"
   lumi_13TeV  = "2.3 fb^{-1}";  // default is "5.1 fb^{-1}"
   
-  TFile *f_data=new TFile("Histograms_BTagCSV_Skim.root");
+  TFile *f_data=new TFile((BTag_file).c_str());
   TH1F *h_mX_SR=(TH1F*)f_data->Get(hist.c_str());
   h_mX_SR->Rebin(rebin);
   double nEventsSR=((TH1F*)f_data->Get("h_mX_SR_kinFit"))->GetSumOfWeights();
@@ -349,8 +349,8 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
   string tag;
   if (hist.substr(0,7)=="h_mX_SB") tag="SB";
   else tag="SR";
-  c_Background->SaveAs(("BackgroundFit_"+tag+"_GaussExp.png").c_str());
-  c_Background->SaveAs(("BackgroundFit_"+tag+"_GaussExp.pdf").c_str());
+  c_Background->SaveAs((dest_dir+"/"+"BackgroundFit_"+tag+"_GaussExp.png").c_str());
+  c_Background->SaveAs((dest_dir+"/"+"BackgroundFit_"+tag+"_GaussExp.pdf").c_str());
 
   // --- Ratio of function to data points ---
   /*
@@ -379,7 +379,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
 
   RooWorkspace *w_background=new RooWorkspace("HbbHbb");
   w_background->import(bg);
-  w_background->SaveAs("w_background_GaussExp.root");
+  w_background->SaveAs((dest_dir+"/"+"w_background_GaussExp.root").c_str());
 
   // Normalize h_mX_SB to SR for pretend data
   TH1F *h_mX_SR_fakeData=(TH1F*)h_mX_SR->Clone("h_mX_SR_fakeData");
@@ -388,7 +388,7 @@ void BackgroundPrediction_Kinematic_GaussExp(double plot_lo, double plot_hi, dou
 
   RooWorkspace *w_data=new RooWorkspace("HbbHbb");
   w_data->import(data_obs);
-  w_data->SaveAs("w_data.root");
+  w_data->SaveAs((dest_dir+"/"+"w_data.root").c_str());
 
   // For the datacard
   std::cout<<" === RooFit data fit result to be entered in datacard === "<<std::endl;

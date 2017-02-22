@@ -5,10 +5,12 @@ function show_help {
 }
 
 masses=(
-   400 450 500 550 600 650 700 750 800 900 1000 1200
+   #400 450 500 550 600 650 700 750 800 900 1000 1200
+   400 
 )
 massesLMR=(
-    260 270 300 350 400 450 500 
+    #260 270 300 350 400 450 500 
+    300 
 )
 cleanUp=0
 #rebin=10
@@ -44,6 +46,7 @@ done
 for m in ${massesLMR[@]}
 do
     if [ $cleanUp -eq 0 ]; then
+	echo  'LMR'
         source doBuildInputsLMR.sh $m
         source doDatacardsLMR.sh $m
         #./runLimits.sh $debug $m
