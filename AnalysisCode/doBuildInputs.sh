@@ -6,7 +6,7 @@ mass=$1
 dir_preselection="/scratch/malara/WorkingArea/IO_file/output_file/Data/PreselectedWithWithRegression"
 dir_selection="MMRSelection_chi2"
 dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/MMR_fit"
-#DA MODIFICARE ANCHE IN /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_chi2/fit_background.c
+#Modify also in /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_chi2/fit_background.c
 fit_folder="/scratch/malara/WorkingArea/IO_file/output_file/MMR_fit"
 
 file_histograms="Histograms_MMR_chi2_tree_GluGluToBulkGravitonToHHTo4B_M-"
