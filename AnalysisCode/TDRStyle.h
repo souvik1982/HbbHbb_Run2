@@ -13,7 +13,7 @@ TStyle* setTDRStyle()
   
   // For the Pad
   tdrStyle->SetPadRightMargin(0.08);
-  tdrStyle->SetPadLeftMargin(0.14);
+  tdrStyle->SetPadLeftMargin(0.15);
   tdrStyle->SetPadBorderMode(0);
   // tdrStyle->SetPadBorderSize(Width_t size = 1);
   tdrStyle->SetPadColor(kWhite);
@@ -34,7 +34,7 @@ TStyle* setTDRStyle()
   
   // For the Axis Titles
   tdrStyle->SetTitleColor(1, "XYZ");
-  tdrStyle->SetTitleFont(62, "XYZ");
+  tdrStyle->SetTitleFont(42, "XYZ");
   tdrStyle->SetTitleSize(0.04, "XYZ");
   tdrStyle->SetTitleXOffset(1.0);
   tdrStyle->SetTitleYOffset(1.52);

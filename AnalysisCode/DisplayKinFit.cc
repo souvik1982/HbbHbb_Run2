@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-#include "../TDRStyle.h"
+#include "TDRStyle.h"
 
 bool first=true;
 
@@ -43,15 +43,15 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   /*double n=h_mX_SR->GetSumOfWeights();
   h_mX_SR->Scale(1./n);
   h_mX_SR_biasCorrected->Scale(1./n);
-  h_mX_SR_kinFit->Scale(1./n);
-  */
+  h_mX_SR_kinFit->Scale(1./n);*/
+  
   h_mX_SR->Rebin(10);
   h_mX_SR_biasCorrected->Rebin(10);
   h_mX_SR_kinFit->Rebin(10);
   
-  h_mX_SR->GetXaxis()->SetRangeUser(200, 1400);
-  h_mX_SR_biasCorrected->GetXaxis()->SetRangeUser(200, 1400);
-  h_mX_SR_kinFit->GetXaxis()->SetRangeUser(200, 1400);
+  h_mX_SR->GetXaxis()->SetRangeUser(250, 1400);
+  h_mX_SR_biasCorrected->GetXaxis()->SetRangeUser(250, 1400);
+  h_mX_SR_kinFit->GetXaxis()->SetRangeUser(250, 1400);
   
   h_mX_SR->SetLineWidth(2);
   h_mX_SR_biasCorrected->SetLineWidth(2);
@@ -62,7 +62,7 @@ void DisplayKinFitForFile(TFile *file, double xLine)
   h_mX_SR->SetLineStyle(7);
   h_mX_SR_biasCorrected->SetLineColor(kGreen);
   h_mX_SR_biasCorrected->SetLineStyle(7);
-  h_mX_SR_kinFit->Smooth(200);
+  h_mX_SR_kinFit->Smooth(100);
   h_mX_SR_kinFit->SetLineColor(kRed+1);
   
   if (first)
@@ -71,17 +71,18 @@ void DisplayKinFitForFile(TFile *file, double xLine)
     h_mX_SR_kinFit->GetYaxis()->SetTitle("Normalized Units");
     h_mX_SR_kinFit->GetYaxis()->SetTitleOffset(1.4);
     h_mX_SR_kinFit->DrawNormalized("hist");
+    // h_mX_SR_kinFit->DrawNormalized("hist");
     TLegend *leg=new TLegend(0.5, 0.7, 0.89, 0.89);
     leg->SetLineColor(0);
     leg->SetFillColor(0);
-    leg->AddEntry(h_mX_SR, "m_{X} Signal Peak");
-   // leg->AddEntry(h_mX_SR_biasCorrected, "m_{X} w/ Bias Correct.");
-    leg->AddEntry(h_mX_SR_kinFit, "m_{X} w/ Kinematic Fit");
+    leg->AddEntry(h_mX_SR, "m_{X} before Kinematic Fit");
+    // leg->AddEntry(h_mX_SR_biasCorrected, "m_{X} w/ Bias Correct.");
+    leg->AddEntry(h_mX_SR_kinFit, "m_{X} after Kinematic Fit");
     leg->Draw();
     first=false;
   }
   else h_mX_SR_kinFit->DrawNormalized("hist same");
-  //h_mX_SR_biasCorrected->Draw("hist same");
+  //h_mX_SR_biasCorrected->DrawNormalized("hist same");
   h_mX_SR->DrawNormalized("hist same");
   
   TLine *line=new TLine(xLine, 0, xLine, 0.1);
@@ -195,6 +196,7 @@ void DisplayKinFit()
   std::vector<TFile*> v_files;
   //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-260_narrow_13TeV-madgraph.root"));
   //v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-270_narrow_13TeV-madgraph.root"));
+
 //  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph.root"));
   v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-350_narrow_13TeV-madgraph.root"));
 //  v_files.push_back(new TFile("LMRSelection_chi2/Histograms_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph.root"));
@@ -214,8 +216,9 @@ void DisplayKinFit()
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-1600_narrow_13TeV-madgraph.root"));
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-2000_narrow_13TeV-madgraph.root"));
   // v_files.push_back(new TFile("Histograms_GluGluToBulkGravitonToHHTo4B_M-3000_narrow_13TeV-madgraph.root"));
+
   std::vector <double> mean_gen={350,450,550,650,750,900,1000,1200}; // , 1200, 1600, 2000, 3000};
- 
+
   gROOT->SetStyle("Plain");
   TStyle *myStyle=setTDRStyle();
   myStyle->cd();
@@ -223,7 +226,7 @@ void DisplayKinFit()
   myStyle->SetOptStat(0);
   
   std::vector <double> mean, meanDiff_biasCorrected, meanDiff_kinFit, sigma, sigma_biasCorrected, sigma_kinFit;
-  int dontwant=3;
+  int dontwant=0;
   std::cout<<"Fitting peaks"<<std::endl;
   for (unsigned int i=dontwant; i<v_files.size(); ++i)
   {

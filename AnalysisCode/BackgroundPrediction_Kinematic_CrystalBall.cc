@@ -29,14 +29,15 @@ std::string itoa(int i)
   return ret;
 }
 
-void BackgroundPrediction_Kinematic_GaussExp(std::string filename,
+void BackgroundPrediction_Kinematic_CrystalBall(std::string filename,
                                              double plot_lo, double plot_hi, double rebin,
                                              double fit_lo, double fit_hi, 
-                                             double gaussexp_mean_lo, double gaussexp_mean_hi, 
-                                             double gaussexp_width_lo, double gaussexp_width_hi,
-                                             double gaussexp_exp_lo, double gaussexp_exp_hi,
+                                             double crystalball_mean_lo, double crystalball_mean_hi, 
+                                             double crystalball_width_lo, double crystalball_width_hi,
+                                             double crystalball_exp_lo, double crystalball_exp_hi,
+                                             double crystalball_switch_lo, double crystalball_switch_hi,
                                              std::string hist="h_mX_SB_kinFit", 
-                                             std::string log="lin", std::string BTag_file="Histograms_BTagCSV_Skim.root", std::string dest_dir="/scratch/malara/WorkingArea/IO_file/output_file")
+                                             std::string log="lin")
 {
 
   gROOT->SetStyle("Plain");
@@ -47,9 +48,7 @@ void BackgroundPrediction_Kinematic_GaussExp(std::string filename,
   extraText  = "Preliminary";  // default extra text is "Preliminary"
   lumi_13TeV = "27.2 fb^{-1}";  // default is "5.1 fb^{-1}"
   
-
-  TFile *f_data=new TFile((BTag_file).c_str());
-
+  TFile *f_data=new TFile(filename.c_str());
   TH1F *h_mX_SR=(TH1F*)f_data->Get(hist.c_str());
   h_mX_SR->Rebin(rebin);
   double nEventsSR=((TH1F*)f_data->Get("h_mX_SR_kinFit"))->GetSumOfWeights();
@@ -58,10 +57,11 @@ void BackgroundPrediction_Kinematic_GaussExp(std::string filename,
   x=new RooRealVar("x", "m_{X} (GeV)", plot_lo, plot_hi);
   RooDataHist pred("pred", "Data", RooArgList(*x), h_mX_SR);
   
-  RooRealVar bg_p0("bg_p0", "bg_p0", gaussexp_mean_lo, gaussexp_mean_hi);
-  RooRealVar bg_p1("bg_p1", "bg_p1", gaussexp_width_lo, gaussexp_width_hi);
-  RooRealVar bg_p2("bg_p2", "bg_p2", gaussexp_exp_lo, gaussexp_exp_hi);
-  GaussExp bg("background", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2);
+  RooRealVar bg_p0("bg_p0", "bg_p0", crystalball_switch_lo, crystalball_switch_hi);
+  RooRealVar bg_p1("bg_p1", "bg_p1", crystalball_exp_lo, crystalball_exp_hi);
+  RooRealVar bg_p2("bg_p2", "bg_p2", crystalball_mean_lo, crystalball_mean_hi);
+  RooRealVar bg_p3("bg_p3", "bg_p3", crystalball_width_lo, crystalball_width_hi);
+  RevCrystalBall bg("background", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2, bg_p3);
   RooFitResult *r_bg=bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
   
   RooPlot *data_plot=x->frame();
@@ -72,21 +72,6 @@ void BackgroundPrediction_Kinematic_GaussExp(std::string filename,
   
   double fitChi2=data_plot->chiSquare();
   std::cout<<"Fit chi2 = "<<fitChi2<<std::endl;
-  
-  /*TCanvas *c_Background=new TCanvas("c_Background", "c_Background", 700, 700);
-  TPad *p_1=new TPad("p_1", "p_1", 0, 0.35, 1, 1);
-  //p_1->SetBottomMargin(0.05);
-  //p_2->SetBottomMargin(-.5);
-  // p_1->SetFillStyle(4000);
-  // p_1->SetFrameFillColor(0);
-  TPad *p_2 = new TPad("p_2", "p_2", 0, 0, 1., 0.35);
-  p_2->SetFillColor(0);
-  p_2->SetBorderMode(0);
-  p_2->SetBorderSize(2);
-  p_2->SetTopMargin(0.018);
-  p_2->SetBottomMargin(0.30);
-  p_2->SetFrameBorderMode(0);
-  */
 
   
   double xPad = 0.3;
@@ -191,37 +176,12 @@ void BackgroundPrediction_Kinematic_GaussExp(std::string filename,
   string tag;
   if (hist.substr(0,7)=="h_mX_SB") tag="SB";
   else tag="SR";
-  c_Background->SaveAs((dest_dir+"/"+"BackgroundFit_"+tag+"_GaussExp.png").c_str());
-  c_Background->SaveAs((dest_dir+"/"+"BackgroundFit_"+tag+"_GaussExp.pdf").c_str());
+  c_Background->SaveAs(("BackgroundFit_"+tag+"_CrystalBall.png").c_str());
+  c_Background->SaveAs(("BackgroundFit_"+tag+"_CrystalBall.pdf").c_str());
 
-  // --- Ratio of function to data points ---
-  /*
-     RooCurve *f_bg_pred=(RooCurve*)aS_plot->findObject("r_bg_prediction");
-     TH1F *h_ratio=(TH1F*)h_mX_SR->Clone("h_ratio");
-     for (unsigned int i=0; i<h_ratio->GetNbinsX(); ++i)
-     {
-     double fEval=f_bg_pred->Eval(h_mX_SR->GetBinCenter(i));
-     double data=h_mX_SR->GetBinContent(i);
-  // std::cout<<"i = "<<i<<", fEval = "<<fEval<<", data = "<<data<<std::endl;
-  double binContent=(h_mX_SR->GetBinContent(i))/(f_bg_pred->Eval(h_mX_SR->GetBinCenter(i)));
-  double binError=(h_mX_SR->GetBinError(i))/(f_bg_pred->Eval(h_mX_SR->GetBinCenter(i)));
-  h_ratio->SetBinContent(i, binContent);
-  h_ratio->SetBinError(i, binError);
-  }
-  h_ratio->GetXaxis()->SetRangeUser(SR_lo, SR_hi);
-  h_ratio->SetMaximum(2.5); h_ratio->SetMinimum(-0.5);
-  h_ratio->SetTitle("Data/Fit in SR; m_{X} (GeV); Data/Fit");
-  h_ratio->Fit("pol1", "", "", SR_lo, SR_hi);
-  TCanvas *c_DataFit=new TCanvas("c_DataFit", "c_DataFit", 1000, 700);
-  h_ratio->Draw();
-  c_DataFit->SaveAs(("c_DataFit_"+tags+"SR.png").c_str());
-  */
-  // ------------------------------------------
-
-
-  RooWorkspace *w_background=new RooWorkspace("HbbHbb");
+  /*RooWorkspace *w_background=new RooWorkspace("HbbHbb");
   w_background->import(bg);
-  w_background->SaveAs((dest_dir+"/"+"w_background_GaussExp.root").c_str());
+  w_background->SaveAs("w_background_GaussExp.root");
 
   // Normalize h_mX_SB to SR for pretend data
   TH1F *h_mX_SR_fakeData=(TH1F*)h_mX_SR->Clone("h_mX_SR_fakeData");
@@ -230,14 +190,15 @@ void BackgroundPrediction_Kinematic_GaussExp(std::string filename,
 
   RooWorkspace *w_data=new RooWorkspace("HbbHbb");
   w_data->import(data_obs);
-  w_data->SaveAs((dest_dir+"/"+"w_data.root").c_str());
+  w_data->SaveAs("w_data.root");*/
 
   // For the datacard
   std::cout<<" === RooFit data fit result to be entered in datacard === "<<std::endl;
   std::cout<<" Background number of events = "<<nEventsSR<<std::endl;
-  std::cout<< "bg_p0   param   "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
-  std::cout<< "bg_p1   param   "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
-  std::cout<< "bg_p2   param   "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;
+  std::cout<<"crystalball_mean param "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;
+  std::cout<<"crystalball_width param "<<bg_p3.getVal()<<" "<<bg_p3.getError()<<std::endl;
+  std::cout<<"crystalball_switch param "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
+  std::cout<<"crystalball_exponent param "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
 
 }
 

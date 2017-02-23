@@ -17,10 +17,10 @@
 
 double jet_pT_cut1=30.;
 
-double mean_H1_mass_=120;
-double sigma_H1_mass_=20;
-double mean_H2_mass_=120;
-double sigma_H2_mass_=20;
+double mean_H1_mass_=115;
+double sigma_H1_mass_=23;
+double mean_H2_mass_=115;
+double sigma_H2_mass_=23;
 
 TRandom3 *r3=new TRandom3();
 
@@ -103,7 +103,7 @@ void HbbHbb_MeasureResolutionBias(std::string source_dir, std::string dest_dir, 
   tree->SetBranchAddress("eventWeight", &(eventWeight));                
   tree->SetBranchAddress("nJet", &(nJets));                       
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));          
-  tree->SetBranchAddress("Jet_btagCMVA", &(jet_btagCMVA));        
+  tree->SetBranchAddress("Jet_btagCMVAV2", &(jet_btagCMVA));        
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                    
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                  
   tree->SetBranchAddress("Jet_phi", &(jet_phi));                  

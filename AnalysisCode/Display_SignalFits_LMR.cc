@@ -39,9 +39,11 @@ std::string dest_dir;
 #include "CMS_lumi.c"
 #include "tdrstyle.h"
 
+
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV
 int iPos =11;
 int rebin=3;
+
 ofstream outfile;
 std::string reg;
  
@@ -50,6 +52,14 @@ std::string tostr(float t)
   std::ostringstream os; 
   os<<t; 
   return os.str(); 
+}
+
+std::string ftoa2(double i) 
+{
+  char res[10];
+  sprintf(res, "%2.2f", i);
+  std::string ret(res);
+  return ret;
 }
 
 double quad(double a, double b, double c=0, double d=0, double e=0, double f=0, double g=0, double h=0, double i=0, double j=0, double k=0)
@@ -393,6 +403,7 @@ gErrorIgnoreLevel = kWarning;
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
 	  }
 
+
 	  if (mass=="350")
 	  {
 		  rangeLo=300., rangeHi=430.;
@@ -405,6 +416,7 @@ gErrorIgnoreLevel = kWarning;
 	  if (mass=="400")
 	  {
 		  rangeLo=350., rangeHi=450.;
+
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 370., 430.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 15.);
 		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 220.,450.);
@@ -422,7 +434,9 @@ gErrorIgnoreLevel = kWarning;
 	  }
 	  if (mass=="300")
 	  {
+
 		  rangeLo=250., rangeHi=350.;
+
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 290., 320.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 9.);
 		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 170., 350.);
@@ -431,7 +445,7 @@ gErrorIgnoreLevel = kWarning;
 	  }
 
   }
-  x=new RooRealVar("x", "m_{X} (GeV)", rangeLo-50., rangeHi+50.);
+  x=new RooRealVar("x", "m_{X} (GeV)", rangeLo, rangeHi);
   // RevCrystalBall signal("signal", "Signal Prediction", *x, *sg_p0, *sg_p1, *sg_p2, *sg_p3);
   RooGaussian signalCore("signalCore", "Signal Prediction", *x, *sg_p0, *sg_p1);
   RooGaussian signalComb("signalComb", "Combinatoric", *x, *sg_p2, *sg_p3);
@@ -711,11 +725,13 @@ double lnN(double b, double a, double c)
 	return err;
 }
 
+
 int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegression", std::string _reg = "reg",
                            std::string dir_selection="LMRSelection_chi2", std::string _dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/",
                            std::string file_histograms="Histograms_GluGluToBulkGravitonToHHTo4B_M-",
 			   int _mass=260,
                            bool focus=true)//false)
+
 {
     reg = _reg;
     dest_dir=_dest_dir;
@@ -734,6 +750,7 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
 	masses.push_back("300");
 	masses.push_back("350");
 	masses.push_back("400");
+
         masses.push_back("450");
   	masses.push_back("500");
   */  //    masses.push_back("550");
@@ -741,6 +758,7 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
 
 	gROOT->SetStyle("Plain");
 	gStyle->SetOptStat(000000000);
+
 
 	// Calculate nSignal events given production cross section, branching fractions and efficiency
 	double totalLumi=22040; // /pb
@@ -836,8 +854,9 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
     TH1F *h_H2_mass_Trigm1=(TH1F*)file_Trigm1->Get("h_H2_mass")->Clone("h_H2_mass_Trigm1");;
     TH1F *h_mX_SR_Trigm1=(TH1F*)file_Trigm1->Get("h_mX_SR")->Clone("h_mX_SR_Trigm1");
     TH1F *h_mX_SR_Trigm1_KinFit=(TH1F*)file_Trigm1->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_Trigm1_KinFit");	
-   */
-           TFile *file_bTagDown;
+    */
+    
+    TFile *file_bTagDown;
     if (focus) file_bTagDown=file;
     else file_bTagDown=new TFile((dir_preselection+"_bTagm1/"+dir_selection+"/"+file_histograms+masses.at(i)+"_narrow_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_bTagDown=(TH1F*)file_bTagDown->Get("h_H1_mass")->Clone("h_H1_mass_bTagDown");
@@ -877,7 +896,7 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
     h_H2_mass_JECp1->SetLineStyle(9); h_H2_mass_JECp1->SetLineColor(kRed);
     h_H2_mass_JECm1->SetLineStyle(9); h_H2_mass_JECm1->SetLineColor(kRed+2);
     h_H2_mass->Draw("same");
-   h_H2_mass_JECp1->Draw("same");
+    h_H2_mass_JECp1->Draw("same");
     h_H2_mass_JECm1->Draw("same");
     threeStatBoxes(h_H2_mass, 
                    h_H2_mass_JECp1, 
@@ -961,7 +980,9 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
         leg->AddEntry(h_mX_SR_KinFit, "Signal MC");
 
 
+
 		h_mX_SR_KinFit->Rebin(rebin);
+
 		h_mX_SR_JECp1_KinFit->Rebin(rebin);
 		h_mX_SR_JECm1_KinFit->Rebin(rebin);
 		h_mX_SR_JECp1_KinFit->SetLineColor(kRed);
@@ -970,6 +991,7 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
 		h_mX_SR_JECp1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
 		h_mX_SR_JECm1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
 		h_mX_SR_JERp1_KinFit->Rebin(rebin);
+
                 h_mX_SR_JERm1_KinFit->Rebin(rebin);
                 h_mX_SR_JERp1_KinFit->SetLineColor(kAzure+1);
                 h_mX_SR_JERm1_KinFit->SetLineColor(kBlue+1);
@@ -992,6 +1014,7 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
 
 	//	leg=new TLegend(0.7, 0.5, 0.9, 0.9);
 		//leg->AddEntry(h_mX_SR_KinFit, "Baseline");
+
 		Params par_KinFit, par_JECp1_KinFit, par_JECm1_KinFit;
 		RooPlot *plot_KinFit=fitSignal(h_mX_SR_KinFit, masses.at(i), kBlack, leg, par_KinFit, true);
 		v_sg_p0.push_back(par_KinFit.sg_p0); v_sg_p0_err.push_back(par_KinFit.sg_p0_err);
@@ -999,14 +1022,27 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
 		v_sg_p2.push_back(par_KinFit.sg_p2); v_sg_p2_err.push_back(par_KinFit.sg_p2_err);
 		v_sg_p3.push_back(par_KinFit.sg_p3); v_sg_p3_err.push_back(par_KinFit.sg_p3_err);
 		v_sg_p4.push_back(par_KinFit.sg_p4); v_sg_p4_err.push_back(par_KinFit.sg_p4_err);	
-		RooPlot *plot_JECp1_KinFit, *plot_JECm1_KinFit;
+		leg=new TLegend(0.55, 0.60, 0.91, 0.90);
+    leg->SetFillStyle(0);
+    h_mX_SR_KinFit->SetLineColor(kBlack);
+    h_mX_SR_KinFit->SetLineWidth(2);
+    h_mX_SR_KinFit->SetMarkerStyle(20);
+    if (focus)
+    {
+      leg->AddEntry(h_mX_SR_KinFit, "Gauss+Gauss fit", "L");
+      leg->AddEntry(h_mX_SR_KinFit, ("m_{X} = "+masses.at(i)+" GeV signal").c_str(), "LEP");
+      // leg->AddEntry((TObject*)0, ("#chi^{2}/n = "+ftoa2(plot_KinFit->chiSquare())).c_str(), "");
+    }
+    RooPlot *plot_JECp1_KinFit, *plot_JECm1_KinFit;
 		Params par_JERp1_KinFit, par_JERm1_KinFit;
-   		RooPlot *plot_JERp1_KinFit, *plot_JERm1_KinFit;
+   	RooPlot *plot_JERp1_KinFit, *plot_JERm1_KinFit;
 		Params par_Trigp1_KinFit, par_Trigm1_KinFit;
-   		RooPlot *plot_Trigp1_KinFit, *plot_Trigm1_KinFit;
+   	RooPlot *plot_Trigp1_KinFit, *plot_Trigm1_KinFit;
 		Params par_bTagDown_KinFit, par_bTagUp_KinFit;
-                RooPlot *plot_bTagDown_KinFit, *plot_bTagUp_KinFit;
-		if (!focus) {
+    RooPlot *plot_bTagDown_KinFit, *plot_bTagUp_KinFit;
+		
+    if (!focus) 
+    {
 			leg->AddEntry(h_mX_SR_JECp1_KinFit, "JEC +1 #sigma");
 			leg->AddEntry(h_mX_SR_JECm1_KinFit, "JEC -1 #sigma");
 
@@ -1014,24 +1050,27 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
 			plot_JECm1_KinFit=fitSignal(h_mX_SR_JECm1_KinFit, masses.at(i), kRed+2, leg, par_JECm1_KinFit, true);
 		
 			leg->AddEntry(h_mX_SR_JERp1_KinFit, "JER +1 #sigma");
-                        leg->AddEntry(h_mX_SR_JERm1_KinFit, "JER -1 #sigma");
+      leg->AddEntry(h_mX_SR_JERm1_KinFit, "JER -1 #sigma");
 
-                        plot_JERp1_KinFit=fitSignal(h_mX_SR_JERp1_KinFit, masses.at(i), kAzure+1, leg, par_JERp1_KinFit, true);
-                        plot_JERm1_KinFit=fitSignal(h_mX_SR_JERm1_KinFit, masses.at(i), kBlue+1, leg, par_JERm1_KinFit, true);
+      plot_JERp1_KinFit=fitSignal(h_mX_SR_JERp1_KinFit, masses.at(i), kAzure+1, leg, par_JERp1_KinFit, true);
+      plot_JERm1_KinFit=fitSignal(h_mX_SR_JERm1_KinFit, masses.at(i), kBlue+1, leg, par_JERm1_KinFit, true);
 
-/*			leg->AddEntry(h_mX_SR_Trigp1_KinFit, "Trig +1 #sigma");
-                        leg->AddEntry(h_mX_SR_Trigm1_KinFit, "Trig -1 #sigma");
+/*		
+      leg->AddEntry(h_mX_SR_Trigp1_KinFit, "Trig +1 #sigma");
+      leg->AddEntry(h_mX_SR_Trigm1_KinFit, "Trig -1 #sigma");
 
-                        plot_Trigp1_KinFit=fitSignal(h_mX_SR_Trigp1_KinFit, masses.at(i), kPink+1, leg, par_Trigp1_KinFit, true);
-                        plot_Trigm1_KinFit=fitSignal(h_mX_SR_Trigm1_KinFit, masses.at(i), kPink+3, leg, par_Trigm1_KinFit, true);
+      plot_Trigp1_KinFit=fitSignal(h_mX_SR_Trigp1_KinFit, masses.at(i), kPink+1, leg, par_Trigp1_KinFit, true);
+      plot_Trigm1_KinFit=fitSignal(h_mX_SR_Trigm1_KinFit, masses.at(i), kPink+3, leg, par_Trigm1_KinFit, true);
+*/
 
-*/			leg->AddEntry(h_mX_SR_bTagDown_KinFit, "bTag +1 #sigma");
-                        leg->AddEntry(h_mX_SR_bTagUp_KinFit, "bTag -1 #sigma");
+      leg->AddEntry(h_mX_SR_bTagDown_KinFit, "bTag +1 #sigma");
+      leg->AddEntry(h_mX_SR_bTagUp_KinFit, "bTag -1 #sigma");
 
-                        plot_bTagDown_KinFit=fitSignal(h_mX_SR_bTagDown_KinFit, masses.at(i), kGreen+1, leg, par_bTagDown_KinFit, true);
-                        plot_bTagUp_KinFit=fitSignal(h_mX_SR_bTagUp_KinFit, masses.at(i), kGreen+3, leg, par_bTagUp_KinFit, true);
+      plot_bTagDown_KinFit=fitSignal(h_mX_SR_bTagDown_KinFit, masses.at(i), kGreen+1, leg, par_bTagDown_KinFit, true);
+      plot_bTagUp_KinFit=fitSignal(h_mX_SR_bTagUp_KinFit, masses.at(i), kGreen+3, leg, par_bTagUp_KinFit, true);
 		}
 		std::cout<<" fit done " <<std::endl;
+
 		plot_KinFit->SetTitle("");
 		  plot_KinFit->GetXaxis()->SetRangeUser(_mass-100, _mass+150);
     plot_KinFit->GetXaxis()->SetLabelOffset(0.03);
@@ -1041,18 +1080,20 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
 
 		plot_KinFit->Draw();
 		if (!focus) 
+
 		{
 			plot_JECp1_KinFit->Draw("same");
 			plot_JECm1_KinFit->Draw("same");
 			plot_JERp1_KinFit->Draw("same");
-                        plot_JERm1_KinFit->Draw("same");	
-		//	plot_Trigp1_KinFit->Draw("same");
-                 //       plot_Trigm1_KinFit->Draw("same");
+      plot_JERm1_KinFit->Draw("same");	
+		  //	plot_Trigp1_KinFit->Draw("same");
+      //  plot_Trigm1_KinFit->Draw("same");
 			plot_bTagUp_KinFit->Draw("same");
-                        plot_bTagDown_KinFit->Draw("same");
+      plot_bTagDown_KinFit->Draw("same");
 		}
 		plot_KinFit->Draw("same");
 		leg->SetFillColor(0);
+
 		leg->Draw();
 
 
@@ -1085,6 +1126,7 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegressi
 
         
 		c_mX_SR_KinFit->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/c_mX_SR_KinFit_"+masses.at(i)+".png").c_str());
+
 
 		outfile<<"<br/><hr/>"<<std::endl;
 		outfile<<"<h2> mX = "<<masses.at(i)<<" </h2>"<<std::endl;
