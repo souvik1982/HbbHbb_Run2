@@ -1,0 +1,16 @@
+1) Produce skimmed ttree using TE_presel.C
+
+2) Produce turn-on using DoTurnOnXJ, where
+    X=Q for Quad Jet Trigger
+    X=D for Double Jet Trigger
+    X=A for Quad&&Double Trigger
+
+    This produces fitterFunction*.h, the efficiency is then produced using trig.h
+
+3) Produce closure plots using clos_XJ.cc, where
+    X=Q for Quad Jet Trigger
+    X=D for Double Jet Trigger
+    X=C for Quad&&Double Trigger  
+    X=A for Quad||Double Trigger  
+
+4) Compare in signal using ../Hbb_Trigger.cc, change path to trig.h in the header to data/ttbar accordingly

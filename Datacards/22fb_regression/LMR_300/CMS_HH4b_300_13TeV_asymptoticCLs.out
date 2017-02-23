@@ -1,0 +1,6 @@
+>>> including systematics
+Will use a-priori expected background instead of a-posteriori one.
+>>> method used to compute upper limit is Asymptotic
+>>> random number generator seed is 123456
+Computing limit starting from expected outcome
+Will compute both limit(s) using minimizer Minuit2 with strategy 0 and tolerance 0.01

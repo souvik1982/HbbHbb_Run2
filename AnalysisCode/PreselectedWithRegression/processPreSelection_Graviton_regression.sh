@@ -1,13 +1,23 @@
-setenv dir /eos/uscms/store/user/souvik/HbbHbb_Run2/V14
+setenv dir /eos/uscms/store/user/lpchbb/HeppyNtuples/V24/
 
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton260GeV", "TMVARegression_BDTG.weights.xml")'
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton270GeV", "TMVARegression_BDTG.weights.xml")'
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton300GeV", "TMVARegression_BDTG.weights.xml")'
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton400GeV", "TMVARegression_BDTG.weights.xml")'
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton600GeV", "TMVARegression_BDTG.weights.xml")'
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton800GeV", "TMVARegression_BDTG.weights.xml")'
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton1000GeV", "TMVARegression_BDTG.weights.xml")'
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton1200GeV", "TMVARegression_BDTG.weights.xml")'
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton1600GeV", "TMVARegression_BDTG.weights.xml")'
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton2000GeV", "TMVARegression_BDTG.weights.xml")'
-root -l -b -q '../HbbHbb_PreSelection.cc++("$dir", "Graviton3000GeV", "TMVARegression_BDTG.weights.xml")'
+export TEST_PATH="/scratch/malara/WorkingArea/IO_file"
+export source_dir="$TEST_PATH/input_file"
+export dest_dir="$TEST_PATH/output_file"
+
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_GluGluToBulkGravitonToHHTo4B_M-300_narrow_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_GluGluToBulkGravitonToHHTo4B_M-400_narrow_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_GluGluToBulkGravitonToHHTo4B_M-650_narrow_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_GluGluToBulkGravitonToHHTo4B_M-750_narrow_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_GluGluToBulkGravitonToHHTo4B_M-800_narrow_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_GluGluToBulkGravitonToHHTo4B_M-900_narrow_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+
+
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_BulkGravTohhTohbbhbb_narrow_M-1600_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_BulkGravTohhTohbbhbb_narrow_M-2000_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_BulkGravTohhTohbbhbb_narrow_M-2500_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_BulkGravTohhTohbbhbb_narrow_M-3000_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_BulkGravTohhTohbbhbb_narrow_M-4000_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+#root -l -b -q '../HbbHbb_PreSelection.cc++("$source_dir", "$dest_dir", "tree_BulkGravTohhTohbbhbb_narrow_M-4500_13TeV-madgraph","JEC","JER","Trig","bTag","grav_all_upTo1400.xml")'
+
+
+

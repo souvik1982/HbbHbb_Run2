@@ -77,14 +77,14 @@ TLorentzVector asymmetricGaussianSmear(TLorentzVector a, double sigma1=5, double
 }
   
 
-void HbbHbb_MeasureResolutionBias(std::string sample)
+void HbbHbb_MeasureResolutionBias(std::string source_dir, std::string dest_dir, std::string sample)
 {
 
   std::cout<<" This program measures the jet energy resolutions and bias for b jets in a X -> HH -> bbbb signal sample."<<std::endl;
   std::cout<<" Do not give it anything other than a signal sample. "<<std::endl;
   std::cout<<" - Souvik Das 2015 -"<<std::endl;
   
-  std::string inputfilename="../PreSelected_"+sample+".root";
+  std::string inputfilename=source_dir+"/PreSelected_"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
@@ -306,7 +306,7 @@ void HbbHbb_MeasureResolutionBias(std::string sample)
   } // Event loop
 
   // Write histograms to file
-  std::string histfilename="ResolutionHistograms_"+sample+".root";
+  std::string histfilename=dest_dir+"/ResolutionHistograms_"+sample+".root";
   TFile *tFile2=new TFile(histfilename.c_str(), "RECREATE");
   h_jet_pT_res_vs_pT->Write();
   h_jet_pT_res_vs_eta->Write();

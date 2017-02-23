@@ -1,0 +1,12 @@
+Observed Limit: r < 0.0333
+Expected  2.5%: r < 0.0171
+Expected 16.0%: r < 0.0231
+Expected 50.0%: r < 0.0337
+Expected 84.0%: r < 0.0490
+Expected 97.5%: r < 0.0695
+>>> including systematics
+Will use a-priori expected background instead of a-posteriori one.
+>>> method used to compute upper limit is Asymptotic
+>>> random number generator seed is 123456
+Computing limit starting from expected outcome
+Will compute both limit(s) using minimizer Minuit2 with strategy 0 and tolerance 0.01

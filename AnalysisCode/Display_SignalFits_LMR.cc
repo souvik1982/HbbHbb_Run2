@@ -35,13 +35,18 @@
 #include "RooFitResult.h"
 #include "RooCBShape.h"
 #include "RooGaussian.h"
-
-#include "TDRStyle.h"
+std::string dest_dir;
 #include "CMS_lumi.c"
+#include "tdrstyle.h"
 
-int rebin=5;
+
+int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV
+int iPos =11;
+int rebin=3;
+
 ofstream outfile;
-
+std::string reg;
+ 
 std::string tostr(float t)
 {
   std::ostringstream os; 
@@ -272,7 +277,8 @@ THStack* drawCombinatorics(std::string mass, TH1F *h_right, TH1F *h_wrong, TH1F 
 
 RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &params, bool kinFit=false)
 {
-  
+  	RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING) ;
+gErrorIgnoreLevel = kWarning;
   RooRealVar *x, *sg_p0, *sg_p1, *sg_p2, *sg_p3, *sg_p4;
   x=new RooRealVar("x", "m_{X} (GeV)", 250., 1100.);
   // x=new RooRealVar("x", "m_{X} (GeV)", 300., 800.);
@@ -282,9 +288,9 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 
 	  if (mass=="270")
           {
-                  rangeLo=252, rangeHi=600.;
-                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 260., 280.);
-                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 5.);
+                  rangeLo=250, rangeHi=600.;
+                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 250., 280.);
+                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 15.);
                   sg_p2=new RooRealVar("sg_p2", "sg_p2", 10., 530.);
                   sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 300.);
                   sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.5, 1.);
@@ -292,9 +298,9 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
           }
           if (mass=="260")
           {
-                  rangeLo=252., rangeHi=630.;
-                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 250., 270.);
-                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 6.);
+                  rangeLo=250., rangeHi=630.;
+                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 230., 270.);
+                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 25.);
                   sg_p2=new RooRealVar("sg_p2", "sg_p2", 10., 590.);
                   sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 300.);
                   sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.5, 1.);
@@ -302,7 +308,7 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
           if (mass=="600")
           {
                   rangeLo=500., rangeHi=670.;
-                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 580., 630.);
+                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 560., 630.);
                   sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 40.);
                   sg_p2=new RooRealVar("sg_p2", "sg_p2", 500., 650.);
                   sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 130.);
@@ -311,8 +317,8 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 	        if (mass=="500")
           {
                   rangeLo=300., rangeHi=600.;
-                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 480., 520.);
-                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 30.);
+                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 460., 520.);
+                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 40.);
                   sg_p2=new RooRealVar("sg_p2", "sg_p2", 400., 590.);
                   sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
                   sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
@@ -320,8 +326,8 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 	         if (mass=="550")
           {
                   rangeLo=350., rangeHi=650.;
-                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 530., 580.);
-                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 30.);
+                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 510., 580.);
+                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 40.);
                   sg_p2=new RooRealVar("sg_p2", "sg_p2", 400., 590.);
                   sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
                   sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
@@ -330,8 +336,8 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
           if (mass=="350")
           {
                   rangeLo=250., rangeHi=550.;
-                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 320., 380.);
-                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 15.);
+                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 310., 380.);
+                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 35.);
                   sg_p2=new RooRealVar("sg_p2", "sg_p2", 330., 420.);
                   sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
                   sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
@@ -339,8 +345,8 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
           if (mass=="400")
           {
                   rangeLo=300., rangeHi=600.;
-                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 370., 430.);
-                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 15.);
+                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 360., 430.);
+                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 40.);
                   sg_p2=new RooRealVar("sg_p2", "sg_p2", 370.,460.);
                   sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
                   sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
@@ -348,17 +354,17 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
           if (mass=="450")
           {
                   rangeLo=300., rangeHi=600.;
-                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 420., 480.);
-                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 15.);
+                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 410., 480.);
+                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 35.);
                   sg_p2=new RooRealVar("sg_p2", "sg_p2", 410., 490.);
                   sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
                   sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
           }
           if (mass=="300")
           {
-                  rangeLo=250., rangeHi=550.;
-                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 290., 320.);
-                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 9.);
+                  rangeLo=250., rangeHi=400.;
+                  sg_p0=new RooRealVar("sg_p0", "sg_p0", 250., 320.);
+                  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 35.);
                   sg_p2=new RooRealVar("sg_p2", "sg_p2", 250., 360.);
                   sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 130.);
                   sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
@@ -373,28 +379,19 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 		  rangeLo=250, rangeHi=350.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 260., 280.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 8.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 9., 530.);
+		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 9., 350.);
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 300.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.5, 1.);
 
 	  }
 	  if (mass=="260")
 	  {       
-		  rangeLo=250., rangeHi=630.;
+		  rangeLo=250., rangeHi=350.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 250., 270.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 6.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 8., 590.);
+		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 8., 350.);
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 300.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.5, 1.);
-	  }
-	  if (mass=="600")
-	  {       
-		  rangeLo=550., rangeHi=660.;
-		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 580., 630.);
-		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 40.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 500., 650.);
-		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 130.);
-		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.7, 1.);
 	  }
 	  if (mass=="500")
 	  {       
@@ -405,48 +402,44 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
 	  }
-	  if (mass=="550")
-    {
-            rangeLo=350., rangeHi=650.;
-            sg_p0=new RooRealVar("sg_p0", "sg_p0", 530., 580.);
-            sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 30.);
-            sg_p2=new RooRealVar("sg_p2", "sg_p2", 400., 590.);
-            sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
-            sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
-    }
+
+
 	  if (mass=="350")
 	  {
-		  rangeLo=250., rangeHi=450.;
-		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 320., 380.);
-		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 15.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 200., 420.);
-		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
-		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
+		  rangeLo=300., rangeHi=430.;
+		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 330., 380.);
+		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 9.);
+		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 100., 430.);
+		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
+		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.65, 1.);
 	  }
 	  if (mass=="400")
 	  {
-		  rangeLo=300., rangeHi=500.;
+		  rangeLo=350., rangeHi=450.;
+
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 370., 430.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 15.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 220.,460.);
+		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 220.,450.);
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
 	  }
 	  if (mass=="450")
 	  {
-		  rangeLo=300., rangeHi=600.;
+		  rangeLo=350., rangeHi=550.;
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 420., 480.);
-		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 15.);
+		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 25.);
 		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 380., 490.);
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
 	  }
 	  if (mass=="300")
 	  {
-		  rangeLo=250., rangeHi=400.;
+
+		  rangeLo=250., rangeHi=350.;
+
 		  sg_p0=new RooRealVar("sg_p0", "sg_p0", 290., 320.);
 		  sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 9.);
-		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 170., 360.);
+		  sg_p2=new RooRealVar("sg_p2", "sg_p2", 170., 350.);
 		  sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 130.);
 		  sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
 	  }
@@ -458,9 +451,11 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
   RooGaussian signalComb("signalComb", "Combinatoric", *x, *sg_p2, *sg_p3);
   RooAddPdf signal("signal", "signal", RooArgList(signalCore, signalComb), *sg_p4);
   RooDataHist signalHistogram("signalHistogram", "Signal Histogram", RooArgList(*x), h);
-  signal.fitTo(signalHistogram, RooFit::Range(rangeLo, rangeHi), RooFit::Save());
-  params.sg_p0=sg_p0->getVal(); params.sg_p0_err=sg_p0->getError();
-  params.sg_p1=sg_p1->getVal(); params.sg_p1_err=sg_p1->getError();
+  if (kinFit) signal.fitTo(signalHistogram, RooFit::Range(rangeLo, rangeHi), RooFit::Save());
+  else  signal.fitTo(signalHistogram, RooFit::Range(rangeLo-50, rangeHi), RooFit::Save());
+std::cout << mass << std::endl;
+  params.sg_p0=sg_p0->getVal(); params.sg_p0_err=sg_p0->getError(); std::cout << sg_p0->getVal() << " +- " << sg_p0->getError() << std::endl;
+  params.sg_p1=sg_p1->getVal(); params.sg_p1_err=sg_p1->getError(); std::cout << sg_p1->getVal() << " +- " << sg_p1->getError() << std::endl;
   params.sg_p2=sg_p2->getVal(); params.sg_p2_err=sg_p2->getError();
   params.sg_p3=sg_p3->getVal(); params.sg_p3_err=sg_p3->getError();
   params.sg_p4=sg_p4->getVal(); params.sg_p4_err=sg_p4->getError();
@@ -494,8 +489,8 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
 
 	  RooWorkspace *w=new RooWorkspace("HbbHbb");
 	  w->import(signal_fixed);
-	  if (!kinFit) w->SaveAs(("SignalFits_LMR/w_signal_"+mass+".root").c_str());
-	  if (kinFit) w->SaveAs(("SignalFits_LMR/w_signal_"+mass+".root").c_str());
+	  if (!kinFit) w->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/w_signal_"+mass+".root").c_str());
+	  if (kinFit) w->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/w_signal_"+mass+".root").c_str());
   }
   return plot;
 }
@@ -715,8 +710,8 @@ RooPlot* fitSignal_Gaussian(TH1F *h, std::string mass, int color, TLegend *leg, 
 		RooGaussian signal_fixed("signal", "Signal Prediction Fixed", *x, signal_p0, signal_p1);
 		RooWorkspace *w=new RooWorkspace("HbbHbb");
 		w->import(signal_fixed);
-		if (!kinFit) w->SaveAs(("SignalFits_LMR/w_signal_Gaussian_"+mass+".root").c_str());
-		if (kinFit) w->SaveAs(("SignalFits_LMR/w_signal_Gaussian_"+mass+".root").c_str());
+		if (!kinFit) w->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/w_signal_Gaussian_"+mass+".root").c_str());
+		if (kinFit)  w->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/w_signal_Gaussian_"+mass+".root").c_str());
 	}
 	return plot;
 }
@@ -730,35 +725,43 @@ double lnN(double b, double a, double c)
 	return err;
 }
 
-int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegression",
-                           std::string dir_selection="LMRSelection_chi2",
-                           std::string file_histograms="Histograms_GluGluToBulkGravitonToHHTo4B_M-",
-                           bool focus=true)
-{
 
-	std::vector<std::string> masses;
-	masses.push_back("260");
-	masses.push_back("270");
+int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithRegression", std::string _reg = "reg",
+                           std::string dir_selection="LMRSelection_chi2", std::string _dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/",
+                           std::string file_histograms="Histograms_GluGluToBulkGravitonToHHTo4B_M-",
+			   int _mass=260,
+                           bool focus=true)//false)
+
+{
+    reg = _reg;
+    dest_dir=_dest_dir;
+
+    std::vector<std::string> masses;
+    string _massstring;          // string which will contain the result
+    ostringstream convert;   // stream used for the conversion
+    convert << _mass;      // insert the textual representation of 'Number' in the characters in the stream
+    _massstring = convert.str(); // set 'Result' to the contents of the stream
+    masses.push_back(_massstring);
+      writeExtraText = true;       // if extra text
+    extraText  = "Simulation";  // default extra text is "Preliminary"
+    lumi_13TeV  = "22.0 fb^{-1}"; // default is "19.7 fb^{-1}"
+/*	masses.push_back("260");
+//	masses.push_back("270");
 	masses.push_back("300");
 	masses.push_back("350");
 	masses.push_back("400");
-  masses.push_back("450");
-  masses.push_back("500");
-  masses.push_back("550");
+
+        masses.push_back("450");
+  	masses.push_back("500");
+  */  //    masses.push_back("550");
 	//masses.push_back("600");
 
 	gROOT->SetStyle("Plain");
-  TStyle *myStyle=setTDRStyle();
-  myStyle->cd();
-  myStyle->SetOptTitle(0);
-  myStyle->SetOptStat(0);
-  
-  writeExtraText = true;       // if extra text
-	extraText  = "Simulation";  // default extra text is "Preliminary" 
-  lumi_13TeV  = "";  // default is "5.1 fb^{-1}"                     
-  
+	gStyle->SetOptStat(000000000);
+
+
 	// Calculate nSignal events given production cross section, branching fractions and efficiency
-	double totalLumi=2318; // /pb
+	double totalLumi=22040; // /pb
 	double prodXsec_1=1.; // pb
 
 	// Interpolation Plots
@@ -770,7 +773,7 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 	std::vector<double> v_zero;
 
 	// Write to an HTML File
-	outfile.open("SignalFits_LMR/index.html");
+	outfile.open(dest_dir+"/"+"SignalFits_LMR"+reg+"/index.html");
 	outfile<<"<html>"<<std::endl;
 	outfile<<"<head>"<<std::endl;
 	// outfile<<"<base href=\"https://cmslpcweb.fnal.gov/uscms_data/souvik/SignalSystematics\" target=\"_blank\">"<<std::endl;
@@ -885,7 +888,7 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
     threeStatBoxes(h_H1_mass, 
                    h_H1_mass_JECp1, 
                   h_H1_mass_JECm1)->Draw();
-    c_H1_mass->SaveAs(("SignalFits_LMR/c_H1_mass_"+masses.at(i)+".png").c_str());
+    c_H1_mass->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/c_H1_mass_"+masses.at(i)+".png").c_str());
    
  
     TCanvas *c_H2_mass=new TCanvas("c_H2_mass", "c_H2_mass", 700, 700);
@@ -898,7 +901,7 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
     threeStatBoxes(h_H2_mass, 
                    h_H2_mass_JECp1, 
                   h_H2_mass_JECm1)->Draw();
-    c_H2_mass->SaveAs(("SignalFits_LMR/c_H2_mass_"+masses.at(i)+".png").c_str());
+    c_H2_mass->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/c_H2_mass_"+masses.at(i)+".png").c_str());
 
 		TCanvas *c_mX_SR=new TCanvas(("c_mX_SR_"+masses.at(i)).c_str(), ("c_mX_SR_"+masses.at(i)).c_str(), 700, 700);
 		std::cout<<"  here "<<h_mX_SR->GetEntries()<<std::endl;
@@ -934,11 +937,52 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 		plot->Draw("same");
 		leg->SetFillColor(0);
 		leg->Draw();
-		c_mX_SR->SaveAs(("SignalFits_LMR/c_mX_SR_"+masses.at(i)+".png").c_str());
+		c_mX_SR->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/c_mX_SR_"+masses.at(i)+".png").c_str());
+	
 
-		TCanvas *c_mX_SR_KinFit=new TCanvas(("c_mX_SR_KinFit_"+masses.at(i)).c_str(), ("c_mX_SR_KinFit_"+masses.at(i)).c_str(), 700, 700);
-		h_mX_SR_KinFit->Scale(1./h_mX_SR_KinFit->GetSumOfWeights());
-    h_mX_SR_KinFit->Rebin(rebin);
+
+  double xPad = 0.3;
+        TCanvas *c_mX_SR_KinFit=new TCanvas(("c_mX_SR_KinFit_"+masses.at(i)).c_str(), ("c_mX_SR_KinFit_"+masses.at(i)).c_str(), 700*(1.-xPad), 700);
+        TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
+        p_1->SetFillStyle(4000);
+        p_1->SetFrameFillColor(0);
+        p_1->SetBottomMargin(0.02);
+        p_1->SetTopMargin(0.06);
+
+        TPad* p_2 = new TPad("p_2", "p_2",0,0,1,xPad);
+        p_2->SetBottomMargin((1.-xPad)/xPad*0.13);
+        p_2->SetTopMargin(0.03);
+        p_2->SetFillColor(0);
+        p_2->SetBorderMode(0);
+        p_2->SetBorderSize(2);
+        p_2->SetFrameBorderMode(0);
+        p_2->SetFrameBorderMode(0);
+
+        p_1->Draw();
+        p_2->Draw();
+        p_1->cd();
+
+
+        h_mX_SR_KinFit->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" GeV); m_{X} (GeV)").c_str());
+
+        leg = new TLegend(0.75,0.75,0.5,0.9,NULL,"brNDC");
+        leg->SetBorderSize(0);
+        leg->SetTextSize(0.035);
+        leg->SetTextFont(42);
+        leg->SetLineColor(1);
+        leg->SetLineStyle(1);
+        leg->SetLineWidth(2);
+        leg->SetFillColor(0);
+        leg->SetFillStyle(0);
+        leg->SetTextFont(42);
+
+
+        leg->AddEntry(h_mX_SR_KinFit, "Signal MC");
+
+
+
+		h_mX_SR_KinFit->Rebin(rebin);
+
 		h_mX_SR_JECp1_KinFit->Rebin(rebin);
 		h_mX_SR_JECm1_KinFit->Rebin(rebin);
 		h_mX_SR_JECp1_KinFit->SetLineColor(kRed);
@@ -947,25 +991,29 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 		h_mX_SR_JECp1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
 		h_mX_SR_JECm1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
 		h_mX_SR_JERp1_KinFit->Rebin(rebin);
-    h_mX_SR_JERm1_KinFit->Rebin(rebin);
-    h_mX_SR_JERp1_KinFit->SetLineColor(kAzure+1);
-    h_mX_SR_JERm1_KinFit->SetLineColor(kBlue+1);
-    h_mX_SR_JERp1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
-    h_mX_SR_JERm1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
-	  /*	h_mX_SR_Trigp1_KinFit->Rebin(rebin);
-    h_mX_SR_Trigm1_KinFit->Rebin(rebin);
-    h_mX_SR_Trigp1_KinFit->SetLineColor(kPink+1);
-    h_mX_SR_Trigm1_KinFit->SetLineColor(kPink+3);
-    h_mX_SR_Trigp1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
-    h_mX_SR_Trigm1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
-	  */  h_mX_SR_bTagDown_KinFit->Rebin(rebin);
-    h_mX_SR_bTagUp_KinFit->Rebin(rebin);
-    h_mX_SR_bTagDown_KinFit->SetLineColor(kGreen+1);
-    h_mX_SR_bTagUp_KinFit->SetLineColor(kGreen+3);
-    h_mX_SR_bTagDown_KinFit->GetXaxis()->SetRangeUser(0, 1200);
-    h_mX_SR_bTagUp_KinFit->GetXaxis()->SetRangeUser(0, 1200);
+
+                h_mX_SR_JERm1_KinFit->Rebin(rebin);
+                h_mX_SR_JERp1_KinFit->SetLineColor(kAzure+1);
+                h_mX_SR_JERm1_KinFit->SetLineColor(kBlue+1);
+                h_mX_SR_JERp1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
+                h_mX_SR_JERm1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
+	/*	h_mX_SR_Trigp1_KinFit->Rebin(rebin);
+                h_mX_SR_Trigm1_KinFit->Rebin(rebin);
+                h_mX_SR_Trigp1_KinFit->SetLineColor(kPink+1);
+                h_mX_SR_Trigm1_KinFit->SetLineColor(kPink+3);
+                h_mX_SR_Trigp1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
+                h_mX_SR_Trigm1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
+	  */      h_mX_SR_bTagDown_KinFit->Rebin(rebin);
+                h_mX_SR_bTagUp_KinFit->Rebin(rebin);
+                h_mX_SR_bTagDown_KinFit->SetLineColor(kGreen+1);
+                h_mX_SR_bTagUp_KinFit->SetLineColor(kGreen+3);
+                h_mX_SR_bTagDown_KinFit->GetXaxis()->SetRangeUser(0, 1200);
+                h_mX_SR_bTagUp_KinFit->GetXaxis()->SetRangeUser(0, 1200);
 
 
+
+	//	leg=new TLegend(0.7, 0.5, 0.9, 0.9);
+		//leg->AddEntry(h_mX_SR_KinFit, "Baseline");
 
 		Params par_KinFit, par_JECp1_KinFit, par_JECm1_KinFit;
 		RooPlot *plot_KinFit=fitSignal(h_mX_SR_KinFit, masses.at(i), kBlack, leg, par_KinFit, true);
@@ -1022,13 +1070,17 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
       plot_bTagUp_KinFit=fitSignal(h_mX_SR_bTagUp_KinFit, masses.at(i), kGreen+3, leg, par_bTagUp_KinFit, true);
 		}
 		std::cout<<" fit done " <<std::endl;
-    plot_KinFit->SetMinimum(0);
-		plot_KinFit->SetMaximum(plot_KinFit->GetMaximum()*1.2);
-		plot_KinFit->SetTitle("; m_{X} (GeV); Normalized units");
-    plot_KinFit->GetYaxis()->SetTitleOffset(1.8);
-    plot_KinFit->GetXaxis()->SetTitleOffset(1.0);
+
+		plot_KinFit->SetTitle("");
+		  plot_KinFit->GetXaxis()->SetRangeUser(_mass-100, _mass+150);
+    plot_KinFit->GetXaxis()->SetLabelOffset(0.03);
+    plot_KinFit->GetXaxis()->SetNdivisions(505);
+    plot_KinFit->SetMaximum(plot_KinFit->GetMaximum()*1.2);
     plot_KinFit->Draw();
-    if (!focus) 
+
+		plot_KinFit->Draw();
+		if (!focus) 
+
 		{
 			plot_JECp1_KinFit->Draw("same");
 			plot_JECm1_KinFit->Draw("same");
@@ -1041,11 +1093,40 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 		}
 		plot_KinFit->Draw("same");
 		leg->SetFillColor(0);
-    leg->SetLineColor(0);
-    leg->Draw();
-    CMS_lumi(c_mX_SR_KinFit, 4, 11);
-		c_mX_SR_KinFit->SaveAs(("SignalFits_LMR/c_mX_SR_KinFit_"+masses.at(i)+".png").c_str());
-    c_mX_SR_KinFit->SaveAs(("SignalFits_LMR/c_mX_SR_KinFit_"+masses.at(i)+".pdf").c_str());
+
+		leg->Draw();
+
+
+		
+        CMS_lumi(p_1, iPeriod, iPos );
+
+        p_2->cd();
+        RooHist* hpull;
+        hpull = plot_KinFit->pullHist();
+        RooRealVar* x=new RooRealVar("x", "m_{X} (GeV)", 0, 1200);
+
+        RooPlot* frameP = x->frame() ;
+        frameP->SetTitle("");
+        frameP->GetXaxis()->SetRangeUser(_mass-100, _mass+150);
+
+        frameP->addPlotable(hpull,"P");
+        frameP->GetYaxis()->SetRangeUser(-5,5);
+        frameP->GetYaxis()->SetNdivisions(505);
+        frameP->GetXaxis()->SetNdivisions(505);
+        frameP->GetYaxis()->SetTitle("Pull");
+
+        frameP->GetYaxis()->SetTitleSize((1.-xPad)/xPad*0.06);
+        frameP->GetYaxis()->SetTitleOffset(1.2/((1.-xPad)/xPad));
+        frameP->GetXaxis()->SetTitleSize((1.-xPad)/xPad*0.06);
+        frameP->GetXaxis()->SetLabelSize((1.-xPad)/xPad*0.05);
+        frameP->GetYaxis()->SetLabelSize((1.-xPad)/xPad*0.05);
+
+
+        frameP->Draw();
+
+        
+		c_mX_SR_KinFit->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/c_mX_SR_KinFit_"+masses.at(i)+".png").c_str());
+
 
 		outfile<<"<br/><hr/>"<<std::endl;
 		outfile<<"<h2> mX = "<<masses.at(i)<<" </h2>"<<std::endl;
@@ -1063,13 +1144,13 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 		outfile<<"   <img src='"<<("c_mX_SR_"+masses.at(i)+".png")<<"'/><br/>"<<std::endl;
 		outfile<<"   <h2 align='center'>Without Kin-Fit. Fitted to an Exp-Gauss-Exp function.</h2><br/>"<<std::endl;
 		outfile<<"   === Baseline plot === </br>"<<std::endl;
-		outfile<<"   norm = "<<h_mX_SR->GetSumOfWeights()*totalLumi*prodXsec_1/nSignal_init<<" <br/>"<<std::endl;
+		/*outfile<<"   norm = "<<h_mX_SR->GetSumOfWeights()*totalLumi*prodXsec_1/nSignal_init<<" <br/>"<<std::endl;
 		outfile<<"   sg_p0 = "<<par.sg_p0<<" +- "<<par.sg_p0_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p1 = "<<par.sg_p1<<" +- "<<par.sg_p1_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p2 = "<<par.sg_p2<<" +- "<<par.sg_p2_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p3 = "<<par.sg_p3<<" +- "<<par.sg_p3_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p4 = "<<par.sg_p4<<" +- "<<par.sg_p4_err<<" <br/>"<<std::endl;
-		if (!focus) 
+		*/if (!focus) 
 		{
 			outfile<<"   <center><input type='button' onclick=\"return toggleMe('"<<masses.at(i)<<"')\" value='Systematics'></center><br/>"<<std::endl;
 			outfile<<"   <div id=\""<<masses.at(i)<<"\" style=\"display:none\">"<<std::endl;
@@ -1097,12 +1178,12 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 		outfile<<"   <h2 align='center'>With Kin-Fit. Fitted to an Exp-Gauss-Exp function.</h2><br/>"<<std::endl;
 		outfile<<"   === Baseline plot === </br>"<<std::endl;
 		outfile<<"   norm = "<<h_mX_SR_KinFit->GetSumOfWeights()*totalLumi*prodXsec_1/nSignal_init<<" <br/>"<<std::endl;
-		outfile<<"   sg_p0 = "<<par_KinFit.sg_p0<<" +- "<<par_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+		/*outfile<<"   sg_p0 = "<<par_KinFit.sg_p0<<" +- "<<par_KinFit.sg_p0_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p1 = "<<par_KinFit.sg_p1<<" +- "<<par_KinFit.sg_p1_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p2 = "<<par_KinFit.sg_p2<<" +- "<<par_KinFit.sg_p2_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p3 = "<<par_KinFit.sg_p3<<" +- "<<par_KinFit.sg_p3_err<<" <br/>"<<std::endl;
 		outfile<<"   sg_p4 = "<<par_KinFit.sg_p4<<" +- "<<par_KinFit.sg_p4_err<<" <br/>"<<std::endl;
-		if (!focus) 
+		*/if (!focus) 
 		{
 			outfile<<"   <center><input type='button' onclick=\"return toggleMe('"<<masses.at(i)<<"_KinFit')\" value='Systematics'></center><br/>"<<std::endl;
 			outfile<<"   <div id=\""<<masses.at(i)<<"_KinFit\" style=\"display:none\">"<<std::endl;
@@ -1219,23 +1300,20 @@ int Display_SignalFits_LMR(std::string dir_preselection="PreselectedWithoutRegre
 			double sg_p4_errSyst_max=(*std::max_element(sg_p4_errSyst, sg_p4_errSyst+7))-par_KinFit.sg_p4;
 			outfile<<"   Uncertainty on sg_p4 = "<<par_KinFit.sg_p4<<" +- "<<sg_p4_errStat<<" (stat) - "<<sg_p4_errSyst_min<<" + "<<sg_p4_errSyst_max<<" (syst); -"<<quad(sg_p4_errStat/2., sg_p4_errSyst_min)<<"/+"<<quad(sg_p4_errStat/2., sg_p4_errSyst_max)<<" (total) <br/>"<<std::endl;
 		
-
+	}
 
 		outfile<<"JEC       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JECp1_KinFit->GetSumOfWeights(), h_mX_SR_JECm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
 		outfile<<"JER       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JERp1_KinFit->GetSumOfWeights(), h_mX_SR_JERm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
 	//	outfile<<"trig lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_Trigp1_KinFit->GetSumOfWeights(), h_mX_SR_Trigm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
 		outfile<<"bTag lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_bTagUp_KinFit->GetSumOfWeights(), h_mX_SR_bTagDown_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
 
-		outfile<<"sg_p0     param   "<<par_KinFit.sg_p0<<" -"<<quad(sg_p0_errStat/2., sg_p0_errSyst_min)<<"/+"<<quad(sg_p0_errStat/2., sg_p0_errSyst_max)<<" <br/>"<<std::endl;
+	/*	outfile<<"sg_p0     param   "<<par_KinFit.sg_p0<<" -"<<quad(sg_p0_errStat/2., sg_p0_errSyst_min)<<"/+"<<quad(sg_p0_errStat/2., sg_p0_errSyst_max)<<" <br/>"<<std::endl;
 		outfile<<"sg_p1     param   "<<par_KinFit.sg_p1<<" -"<<quad(sg_p1_errStat/2., sg_p1_errSyst_min)<<"/+"<<quad(sg_p1_errStat/2., sg_p1_errSyst_max)<<" <br/>"<<std::endl;
 		outfile<<"sg_p2     param   "<<par_KinFit.sg_p2<<"  -"<<quad(sg_p2_errStat/2., sg_p2_errSyst_min)<<"/+"<<quad(sg_p2_errStat/2., sg_p2_errSyst_max)<<" <br/>"<<std::endl;
 		outfile<<"sg_p3     param   "<<par_KinFit.sg_p3<<"  -"<<quad(sg_p3_errStat/2., sg_p3_errSyst_min)<<"/+"<<quad(sg_p3_errStat/2., sg_p3_errSyst_max)<<" <br/>"<<std::endl;
 		outfile<<"sg_p4     param   "<<par_KinFit.sg_p4<<"  -"<<quad(sg_p4_errStat/2., sg_p4_errSyst_min)<<"/+"<<quad(sg_p4_errStat/2., sg_p4_errSyst_max)<<" <br/>"<<std::endl;
-	
+	*/
 
-
-
-	}
 	outfile<<"   </div>"<<std::endl;
 	outfile<<"  </td>"<<std::endl;
 

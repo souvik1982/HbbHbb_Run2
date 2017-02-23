@@ -1,0 +1,9 @@
+TF1* QaD_DoubleJet_L1 = new TF1("QaD_DoubleJet_L1","1-(0.5-0.5*TMath::Erf((x-345.851)/28.9685))*0.124959-7.44815e-10");
+TF1* QaD_DoubleJet_L1Up = new TF1("QaD_DoubleJet_L1Up","1-(0.5-0.5*TMath::Erf((x-335.992)/28.9685))*0.124959--0.02");
+TF1* QaD_DoubleJet_L1Down = new TF1("QaD_DoubleJet_L1Down","1-(0.5-0.5*TMath::Erf((x-355.131)/28.9685))*0.124959-0.02");
+TF1* QaD_DoubleJet_CaloPt2 = new TF1("QaD_DoubleJet_CaloPt2","1-(0.5-0.5*TMath::Erf((x-88.3836)/15.1338))*0.964401-0.00999634");
+TF1* QaD_DoubleJet_CaloPt2Up = new TF1("QaD_DoubleJet_CaloPt2Up","1-(0.5-0.5*TMath::Erf((x-87.3837)/15.1338))*0.964401--0.0100037");
+TF1* QaD_DoubleJet_CaloPt2Down = new TF1("QaD_DoubleJet_CaloPt2Down","1-(0.5-0.5*TMath::Erf((x-89.3855)/15.1338))*0.964401-0.0299963");
+TF1* QaD_DoubleJet_PFPt2 = new TF1("QaD_DoubleJet_PFPt2","1-(0.5-0.5*TMath::Erf((x-91.2598)/14.3756))*0.554165-0");
+TF1* QaD_DoubleJet_PFPt2Up = new TF1("QaD_DoubleJet_PFPt2Up","1-(0.5-0.5*TMath::Erf((x-88.8341)/14.3756))*0.554165--0.02");
+TF1* QaD_DoubleJet_PFPt2Down = new TF1("QaD_DoubleJet_PFPt2Down","1-(0.5-0.5*TMath::Erf((x-93.8287)/14.3756))*0.554165-0.02");

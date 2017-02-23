@@ -36,8 +36,10 @@ TString lumi_sqrtS = "";
 
 bool drawLogo      = false;
 
-void CMS_lumi( TPad* pad, int iPeriod, int iPosX )
-{
+
+void CMS_lumi( TPad* pad, int iPeriod=4, int iPosX=11, bool isData = true )
+{            
+
   bool outOfFrame    = false;
   if( iPosX/10==0 )
     {
@@ -119,9 +121,11 @@ void CMS_lumi( TPad* pad, int iPeriod, int iPosX )
   float extraTextSize = extraOverCmsTextSize*cmsTextSize;
 
   latex.SetTextFont(42);
-  latex.SetTextAlign(31);
-  latex.SetTextSize(lumiTextSize*t);
-  latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
+
+  latex.SetTextAlign(31); 
+  latex.SetTextSize(lumiTextSize*t);    
+  if( isData ) latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
+
 
   if( outOfFrame )
     {

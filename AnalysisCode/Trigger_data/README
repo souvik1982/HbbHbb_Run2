@@ -1,0 +1,18 @@
+1) Produce skimmed ttrees using TE_presel.C, example of how to run it for v24 Run B is in TE_runB.sh
+
+    1a) hadd all relavant runs as SingleMuonSkimmed.root
+
+2) Produce turn-on using DoTurnOnXJ, where
+    X=Q for Quad Jet Trigger
+    X=D for Double Jet Trigger
+    X=A for Quad&&Double Trigger
+
+    This produces fitterFunction*.h, the efficiency is then produced using trig.h
+
+3) Produce closure plots using clos_XJ.cc, where
+    X=Q for Quad Jet Trigger
+    X=D for Double Jet Trigger
+    X=C for Quad&&Double Trigger  
+    X=A for Quad||Double Trigger  
+
+4) Compare in signal using ../Hbb_Trigger.cc, change path to trig.h in the header to data/ttbar accordingly
