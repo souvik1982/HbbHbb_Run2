@@ -8,12 +8,12 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 #include <TTree.h>
 #include <TChain.h>
 #include <iostream>
-#include "DrawFunctions.h"
+#include "/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/DrawFunctions.h"
 #include "TLorentzVector.h"
 #include "TMath.h"
-#include "Trigger/Double76.h"
-#include "Trigger/Quad76.h" // to be updated
-#include "PDFs/BTagCalibrationStandalone.cpp"
+#include "/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/Trigger/Double76.h"
+#include "/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/Trigger/Quad76.h" // to be updated
+#include "/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/PDFs/BTagCalibrationStandalone.cpp"
 
 #include <TSystem.h>
 #if not defined(__CINT__) || defined(__MAKECINT__)
@@ -27,7 +27,8 @@ double pi=3.14159265358979;
 // Hardcoded configuration parameters
 double jet_pT_cut=30.;
 double jet_eta_cut=2.4;
-double jet_btag_cut=0.4432;// CMVAM https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
+double jet_btag_cut=0.6324; //Pb+Pbb DeepCSVM 
+//double jet_btag_cut=0.4432;// CMVAM https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
 /////////////////////////////////////
 
 typedef std::map<double, int> JetList;
@@ -50,7 +51,7 @@ void fillIndexVectorFromJetList(JetList jetList, std::vector<unsigned int> *inde
   }
 }
 
-void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::string sample,
+void HbbHbb_PreSelection(std::string dir, std::string sample,
                          std::string sigmaJECUnc_string="JEC", 
                          std::string sigmaJERUnc_string="JER", 
                          std::string sigmaTrigUnc_string="Trig",
@@ -58,21 +59,20 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
                          std::string regressionFile="")
 {
   
-  std::string inputfilename=source_dir+"/"+sample+".root";
+  std::string inputfilename=dir+"/"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
   std::cout<<"Opened input file "<<inputfilename<<std::endl;
-  //tree->Scan();
-
+  
   if (regressionFile=="") std::cout<<"b jet regression not done. jet_regressed_pT = jet_pT"<<std::endl;
   else std::cout<<"b jet regression done with "<<regressionFile<<" decisions file."<<std::endl;
 
 
-
+  
   // Book variables
   //
 
-  /*BTagCalibration calib("DeepCSV","/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/PDFs/deepCSV_BH_Moriond17.csv");		
+  BTagCalibration calib("DeepCSV","/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/PDFs/deepCSV_BH_Moriond17.csv");		
   BTagCalibrationReader csv_calib_l(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
   BTagCalibrationReader csv_calib_c(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
   BTagCalibrationReader csv_calib_b(BTagEntry::OP_LOOSE,"central",{"up", "down"}); 
@@ -88,19 +88,18 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
             BTagEntry::FLAV_B,
             "comb");
 
-*/
 
-  UInt_t run;
-  ULong64_t evt;
-  int isData, nTrueInt;
-  Float_t json;
-  Int_t trigger_HLT_HH4bLowLumi;
+
+  int run;
+  int evt;
+  int isData, nTrueInt, json;
+  float trigger_HLT_HH4bLowLumi;
   int trigger_HLT_BIT_HLT_QuadJet45_TripleBTagCSV_p087_v; 
   int trigger_HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v;
   float vType;
   float puWeight, genWeight;
   int nJets;
-  float jet_btagCSV[100], jet_btagCMVA[100], jet_btagCMVAMSF[100], jet_btagCMVAMSFUp[100], jet_btagCMVAMSFDown[100];
+  float jet_btagCSV[100], jet_btagCMVA[100], jet_btagCMVAMSF[100], jet_btagCMVAMSFUp[100], jet_btagCMVAMSFDown[100],jet_btagDeepCSVb[100], jet_btagDeepCSVbb[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100], jet_flavor[100];
   float jet_corrJERUp[100], jet_corrJERDown[100], jet_corrJECUp[100], jet_corrJECDown[100] , jet_corrJER[100], jet_corrJEC[100];
   int nGenHiggsBoson;	
@@ -112,12 +111,13 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
   float met_pT, met_phi;
 
   int isMC;
-  std::size_t findGrav = sample.find("Grav");std::size_t findRad = sample.find("Radion");
+  std::size_t findGrav = sample.find("Grav");std::size_t findRad = sample.find("Radion"); 
   if ( findGrav !=std::string::npos || findRad !=std::string::npos ) isMC = 1; //add TT and ZZ
   else isMC = 0;
   float btagWeightsCMVAV2;	
 
- 
+
+  
   float jet_corr[100], 
         nPVs,
         jet_mt[100], 
@@ -154,7 +154,7 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
         this_Jet_vtx3deL;
   
   TMVA::Reader *reader=new TMVA::Reader("!Color:!Silent");
-
+	
   if (regressionFile!="")
   {
 
@@ -211,6 +211,8 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
   if(isMC==1){ tree->SetBranchAddress("Jet_btagCMVAV2M_SF_up", &(jet_btagCMVAMSFUp));     tree->SetBranchStatus("Jet_btagCMVAV2M_SF_up", 1);
   tree->SetBranchAddress("Jet_btagCMVAV2M_SF_down", &(jet_btagCMVAMSFDown)); tree->SetBranchStatus("Jet_btagCMVAV2M_SF_down", 1);
   tree->SetBranchAddress("Jet_btagCMVAV2M_SF", &(jet_btagCMVAMSF));          tree->SetBranchStatus("Jet_btagCMVAV2M_SF", 1); }	
+  tree->SetBranchAddress("Jet_btagDeepCSVb", &(jet_btagDeepCSVb)); tree->SetBranchStatus("Jet_btagDeepCSVb",1);
+  tree->SetBranchAddress("Jet_btagDeepCSVbb", &(jet_btagDeepCSVbb)); tree->SetBranchStatus("Jet_btagDeepCSVbb",1);
   tree->SetBranchAddress("Jet_pt", &(jet_pT));                              tree->SetBranchStatus("Jet_pt", 1);
   tree->SetBranchAddress("Jet_rawPt", &(jet_rawpT));                        tree->SetBranchStatus("Jet_rawPt", 1);
   tree->SetBranchAddress("Jet_eta", &(jet_eta));                            tree->SetBranchStatus("Jet_eta", 1); 
@@ -268,17 +270,17 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
 
   TH1F *h_nCbJets=new TH1F("h_nCbJets", "; #Jets with |#eta|<2.5, p_{T} > 30 GeV, CMVA > CMVAM; Events", 10, 0., 10.);
   
-  TH1F *h_pTOrder_JetpT_1=new TH1F("h_pTOrder_JetpT_1", "; Jet pT 1 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 800.);
-  TH1F *h_pTOrder_JetpT_2=new TH1F("h_pTOrder_JetpT_2", "; Jet pT 2 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 500.);
-  TH1F *h_pTOrder_JetpT_3=new TH1F("h_pTOrder_JetpT_3", "; Jet pT 3 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 350.);
-  TH1F *h_pTOrder_JetpT_4=new TH1F("h_pTOrder_JetpT_4", "; Jet pT 4 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
-  TH1F *h_pTOrder_JetpT_5=new TH1F("h_pTOrder_JetpT_5", "; Jet pT 5 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
+  TH1F *h_pTOrder_JetpT_1=new TH1F("h_pTOrder_JetpT_1", "; Jet p_{T} 1 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 800.);
+  TH1F *h_pTOrder_JetpT_2=new TH1F("h_pTOrder_JetpT_2", "; Jet p_{T} 2 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 500.);
+  TH1F *h_pTOrder_JetpT_3=new TH1F("h_pTOrder_JetpT_3", "; Jet p_{T} 3 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 350.);
+  TH1F *h_pTOrder_JetpT_4=new TH1F("h_pTOrder_JetpT_4", "; Jet p_{T} 4 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
+  TH1F *h_pTOrder_JetpT_5=new TH1F("h_pTOrder_JetpT_5", "; Jet p_{T} 5 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
  
-  TH1F *h_pTreg_JetpT_1=new TH1F("h_pTreg_JetpT_1", "; Jet pT 1 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 800.);
-  TH1F *h_pTreg_JetpT_2=new TH1F("h_pTreg_JetpT_2", "; Jet pT 2 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 500.);
-  TH1F *h_pTreg_JetpT_3=new TH1F("h_pTreg_JetpT_3", "; Jet pT 3 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 350.);
-  TH1F *h_pTreg_JetpT_4=new TH1F("h_pTreg_JetpT_4", "; Jet pT 4 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
-  TH1F *h_pTreg_JetpT_5=new TH1F("h_pTreg_JetpT_5", "; Jet pT 5 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
+  TH1F *h_pTreg_JetpT_1=new TH1F("h_pTreg_JetpT_1", "; Jet p_{T} 1 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 800.);
+  TH1F *h_pTreg_JetpT_2=new TH1F("h_pTreg_JetpT_2", "; Jet p_{T} 2 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 500.);
+  TH1F *h_pTreg_JetpT_3=new TH1F("h_pTreg_JetpT_3", "; Jet p_{T} 3 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 350.);
+  TH1F *h_pTreg_JetpT_4=new TH1F("h_pTreg_JetpT_4", "; Jet p_{T} 4 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
+  TH1F *h_pTreg_JetpT_5=new TH1F("h_pTreg_JetpT_5", "; Jet p_{T} 5 for jets with |#eta|<2.5 (GeV); Events", 50, 0., 250.);
   TH1F *h_CSVOrder_JetCSV_1=new TH1F("h_CSVOrder_JetCSV_1", "; Jet CSV 1 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
   TH1F *h_CSVOrder_JetCSV_2=new TH1F("h_CSVOrder_JetCSV_2", "; Jet CSV 2 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
   TH1F *h_CSVOrder_JetCSV_3=new TH1F("h_CSVOrder_JetCSV_3", "; Jet CSV 3 for jets with |#eta|<2.5, p_{T} > 30 GeV; Events", 50, -1., 1.);
@@ -293,7 +295,7 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
 
   TH1F *hWeightH =new TH1F("hWeightH","Weight High", 100, 0., 5.);
   TH1F *hWeightL =new TH1F("hWeightL","Weight Low", 100, 0., 5.);
-  TH1F *h_pt_spike=new TH1F("h_pt_spike", "pt in spike; Jet pT 1 for jets with |#eta|<2.5 (GeV); Events", 100, 0., 800.);
+  TH1F *h_pt_spike=new TH1F("h_pt_spike", "pt in spike; Jet p_{T} 1 for jets with |#eta|<2.5 (GeV); Events", 100, 0., 800.);
 
   TH1F *h_GenX_mass=new TH1F("h_GenX_mass", "; m_{X}^{GEN} (GeV); Events", 1800, 200, 2000);
   TH1F *h_dR_genHbb=new TH1F("h_dR_genHbb", "; #Delta R(b#bar{b}}; Events", 1000, 0., 5.);
@@ -311,7 +313,8 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
   a_Cuts->SetBinLabel(12, "SR");
   
   // Output tree in new file
-  std::string outfilename=dest_dir+"/"+"PreSelected_"+sample+".root";
+  std::string outfilename="PreSelected_"+sample+".root";
+
 
   TFile *outfile=new TFile(outfilename.c_str(), "recreate");
   TTree *outtree=tree->CloneTree(0);
@@ -433,16 +436,19 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
             jetList_Central_pTOrder[jet_pT[j]]=j;
             if (jet_pT[j]>jet_pT_cut)
             {
-              if (jet_btagCSV[j]>-1)
+		
+        //      if (jet_btagCSV[j]>-1)
               {  
-                jetList_CentralpT40_CSVOrder[jet_btagCMVA[j]]=j;
-                if (jet_btagCMVA[j]>jet_btag_cut)
+                //jetList_CentralpT40_CSVOrder[jet_btagCMVA[j]]=j;
+                jetList_CentralpT40_CSVOrder[jet_btagDeepCSVb[j]+jet_btagDeepCSVbb[j]]=j;
+                //if (jet_btagCMVA[j]>jet_btag_cut)
+                if (jet_btagDeepCSVb[j]+jet_btagDeepCSVbb[j]>jet_btag_cut)
                 {
                   ++nCbJets;
                   if( nCbJets<= 4 && isData!=1)
                   {
 	
-	/*	       double jet_scalefactor=1;
+		       double jet_scalefactor=1;
 		
 		       if (TMath::Abs(jet_flavor[j])==5 ) jet_scalefactor    = csv_calib_b.eval_auto_bounds("central", BTagEntry::FLAV_B, jet_eta[j], jet_pT[j]); 
 		       else if (TMath::Abs(jet_flavor[j])==4 ) jet_scalefactor    = csv_calib_c.eval_auto_bounds("central", BTagEntry::FLAV_C, jet_eta[j], jet_pT[j]);
@@ -466,16 +472,17 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
 
 				}
 			eventWeight=eventWeight*jet_scalefactor;
-	*/		
+			
 		
-                      if (sigmabTagUnc_string=="bTagp1") eventWeight=eventWeight*(jet_btagCMVAMSFUp[j]);
-                      if (sigmabTagUnc_string=="bTagm1") eventWeight=eventWeight*(jet_btagCMVAMSFDown[j]);
-                      if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" ) eventWeight=eventWeight*jet_btagCMVAMSF[j];
+                      //if (sigmabTagUnc_string=="bTagp1") eventWeight=eventWeight*(jet_btagCMVAMSFUp[j]);
+                      //if (sigmabTagUnc_string=="bTagm1") eventWeight=eventWeight*(jet_btagCMVAMSFDown[j]);
+                      //if (sigmabTagUnc_string!="bTagm1" && sigmabTagUnc_string!="bTagp1" ) eventWeight=eventWeight*jet_btagCMVAMSF[j];
                       //
                   }  
                   jetList_CentralpT40btag_pTOrder[jet_pT[j]]=j;
                   if (jet_btagCSV[j]>0) jetList_CentralpT40btag_CSVOrder[jet_btagCSV[j]]=j;
-                  jetList_CentralpT40btag_CMVAOrder[jet_btagCMVA[j]]=j;
+                  //jetList_CentralpT40btag_CMVAOrder[jet_btagCMVA[j]]=j;
+                  jetList_CentralpT40btag_CMVAOrder[jet_btagDeepCSVb[j]+jet_btagDeepCSVbb[j]]=j;
                 }
               }
             }
@@ -614,7 +621,7 @@ void HbbHbb_PreSelection(std::string source_dir, std::string dest_dir, std::stri
   TH1F *h_Count=(TH1F*)file->Get("Count");
   double nInitial=h_Count->GetBinContent(1);
                   
-  std::string histfilename=dest_dir+"/"+"Histograms_PreSelected_"+sample+".root";
+  std::string histfilename="Histograms_"+sample+".root";
   TFile *tFile=new TFile(histfilename.c_str(), "RECREATE");
   h_Count->Write();
   h_nCbJets->Write();

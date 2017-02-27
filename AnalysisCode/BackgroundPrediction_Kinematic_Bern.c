@@ -17,7 +17,7 @@
 
 // Plot cosmetics
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV 
-int iPos = 22;
+int iPos = 11;
 
 #include "CMS_lumi.h"
 #include <iostream>
@@ -206,9 +206,9 @@ void BackgroundPrediction_Kinematic_Bern(double plot_lo, double plot_hi, double 
   gStyle->SetOptStat(0000);
   writeExtraText = true;       // if extra text
   extraText  = "Preliminary";  // default extra text is "Preliminary"
-  lumi_13TeV  = "2.3 fb^{-1}";  // default is "5.1 fb^{-1}"
+  lumi_13TeV  = "35.9 fb^{-1}";  // default is "5.1 fb^{-1}"
   
-  TFile *f_data=new TFile("Histograms_BTagCSV_Skim.root");
+  TFile *f_data=new TFile("Histograms_BTagall.root");
   TH1F *h_mX_SR=(TH1F*)f_data->Get(hist.c_str());
   h_mX_SR->Rebin(rebin);
   double nEventsSR=((TH1F*)f_data->Get("h_mX_SR_kinFit"))->GetSumOfWeights();
@@ -243,7 +243,7 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   RooRealVar bg_p0("bg_p0", "bg_p0", 0.); //gaussexp_mean_lo, gaussexp_mean_hi);
   bg_p0.setConstant(1); 
   RooRealVar bg_p1("bg_p1", "bg_p1",1. , 100.);//gaussexp_width_lo, gaussexp_width_hi);
-  RooRealVar bg_p2("bg_p2", "bg_p2", 310., 600.); ///210., 300. 
+  RooRealVar bg_p2("bg_p2", "bg_p2", 310, 600);//310., 600.); ///210., 300. 
 //  RooRealVar bg_p3("bg_p3", "bg_p3",  -5., 5.);
 //  RooRealVar bg_p4("bg_p4", "bg_p4",   -5., 5.);
 /*  bg_p3.setConstant(1);
@@ -267,7 +267,6 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   //RooAddPdf bg("bg", "bg", RooArgList(bg_gauss, bg_pol), *bg_p7);  	
   //bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save(), RooFit::Minimizer("Minuit","simplex"));
   RooFitResult *r_bg=bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
-
   bg_p1.setConstant(1);
   bg_p2.setConstant(1);
   bg_p4->setConstant(1);
@@ -278,6 +277,15 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
 
   GaussExp bg_exp("bg_exp", "Background Prediction PDF", *x, bg_p00, bg_p11, bg_p22);
 
+  RooPlot *data_plot2=x->frame();
+  RooFitResult *r_bg_exp=bg_exp.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
+  pred.plotOn(data_plot2);
+
+  //bg_exp.plotOn(data_plot2, RooFit::VisualizeError(*r_bg_exp, 1, kFALSE), RooFit::FillColor(kCyan+1), RooFit::FillStyle(3001));
+  bg_exp.plotOn(data_plot2, RooFit::LineColor(kBlue+1));
+  pred.plotOn(data_plot2, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
+
+
 
   RooPlot *data_plot=x->frame();
   pred.plotOn(data_plot);
@@ -287,6 +295,10 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
 
   double fitChi2=data_plot->chiSquare();
   std::cout<<"Fit chi2 = "<<fitChi2<<std::endl;
+
+  RooAbsReal* chi2_data    = bg.createChi2(pred);
+  double pvalue=TMath::Prob(chi2_data->getVal(),int((fit_hi-fit_lo)/rebin)-3);
+  std::cout<<"p-value = "<<TMath::Prob(chi2_data->getVal(),int((fit_hi-fit_lo)/rebin)-3)<<std::endl; 
 
   /*TCanvas *c_Background=new TCanvas("c_Background", "c_Background", 700, 700);
     TPad *p_1=new TPad("p_1", "p_1", 0, 0.35, 1, 1);
@@ -309,30 +321,38 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   c_Background->SetFillStyle(4000);
   c_Background->SetFrameFillColor(0);
 
-  TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
-  p_1->SetFillStyle(4000);
-  p_1->SetFrameFillColor(0);
-  TPad* p_2 = new TPad("p_2", "p_2",0,0,1,xPad);
-  p_2->SetBottomMargin((1.-xPad)/xPad*0.13);
-  p_2->SetTopMargin(0.06);
-  p_2->SetFillColor(0);
-  p_2->SetBorderMode(0);
-  p_2->SetBorderSize(2);
-  p_2->SetFrameBorderMode(0);
-  p_2->SetFrameBorderMode(0);	
+ TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
+        p_1->SetFillStyle(4000);
+        p_1->SetFrameFillColor(0);
+        p_1->SetBottomMargin(0.02);
+
+        TPad* p_2 = new TPad("p_2", "p_2",0,0,1,xPad);
+        p_2->SetBottomMargin((1.-xPad)/xPad*0.13);
+        p_2->SetTopMargin(0.03);
+        p_2->SetFillColor(0);
+        p_2->SetBorderMode(0);
+        p_2->SetBorderSize(2);
+        p_2->SetFrameBorderMode(0);
+        p_2->SetFrameBorderMode(0);
 
   p_1->Draw();
   p_2->Draw();
   p_1->cd();
 
+
+
   if (log=="log") data_plot->GetYaxis()->SetRangeUser(1e-4, h_mX_SR->GetMaximum()*5.);
   else data_plot->GetYaxis()->SetRangeUser(0, h_mX_SR->GetMaximum()*1.5);
   data_plot->Draw();
+  data_plot->GetXaxis()->SetLabelOffset(0.03);
+  data_plot->GetYaxis()->SetLabelFont(42);
+  data_plot->GetYaxis()->SetTitleFont(42); 
+  data_plot2->Draw("same");
   data_plot->GetYaxis()->SetTitleOffset(1.25);
   data_plot->SetTitle(("; m_{X} (GeV); Events / "+itoa(h_mX_SR->GetBinWidth(1))+" GeV").c_str());
   if (log=="log") p_1->SetLogy();
 
-  TPaveText *pave = new TPaveText(0.86,0.7,0.67,0.8,"NDC");
+  TPaveText *pave = new TPaveText(0.86,0.6,0.67,0.7,"NDC");
   pave->SetBorderSize(0);
   pave->SetTextSize(0.03);
   pave->SetLineColor(1);
@@ -341,9 +361,14 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   pave->SetFillColor(0);
   pave->SetFillStyle(0);
   char name[1000];
-  if (hist.substr(0,7)=="h_mX_SB") sprintf(name,"SB #chi^{2}/n = %.2f",fitChi2);
+  char name1[1000];
+  if (hist.substr(0,7)=="h_mX_SB") {
+		sprintf(name,"SB #chi^{2}/n = %.2f",fitChi2);
+		sprintf(name1,"p-value = %.2f",pvalue);
+	}
   else sprintf(name,"SR #chi^{2}/n = %.2f",fitChi2);  
   pave->AddText(name);
+  pave->AddText(name1);
   pave->Draw(); 
 
   TLatex * tPrel = new TLatex();
@@ -351,7 +376,7 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   tPrel->SetTextColor(kBlack);
   tPrel->SetTextSize(0.04);
 
-  TLegend *leg = new TLegend(0.85625,0.7721654,0.6765625,0.8903839,NULL,"brNDC");
+  TLegend *leg = new TLegend(0.85625,0.721654,0.6165625,0.8903839,NULL,"brNDC");
   leg->SetBorderSize(0);
   leg->SetTextSize(0.035);
   leg->SetLineColor(1);
@@ -360,7 +385,14 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   leg->SetFillColor(0);
   leg->SetFillStyle(0);
   h_mX_SR->SetMarkerStyle(20);
-  if (hist.substr(0,7)=="h_mX_SB") leg->AddEntry(h_mX_SR, "Data in SB", "lep");
+  if (hist.substr(0,7)=="h_mX_SB"){
+	  h_mX_SR->SetMarkerColor(kBlack);
+	 leg->AddEntry(h_mX_SR, "Data in SB", "lep"); 
+	 //leg->AddEntry(h_mX_SR, "GaussBern fit", "l"); 
+	 //h_mX_SR->SetMarkerColor(kBlue+1);
+	//leg->AddEntry(h_mX_SR, "GaussExp fit", "l");
+	
+	}
   else leg->AddEntry(h_mX_SR, "Data in SR", "lep"); 
   leg->Draw();
 
@@ -370,6 +402,7 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   RooHist *hpull;
   hpull = data_plot->pullHist();
   RooPlot* frameP = x->frame() ;
+
   frameP->SetTitle("; m_{X} (GeV); Pull");
   frameP->addPlotable(hpull,"P");
   frameP->GetYaxis()->SetTitleSize(0.07);
@@ -379,6 +412,7 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   frameP->GetXaxis()->SetLabelSize(0.07);
   frameP->GetYaxis()->SetLabelSize(0.06);
   frameP->Draw();
+
 
   TLine *line=new TLine(fit_lo, 0, fit_hi, 0);
   line->SetLineWidth(2);
@@ -430,10 +464,13 @@ i*/  bg_p3=new RooRealVar("bg_p3", "bg_p3", 5.);
   // For the datacard
   std::cout<<" === RooFit data fit result to be entered in datacard === "<<std::endl;
   std::cout<<" Background number of events = "<<nEventsSR<<std::endl;
-  /*  std::cout<< "bg_p0   param   "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
+    std::cout<< "bg_p0   param   "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
       std::cout<< "bg_p1   param   "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
       std::cout<< "bg_p2   param   "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;
-      */
+      std::cout<< "bg_p3   param   "<<bg_p3->getVal()<<" "<<bg_p3->getError()<<std::endl;
+      std::cout<< "bg_p4   param   "<<bg_p4->getVal()<<" "<<bg_p4->getError()<<std::endl;
+    
+      
 }
 
 

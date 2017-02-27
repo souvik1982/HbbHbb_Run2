@@ -36,6 +36,9 @@ void BackgroundPrediction_Kinematic_CrystalBall(std::string filename,
                                              double crystalball_width_lo, double crystalball_width_hi,
                                              double crystalball_exp_lo, double crystalball_exp_hi,
                                              double crystalball_switch_lo, double crystalball_switch_hi,
+					      double gaussexp_mean_lo, double gaussexp_mean_hi,
+                                             double gaussexp_width_lo, double gaussexp_width_hi,
+                                             double gaussexp_exp_lo, double gaussexp_exp_hi,
                                              std::string hist="h_mX_SB_kinFit", 
                                              std::string log="lin")
 {
@@ -46,7 +49,7 @@ void BackgroundPrediction_Kinematic_CrystalBall(std::string filename,
   gStyle->SetOptStat(0000);
   writeExtraText = true;       // if extra text
   extraText  = "Preliminary";  // default extra text is "Preliminary"
-  lumi_13TeV = "27.2 fb^{-1}";  // default is "5.1 fb^{-1}"
+  lumi_13TeV = "35.9 fb^{-1}";  // default is "5.1 fb^{-1}"
   
   TFile *f_data=new TFile(filename.c_str());
   TH1F *h_mX_SR=(TH1F*)f_data->Get(hist.c_str());
@@ -69,17 +72,41 @@ void BackgroundPrediction_Kinematic_CrystalBall(std::string filename,
   bg.plotOn(data_plot, RooFit::VisualizeError(*r_bg, 1), RooFit::FillColor(kGreen+1), RooFit::FillStyle(3001));
   bg.plotOn(data_plot, RooFit::LineColor(kBlack));
   pred.plotOn(data_plot, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
+
+  RooRealVar bg_p00("bg_p00", "bg_p00", gaussexp_mean_lo, gaussexp_mean_hi);
+  RooRealVar bg_p11("bg_p11", "bg_p11", gaussexp_width_lo, gaussexp_width_hi);
+  RooRealVar bg_p22("bg_p22", "bg_p22", gaussexp_exp_lo, gaussexp_exp_hi);
+
+
+
+
+  GaussExp bg_exp("bg_exp", "Background Prediction PDF", *x, bg_p00, bg_p11, bg_p22);
+
+  RooPlot *data_plot2=x->frame();
+  RooFitResult *r_bg_exp=bg_exp.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
+  pred.plotOn(data_plot2);
+
+  //bg_exp.plotOn(data_plot2, RooFit::VisualizeError(*r_bg_exp, 1, kFALSE), RooFit::FillColor(kCyan+1), RooFit::FillStyle(3001));
+  bg_exp.plotOn(data_plot2, RooFit::LineColor(kBlue+1));
+  pred.plotOn(data_plot2, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
+
+
   
   double fitChi2=data_plot->chiSquare();
   std::cout<<"Fit chi2 = "<<fitChi2<<std::endl;
 
   
+    RooAbsReal* chi2_data    = bg.createChi2(pred);
+  double pvalue=TMath::Prob(chi2_data->getVal(),int((fit_hi-fit_lo)/rebin)-3);
+  std::cout<<"p-value = "<<TMath::Prob(chi2_data->getVal(),int((fit_hi-fit_lo)/rebin)-3)<<std::endl;
+
+
   double xPad = 0.3;
-  TCanvas *c_Background=new TCanvas("c_Background", "c_Background", 800*(1.-xPad), 600);
+  TCanvas *c_Background=new TCanvas("c_Background", "c_Background", 700*(1.-xPad), 700);
   c_Background->SetFillStyle(4000);
   c_Background->SetFrameFillColor(0);
 
-   TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
+ TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
         p_1->SetFillStyle(4000);
         p_1->SetFrameFillColor(0);
         p_1->SetBottomMargin(0.02);
@@ -92,10 +119,10 @@ void BackgroundPrediction_Kinematic_CrystalBall(std::string filename,
         p_2->SetBorderSize(2);
         p_2->SetFrameBorderMode(0);
         p_2->SetFrameBorderMode(0);
-
   p_1->Draw();
   p_2->Draw();
   p_1->cd();
+
 
   if (log=="log") data_plot->GetYaxis()->SetRangeUser(1e-4, h_mX_SR->GetMaximum()*5.);
   else data_plot->GetYaxis()->SetRangeUser(0, h_mX_SR->GetMaximum()*1.5);
@@ -103,12 +130,12 @@ void BackgroundPrediction_Kinematic_CrystalBall(std::string filename,
   data_plot->GetXaxis()->SetLabelOffset(0.03);
   data_plot->GetYaxis()->SetLabelFont(42);
   data_plot->GetYaxis()->SetTitleFont(42);
-
+  data_plot2->Draw("same");
   data_plot->GetYaxis()->SetTitleOffset(1.25);
   data_plot->SetTitle(("; m_{X} (GeV); Events / "+itoa(h_mX_SR->GetBinWidth(1))+" GeV").c_str());
   if (log=="log") p_1->SetLogy();
 
-  TPaveText *pave = new TPaveText(0.86,0.7,0.67,0.8,"NDC");
+  TPaveText *pave = new TPaveText(0.86,0.6,0.67,0.7,"NDC");
   pave->SetBorderSize(0);
   pave->SetTextSize(0.03);
   pave->SetLineColor(1);
@@ -117,10 +144,16 @@ void BackgroundPrediction_Kinematic_CrystalBall(std::string filename,
   pave->SetFillColor(0);
   pave->SetFillStyle(0);
   char name[1000];
-  if (hist.substr(0,7)=="h_mX_SB") sprintf(name,"SB #chi^{2}/n = %.2f",fitChi2);
-  else sprintf(name,"SR #chi^{2}/n = %.2f",fitChi2);  
+  char name1[1000];
+  if (hist.substr(0,7)=="h_mX_SB") {
+                sprintf(name,"SB #chi^{2}/n = %.2f",fitChi2);
+                sprintf(name1,"p-value = %.2f",pvalue);
+        }
+  else sprintf(name,"SR #chi^{2}/n = %.2f",fitChi2);
   pave->AddText(name);
-  pave->Draw(); 
+  pave->AddText(name1);
+  pave->Draw();
+
 
   TLatex * tPrel = new TLatex();
   tPrel->SetNDC();
@@ -179,18 +212,20 @@ void BackgroundPrediction_Kinematic_CrystalBall(std::string filename,
   c_Background->SaveAs(("BackgroundFit_"+tag+"_CrystalBall.png").c_str());
   c_Background->SaveAs(("BackgroundFit_"+tag+"_CrystalBall.pdf").c_str());
 
-  /*RooWorkspace *w_background=new RooWorkspace("HbbHbb");
+
+
+    RooWorkspace *w_background=new RooWorkspace("HbbHbb");
+
   w_background->import(bg);
-  w_background->SaveAs("w_background_GaussExp.root");
+  w_background->import(bg_exp);
 
   // Normalize h_mX_SB to SR for pretend data
   TH1F *h_mX_SR_fakeData=(TH1F*)h_mX_SR->Clone("h_mX_SR_fakeData");
   h_mX_SR_fakeData->Scale(nEventsSR/h_mX_SR_fakeData->GetSumOfWeights());
   RooDataHist data_obs("data_obs", "Data", RooArgList(*x), h_mX_SR_fakeData);
-
-  RooWorkspace *w_data=new RooWorkspace("HbbHbb");
-  w_data->import(data_obs);
-  w_data->SaveAs("w_data.root");*/
+  
+  w_background->import(data_obs);
+  w_background->SaveAs("w_background_Crystal.root");
 
   // For the datacard
   std::cout<<" === RooFit data fit result to be entered in datacard === "<<std::endl;

@@ -195,10 +195,10 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   writeExtraText = true;       // if extra text
   extraText  = "Preliminary";  // default extra text is "Preliminary"
   lumi_8TeV  = "17.9 fb^{-1}"; // default is "19.7 fb^{-1}"
-  lumi_13TeV  = "2.3 fb^{-1}";  // default is "5.1 fb^{-1}"
+  lumi_13TeV  = "35.9 fb^{-1}";  // default is "5.1 fb^{-1}"
  
 
-  TFile *f_data=new TFile("Histograms_BTagCSV_Skim.root");
+  TFile *f_data=new TFile("Histograms_Btagall.root");
   TH1F *h_mX_SB=(TH1F*)f_data->Get(hist1.c_str());
   TH1F *h_mX_SR=(TH1F*)f_data->Get(hist2.c_str());
   h_mX_SB->Rebin(rebin);
@@ -214,9 +214,9 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   x=new RooRealVar("x", "m_{X} (GeV)", plot_lo, plot_hi);
   
   // SB Fit
-  RooRealVar bC_p0("bC_p0", "bC_p0", gaussexp_mean_lo, gaussexp_mean_hi);
-  RooRealVar bC_p1("bC_p1", "bC_p1", gaussexp_width_lo, gaussexp_width_hi);
-  RooRealVar bC_p2("bC_p2", "bC_p2", gaussexp_exp_lo, gaussexp_exp_hi);
+  RooRealVar bC_p0("bC_p0", "bC_p0", 260., 280.);
+  RooRealVar bC_p1("bC_p1", "bC_p1", 10, 50.);
+  RooRealVar bC_p2("bC_p2", "bC_p2", 0.01, gaussexp_exp_hi);
   GaussExp bC_fit("bC_fit", "bC Fit", *x, bC_p0, bC_p1, bC_p2);
   RooDataHist bC_data("bC_data", "bC Data", RooArgList(*x), h_mX_SB);
   RooFitResult *r_bC_fit=bC_fit.fitTo(bC_data, RooFit::Range(fit_lo, fit_hi), RooFit::SumW2Error(kTRUE), RooFit::Save());
@@ -227,8 +227,8 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   bC_data.plotOn(bC_plot, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
 
   // bS
-  RooRealVar bS_p0("bS_p0", "bS_p0", gaussexp_mean_lo, gaussexp_mean_hi);
-  RooRealVar bS_p1("bS_p1", "bS_p1", gaussexp_width_lo, gaussexp_width_hi);
+  RooRealVar bS_p0("bS_p0", "bS_p0", gaussexp_mean_lo, 320.);
+  RooRealVar bS_p1("bS_p1", "bS_p1", gaussexp_width_lo, 40);
   RooRealVar bS_p2("bS_p2", "bS_p2", gaussexp_exp_lo, gaussexp_exp_hi);
   GaussExp bS_fit("bS_fit", "bS Fit", *x, bS_p0, bS_p1, bS_p2);
   RooDataHist bS_data("bS_data", "bS Data", RooArgList(*x), h_mX_SR);
@@ -244,12 +244,12 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   h_ratio->Divide(h_mX_SB);
   h_ratio->SetTitle("; m_{X} (GeV); SR/SB");
 
-  double xPad = 0.3;
+  double xPad = 0.0;//3;
   TCanvas *c_AntiTag_GaussExp=new TCanvas("c_AntiTag_GaussExp", "c_AntiTag_GaussExp", 700*(1.-xPad), 700);	
   c_AntiTag_GaussExp->SetFillStyle(4000);
   c_AntiTag_GaussExp->SetFrameFillColor(0);
 
-  TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
+  /*TPad *p_1=new TPad("p_1", "p_1", 0, xPad, 1, 1);
   p_1->SetFillStyle(4000);
   p_1->SetFrameFillColor(0);
   TPad* p_2 = new TPad("p_2", "p_2",0,0,1,xPad);
@@ -261,17 +261,10 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   p_2->SetFrameBorderMode(0);
   p_2->SetFrameBorderMode(0);
 
-  /*TPad *p_1=new TPad("p_1", "p_1", 0, 0.35, 1, 1);
-    TPad *p_2=new TPad("p_2", "p_2", 0, 0, 1, 0.35);
-    p_2->SetFillColor(0);
-    p_2->SetBorderMode(0);
-    p_2->SetBorderSize(2);
-    p_2->SetTopMargin(0.018);
-    p_2->SetBottomMargin(0.30);
-    p_2->SetFrameBorderMode(0);
-    */ p_1->Draw();
+     p_1->Draw();
   p_2->Draw();
   p_1->cd();
+*/
   double max1=h_mX_SR->GetMaximum();
   double max2=h_mX_SB->GetMaximum();
   double maxy=(max1>max2) ? max1 : max2;
@@ -283,7 +276,7 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
 
   bC_plot->Draw();
   bS_plot->Draw("same");
-  if (log=="log") p_1->SetLogy();
+  if (log=="log") c_AntiTag_GaussExp->SetLogy();
 
   TPaveText *pave = new TPaveText(0.60, 0.60, 0.89, 0.69, "NDC");
   pave->SetBorderSize(0);
@@ -319,10 +312,10 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   leg->AddEntry(h_mX_SR, "Data shape in SR", "lep");
   leg->Draw();
 
-  CMS_lumi( p_1, iPeriod, iPos );	
-
+  CMS_lumi( c_AntiTag_GaussExp, iPeriod, iPos );	
+/*
   p_2->cd();
-  /*h_ratio->GetYaxis()->SetRangeUser(0, 2.);
+  h_ratio->GetYaxis()->SetRangeUser(0, 2.);
     h_ratio->GetYaxis()->SetLabelSize(0.06);
     h_ratio->GetYaxis()->SetTitleSize(0.05);
     h_ratio->GetXaxis()->SetTitleSize(0.1);
@@ -333,7 +326,7 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
     h_ratio->Draw();
     TLine *m_one_line = new TLine(plot_lo,1,plot_hi,1);
     m_one_line->Draw("same");
-    */
+*/ /* 
   RooHist *hpull;
   hpull = bC_plot->pullHist();
   RooPlot* frameP = x->frame() ;
@@ -361,7 +354,7 @@ void BackgroundPrediction_AntiTag_GaussExp(double plot_lo, double plot_hi, doubl
   line->SetLineWidth(2);
   line->Draw();
 
-
+*/
 
   c_AntiTag_GaussExp->SaveAs("c_AntiTag_GaussExp.png");
   c_AntiTag_GaussExp->SaveAs("c_AntiTag_GaussExp.pdf");
