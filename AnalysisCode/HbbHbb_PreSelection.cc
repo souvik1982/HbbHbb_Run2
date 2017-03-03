@@ -83,10 +83,10 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
             "incl");               // measurement type
   csv_calib_c.load(calib,
 	    BTagEntry::FLAV_C,
-	    "comb");
+	    "mujets");
   csv_calib_b.load(calib,
             BTagEntry::FLAV_B,
-            "comb");
+            "mujets");
 
 
 
