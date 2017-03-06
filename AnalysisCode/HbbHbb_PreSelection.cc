@@ -8,12 +8,12 @@ Authors: Souvik Das (Univ. of Florida) & Caterina Vernieri (FNAL)
 #include <TTree.h>
 #include <TChain.h>
 #include <iostream>
-#include "/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/DrawFunctions.h"
+#include "/gpfs/ddn/cms/user/cvernier/H4b/CMSSW_7_4_7/src/HbbHbb_Run2/AnalysisCode/DrawFunctions.h"
 #include "TLorentzVector.h"
 #include "TMath.h"
-#include "/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/Trigger/Double76.h"
-#include "/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/Trigger/Quad76.h" // to be updated
-#include "/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/PDFs/BTagCalibrationStandalone.cpp"
+//#include "/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/Trigger/Double76.h"
+//#include "/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/Trigger/Quad76.h" // to be updated
+#include "/gpfs/ddn/cms/user/cvernier/H4b/CMSSW_7_4_7/src/HbbHbb_Run2/AnalysisCode/PDFs/BTagCalibrationStandalone.cpp"
 
 #include <TSystem.h>
 #if not defined(__CINT__) || defined(__MAKECINT__)
@@ -72,7 +72,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   // Book variables
   //
 
-  BTagCalibration calib("DeepCSV","/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode/PDFs/deepCSV_BH_Moriond17.csv");		
+  BTagCalibration calib("DeepCSV","../PDFs/deepCSV_BH_Moriond17.csv");		
   BTagCalibrationReader csv_calib_l(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
   BTagCalibrationReader csv_calib_c(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
   BTagCalibrationReader csv_calib_b(BTagEntry::OP_LOOSE,"central",{"up", "down"}); 
@@ -100,7 +100,8 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
   float puWeight, genWeight;
   int nJets;
   float jet_btagCSV[100], jet_btagCMVA[100], jet_btagCMVAMSF[100], jet_btagCMVAMSFUp[100], jet_btagCMVAMSFDown[100],jet_btagDeepCSVb[100], jet_btagDeepCSVbb[100];
-  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100], jet_flavor[100];
+  float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100], jet_rawpT[100];
+  int jet_flavor[100];
   float jet_corrJERUp[100], jet_corrJERDown[100], jet_corrJECUp[100], jet_corrJECDown[100] , jet_corrJER[100], jet_corrJEC[100];
   int nGenHiggsBoson;	
   float genHiggsBoson_pT[100], genHiggsBoson_eta[100], genHiggsBoson_phi[100], genHiggsBoson_mass[100];
@@ -240,7 +241,7 @@ void HbbHbb_PreSelection(std::string dir, std::string sample,
  if(isMC==1){  tree->SetBranchAddress("Jet_corr_JER", &(jet_corrJER));
   tree->SetBranchAddress("Jet_corr_JERUp", &(jet_corrJERUp));
   tree->SetBranchAddress("Jet_corr_JERDown", &(jet_corrJERDown));
-  tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor));// tree->SetBranchStatus("Jet_Flavour", 1); 
+  tree->SetBranchAddress("Jet_mcFlavour", &(jet_flavor)); tree->SetBranchStatus("Jet_mcFlavour", 1); 
     }
     
   if(isMC==1){ tree->SetBranchAddress("btagWeightCMVAV2", &(btagWeightsCMVAV2));}
