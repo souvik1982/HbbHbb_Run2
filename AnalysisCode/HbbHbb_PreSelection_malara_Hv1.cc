@@ -58,15 +58,18 @@ void HbbHbb_PreSelection_malara_Hv1(std::string source_dir, std::string dest_dir
                          std::string sigmabTagUnc_string="bTag",
                          std::string regressionFile="")
 {
-  
-  std::string inputfilename=source_dir+"/"+sample+".root";
-  TChain *tree=new TChain("tree");
-  tree->Add(inputfilename.c_str());
-  std::cout<<"Opened input file "<<inputfilename<<std::endl;
-  
-  if (regressionFile=="") std::cout<<"b jet regression not done. jet_regressed_pT = jet_pT"<<std::endl;
-  else std::cout<<"b jet regression done with "<<regressionFile<<" decisions file."<<std::endl;
-
+std::string inputfilename=source_dir+"/"+sample+".root";                           
+   
+    TChain *tree_test=new TChain("tree");
+    tree_test->Add(inputfilename.c_str());
+    int test=tree_test->GetEntries();
+   
+    TChain *tree=new TChain("tree");                                                   
+    tree->Add(inputfilename.c_str());                                                  
+    std::cout<<"Opened input file "<<inputfilename<<std::endl;                         
+    if (test<=0) tree->Scan();
+    if (regressionFile=="") std::cout<<"b jet regression not done. jet_regressed_pT = jet_pT"<<std::endl;
+    else std::cout<<"b jet regression done with "<<regressionFile<<" decisions file."<<std::endl;
 
   
   // Book variables
@@ -622,7 +625,7 @@ void HbbHbb_PreSelection_malara_Hv1(std::string source_dir, std::string dest_dir
   TH1F *h_Count=(TH1F*)file->Get("Count");
   double nInitial=h_Count->GetBinContent(1);
                   
-  std::string histfilename=dest_dir+"/"+"Histograms_"+sample+".root";
+  std::string histfilename=dest_dir+"/"+"Histograms_PreSelected_"+sample+".root";
   TFile *tFile=new TFile(histfilename.c_str(), "RECREATE");
   h_Count->Write();
   h_nCbJets->Write();
