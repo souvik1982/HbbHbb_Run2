@@ -76,9 +76,9 @@ std::string inputfilename=source_dir+"/"+sample+".root";
   //
 
   BTagCalibration calib("DeepCSV","/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/deepCSV_BH_Moriond17.csv");		
-  BTagCalibrationReader csv_calib_l(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
-  BTagCalibrationReader csv_calib_c(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
-  BTagCalibrationReader csv_calib_b(BTagEntry::OP_LOOSE,"central",{"up", "down"}); 
+  BTagCalibrationReader csv_calib_l(BTagEntry::OP_MEDIUM,"central",{"up", "down"});		
+  BTagCalibrationReader csv_calib_c(BTagEntry::OP_MEDIUM,"central",{"up", "down"});		
+  BTagCalibrationReader csv_calib_b(BTagEntry::OP_MEDIUM,"central",{"up", "down"}); 
 
 
   csv_calib_l.load(calib,                // calibration instance

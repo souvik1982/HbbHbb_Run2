@@ -51,7 +51,7 @@ void fillIndexVectorFromJetList(JetList jetList, std::vector<unsigned int> *inde
   }
 }
 
-void HbbHbb_PreSelection_malara_260_malara(std::string source_dir, std::string dest_dir, std::string sample,
+void HbbHbb_PreSelection_malara_260_CMVA(std::string source_dir, std::string dest_dir, std::string sample,
                          std::string sigmaJECUnc_string="JEC", 
                          std::string sigmaJERUnc_string="JER", 
                          std::string sigmaTrigUnc_string="Trig",
@@ -76,9 +76,9 @@ std::string inputfilename=source_dir+"/"+sample+".root";
   //
 
   BTagCalibration calib("CMVA","/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/CMVAv2_BH_Moriond17.csv");		
-  BTagCalibrationReader csv_calib_l(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
-  BTagCalibrationReader csv_calib_c(BTagEntry::OP_LOOSE,"central",{"up", "down"});		
-  BTagCalibrationReader csv_calib_b(BTagEntry::OP_LOOSE,"central",{"up", "down"}); 
+  BTagCalibrationReader csv_calib_l(BTagEntry::OP_MEDIUM,"central",{"up", "down"});		
+  BTagCalibrationReader csv_calib_c(BTagEntry::OP_MEDIUM,"central",{"up", "down"});		
+  BTagCalibrationReader csv_calib_b(BTagEntry::OP_MEDIUM,"central",{"up", "down"}); 
 
 
   csv_calib_l.load(calib,                // calibration instance
