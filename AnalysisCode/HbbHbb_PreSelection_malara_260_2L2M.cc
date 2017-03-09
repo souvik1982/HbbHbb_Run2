@@ -53,7 +53,7 @@ void fillIndexVectorFromJetList(JetList jetList, std::vector<unsigned int> *inde
   }
 }
 
-void HbbHbb_PreSelection_malara_260(std::string source_dir, std::string dest_dir, std::string sample,
+void HbbHbb_PreSelection_malara_260_2L2M(std::string source_dir, std::string dest_dir, std::string sample,
                          std::string sigmaJECUnc_string="JEC", 
                          std::string sigmaJERUnc_string="JER", 
                          std::string sigmaTrigUnc_string="Trig",
@@ -84,7 +84,7 @@ std::string inputfilename=source_dir+"/"+sample+".root";
   
   BTagCalibrationReader csv_calib_l_H(BTagEntry::OP_MEDIUM,"central",{"up", "down"});
   BTagCalibrationReader csv_calib_c_H(BTagEntry::OP_MEDIUM,"central",{"up", "down"});
-  BTagCalibrationReader csv_calib_b_H(BTagEntry::OP_MEDIUM,"central",{"up", "down"})
+  BTagCalibrationReader csv_calib_b_H(BTagEntry::OP_MEDIUM,"central",{"up", "down"});
     
   csv_calib_l_L.load(calib,                // calibration instance
 	    BTagEntry::FLAV_UDSG,    // btag flavour
@@ -536,7 +536,7 @@ std::string inputfilename=source_dir+"/"+sample+".root";
           }
         }
 	//std::cout<<eventWeight << "<--- from SF from shape corr --->"<<btagWeightsCMVAV2<<std::endl;
-	if(nCbJets>3 && nHJets==2) {
+	if(nCbJets>3 && nHJets>=2) {
 	hSF->Fill(eventWeight);
         if(isMC==1){  hWeight->Fill(btagWeightsCMVAV2); }
 	}
@@ -567,7 +567,7 @@ std::string inputfilename=source_dir+"/"+sample+".root";
           }
         }*/
         
-        if (nCbJets>=3 && nHJets==2)
+        if (nCbJets>=3 && nHJets>=2)
         {
           fillIndexVectorFromJetList(jetList_CentralpT40btag_pTOrder, &jetIndex_CentralpT40btag_pTOrder);
           fillIndexVectorFromJetList(jetList_CentralpT40btag_CSVOrder, &jetIndex_CentralpT40btag_CSVOrder);
@@ -637,7 +637,7 @@ std::string inputfilename=source_dir+"/"+sample+".root";
           
         } // nCbJets>=3
         
-        if (nCbJets>=4 && nHJets==2) nCut3+=eventWeight;
+        if (nCbJets>=4 && nHJets>=2) nCut3+=eventWeight;
         
         
         jetIndex_CentralpT40btag_pTOrder.clear();
