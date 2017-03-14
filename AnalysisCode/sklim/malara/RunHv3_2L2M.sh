@@ -24,5 +24,5 @@ do
 
 done
 
-root -l -b -q "../../countFile_2L2M.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", $from, $to)"
+root -l -b -q "../../countFile.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", $from, $to)"
 

@@ -24,8 +24,8 @@ do
 done
 
 subfolder="0000"
-root -l -b -q "../../countFile_2L2M.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", $from, 999)"
+root -l -b -q "../../countFile.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", $from, 999)"
 subfolder="0001"
-root -l -b -q "../../countFile_2L2M.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", 1000, $to)"
+root -l -b -q "../../countFile.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", 1000, $to)"
 
 

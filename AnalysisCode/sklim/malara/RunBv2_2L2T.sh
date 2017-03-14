@@ -5,7 +5,7 @@ to=222
 source_dir="/gpfs/ddn/srm/cms/store/user"
 folder=$source_dir"/cvernier/VHBBHeppyV25/BTagCSV/VHBB_HEPPY_V25_BTagCSV__Run2016B-23Sep2016-v2/170130_122257/"
 
-dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV2L2M/Data/Original/B_v_2"
+dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV2L2T/Data/Original/B_v_2"
 
 for (( i=$from; i<=$to; i++ ))
 do
@@ -20,7 +20,7 @@ do
     fi
     file="tree_"$i
     echo $file
-    root -l -b -q "/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/HbbHbb_PreSelection_malara_Bv2.cc++(\"$folder$subfolder\",\"$dest_dir\", \"$file\",\"JEC\",\"JER\",\"Trig\",\"bTag\",\"/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/gravall-v25.weights.xml\")"
+    root -l -b -q "/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/HbbHbb_PreSelection_malara_Bv2_2L2T.cc++(\"$folder$subfolder\",\"$dest_dir\", \"$file\",\"JEC\",\"JER\",\"Trig\",\"bTag\",\"/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/gravall-v25.weights.xml\")"
 done
 
 root -l -b -q "../../countFile.cc++(\"$folder$subfolder\", \"$dest_dir\",\"tree_\", $from, $to)"

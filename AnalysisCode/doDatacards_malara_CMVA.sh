@@ -34,6 +34,7 @@ trigger   lnN     1.10    -
 EOF
 #bgFloat   lnU     -          2.00
 
+
 #now add the systematics to the card
 #grep 'signal_' ${dirName}/index.html | awk '{print $1 " " $2 " " $3 " " $4}' >>  ${dirName}/${dcardName}
 
