@@ -24,7 +24,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-
+#include "RooAddPdf.h"
 #include "RooRealVar.h"
 #include "RooArgList.h"
 #include "RooChebychev.h"
@@ -37,17 +37,16 @@
 #include "RooGaussian.h"
 std::string reg;
 std::string dest_dir;
-#include "CMS_lumi.c"
+//#include "CMS_lumi.c"
 #include "tdrstyle.h"
 
 int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV
 int iPos =11;
  
-
 //#include "TDRStyle.h"
-//#include "CMS_lumi.c"
+#include "CMS_lumi.c"
 
-int rebin=10;
+int rebin=3;
 ofstream outfile;
 
 std::string tostr(float t)
@@ -76,10 +75,12 @@ struct Params
   double sg_p1;
   double sg_p2;
   double sg_p3;
+  double sg_p4;	
   double sg_p0_err;
   double sg_p1_err;
   double sg_p2_err;
   double sg_p3_err;
+  double sg_p4_err;	
 };
 
 TLegend* twoStatBoxes(TH1F* h1, TH1F* h2)
@@ -278,281 +279,196 @@ THStack* drawCombinatorics(std::string mass, TH1F *h_right, TH1F *h_wrong, TH1F 
 
 RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &params, bool kinFit=false)
 {
-  
-  RooRealVar *x, *sg_p0, *sg_p1, *sg_p2, *sg_p3;
-  // x=new RooRealVar("x", "m_{X} (_13TeV-madgraph)", 300., 1100.);
+  	RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING) ;
+gErrorIgnoreLevel = kWarning;
+  RooRealVar *x, *sg_p0, *sg_p1, *sg_p2, *sg_p3, *sg_p4;
+  x=new RooRealVar("x", "m_{X} (GeV)", 250., 1100.);
+  // x=new RooRealVar("x", "m_{X} (GeV)", 300., 800.);
   double rangeLo=-1, rangeHi=-1;
   if (!kinFit)
   {
     if (mass=="270")
     {
-      rangeLo=200., rangeHi=600.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 200., 320.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 10., 50.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 1.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 1.);
+      rangeLo=250, rangeHi=600.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 250., 280.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 15.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 10., 530.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 300.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.5, 1.);
     }
-    else if (mass=="300")
+else
     {
-      rangeLo=200., rangeHi=600.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 280., 320.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 10., 50.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 1.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 1.);
+        rangeLo=250., rangeHi=550.;
+        sg_p0=new RooRealVar("sg_p0", "sg_p0", 260., 550.);
+        sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 30.);
+        sg_p2=new RooRealVar("sg_p2", "sg_p2", 8., 600.);
+        sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
+        sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
     }
-    else if (mass=="350")
+    if (mass=="260")
     {
-      rangeLo=320., rangeHi=450.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 345., 355.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 50.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 1.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 1.);
+      rangeLo=250., rangeHi=630.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 230., 270.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 25.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 10., 590.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 300.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.5, 1.);
     }
-    else if (mass=="400")
+    if (mass=="600")
     {
-      rangeLo=300., rangeHi=550.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 370., 420.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 30.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+      rangeLo=500., rangeHi=670.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 560., 630.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 40.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 500., 650.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 130.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.7, 1.);
     }
-    else if (mass=="450")
+    if (mass=="500")
     {
-      rangeLo=370., rangeHi=540.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 410., 470.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 10., 30.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="500")
-    {
-      rangeLo=420., rangeHi=600.; 
+      rangeLo=300., rangeHi=600.;
       sg_p0=new RooRealVar("sg_p0", "sg_p0", 460., 520.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 10., 35);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 40.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 400., 590.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
     }
-    else if (mass=="550")
+    if (mass=="550")
     {
-      rangeLo=450., rangeHi=650.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 510., 570.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 10., 35.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+      rangeLo=350., rangeHi=650.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 510., 580.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 40.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 400., 590.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
+    } 
+    if (mass=="350")
+    {
+      rangeLo=250., rangeHi=550.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 310., 380.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 35.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 330., 420.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
     }
-    else if (mass=="600")
+    if (mass=="400")
     {
-      rangeLo=490., rangeHi=700.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 560., 620.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 10., 35.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+      rangeLo=300., rangeHi=600.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 360., 430.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 40.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 370.,460.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
     }
-    else if (mass=="650")
+    if (mass=="450")
     {
-      rangeLo=540., rangeHi=750.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 610., 670.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 20., 40.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+      rangeLo=300., rangeHi=600.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 410., 480.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 35.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 410., 490.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 100.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
     }
-    else if (mass=="700")
+    if (mass=="300")
     {
-      rangeLo=580., rangeHi=800.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 660., 720.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 20., 40.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="750")
-    {
-      rangeLo=580., rangeHi=830.;
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 710., 780.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 20., 45.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }	
-    else if (mass=="800")
-    {
-      rangeLo=650., rangeHi=900.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 760., 820.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 25., 50.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="900")
-    {
-      rangeLo=720., rangeHi=1000.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 810., 930.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 25., 55.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="1000")
-    {
-      rangeLo=800., rangeHi=1150.;
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 950., 1050.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 25., 45.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="1100")
-    {
-      rangeLo=850., rangeHi=1250.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 1080., 1150.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 30., 50.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 5.);
-    }
-    else if (mass=="1200")
-    {
-      rangeLo=950., rangeHi=1400.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 1100., 1300.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 40., 70.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 5.);
-    }
+      rangeLo=250., rangeHi=400.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 250., 320.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 35.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 250., 360.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 130.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
+          }
+
+
   }
   else
   {
     if (mass=="270")
     {
-      rangeLo=200., rangeHi=600.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 280., 320.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 10., 50.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 1.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 1.);
+      rangeLo=250, rangeHi=350.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 260., 280.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 8.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 9., 350.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 300.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.5, 1.);
     }
-    else if (mass=="300")
+else
     {
-      rangeLo=200., rangeHi=600.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 280., 320.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 10., 50.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 1.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 1.);
+        rangeLo=250., rangeHi=550.;
+        sg_p0=new RooRealVar("sg_p0", "sg_p0", 260., 550.);
+        sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 30.);
+        sg_p2=new RooRealVar("sg_p2", "sg_p2", 8., 600.);
+        sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
+        sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
     }
-    else if (mass=="350")
+    if (mass=="260")
     {
-      rangeLo=320., rangeHi=450.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 340., 360.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 25);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 1.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 1.);
+      rangeLo=250., rangeHi=350.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 250., 270.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 2., 6.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 8., 350.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 300.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.5, 1.);
     }
-    else if (mass=="400")
+    if (mass=="500")
     {
-      rangeLo=360., rangeHi=490.;
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 380., 430.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 30.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+      rangeLo=300., rangeHi=600.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 480., 520.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 7., 30.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 400., 590.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
     }
-    else if (mass=="450")
+    if (mass=="350")
     {
-      rangeLo=400., rangeHi=500.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 440., 475.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 30.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+      rangeLo=300., rangeHi=430.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 330., 380.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 9.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 100., 430.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0.65, 1.);
     }
-    else if (mass=="500")
+    if (mass=="400")
     {
-      rangeLo=450., rangeHi=600.;
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 480., 530.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 30.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+      rangeLo=350., rangeHi=450.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 370., 430.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 15.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 220.,450.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
     }
-    else if (mass=="550")
+    if (mass=="450")
     {
-      rangeLo=490., rangeHi=650.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 530., 580.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 25.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
+      rangeLo=350., rangeHi=550.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 420., 480.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 3., 25.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 380., 490.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 150.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);	
     }
-    else if (mass=="600")
+    if (mass=="300")
     {
-      rangeLo=540., rangeHi=700.;
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 580., 630.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 10., 25.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="650")
-    {
-      rangeLo=580., rangeHi=750.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 630., 680.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 10., 25.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="700")
-    {
-      rangeLo=600., rangeHi=800.;
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 690., 740.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 15., 25.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="750")
-    {
-      rangeLo=650., rangeHi=830.;
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 720., 780.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 20., 35.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }	
-    else if (mass=="800")
-    {
-      rangeLo=650., rangeHi=920.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 780., 840.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 15., 30.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="900")
-    {
-      rangeLo=750., rangeHi=1030.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 870., 950.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 20., 35.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="1000")
-    {
-      rangeLo=850., rangeHi=1150.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 980., 1050.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 25., 40.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="1100")
-    {
-      rangeLo=950., rangeHi=1250.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 1080., 1150.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 25., 50.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 7.);
-    }
-    else if (mass=="1200")
-    {
-      rangeLo=950., rangeHi=1400.; 
-      sg_p0=new RooRealVar("sg_p0", "sg_p0", 1100., 1300.);
-      sg_p1=new RooRealVar("sg_p1", "sg_p1", 40., 70.);
-      sg_p2=new RooRealVar("sg_p2", "sg_p2", 0., 5.);
-      sg_p3=new RooRealVar("sg_p3", "sg_p3", 0., 5.);
+      rangeLo=250., rangeHi=350.;
+      sg_p0=new RooRealVar("sg_p0", "sg_p0", 290., 320.);
+      sg_p1=new RooRealVar("sg_p1", "sg_p1", 5., 9.);
+      sg_p2=new RooRealVar("sg_p2", "sg_p2", 170., 350.);
+      sg_p3=new RooRealVar("sg_p3", "sg_p3", 10., 130.);
+      sg_p4=new RooRealVar("sg_p4", "sg_p4", 0., 1.);
     }
   }
-  x=new RooRealVar("x", "m_{X} (GeV)", rangeLo-100., rangeHi+100.);
-  ExpGaussExp signal("signal", "Signal Prediction", *x, *sg_p0, *sg_p1, *sg_p2, *sg_p3);
+  x=new RooRealVar("x", "m_{X} (GeV)", rangeLo, rangeHi);
+  // RevCrystalBall signal("signal", "Signal Prediction", *x, *sg_p0, *sg_p1, *sg_p2, *sg_p3);
+  RooGaussian signalCore("signalCore", "Signal Prediction", *x, *sg_p0, *sg_p1);
+  RooGaussian signalComb("signalComb", "Combinatoric", *x, *sg_p2, *sg_p3);
+  RooAddPdf signal("signal", "signal", RooArgList(signalCore, signalComb), *sg_p4);
   RooDataHist signalHistogram("signalHistogram", "Signal Histogram", RooArgList(*x), h);
-  signal.fitTo(signalHistogram, RooFit::Range(rangeLo, rangeHi), RooFit::Save());
- std::cout << mass << std::endl;
+  if (kinFit) signal.fitTo(signalHistogram, RooFit::Range(rangeLo, rangeHi), RooFit::Save());
+  else  signal.fitTo(signalHistogram, RooFit::Range(rangeLo-50, rangeHi), RooFit::Save());
+std::cout << mass << std::endl;
   params.sg_p0=sg_p0->getVal(); params.sg_p0_err=sg_p0->getError(); std::cout << sg_p0->getVal() << " +- " << sg_p0->getError() << std::endl;
   params.sg_p1=sg_p1->getVal(); params.sg_p1_err=sg_p1->getError(); std::cout << sg_p1->getVal() << " +- " << sg_p1->getError() << std::endl;
   params.sg_p2=sg_p2->getVal(); params.sg_p2_err=sg_p2->getError();
   params.sg_p3=sg_p3->getVal(); params.sg_p3_err=sg_p3->getError();
+  params.sg_p4=sg_p4->getVal(); params.sg_p4_err=sg_p4->getError();
   RooPlot *plot=x->frame();
   if (color==kBlack)
   {
@@ -576,10 +492,15 @@ RooPlot* fitSignal(TH1F *h, std::string mass, int color, TLegend *leg, Params &p
     RooRealVar signal_p1("signal_p1", "signal_p1", sg_p1->getVal());
     RooRealVar signal_p2("signal_p2", "signal_p2", sg_p2->getVal());
     RooRealVar signal_p3("signal_p3", "signal_p3", sg_p3->getVal());
-    ExpGaussExp signal_fixed("signal_fixed", "Signal Prediction Fixed", *x, signal_p0, signal_p1, signal_p2, signal_p3);
-    RooWorkspace *w=new RooWorkspace("HbbHbb");
-    w->import(signal_fixed);
-    w->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/w_signal_"+mass+".root").c_str());
+    RooRealVar signal_p4("signal_p4", "signal_p4", sg_p4->getVal());
+    RooGaussian signalCore_fixed("signalCore_fixed", "Signal Prediction", *x, signal_p0, signal_p1);
+    RooGaussian signalComb_fixed("signalComb_fixed", "Combinatoric", *x, signal_p2, signal_p3);
+    RooAddPdf signal_fixed("signal_fixed", "signal", RooArgList(signalCore_fixed, signalComb_fixed), signal_p4);
+
+	  RooWorkspace *w=new RooWorkspace("HbbHbb");
+	  w->import(signal_fixed);
+	  if (!kinFit) w->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/w_signal_"+mass+".root").c_str());
+	  if (kinFit) w->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/w_signal_"+mass+".root").c_str());
   }
   return plot;
 }
@@ -767,7 +688,7 @@ RooPlot* fitSignal_Gaussian(TH1F *h, std::string mass, int color, TLegend *leg, 
       sg_p1=new RooRealVar("sg_p1", "sg_p1", 30., 50.);
     }
   }
-  x=new RooRealVar("x", "m_{X} (_13TeV-madgraph)", rangeLo-50, rangeHi+50);
+  x=new RooRealVar("x", "m_{X} (GeV)", rangeLo-50, rangeHi+50);
   RooGaussian signal("signal", "Signal Prediction", *x, *sg_p0, *sg_p1);
   RooDataHist signalHistogram("signalHistogram", "Signal Histogram", RooArgList(*x), h);
   signal.fitTo(signalHistogram, RooFit::Range(rangeLo, rangeHi), RooFit::Save());
@@ -799,7 +720,8 @@ RooPlot* fitSignal_Gaussian(TH1F *h, std::string mass, int color, TLegend *leg, 
     RooGaussian signal_fixed("signal", "Signal Prediction Fixed", *x, signal_p0, signal_p1);
     RooWorkspace *w=new RooWorkspace("HbbHbb");
     w->import(signal_fixed);
-    w->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/w_signal_Gaussian_"+mass+".root").c_str());
+    if (!kinFit) w->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/w_signal_Gaussian_"+mass+".root").c_str());
+    if (kinFit)  w->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/w_signal_Gaussian_"+mass+".root").c_str());
   }
   return plot;
 }
@@ -813,14 +735,13 @@ double lnN(double b, double a, double c)
   return err;
 }
 
-int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegression", std::string _reg = "",
-                       std::string dir_selection="MMRSelection_chi2", std::string _dest_dir="/scratch/malara/WorkingArea/IO_file/output_file", 
-                       std::string file_histograms="Histograms_GluGluToBulkGravitonToHHTo4B_M-",
-
-		       int _mass= 350,
+int Display_SignalFits_LMR_malara(std::string dir_preselection="PreselectedWithRegression", std::string _reg = "reg",
+                           std::string dir_selection="LMRSelection_chi2", std::string _dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/",
+                           std::string file_histograms="Histograms_GluGluToBulkGravitonToHHTo4B_M-",
+		           int _mass=260,
                        bool focus=true)//false)
-
 {
+std::cout<<"prova"<<std::endl;
   reg = _reg;
   dest_dir=_dest_dir;
   std::vector<std::string> masses;
@@ -832,80 +753,66 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
     writeExtraText = true;       // if extra text
     extraText  = "Simulation";  // default extra text is "Preliminary"
     lumi_13TeV  = "22.0 fb^{-1}"; // default is "19.7 fb^{-1}"
- 
-  // masses.push_back("260");
-//  masses.push_back("270");
- /* masses.push_back("350");
-  masses.push_back("400");
-  masses.push_back("450");
-  masses.push_back("500");	
-  masses.push_back("550");
-  masses.push_back("600");	
-  masses.push_back("650");	
-  masses.push_back("700");
-  masses.push_back("750");	
-  masses.push_back("800");
-  masses.push_back("900");
-  masses.push_back("1000");
-  masses.push_back("1200");
- */ 
+/*	masses.push_back("260");
+//	masses.push_back("270");
+	masses.push_back("300");
+	masses.push_back("350");
+	masses.push_back("400");
+
+        masses.push_back("450");
+  	masses.push_back("500");
+  */  //    masses.push_back("550");
+	//masses.push_back("600");
+
+	
+
+
+
+
+
   gROOT->SetStyle("Plain");
 
   gStyle->SetOptStat(000000000);
-  // gStyle->SetPalette(1);
-  gSystem->Load("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/ExpGaussExp_cxx.so");
 
-  TStyle *myStyle=setTDRStyle();
-  myStyle->cd();
-  myStyle->SetOptTitle(0);
-  myStyle->SetOptStat(0);
-  
-  writeExtraText = true;       // if extra text
-	extraText  = "Simulation";  // default extra text is "Preliminary" 
-  lumi_13TeV  = "";  // default is "5.1 fb^{-1}"                     
-  
+	// Calculate nSignal events given production cross section, branching fractions and efficiency
+	double totalLumi=35876;//22040; // /pb
+	double prodXsec_1=1.; // pb
 
-  // Calculate nSignal events given production cross section, branching fractions and efficiency
-  double totalLumi=35876;//22040; // /pb
-  double prodXsec_1=1.; // pb
-  
-  // Interpolation Plots
-  std::vector<double> v_sg_p0, v_sg_p0_err;
-  std::vector<double> v_sg_p1, v_sg_p1_err;
-  std::vector<double> v_sg_p2, v_sg_p2_err;
-  std::vector<double> v_sg_p3, v_sg_p3_err;
-  std::vector<double> v_zero;
-  
-  // Write to an HTML File
-  outfile.open(dest_dir+"/"+"SignalFits"+reg+"/index.html");
-  outfile<<"<html>"<<std::endl;
-  outfile<<"<head>"<<std::endl;
-  // outfile<<"<base href=\"https://cmslpcweb.fnal.gov/uscms_data/souvik/SignalSystematics\" target=\"_blank\">"<<std::endl;
-  outfile<<"<script type=\"text/javascript\">"<<std::endl;
-  outfile<<"function toggleMe(a){"<<std::endl;
-  outfile<<"var e=document.getElementById(a);"<<std::endl;
-  outfile<<"if(!e)return true;"<<std::endl;
-  outfile<<"if(e.style.display==\"none\"){"<<std::endl;
-  outfile<<"e.style.display=\"block\""<<std::endl;
-  outfile<<"}"<<std::endl;
-  outfile<<"else{"<<std::endl;
-  outfile<<"e.style.display=\"none\""<<std::endl;
-  outfile<<"}"<<std::endl;
-  outfile<<"return true;"<<std::endl;
-  outfile<<"}"<<std::endl;
-  outfile<<"</script>"<<std::endl;
-  outfile<<"</head>"<<std::endl;
-  outfile<<"<body>"<<std::endl;
-  outfile<<"<h1> Signal with JEC, JER Systematic Uncertainties</h1>"<<std::endl;
-  
-  for (unsigned int i=0; i<masses.size(); ++i)
-  {
-    v_zero.push_back(0);
-    string width = "";	
-    if(masses.at(i) =="1000"	|| masses.at(i) =="1200") file_histograms =  "Histograms_BulkGravTohhTohbbhbb_narrow_M-";
-    else width = "_narrow"	;
-	
-    TFile *file=new TFile((dir_preselection+"/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
+	// Interpolation Plots
+	std::vector<double> v_sg_p0, v_sg_p0_err;
+	std::vector<double> v_sg_p1, v_sg_p1_err;
+	std::vector<double> v_sg_p2, v_sg_p2_err;
+	std::vector<double> v_sg_p3, v_sg_p3_err;
+	std::vector<double> v_sg_p4, v_sg_p4_err;
+	std::vector<double> v_zero;
+
+	// Write to an HTML File
+	outfile.open(dest_dir+"/"+"SignalFits_LMR"+reg+"/index.html");
+	outfile<<"<html>"<<std::endl;
+	outfile<<"<head>"<<std::endl;
+	// outfile<<"<base href=\"https://cmslpcweb.fnal.gov/uscms_data/souvik/SignalSystematics\" target=\"_blank\">"<<std::endl;
+	outfile<<"<script type=\"text/javascript\">"<<std::endl;
+	outfile<<"function toggleMe(a){"<<std::endl;
+	outfile<<"var e=document.getElementById(a);"<<std::endl;
+	outfile<<"if(!e)return true;"<<std::endl;
+	outfile<<"if(e.style.display==\"none\"){"<<std::endl;
+	outfile<<"e.style.display=\"block\""<<std::endl;
+	outfile<<"}"<<std::endl;
+	outfile<<"else{"<<std::endl;
+	outfile<<"e.style.display=\"none\""<<std::endl;
+	outfile<<"}"<<std::endl;
+	outfile<<"return true;"<<std::endl;
+	outfile<<"}"<<std::endl;
+	outfile<<"</script>"<<std::endl;
+	outfile<<"</head>"<<std::endl;
+	outfile<<"<body>"<<std::endl;
+	outfile<<"<h1> Signal with JEC, JER Systematic Uncertainties</h1>"<<std::endl;
+
+	for (unsigned int i=0; i<masses.size(); ++i)
+	{
+		v_zero.push_back(0);
+
+		TFile *file=new TFile((dir_preselection+"/"+dir_selection+"/"+file_histograms+masses.at(i)+"_narrow_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass=(TH1F*)file->Get("h_H1_mass");
     TH1F *h_H2_mass=(TH1F*)file->Get("h_H2_mass");
     TH1F *h_mX_SR=(TH1F*)file->Get("h_mX_SR");
@@ -916,7 +823,7 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
     
     TFile *file_JECp1;
     if (focus) file_JECp1=file;
-    else file_JECp1=new TFile((dir_preselection+"_JECp1/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
+    else file_JECp1=new TFile((dir_preselection+"_JECp1/"+dir_selection+"/"+file_histograms+masses.at(i)+"_narrow_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_JECp1=(TH1F*)file_JECp1->Get("h_H1_mass")->Clone("h_H1_mass_JECp1");
     TH1F *h_H2_mass_JECp1=(TH1F*)file_JECp1->Get("h_H2_mass")->Clone("h_H2_mass_JECp1");
     TH1F *h_mX_SR_JECp1=(TH1F*)file_JECp1->Get("h_mX_SR")->Clone("h_mX_SR_JECp1");
@@ -924,15 +831,15 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
     
     TFile *file_JECm1;
     if (focus) file_JECm1=file;
-    else file_JECm1=new TFile((dir_preselection+"_JECm1/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
+    else file_JECm1=new TFile((dir_preselection+"_JECm1/"+dir_selection+"/"+file_histograms+masses.at(i)+"_narrow_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_JECm1=(TH1F*)file_JECm1->Get("h_H1_mass")->Clone("h_H1_mass_JECm1");
     TH1F *h_H2_mass_JECm1=(TH1F*)file_JECm1->Get("h_H2_mass")->Clone("h_H2_mass_JECm1");;
     TH1F *h_mX_SR_JECm1=(TH1F*)file_JECm1->Get("h_mX_SR")->Clone("h_mX_SR_JECm1");
     TH1F *h_mX_SR_JECm1_KinFit=(TH1F*)file_JECm1->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_JECm1_KinFit");
     
-     TFile *file_JERp1;
+    TFile *file_JERp1;
     if (focus) file_JERp1=file;
-    else file_JERp1=new TFile((dir_preselection+"_JERp1/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
+    else file_JERp1=new TFile((dir_preselection+"_JERp1/"+dir_selection+"/"+file_histograms+masses.at(i)+"_narrow_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_JERp1=(TH1F*)file_JERp1->Get("h_H1_mass")->Clone("h_H1_mass_JERp1");
     TH1F *h_H2_mass_JERp1=(TH1F*)file_JERp1->Get("h_H2_mass")->Clone("h_H2_mass_JERp1");
     TH1F *h_mX_SR_JERp1=(TH1F*)file_JERp1->Get("h_mX_SR")->Clone("h_mX_SR_JERp1");
@@ -940,7 +847,7 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
 
     TFile *file_JERm1;
     if (focus) file_JERm1=file;
-    else file_JERm1=new TFile((dir_preselection+"_JERm1/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
+    else file_JERm1=new TFile((dir_preselection+"_JERm1/"+dir_selection+"/"+file_histograms+masses.at(i)+"_narrow_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_JERm1=(TH1F*)file_JERm1->Get("h_H1_mass")->Clone("h_H1_mass_JERm1");
     TH1F *h_H2_mass_JERm1=(TH1F*)file_JERm1->Get("h_H2_mass")->Clone("h_H2_mass_JERm1");;
     TH1F *h_mX_SR_JERm1=(TH1F*)file_JERm1->Get("h_mX_SR")->Clone("h_mX_SR_JERm1");
@@ -948,7 +855,7 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
 
     /*     TFile *file_Trigp1;
     if (focus) file_Trigp1=file;
-    else file_Trigp1=new TFile((dir_preselection+"_Trigp1/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
+    else file_Trigp1=new TFile((dir_preselection+"_Trigp1/"+dir_selection+"/"+file_histograms+masses.at(i)+"_narrow_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_Trigp1=(TH1F*)file_Trigp1->Get("h_H1_mass")->Clone("h_H1_mass_Trigp1");
     TH1F *h_H2_mass_Trigp1=(TH1F*)file_Trigp1->Get("h_H2_mass")->Clone("h_H2_mass_Trigp1");
     TH1F *h_mX_SR_Trigp1=(TH1F*)file_Trigp1->Get("h_mX_SR")->Clone("h_mX_SR_Trigp1");
@@ -956,15 +863,15 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
 
     TFile *file_Trigm1;
     if (focus) file_Trigm1=file;
-    else file_Trigm1=new TFile((dir_preselection+"_Trigm1/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
+    else file_Trigm1=new TFile((dir_preselection+"_Trigm1/"+dir_selection+"/"+file_histograms+masses.at(i)+"_narrow_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_Trigm1=(TH1F*)file_Trigm1->Get("h_H1_mass")->Clone("h_H1_mass_Trigm1");
     TH1F *h_H2_mass_Trigm1=(TH1F*)file_Trigm1->Get("h_H2_mass")->Clone("h_H2_mass_Trigm1");;
     TH1F *h_mX_SR_Trigm1=(TH1F*)file_Trigm1->Get("h_mX_SR")->Clone("h_mX_SR_Trigm1");
-    TH1F *h_mX_SR_Trigm1_KinFit=(TH1F*)file_Trigm1->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_Trigm1_KinFit");	
-*/	
-	  TFile *file_bTagDown;
+    TH1F *h_mX_SR_Trigm1_KinFit=(TH1F*)file_Trigm1->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_Trigm1_KinFit");
+*/
+    TFile *file_bTagDown;
     if (focus) file_bTagDown=file;
-    else file_bTagDown=new TFile(("Preselection_bTagm1/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
+    else file_bTagDown=new TFile((dir_preselection+"_bTagm1/"+dir_selection+"/"+file_histograms+masses.at(i)+"_narrow_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_bTagDown=(TH1F*)file_bTagDown->Get("h_H1_mass")->Clone("h_H1_mass_bTagDown");
     TH1F *h_H2_mass_bTagDown=(TH1F*)file_bTagDown->Get("h_H2_mass")->Clone("h_H2_mass_bTagDown");
     TH1F *h_mX_SR_bTagDown=(TH1F*)file_bTagDown->Get("h_mX_SR")->Clone("h_mX_SR_bTagDown");
@@ -972,14 +879,14 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
 
     TFile *file_bTagUp;
     if (focus) file_bTagUp=file;
-    else file_bTagUp=new TFile(("Preselection_bTagp1/"+dir_selection+"/"+file_histograms+masses.at(i)+width+"_13TeV-madgraph.root").c_str());
+    else file_bTagUp=new TFile((dir_preselection+"_bTagp1/"+dir_selection+"/"+file_histograms+masses.at(i)+"_narrow_13TeV-madgraph.root").c_str());
     TH1F *h_H1_mass_bTagUp=(TH1F*)file_bTagUp->Get("h_H1_mass")->Clone("h_H1_mass_bTagUp");
     TH1F *h_H2_mass_bTagUp=(TH1F*)file_bTagUp->Get("h_H2_mass")->Clone("h_H2_mass_bTagUp");;
     TH1F *h_mX_SR_bTagUp=(TH1F*)file_bTagUp->Get("h_mX_SR")->Clone("h_mX_SR_bTagUp");
     TH1F *h_mX_SR_bTagUp_KinFit=(TH1F*)file_bTagUp->Get("h_mX_SR_kinFit")->Clone("h_mX_SR_bTagUp_KinFit");
-
-
-
+   
+    std::cout<<" here "<<h_H1_mass->GetEntries()<<std::endl;	 
+ 
 
     TCanvas *c_H1_mass=new TCanvas("c_H1_mass", "c_H1_mass", 700, 700);
     h_H1_mass->SetLineWidth(2);
@@ -991,7 +898,7 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
     threeStatBoxes(h_H1_mass, 
                    h_H1_mass_JECp1, 
                    h_H1_mass_JECm1)->Draw();
-    c_H1_mass->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/c_H1_mass_"+masses.at(i)+".png").c_str());
+    c_H1_mass->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/c_H1_mass_"+masses.at(i)+".png").c_str());
     
     TCanvas *c_H2_mass=new TCanvas("c_H2_mass", "c_H2_mass", 700, 700);
     h_H2_mass->SetLineWidth(2);
@@ -1003,10 +910,10 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
     threeStatBoxes(h_H2_mass, 
                    h_H2_mass_JECp1, 
                    h_H2_mass_JECm1)->Draw();
-    c_H2_mass->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/c_H2_mass_"+masses.at(i)+".png").c_str());
-    
+    c_H2_mass->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/c_H2_mass_"+masses.at(i)+".png").c_str());
+    std::cout<<"  here "<<h_mX_SR->GetEntries()<<std::endl;
     TCanvas *c_mX_SR=new TCanvas(("c_mX_SR_"+masses.at(i)).c_str(), ("c_mX_SR_"+masses.at(i)).c_str(), 700, 700);
-    h_mX_SR->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" _13TeV-madgraph); m_{X} (_13TeV-madgraph)").c_str());
+    h_mX_SR->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" GeV); m_{X} (GeV)").c_str());
     h_mX_SR->Rebin(rebin);
     h_mX_SR_JECp1->Rebin(rebin);
     h_mX_SR_JECm1->Rebin(rebin);
@@ -1015,7 +922,7 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
     h_mX_SR->GetXaxis()->SetRangeUser(0, 1200);
     h_mX_SR_JECp1->GetXaxis()->SetRangeUser(0, 1200);
     h_mX_SR_JECm1->GetXaxis()->SetRangeUser(0, 1200);
-    TLegend *leg=new TLegend(0.6, 0.55, 0.9, 0.9);
+    TLegend *leg=new TLegend(0.7, 0.5, 0.9, 0.9);
     leg->AddEntry(h_mX_SR, "Baseline");
     Params par, par_JECp1, par_JECm1;
     RooPlot *plot=fitSignal(h_mX_SR, masses.at(i), kBlack, leg, par);
@@ -1038,7 +945,7 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
     plot->Draw("same");
     leg->SetFillColor(0);
     leg->Draw();
-    c_mX_SR->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/c_mX_SR_"+masses.at(i)+".png").c_str());
+    c_mX_SR->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/c_mX_SR_"+masses.at(i)+".png").c_str());
     
 
 
@@ -1065,7 +972,7 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
         
 
         h_mX_SR_KinFit->SetTitle(("m_{X} Peak in Signal MC (m_{X}="+masses.at(i)+" GeV); m_{X} (GeV)").c_str());
-        h_mX_SR_KinFit->Rebin(rebin);
+        
         
         leg = new TLegend(0.75,0.75,0.5,0.9,NULL,"brNDC");
         leg->SetBorderSize(0);
@@ -1083,6 +990,7 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
 
 
 
+    h_mX_SR_KinFit->Rebin(rebin);
     h_mX_SR_JECp1_KinFit->Rebin(rebin);
     h_mX_SR_JECm1_KinFit->Rebin(rebin);
     h_mX_SR_JECp1_KinFit->SetLineColor(kRed);
@@ -1096,47 +1004,40 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
     h_mX_SR_JERm1_KinFit->SetLineColor(kBlue+1);
     h_mX_SR_JERp1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
     h_mX_SR_JERm1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
-    /*h_mX_SR_Trigp1_KinFit->Rebin(rebin);
 
+/*    h_mX_SR_Trigp1_KinFit->Rebin(rebin);
       h_mX_SR_Trigm1_KinFit->Rebin(rebin);
       h_mX_SR_Trigp1_KinFit->SetLineColor(kPink+1);
       h_mX_SR_Trigm1_KinFit->SetLineColor(kPink+3);
       h_mX_SR_Trigp1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
       h_mX_SR_Trigm1_KinFit->GetXaxis()->SetRangeUser(0, 1200);
-      */	   h_mX_SR_bTagDown_KinFit->Rebin(rebin);
-
+      */
+    h_mX_SR_bTagDown_KinFit->Rebin(rebin);
     h_mX_SR_bTagUp_KinFit->Rebin(rebin);
     h_mX_SR_bTagDown_KinFit->SetLineColor(kGreen+1);
     h_mX_SR_bTagUp_KinFit->SetLineColor(kGreen+3);
     h_mX_SR_bTagDown_KinFit->GetXaxis()->SetRangeUser(0, 1200);
     h_mX_SR_bTagUp_KinFit->GetXaxis()->SetRangeUser(0, 1200);
-
-
+	//	leg=new TLegend(0.7, 0.5, 0.9, 0.9);
+		//leg->AddEntry(h_mX_SR_KinFit, "Baseline");
 
     Params par_KinFit, par_JECp1_KinFit, par_JECm1_KinFit;
     RooPlot *plot_KinFit=fitSignal(h_mX_SR_KinFit, masses.at(i), kBlack, leg, par_KinFit, true);
-    std::cout<<" fit done " <<std::endl;
-    plot_KinFit->SetTitle("");
-    //plot_KinFit->GetYaxis()->SetRangeUser(0.01, 100);
-      
-    plot_KinFit->GetXaxis()->SetRangeUser(_mass-100, _mass+150);
-    plot_KinFit->GetXaxis()->SetLabelOffset(0.03);
-    plot_KinFit->GetXaxis()->SetNdivisions(505);
-    plot_KinFit->SetMaximum(plot_KinFit->GetMaximum()*1.2);
-    plot_KinFit->Draw();	
     v_sg_p0.push_back(par_KinFit.sg_p0); v_sg_p0_err.push_back(par_KinFit.sg_p0_err);
     v_sg_p1.push_back(par_KinFit.sg_p1); v_sg_p1_err.push_back(par_KinFit.sg_p1_err);
     v_sg_p2.push_back(par_KinFit.sg_p2); v_sg_p2_err.push_back(par_KinFit.sg_p2_err);
-    v_sg_p3.push_back(par_KinFit.sg_p3); v_sg_p3_err.push_back(par_KinFit.sg_p3_err);
-    leg=new TLegend(0.59, 0.60, 0.91, 0.90);
+		v_sg_p3.push_back(par_KinFit.sg_p3); v_sg_p3_err.push_back(par_KinFit.sg_p3_err);
+		v_sg_p4.push_back(par_KinFit.sg_p4); v_sg_p4_err.push_back(par_KinFit.sg_p4_err);	
+		leg=new TLegend(0.55, 0.60, 0.91, 0.90);
     leg->SetFillStyle(0);
     h_mX_SR_KinFit->SetLineColor(kBlack);
     h_mX_SR_KinFit->SetLineWidth(2);
     h_mX_SR_KinFit->SetMarkerStyle(20);
     if (focus)
     {
-      leg->AddEntry(h_mX_SR_KinFit, "ExpGaussExp fit", "L");
+      leg->AddEntry(h_mX_SR_KinFit, "Gauss+Gauss fit", "L");
       leg->AddEntry(h_mX_SR_KinFit, ("m_{X} = "+masses.at(i)+" GeV signal").c_str(), "LEP");
+      // leg->AddEntry((TObject*)0, ("#chi^{2}/n = "+ftoa2(plot_KinFit->chiSquare())).c_str(), "");
     }
     RooPlot *plot_JECp1_KinFit, *plot_JECm1_KinFit;
     Params par_JERp1_KinFit, par_JERm1_KinFit;
@@ -1146,59 +1047,58 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
 
     Params par_bTagDown_KinFit, par_bTagUp_KinFit;
     RooPlot *plot_bTagDown_KinFit, *plot_bTagUp_KinFit;
-
-
-
-    if (focus) {
-	    //    leg->AddEntry(h_mX_SR_JECp1_KinFit, "JEC +1 #sigma");
-	    //   leg->AddEntry(h_mX_SR_JECm1_KinFit, "JEC -1 #sigma");
-
-	    // plot_JECp1_KinFit=fitSignal(h_mX_SR_JECp1_KinFit, masses.at(i), kRed, leg, par_JECp1_KinFit, true);
-	    // plot_JECm1_KinFit=fitSignal(h_mX_SR_JECm1_KinFit, masses.at(i), kRed+2, leg, par_JECm1_KinFit, true);
-
-
-	    //leg->AddEntry(h_mX_SR_JERp1_KinFit, "JER +1 #sigma");
-	    //leg->AddEntry(h_mX_SR_JERm1_KinFit, "JER -1 #sigma");
-
-	    // plot_JERp1_KinFit=fitSignal(h_mX_SR_JERp1_KinFit, masses.at(i), kAzure+1, leg, par_JERp1_KinFit, true);
-	    //plot_JERm1_KinFit=fitSignal(h_mX_SR_JERm1_KinFit, masses.at(i), kBlue+1, leg, par_JERm1_KinFit, true);
-
-
-	    /*   leg->AddEntry(h_mX_SR_Trigp1_KinFit, "Trig +1 #sigma");
-		 leg->AddEntry(h_mX_SR_Trigm1_KinFit, "Trig -1 #sigma");
-
-		 plot_Trigp1_KinFit=fitSignal(h_mX_SR_Trigp1_KinFit, masses.at(i), kPink+1, leg, par_Trigp1_KinFit, true);
-		 plot_Trigm1_KinFit=fitSignal(h_mX_SR_Trigm1_KinFit, masses.at(i), kPink+3, leg, par_Trigm1_KinFit, true);
-
-		 leg->AddEntry(h_mX_SR_bTagDown_KinFit, "bTag +1 #sigma");
-		 leg->AddEntry(h_mX_SR_bTagUp_KinFit, "bTag -1 #sigma");
-
-		 plot_bTagDown_KinFit=fitSignal(h_mX_SR_bTagDown_KinFit, masses.at(i), kGreen+1, leg, par_bTagDown_KinFit, true);
-		 plot_bTagUp_KinFit=fitSignal(h_mX_SR_bTagUp_KinFit, masses.at(i), kGreen+3, leg, par_bTagUp_KinFit, true);
-		 */    }
-	    plot_KinFit->SetMaximum(plot_KinFit->GetMaximum()*1.2);
-    plot_KinFit->Draw();
-    if (focus) 
+    if (!focus) 
     {
-	    //	    plot_JECp1_KinFit->Draw("same");
-	    //	    plot_JECm1_KinFit->Draw("same");
-	    //	    plot_JERp1_KinFit->Draw("same");
-	    //	    plot_JERm1_KinFit->Draw("same");
-	    //	    plot_Trigp1_KinFit->Draw("same");
-	    //	    plot_Trigm1_KinFit->Draw("same");
-	    //	     plot_bTagUp_KinFit->Draw("same");
-	    //                       plot_bTagDown_KinFit->Draw("same");
+	leg->AddEntry(h_mX_SR_JECp1_KinFit, "JEC +1 #sigma");
+	leg->AddEntry(h_mX_SR_JECm1_KinFit, "JEC -1 #sigma");
+	plot_JECp1_KinFit=fitSignal(h_mX_SR_JECp1_KinFit, masses.at(i), kRed, leg, par_JECp1_KinFit, true);
+	plot_JECm1_KinFit=fitSignal(h_mX_SR_JECm1_KinFit, masses.at(i), kRed+2, leg, par_JECm1_KinFit, true);
+	leg->AddEntry(h_mX_SR_JERp1_KinFit, "JER +1 #sigma");
+      leg->AddEntry(h_mX_SR_JERm1_KinFit, "JER -1 #sigma");
+      plot_JERp1_KinFit=fitSignal(h_mX_SR_JERp1_KinFit, masses.at(i), kAzure+1, leg, par_JERp1_KinFit, true);
+      plot_JERm1_KinFit=fitSignal(h_mX_SR_JERm1_KinFit, masses.at(i), kBlue+1, leg, par_JERm1_KinFit, true);
+/*		
+      leg->AddEntry(h_mX_SR_Trigp1_KinFit, "Trig +1 #sigma");
+      leg->AddEntry(h_mX_SR_Trigm1_KinFit, "Trig -1 #sigma");
+      plot_Trigp1_KinFit=fitSignal(h_mX_SR_Trigp1_KinFit, masses.at(i), kPink+1, leg, par_Trigp1_KinFit, true);
+      plot_Trigm1_KinFit=fitSignal(h_mX_SR_Trigm1_KinFit, masses.at(i), kPink+3, leg, par_Trigm1_KinFit, true);
+*/
+      leg->AddEntry(h_mX_SR_bTagDown_KinFit, "bTag +1 #sigma");
+      leg->AddEntry(h_mX_SR_bTagUp_KinFit, "bTag -1 #sigma");
+      plot_bTagDown_KinFit=fitSignal(h_mX_SR_bTagDown_KinFit, masses.at(i), kGreen+1, leg, par_bTagDown_KinFit, true);
+      plot_bTagUp_KinFit=fitSignal(h_mX_SR_bTagUp_KinFit, masses.at(i), kGreen+3, leg, par_bTagUp_KinFit, true);
+		}
+		std::cout<<" fit done " <<std::endl;
+
+		plot_KinFit->SetTitle("");
+		  plot_KinFit->GetXaxis()->SetRangeUser(_mass-100, _mass+150);
+    plot_KinFit->GetXaxis()->SetLabelOffset(0.03);
+    plot_KinFit->GetXaxis()->SetNdivisions(505);
+    plot_KinFit->SetMaximum(plot_KinFit->GetMaximum()*1.2);
+    plot_KinFit->Draw();
+
+		plot_KinFit->Draw();
+		if (!focus) 
+
+		{
+			plot_JECp1_KinFit->Draw("same");
+			plot_JECm1_KinFit->Draw("same");
+			plot_JERp1_KinFit->Draw("same");
+      plot_JERm1_KinFit->Draw("same");	
+		  //	plot_Trigp1_KinFit->Draw("same");
+      //  plot_Trigm1_KinFit->Draw("same");
+			plot_bTagUp_KinFit->Draw("same");
+      plot_bTagDown_KinFit->Draw("same");
+		}
+		plot_KinFit->Draw("same");
+		leg->SetFillColor(0);
+
+		leg->Draw();
 
 
-    }
-    plot_KinFit->Draw("same");
-    leg->SetFillColor(0);
-    leg->SetLineColor(0);
-    leg->Draw();
-
-     
+		
         CMS_lumi(p_1, iPeriod, iPos );
-        
+
         p_2->cd();
         RooHist* hpull;
         hpull = plot_KinFit->pullHist();
@@ -1213,20 +1113,14 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
         frameP->GetYaxis()->SetNdivisions(505);
         frameP->GetXaxis()->SetNdivisions(505);
         frameP->GetYaxis()->SetTitle("Pull");
-        
+
         frameP->GetYaxis()->SetTitleSize((1.-xPad)/xPad*0.06);
         frameP->GetYaxis()->SetTitleOffset(1.2/((1.-xPad)/xPad));
         frameP->GetXaxis()->SetTitleSize((1.-xPad)/xPad*0.06);
         frameP->GetXaxis()->SetLabelSize((1.-xPad)/xPad*0.05);
         frameP->GetYaxis()->SetLabelSize((1.-xPad)/xPad*0.05);
-        
-        
         frameP->Draw();
-        
-	
-    c_mX_SR_KinFit->SaveAs((dest_dir+"/"+"SignalFits"+reg+"/c_mX_SR_KinFit_"+masses.at(i)+".png").c_str());
-
-
+    c_mX_SR_KinFit->SaveAs((dest_dir+"/"+"SignalFits_LMR"+reg+"/c_mX_SR_KinFit_"+masses.at(i)+".png").c_str());
     outfile<<"<br/><hr/>"<<std::endl;
     outfile<<"<h2> mX = "<<masses.at(i)<<" </h2>"<<std::endl;
     outfile<<"<table border='1'>"<<std::endl;
@@ -1244,28 +1138,32 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
     outfile<<"   <h2 align='center'>Without Kin-Fit. Fitted to an Exp-Gauss-Exp function.</h2><br/>"<<std::endl;
     outfile<<"   === Baseline plot === </br>"<<std::endl;
     /*outfile<<"   norm = "<<h_mX_SR->GetSumOfWeights()*totalLumi*prodXsec_1/nSignal_init<<" <br/>"<<std::endl;
-      outfile<<"   sg_p0 = "<<par.sg_p0<<" "<<par.sg_p0_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p1 = "<<par.sg_p1<<" "<<par.sg_p1_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p2 = "<<par.sg_p2<<" "<<par.sg_p2_err<<" <br/>"<<std::endl;
-      outfile<<"   sg_p3 = "<<par.sg_p3<<" "<<par.sg_p3_err<<" <br/>"<<std::endl;
-      */if (!focus) 
+      outfile<<"   sg_p0 = "<<par.sg_p0<<" +- "<<par.sg_p0_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p1 = "<<par.sg_p1<<" +- "<<par.sg_p1_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p2 = "<<par.sg_p2<<" +- "<<par.sg_p2_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p3 = "<<par.sg_p3<<" +- "<<par.sg_p3_err<<" <br/>"<<std::endl;
+      outfile<<"   sg_p4 = "<<par.sg_p4<<" +- "<<par.sg_p4_err<<" <br/>"<<std::endl;
+      */
+    if (!focus) 
     {
-	    outfile<<"   <center><input type='button' onclick=\"return toggleMe('"<<masses.at(i)<<"')\" value='Systematics'></center><br/>"<<std::endl;
-	    outfile<<"   <div id=\""<<masses.at(i)<<"\" style=\"display:none\">"<<std::endl;
-	    outfile<<"   === JEC +1 sigma === <br/>"<<std::endl;
-	    outfile<<"   norm = "<<h_mX_SR_JECp1->GetSumOfWeights()<<" <br/>"<<std::endl;
-	    outfile<<"   sg_p0 = "<<par_JECp1.sg_p0<<" "<<par_JECp1.sg_p0_err<<" <br/>"<<std::endl;
-	    outfile<<"   sg_p1 = "<<par_JECp1.sg_p1<<" "<<par_JECp1.sg_p1_err<<" <br/>"<<std::endl;
-	    outfile<<"   sg_p2 = "<<par_JECp1.sg_p2<<" "<<par_JECp1.sg_p2_err<<" <br/>"<<std::endl;
-	    outfile<<"   sg_p3 = "<<par_JECp1.sg_p3<<" "<<par_JECp1.sg_p3_err<<" <br/>"<<std::endl;
-	    outfile<<"   === JEC -1 sigma === <br/>"<<std::endl;
-	    outfile<<"   norm = "<<h_mX_SR_JECm1->GetSumOfWeights()<<" <br/>"<<std::endl;
-	    outfile<<"   sg_p0 = "<<par_JECm1.sg_p0<<" "<<par_JECm1.sg_p0_err<<" <br/>"<<std::endl;
-	    outfile<<"   sg_p1 = "<<par_JECm1.sg_p1<<" "<<par_JECm1.sg_p1_err<<" <br/>"<<std::endl;
-	    outfile<<"   sg_p2 = "<<par_JECm1.sg_p2<<" "<<par_JECm1.sg_p2_err<<" <br/>"<<std::endl;
-	    outfile<<"   sg_p3 = "<<par_JECm1.sg_p3<<" "<<par_JECm1.sg_p3_err<<" <br/>"<<std::endl;
-	    outfile<<"   === === <br/>"<<std::endl;
-	    outfile<<"   </div>"<<std::endl;
+	outfile<<"   <center><input type='button' onclick=\"return toggleMe('"<<masses.at(i)<<"')\" value='Systematics'></center><br/>"<<std::endl;
+	outfile<<"   <div id=\""<<masses.at(i)<<"\" style=\"display:none\">"<<std::endl;
+	outfile<<"   === JEC +1 sigma === <br/>"<<std::endl;
+	outfile<<"   norm = "<<h_mX_SR_JECp1->GetSumOfWeights()<<" <br/>"<<std::endl;
+	outfile<<"   sg_p0 = "<<par_JECp1.sg_p0<<" +- "<<par_JECp1.sg_p0_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p1 = "<<par_JECp1.sg_p1<<" +- "<<par_JECp1.sg_p1_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p2 = "<<par_JECp1.sg_p2<<" +- "<<par_JECp1.sg_p2_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p3 = "<<par_JECp1.sg_p3<<" +- "<<par_JECp1.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p4 = "<<par_JECp1.sg_p4<<" +- "<<par_JECp1.sg_p4_err<<" <br/>"<<std::endl;
+	outfile<<"   === JEC -1 sigma === <br/>"<<std::endl;
+	outfile<<"   norm = "<<h_mX_SR_JECm1->GetSumOfWeights()<<" <br/>"<<std::endl;
+	outfile<<"   sg_p0 = "<<par_JECm1.sg_p0<<" +- "<<par_JECm1.sg_p0_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p1 = "<<par_JECm1.sg_p1<<" +- "<<par_JECm1.sg_p1_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p2 = "<<par_JECm1.sg_p2<<" +- "<<par_JECm1.sg_p2_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p3 = "<<par_JECm1.sg_p3<<" +- "<<par_JECm1.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p4 = "<<par_JECm1.sg_p4<<" +- "<<par_JECm1.sg_p4_err<<" <br/>"<<std::endl;
+	outfile<<"   === === <br/>"<<std::endl;
+	outfile<<"   </div>"<<std::endl;
     }
     outfile<<"  </td>"<<std::endl;
     outfile<<"  <td>"<<std::endl;
@@ -1273,182 +1171,158 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
     outfile<<"   <h2 align='center'>With Kin-Fit. Fitted to an Exp-Gauss-Exp function.</h2><br/>"<<std::endl;
     outfile<<"   === Baseline plot === </br>"<<std::endl;
     outfile<<"   norm = "<<h_mX_SR_KinFit->GetSumOfWeights()*totalLumi*prodXsec_1/nSignal_init<<" <br/>"<<std::endl;
-    outfile<<"   sg_p0 = "<<par_KinFit.sg_p0<<" "<<par_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-    outfile<<"   sg_p1 = "<<par_KinFit.sg_p1<<" "<<par_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-    outfile<<"   sg_p2 = "<<par_KinFit.sg_p2<<" "<<par_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-    outfile<<"   sg_p3 = "<<par_KinFit.sg_p3<<" "<<par_KinFit.sg_p3_err<<" <br/>"<<std::endl;
-    if (focus) 
+    /*outfile<<"   sg_p0 = "<<par_KinFit.sg_p0<<" +- "<<par_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p1 = "<<par_KinFit.sg_p1<<" +- "<<par_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p2 = "<<par_KinFit.sg_p2<<" +- "<<par_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p3 = "<<par_KinFit.sg_p3<<" +- "<<par_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+    outfile<<"   sg_p4 = "<<par_KinFit.sg_p4<<" +- "<<par_KinFit.sg_p4_err<<" <br/>"<<std::endl;
+  */if (!focus) 
     {
-	    /*outfile<<"   <center><input type='button' onclick=\"return toggleMe('"<<masses.at(i)<<"_KinFit')\" value='Systematics'></center><br/>"<<std::endl;
-	      outfile<<"   <div id=\""<<masses.at(i)<<"_KinFit\" style=\"display:none\">"<<std::endl;
-	      outfile<<"   === JEC +1 sigma === <br/>"<<std::endl;
-	      outfile<<"   norm = "<<h_mX_SR_JECp1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p0 = "<<par_JECp1_KinFit.sg_p0<<" "<<par_JECp1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p1 = "<<par_JECp1_KinFit.sg_p1<<" "<<par_JECp1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p2 = "<<par_JECp1_KinFit.sg_p2<<" "<<par_JECp1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p3 = "<<par_JECp1_KinFit.sg_p3<<" "<<par_JECp1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
-	      outfile<<"   === JEC -1 sigma === <br/>"<<std::endl;
-	      outfile<<"   norm = "<<h_mX_SR_JECm1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p0 = "<<par_JECm1_KinFit.sg_p0<<" "<<par_JECm1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p1 = "<<par_JECm1_KinFit.sg_p1<<" "<<par_JECm1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p2 = "<<par_JECm1_KinFit.sg_p2<<" "<<par_JECm1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p3 = "<<par_JECm1_KinFit.sg_p3<<" "<<par_JECm1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
-	      outfile<<"   === === <br/>"<<std::endl;
-	      outfile<<"   </div>"<<std::endl;
-	      outfile<<"   === JER +1 sigma === <br/>"<<std::endl;
-	      outfile<<"   norm = "<<h_mX_SR_JERp1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p0 = "<<par_JERp1_KinFit.sg_p0<<" +- "<<par_JERp1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p1 = "<<par_JERp1_KinFit.sg_p1<<" +- "<<par_JERp1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p2 = "<<par_JERp1_KinFit.sg_p2<<" +- "<<par_JERp1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p3 = "<<par_JERp1_KinFit.sg_p3<<" +- "<<par_JERp1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
-	      outfile<<"   === JER -1 sigma === <br/>"<<std::endl;
-	      outfile<<"   norm = "<<h_mX_SR_JERm1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p0 = "<<par_JERm1_KinFit.sg_p0<<" +- "<<par_JERm1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p1 = "<<par_JERm1_KinFit.sg_p1<<" +- "<<par_JERm1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p2 = "<<par_JERm1_KinFit.sg_p2<<" +- "<<par_JERm1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-	      outfile<<"   sg_p3 = "<<par_JERm1_KinFit.sg_p3<<" +- "<<par_JERm1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
-	      *//*outfile<<"   === Trig +1 sigma === <br/>"<<std::endl;
-		  outfile<<"   norm = "<<h_mX_SR_Trigp1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p0 = "<<par_Trigp1_KinFit.sg_p0<<" +- "<<par_Trigp1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p1 = "<<par_Trigp1_KinFit.sg_p1<<" +- "<<par_Trigp1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p2 = "<<par_Trigp1_KinFit.sg_p2<<" +- "<<par_Trigp1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p3 = "<<par_Trigp1_KinFit.sg_p3<<" +- "<<par_Trigp1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
-		  outfile<<"   === Trig -1 sigma === <br/>"<<std::endl;
-		  outfile<<"   norm = "<<h_mX_SR_Trigm1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p0 = "<<par_Trigm1_KinFit.sg_p0<<" +- "<<par_Trigm1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p1 = "<<par_Trigm1_KinFit.sg_p1<<" +- "<<par_Trigm1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p2 = "<<par_Trigm1_KinFit.sg_p2<<" +- "<<par_Trigm1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p3 = "<<par_Trigm1_KinFit.sg_p3<<" +- "<<par_Trigm1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   <center><input type='button' onclick=\"return toggleMe('"<<masses.at(i)<<"_KinFit')\" value='Systematics'></center><br/>"<<std::endl;
+	outfile<<"   <div id=\""<<masses.at(i)<<"_KinFit\" style=\"display:none\">"<<std::endl;
+	outfile<<"   === JEC +1 sigma === <br/>"<<std::endl;
+	outfile<<"   norm = "<<h_mX_SR_JECp1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
+	// outfile<<"   chi2/ndof = "<<plot_JECp1_KinFit->chiSquare()<<" <br/>"<<std::endl;
+	outfile<<"   sg_p0 = "<<par_JECp1_KinFit.sg_p0<<" +- "<<par_JECp1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p1 = "<<par_JECp1_KinFit.sg_p1<<" +- "<<par_JECp1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p2 = "<<par_JECp1_KinFit.sg_p2<<" +- "<<par_JECp1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p3 = "<<par_JECp1_KinFit.sg_p3<<" +- "<<par_JECp1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p4 = "<<par_JECp1_KinFit.sg_p4<<" +- "<<par_JECp1_KinFit.sg_p4_err<<" <br/>"<<std::endl;
+	outfile<<"   === JEC -1 sigma === <br/>"<<std::endl;
+	outfile<<"   norm = "<<h_mX_SR_JECm1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
+	// outfile<<"   chi2/ndof = "<<plot_JECm1_KinFit->chiSquare()<<" <br/>"<<std::endl;
+	outfile<<"   sg_p0 = "<<par_JECm1_KinFit.sg_p0<<" +- "<<par_JECm1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p1 = "<<par_JECm1_KinFit.sg_p1<<" +- "<<par_JECm1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p2 = "<<par_JECm1_KinFit.sg_p2<<" +- "<<par_JECm1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p3 = "<<par_JECm1_KinFit.sg_p3<<" +- "<<par_JECm1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p4 = "<<par_JECm1_KinFit.sg_p4<<" +- "<<par_JECm1_KinFit.sg_p4_err<<" <br/>"<<std::endl;
+	outfile<<"   === JER +1 sigma === <br/>"<<std::endl;
+	outfile<<"   norm = "<<h_mX_SR_JERp1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
+	outfile<<"   sg_p0 = "<<par_JERp1_KinFit.sg_p0<<" +- "<<par_JERp1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p1 = "<<par_JERp1_KinFit.sg_p1<<" +- "<<par_JERp1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p2 = "<<par_JERp1_KinFit.sg_p2<<" +- "<<par_JERp1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p3 = "<<par_JERp1_KinFit.sg_p3<<" +- "<<par_JERp1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p4 = "<<par_JERp1_KinFit.sg_p4<<" +- "<<par_JERp1_KinFit.sg_p4_err<<" <br/>"<<std::endl;
+	outfile<<"   === JER -1 sigma === <br/>"<<std::endl;
+	outfile<<"   norm = "<<h_mX_SR_JERm1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
+	outfile<<"   sg_p0 = "<<par_JERm1_KinFit.sg_p0<<" +- "<<par_JERm1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p1 = "<<par_JERm1_KinFit.sg_p1<<" +- "<<par_JERm1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p2 = "<<par_JERm1_KinFit.sg_p2<<" +- "<<par_JERm1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p3 = "<<par_JERm1_KinFit.sg_p3<<" +- "<<par_JERm1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p4 = "<<par_JERm1_KinFit.sg_p4<<" +- "<<par_JERm1_KinFit.sg_p4_err<<" <br/>"<<std::endl;
+	outfile<<"   === === <br/>"<<std::endl;
+	outfile<<"   </div>"<<std::endl;
+	outfile<<"   === === <br/>"<<std::endl;
+	/*	       outfile<<"   === Trig +1 sigma === <br/>"<<std::endl;
+	outfile<<"   norm = "<<h_mX_SR_Trigp1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
+	outfile<<"   sg_p0 = "<<par_Trigp1_KinFit.sg_p0<<" +- "<<par_Trigp1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p1 = "<<par_Trigp1_KinFit.sg_p1<<" +- "<<par_Trigp1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p2 = "<<par_Trigp1_KinFit.sg_p2<<" +- "<<par_Trigp1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p3 = "<<par_Trigp1_KinFit.sg_p3<<" +- "<<par_Trigp1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p4 = "<<par_Trigp1_KinFit.sg_p4<<" +- "<<par_Trigp1_KinFit.sg_p4_err<<" <br/>"<<std::endl;
+	outfile<<"   === Trig -1 sigma === <br/>"<<std::endl;
+	outfile<<"   norm = "<<h_mX_SR_Trigm1_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
+	outfile<<"   sg_p0 = "<<par_Trigm1_KinFit.sg_p0<<" +- "<<par_Trigm1_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p1 = "<<par_Trigm1_KinFit.sg_p1<<" +- "<<par_Trigm1_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p2 = "<<par_Trigm1_KinFit.sg_p2<<" +- "<<par_Trigm1_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p3 = "<<par_Trigm1_KinFit.sg_p3<<" +- "<<par_Trigm1_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p4 = "<<par_Trigm1_KinFit.sg_p4<<" +- "<<par_Trigm1_KinFit.sg_p4_err<<" <br/>"<<std::endl;
+	 */ outfile<<"   === BTag +1 sigma === <br/>"<<std::endl;
+	outfile<<"   norm = "<<h_mX_SR_bTagDown_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
+	outfile<<"   sg_p0 = "<<par_bTagDown_KinFit.sg_p0<<" +- "<<par_bTagDown_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p1 = "<<par_bTagDown_KinFit.sg_p1<<" +- "<<par_bTagDown_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p2 = "<<par_bTagDown_KinFit.sg_p2<<" +- "<<par_bTagDown_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p3 = "<<par_bTagDown_KinFit.sg_p3<<" +- "<<par_bTagDown_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p4 = "<<par_bTagDown_KinFit.sg_p4<<" +- "<<par_bTagDown_KinFit.sg_p4_err<<" <br/>"<<std::endl;
+	outfile<<"   === BTag -1 sigma === <br/>"<<std::endl;
+	outfile<<"   norm = "<<h_mX_SR_bTagUp_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
+	outfile<<"   sg_p0 = "<<par_bTagUp_KinFit.sg_p0<<" +- "<<par_bTagUp_KinFit.sg_p0_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p1 = "<<par_bTagUp_KinFit.sg_p1<<" +- "<<par_bTagUp_KinFit.sg_p1_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p2 = "<<par_bTagUp_KinFit.sg_p2<<" +- "<<par_bTagUp_KinFit.sg_p2_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p3 = "<<par_bTagUp_KinFit.sg_p3<<" +- "<<par_bTagUp_KinFit.sg_p3_err<<" <br/>"<<std::endl;
+	outfile<<"   sg_p4 = "<<par_bTagUp_KinFit.sg_p4<<" +- "<<par_bTagUp_KinFit.sg_p4_err<<" <br/>"<<std::endl;
 
+	outfile<<"   === === <br/>"<<std::endl;
+	outfile<<"   </div>"<<std::endl;
+	outfile<<"   === === <br/>"<<std::endl;
+	double sg_p0_errStat=par_KinFit.sg_p0_err;
+	double sg_p0_errSyst[]={par_KinFit.sg_p0,
+	par_JECp1_KinFit.sg_p0, par_JECm1_KinFit.sg_p0,
+	par_JERp1_KinFit.sg_p0, par_JERm1_KinFit.sg_p0,
+	par_bTagUp_KinFit.sg_p0, par_bTagDown_KinFit.sg_p0};
+	//par_Trigp1_KinFit.sg_p0, par_Trigm1_KinFit.sg_p0};
+	double sg_p0_errSyst_min=par_KinFit.sg_p0-(*std::min_element(sg_p0_errSyst, sg_p0_errSyst+7));
+	double sg_p0_errSyst_max=(*std::max_element(sg_p0_errSyst, sg_p0_errSyst+7))-par_KinFit.sg_p0;
+	outfile<<"   Uncertainty on sg_p0 = "<<par_KinFit.sg_p0<<" +- "<<sg_p0_errStat<<" (stat) - "<<sg_p0_errSyst_min<<" + "<<sg_p0_errSyst_max<<" (syst); -"<<quad(sg_p0_errStat/2., sg_p0_errSyst_min)<<"/+"<<quad(sg_p0_errStat/2., sg_p0_errSyst_max)<<" (total) <br/>"<<std::endl;
+	double sg_p1_errStat=par_KinFit.sg_p1_err;
+	double sg_p1_errSyst[]={par_KinFit.sg_p1,
+	par_JECp1_KinFit.sg_p1, par_JECm1_KinFit.sg_p1,
+	par_JERp1_KinFit.sg_p1, par_JERm1_KinFit.sg_p1,
+	par_bTagUp_KinFit.sg_p1, par_bTagDown_KinFit.sg_p1};
+	//par_Trigp1_KinFit.sg_p1, par_Trigm1_KinFit.sg_p1,};
+	double sg_p1_errSyst_min=par_KinFit.sg_p1-(*std::min_element(sg_p1_errSyst, sg_p1_errSyst+7));
+	double sg_p1_errSyst_max=(*std::max_element(sg_p1_errSyst, sg_p1_errSyst+7))-par_KinFit.sg_p1;
+	outfile<<"   Uncertainty on sg_p1 = "<<par_KinFit.sg_p1<<" +- "<<sg_p1_errStat<<" (stat) - "<<sg_p1_errSyst_min<<" + "<<sg_p1_errSyst_max<<" (syst); -"<<quad(sg_p1_errStat/2., sg_p1_errSyst_min)<<"/+"<<quad(sg_p1_errStat/2., sg_p1_errSyst_max)<<" (total) <br/>"<<std::endl;
+	double sg_p2_errStat=par_KinFit.sg_p2_err;
+	double sg_p2_errSyst[]={par_KinFit.sg_p2,
+	par_JECp1_KinFit.sg_p2, par_JECm1_KinFit.sg_p2,
+	par_JERp1_KinFit.sg_p2, par_JERm1_KinFit.sg_p2,
+	par_bTagUp_KinFit.sg_p2, par_bTagDown_KinFit.sg_p2};
+	//par_Trigp1_KinFit.sg_p2, par_Trigm1_KinFit.sg_p2};
+	double sg_p2_errSyst_min=par_KinFit.sg_p2-(*std::min_element(sg_p2_errSyst, sg_p2_errSyst+7));
+	double sg_p2_errSyst_max=(*std::max_element(sg_p2_errSyst, sg_p2_errSyst+7))-par_KinFit.sg_p2;
+	outfile<<"   Uncertainty on sg_p2 = "<<par_KinFit.sg_p2<<" +- "<<sg_p2_errStat<<" (stat) - "<<sg_p2_errSyst_min<<" + "<<sg_p2_errSyst_max<<" (syst); -"<<quad(sg_p2_errStat/2., sg_p2_errSyst_min)<<"/+"<<quad(sg_p2_errStat/2., sg_p2_errSyst_max)<<" (total) <br/>"<<std::endl;
+	double sg_p3_errStat=par_KinFit.sg_p3_err;
+	double sg_p3_errSyst[]={par_KinFit.sg_p3,
+	par_JECp1_KinFit.sg_p3, par_JECm1_KinFit.sg_p3,
+	par_JERp1_KinFit.sg_p3, par_JERm1_KinFit.sg_p3,
+	par_bTagUp_KinFit.sg_p3, par_bTagDown_KinFit.sg_p3};
+	//par_Trigp1_KinFit.sg_p3, par_Trigm1_KinFit.sg_p3};
+	double sg_p3_errSyst_min=par_KinFit.sg_p3-(*std::min_element(sg_p3_errSyst, sg_p3_errSyst+7));
+	double sg_p3_errSyst_max=(*std::max_element(sg_p3_errSyst, sg_p3_errSyst+7))-par_KinFit.sg_p3;
+	outfile<<"   Uncertainty on sg_p3 = "<<par_KinFit.sg_p3<<" +- "<<sg_p3_errStat<<" (stat) - "<<sg_p3_errSyst_min<<" + "<<sg_p3_errSyst_max<<" (syst); -"<<quad(sg_p3_errStat/2., sg_p3_errSyst_min)<<"/+"<<quad(sg_p3_errStat/2.,
+	sg_p3_errSyst_max)<<" (total) <br/>"<<std::endl;
 
-		  outfile<<"   === BTag +1 sigma === <br/>"<<std::endl;
-		  outfile<<"   norm = "<<h_mX_SR_bTagDown_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p0 = "<<par_bTagDown_KinFit.sg_p0<<" +- "<<par_bTagDown_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p1 = "<<par_bTagDown_KinFit.sg_p1<<" +- "<<par_bTagDown_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p2 = "<<par_bTagDown_KinFit.sg_p2<<" +- "<<par_bTagDown_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p3 = "<<par_bTagDown_KinFit.sg_p3<<" +- "<<par_bTagDown_KinFit.sg_p3_err<<" <br/>"<<std::endl;
-		  outfile<<"   === BTag -1 sigma === <br/>"<<std::endl;
-		  outfile<<"   norm = "<<h_mX_SR_bTagUp_KinFit->GetSumOfWeights()<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p0 = "<<par_bTagUp_KinFit.sg_p0<<" +- "<<par_bTagUp_KinFit.sg_p0_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p1 = "<<par_bTagUp_KinFit.sg_p1<<" +- "<<par_bTagUp_KinFit.sg_p1_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p2 = "<<par_bTagUp_KinFit.sg_p2<<" +- "<<par_bTagUp_KinFit.sg_p2_err<<" <br/>"<<std::endl;
-		  outfile<<"   sg_p3 = "<<par_bTagUp_KinFit.sg_p3<<" +- "<<par_bTagUp_KinFit.sg_p3_err<<" <br/>"<<std::endl;
-		  outfile<<"   === === <br/>"<<std::endl;
-		  outfile<<"   </div>"<<std::endl;
-		  outfile<<"   === === <br/>"<<std::endl;
+	double sg_p4_errStat=par_KinFit.sg_p4_err;
+	double sg_p4_errSyst[]={par_KinFit.sg_p4,
+	par_JECp1_KinFit.sg_p4, par_JECm1_KinFit.sg_p4,
+	par_JERp1_KinFit.sg_p4, par_JERm1_KinFit.sg_p4,
+	par_bTagUp_KinFit.sg_p4, par_bTagDown_KinFit.sg_p4};
+	//par_Trigp1_KinFit.sg_p4, par_Trigm1_KinFit.sg_p4};
+	double sg_p4_errSyst_min=par_KinFit.sg_p4-(*std::min_element(sg_p4_errSyst, sg_p4_errSyst+7));
+	double sg_p4_errSyst_max=(*std::max_element(sg_p4_errSyst, sg_p4_errSyst+7))-par_KinFit.sg_p4;
+	outfile<<"   Uncertainty on sg_p4 = "<<par_KinFit.sg_p4<<" +- "<<sg_p4_errStat<<" (stat) - "<<sg_p4_errSyst_min<<" + "<<sg_p4_errSyst_max<<" (syst); -"<<quad(sg_p4_errStat/2., sg_p4_errSyst_min)<<"/+"<<quad(sg_p4_errStat/2., sg_p4_errSyst_max)<<" (total) <br/>"<<std::endl;
+	
+	}
 
-		  double sg_p0_errStat=par_KinFit.sg_p0_err;
-		  double sg_p0_errSyst[]={par_KinFit.sg_p0,
-		  par_JECp1_KinFit.sg_p0, par_JECm1_KinFit.sg_p0,
-		  par_JERp1_KinFit.sg_p0, par_JERm1_KinFit.sg_p0,
-		  par_bTagUp_KinFit.sg_p0, par_bTagDown_KinFit.sg_p0};
-	    //par_Trigp1_KinFit.sg_p0, par_Trigm1_KinFit.sg_p0};
-	    double sg_p0_errSyst_min=par_KinFit.sg_p0-(*std::min_element(sg_p0_errSyst, sg_p0_errSyst+7));
-	    double sg_p0_errSyst_max=(*std::max_element(sg_p0_errSyst, sg_p0_errSyst+7))-par_KinFit.sg_p0;
-	    outfile<<"   Uncertainty on sg_p0 = "<<par_KinFit.sg_p0<<" +- "<<sg_p0_errStat<<" (stat) - "<<sg_p0_errSyst_min<<" + "<<sg_p0_errSyst_max<<" (syst); -"<<quad(sg_p0_errStat/2., sg_p0_errSyst_min)<<"/+"<<quad(sg_p0_errStat/2., sg_p0_errSyst_max)<<" (total) <br/>"<<std::endl;
-	    double sg_p1_errStat=par_KinFit.sg_p1_err;
-	    double sg_p1_errSyst[]={par_KinFit.sg_p1,
-	    par_JECp1_KinFit.sg_p1, par_JECm1_KinFit.sg_p1,
-	    par_JERp1_KinFit.sg_p1, par_JERm1_KinFit.sg_p1,
-	    par_bTagUp_KinFit.sg_p1, par_bTagDown_KinFit.sg_p1};
-    //par_Trigp1_KinFit.sg_p1, par_Trigm1_KinFit.sg_p1,};
-    double sg_p1_errSyst_min=par_KinFit.sg_p1-(*std::min_element(sg_p1_errSyst, sg_p1_errSyst+7));
-    double sg_p1_errSyst_max=(*std::max_element(sg_p1_errSyst, sg_p1_errSyst+7))-par_KinFit.sg_p1;
-    outfile<<"   Uncertainty on sg_p1 = "<<par_KinFit.sg_p1<<" +- "<<sg_p1_errStat<<" (stat) - "<<sg_p1_errSyst_min<<" + "<<sg_p1_errSyst_max<<" (syst); -"<<quad(sg_p1_errStat/2., sg_p1_errSyst_min)<<"/+"<<quad(sg_p1_errStat/2., sg_p1_errSyst_max)<<" (total) <br/>"<<std::endl;
-    double sg_p2_errStat=par_KinFit.sg_p2_err;
-    double sg_p2_errSyst[]={par_KinFit.sg_p2,
-    par_JECp1_KinFit.sg_p2, par_JECm1_KinFit.sg_p2,
-    par_JERp1_KinFit.sg_p2, par_JERm1_KinFit.sg_p2,
-    par_bTagUp_KinFit.sg_p2, par_bTagDown_KinFit.sg_p2};
-    //par_Trigp1_KinFit.sg_p2, par_Trigm1_KinFit.sg_p2};
-    double sg_p2_errSyst_min=par_KinFit.sg_p2-(*std::min_element(sg_p2_errSyst, sg_p2_errSyst+7));
-    double sg_p2_errSyst_max=(*std::max_element(sg_p2_errSyst, sg_p2_errSyst+7))-par_KinFit.sg_p2;
-    outfile<<"   Uncertainty on sg_p2 = "<<par_KinFit.sg_p2<<" +- "<<sg_p2_errStat<<" (stat) - "<<sg_p2_errSyst_min<<" + "<<sg_p2_errSyst_max<<" (syst); -"<<quad(sg_p2_errStat/2., sg_p2_errSyst_min)<<"/+"<<quad(sg_p2_errStat/2., sg_p2_errSyst_max)<<" (total) <br/>"<<std::endl;
-    double sg_p3_errStat=par_KinFit.sg_p3_err;
-    double sg_p3_errSyst[]={par_KinFit.sg_p3,
-    par_JECp1_KinFit.sg_p3, par_JECm1_KinFit.sg_p3,
-    par_JERp1_KinFit.sg_p3, par_JERm1_KinFit.sg_p3,
-    par_bTagUp_KinFit.sg_p3, par_bTagDown_KinFit.sg_p3};
-    //par_Trigp1_KinFit.sg_p3, par_Trigm1_KinFit.sg_p3};
-    double sg_p3_errSyst_min=par_KinFit.sg_p3-(*std::min_element(sg_p3_errSyst, sg_p3_errSyst+7));
-    double sg_p3_errSyst_max=(*std::max_element(sg_p3_errSyst, sg_p3_errSyst+7))-par_KinFit.sg_p3;
-    outfile<<"   Uncertainty on sg_p3 = "<<par_KinFit.sg_p3<<" +- "<<sg_p3_errStat<<" (stat) - "<<sg_p3_errSyst_min<<" + "<<sg_p3_errSyst_max<<" (syst); -"<<quad(sg_p3_errStat/2., sg_p3_errSyst_min)<<"/+"<<quad(sg_p3_errStat/2.,
-    sg_p3_errSyst_max)<<" (total) <br/>"<<std::endl;
+	outfile<<"JEC       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JECp1_KinFit->GetSumOfWeights(), h_mX_SR_JECm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
+	outfile<<"JER       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JERp1_KinFit->GetSumOfWeights(), h_mX_SR_JERm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
+//	outfile<<"trig lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_Trigp1_KinFit->GetSumOfWeights(), h_mX_SR_Trigm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
+	outfile<<"bTag lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_bTagUp_KinFit->GetSumOfWeights(), h_mX_SR_bTagDown_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
 
+/*	outfile<<"sg_p0     param   "<<par_KinFit.sg_p0<<" -"<<quad(sg_p0_errStat/2., sg_p0_errSyst_min)<<"/+"<<quad(sg_p0_errStat/2., sg_p0_errSyst_max)<<" <br/>"<<std::endl;
+	outfile<<"sg_p1     param   "<<par_KinFit.sg_p1<<" -"<<quad(sg_p1_errStat/2., sg_p1_errSyst_min)<<"/+"<<quad(sg_p1_errStat/2., sg_p1_errSyst_max)<<" <br/>"<<std::endl;
+	outfile<<"sg_p2     param   "<<par_KinFit.sg_p2<<"  -"<<quad(sg_p2_errStat/2., sg_p2_errSyst_min)<<"/+"<<quad(sg_p2_errStat/2., sg_p2_errSyst_max)<<" <br/>"<<std::endl;
+	outfile<<"sg_p3     param   "<<par_KinFit.sg_p3<<"  -"<<quad(sg_p3_errStat/2., sg_p3_errSyst_min)<<"/+"<<quad(sg_p3_errStat/2., sg_p3_errSyst_max)<<" <br/>"<<std::endl;
+	outfile<<"sg_p4     param   "<<par_KinFit.sg_p4<<"  -"<<quad(sg_p4_errStat/2., sg_p4_errSyst_min)<<"/+"<<quad(sg_p4_errStat/2., sg_p4_errSyst_max)<<" <br/>"<<std::endl;
+	*/
 
+	outfile<<"   </div>"<<std::endl;
+	outfile<<"  </td>"<<std::endl;
 
-*/
-        double sg_p0_errStat=par_KinFit.sg_p0_err;
-        double sg_p0_errSyst[]={par_KinFit.sg_p0,
-            par_JECp1_KinFit.sg_p0, par_JECm1_KinFit.sg_p0,
-            par_JERp1_KinFit.sg_p0, par_JERm1_KinFit.sg_p0,
-            par_bTagUp_KinFit.sg_p0, par_bTagDown_KinFit.sg_p0};
-        
-        double sg_p0_errSyst_max=(*std::max_element(sg_p0_errSyst, sg_p0_errSyst+7))-par_KinFit.sg_p0;
-        double sg_p0_errSyst_min=par_KinFit.sg_p0-(*std::min_element(sg_p0_errSyst, sg_p0_errSyst+7));
-        
-        double sg_p1_errStat=par_KinFit.sg_p1_err;
-        double sg_p1_errSyst[]={par_KinFit.sg_p1,
-            par_JECp1_KinFit.sg_p1, par_JECm1_KinFit.sg_p1,
-            par_JERp1_KinFit.sg_p1, par_JERm1_KinFit.sg_p1,
-            par_bTagUp_KinFit.sg_p1, par_bTagDown_KinFit.sg_p1};
-        double sg_p1_errSyst_min=par_KinFit.sg_p1-(*std::min_element(sg_p1_errSyst, sg_p1_errSyst+7));
-        double sg_p1_errSyst_max=(*std::max_element(sg_p1_errSyst, sg_p1_errSyst+7))-par_KinFit.sg_p1;
-        
-        double sg_p2_errStat=par_KinFit.sg_p2_err;
-        double sg_p2_errSyst[]={par_KinFit.sg_p2,
-            par_JECp1_KinFit.sg_p2, par_JECm1_KinFit.sg_p2,
-            par_JERp1_KinFit.sg_p2, par_JERm1_KinFit.sg_p2,
-            par_bTagUp_KinFit.sg_p2, par_bTagDown_KinFit.sg_p2};
-        double sg_p2_errSyst_min=par_KinFit.sg_p2-(*std::min_element(sg_p2_errSyst, sg_p2_errSyst+7));
-        double sg_p2_errSyst_max=(*std::max_element(sg_p2_errSyst, sg_p2_errSyst+7))-par_KinFit.sg_p2;
-        
-        double sg_p3_errStat=par_KinFit.sg_p3_err;
-        double sg_p3_errSyst[]={par_KinFit.sg_p3,
-            par_JECp1_KinFit.sg_p3, par_JECm1_KinFit.sg_p3,
-            par_JERp1_KinFit.sg_p3, par_JERm1_KinFit.sg_p3,
-            par_bTagUp_KinFit.sg_p3, par_bTagDown_KinFit.sg_p3};
-        double sg_p3_errSyst_min=par_KinFit.sg_p3-(*std::min_element(sg_p3_errSyst, sg_p3_errSyst+7));
-        double sg_p3_errSyst_max=(*std::max_element(sg_p3_errSyst, sg_p3_errSyst+7))-par_KinFit.sg_p3;
-            
-      outfile<<"JEC       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JECp1_KinFit->GetSumOfWeights(), h_mX_SR_JECm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
-      outfile<<"JER       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JERp1_KinFit->GetSumOfWeights(), h_mX_SR_JERm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
-      //outfile<<"trig lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_Trigp1_KinFit->GetSumOfWeights(), h_mX_SR_Trigm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
-      outfile<<"btag lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_bTagUp_KinFit->GetSumOfWeights(), h_mX_SR_bTagDown_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
+	outfile<<" </tr>"<<std::endl;
+	outfile<<"</table>"<<std::endl;
 
-      outfile<<"sg_p0     param   "<<par_KinFit.sg_p0<<" -"<<quad(sg_p0_errStat/2., sg_p0_errSyst_min)<<"/+"<<quad(sg_p0_errStat/2., sg_p0_errSyst_max)<<" <br/>"<<std::endl;
-      outfile<<"sg_p1     param   "<<par_KinFit.sg_p1<<" -"<<quad(sg_p1_errStat/2., sg_p1_errSyst_min)<<"/+"<<quad(sg_p1_errStat/2., sg_p1_errSyst_max)<<" <br/>"<<std::endl;
-      outfile<<"sg_p2     param   "<<par_KinFit.sg_p2<<"  -"<<quad(sg_p2_errStat/2., sg_p2_errSyst_min)<<"/+"<<quad(sg_p2_errStat/2., sg_p2_errSyst_max)<<" <br/>"<<std::endl;
-      outfile<<"sg_p3     param   "<<par_KinFit.sg_p3<<"  -"<<quad(sg_p3_errStat/2., sg_p3_errSyst_min)<<"/+"<<quad(sg_p3_errStat/2., sg_p3_errSyst_max)<<" <br/>"<<std::endl;
-
-    }
-//	       outfile<<"JEC       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JECp1_KinFit->GetSumOfWeights(), h_mX_SR_JECm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
-//               outfile<<"JER       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JERp1_KinFit->GetSumOfWeights(), h_mX_SR_JERm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
-//        outfile<<"trig lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_Trigp1_KinFit->GetSumOfWeights(), h_mX_SR_Trigm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
-outfile<<"btag lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_bTagUp_KinFit->GetSumOfWeights(), h_mX_SR_bTagDown_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
-
-/*                outfile<<"sg_p0     param   "<<par_KinFit.sg_p0<<" -"<<quad(sg_p0_errStat/2., sg_p0_errSyst_min)<<"/+"<<quad(sg_p0_errStat/2., sg_p0_errSyst_max)<<" <br/>"<<std::endl;
-		  outfile<<"sg_p1     param   "<<par_KinFit.sg_p1<<" -"<<quad(sg_p1_errStat/2., sg_p1_errSyst_min)<<"/+"<<quad(sg_p1_errStat/2., sg_p1_errSyst_max)<<" <br/>"<<std::endl;
-		  outfile<<"sg_p2     param   "<<par_KinFit.sg_p2<<"  -"<<quad(sg_p2_errStat/2., sg_p2_errSyst_min)<<"/+"<<quad(sg_p2_errStat/2., sg_p2_errSyst_max)<<" <br/>"<<std::endl;
-		  outfile<<"sg_p3     param   "<<par_KinFit.sg_p3<<"  -"<<quad(sg_p3_errStat/2., sg_p3_errSyst_min)<<"/+"<<quad(sg_p3_errStat/2., sg_p3_errSyst_max)<<" <br/>"<<std::endl;
-
-*/
-
-outfile<<"   </div>"<<std::endl;
-outfile<<"  </td>"<<std::endl;
-
-outfile<<" </tr>"<<std::endl;
-outfile<<"</table>"<<std::endl;
-
-// Close all files
-file->Close();
-file_JECp1->Close();
-file_JECm1->Close();
-
-file_JERp1->Close();
-file_JERm1->Close();
-//file_Trigp1->Close();
-//file_Trigm1->Close();
+	// Close all files
+	file->Close();
+	file_JECp1->Close();
+	file_JECm1->Close();
+	file_JERp1->Close();
+	file_JERm1->Close();
+	//file_Trigp1->Close();
+	//file_Trigm1->Close();
+	file_bTagDown->Close();
+	file_bTagUp->Close();
 
 }
 
@@ -1463,25 +1337,25 @@ file_JERm1->Close();
 // TSpline3 *sp_sg_p0=new TGraphErrors("sp_sg_p0", &masses_d[4], &v_sg_p0[4], masses.size()-4, "b2e2", 0, 0);
 
 TCanvas *c_sg_p0=new TCanvas("c_sg_p0", "c_sg_p0", 700, 700);
-g_sg_p0->SetTitle("Signal Mean Interpolation; m_{X} (_13TeV-madgraph); Signal Mean");
+g_sg_p0->SetTitle("Signal Mean Interpolation; m_{X} (GeV); Signal Mean");
 g_sg_p0->Draw("AC*");
 // g_sg_p0->Fit("pol1");
 c_sg_p0->SaveAs("SignalSystematics/c_sg_p0.png");
 
 TCanvas *c_sg_p1=new TCanvas("c_sg_p1", "c_sg_p1", 700, 700);
-g_sg_p1->SetTitle("Signal RMS Interpolation; m_{X} (_13TeV-madgraph); Signal RMS");
+g_sg_p1->SetTitle("Signal RMS Interpolation; m_{X} (GeV); Signal RMS");
 g_sg_p1->Draw("AC*");
 // g_sg_p1->Fit("pol1");
 c_sg_p1->SaveAs("SignalSystematics/c_sg_p1.png");
 
 TCanvas *c_sg_p2=new TCanvas("c_sg_p2", "c_sg_p2", 700, 700);
-g_sg_p2->SetTitle("Signal Right Exponential Interpolation; m_{X} (_13TeV-madgraph); Signal k_{right}");
+g_sg_p2->SetTitle("Signal Right Exponential Interpolation; m_{X} (GeV); Signal k_{right}");
 g_sg_p2->Draw("AC*");
 // g_sg_p2->Fit("pol1");
 c_sg_p2->SaveAs("SignalSystematics/c_sg_p2.png");
 
 TCanvas *c_sg_p3=new TCanvas("c_sg_p3", "c_sg_p3", 700, 700);
-g_sg_p3->SetTitle("Signal Left Exponential Interpolation; m_{X} (_13TeV-madgraph); Signal k_{left}");
+g_sg_p3->SetTitle("Signal Left Exponential Interpolation; m_{X} (GeV); Signal k_{left}");
 g_sg_p3->Draw("AC*");
 // g_sg_p3->Fit("pol1");
 c_sg_p3->SaveAs("SignalSystematics/c_sg_p3.png");

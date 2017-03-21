@@ -8,7 +8,8 @@ masses=(
    400 450 500 550 600 650 750 800 900
 )
 massesLMR=(
-    260 270 300 350 400 450 500 550
+   # 260 265 270 275 280 285 290 295 300 310 320 330 340 350 360 370 380 390 400 410 420 430 440 450 460 470 480 490 500 510 520 530 540 550
+   260 270 300 350 400 450 500 550 285 320 370 420 470 520 290 330 380 430 480 530
 )
 cleanUp=0
 #rebin=10
@@ -32,8 +33,8 @@ for m in ${masses[@]}
 do
     if [ $cleanUp -eq 0 ]; then
 	 echo 'MMR'	
-        source doBuildInputs_malara.sh $m
-        source doDatacards_malara.sh $m
+        #source doBuildInputs_malara.sh $m
+        #source doDatacards_malara.sh $m
        #./runLimits.sh $debug $m
     fi
     
