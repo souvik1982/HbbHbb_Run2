@@ -5,9 +5,9 @@ mass=$1
 
 dir_preselection="/scratch/malara/WorkingArea/IO_file/output_file/Data/PreselectedWithWithRegression"
 dir_selection="LMRSelection_chi2"
-dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/LMR_fit"
+dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/fit"
 #DA MODIFICARE ANCHE IN /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/LMRSelection_chi2/fit_background.c
-fit_folder="/scratch/malara/WorkingArea/IO_file/output_file/LMR_fit"
+fit_folder="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/fit"
 
 file_histograms="Histograms_LMR_chi2_tree_GluGluToBulkGravitonToHHTo4B_M-"
 

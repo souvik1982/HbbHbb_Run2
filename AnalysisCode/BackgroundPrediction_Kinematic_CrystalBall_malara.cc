@@ -73,6 +73,7 @@ void BackgroundPrediction_Kinematic_CrystalBall_malara(
   bg.plotOn(data_plot, RooFit::LineColor(kBlack));
   pred.plotOn(data_plot, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
 
+
   RooRealVar bg_p00("bg_p00", "bg_p00", gaussexp_mean_lo, gaussexp_mean_hi);
   RooRealVar bg_p11("bg_p11", "bg_p11", gaussexp_width_lo, gaussexp_width_hi);
   RooRealVar bg_p22("bg_p22", "bg_p22", gaussexp_exp_lo, gaussexp_exp_hi);
@@ -91,6 +92,13 @@ void BackgroundPrediction_Kinematic_CrystalBall_malara(
   pred.plotOn(data_plot2, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
 
 
+  RooPlot* frame_tot=x->frame();
+  TCanvas* c_tot = new TCanvas("linearmorph_tot","linearmorph_tot",700,700) ;
+  pred.plotOn(frame_tot);
+  bg.plotOn(frame_tot);
+  bg_exp.plotOn(frame_tot,RooFit::LineColor(kRed+1));
+  frame_tot->Draw();
+  c_tot->SaveAs(Form("/scratch/malara/WorkingArea/IO_file/input_file/test/%s.png", "test" ));
   
   double fitChi2=data_plot->chiSquare();
   std::cout<<"Fit chi2 = "<<fitChi2<<std::endl;
@@ -234,6 +242,13 @@ void BackgroundPrediction_Kinematic_CrystalBall_malara(
   std::cout<<"crystalball_width param "<<bg_p3.getVal()<<" "<<bg_p3.getError()<<std::endl;
   std::cout<<"crystalball_switch param "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
   std::cout<<"crystalball_exponent param "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
+
+  RooWorkspace *w_test=new RooWorkspace("test");
+  w_test->import(bg);
+  w_test->import(bg_exp);
+  w_test->import(data_obs);
+  w_test->import(pred);
+  w_test->SaveAs(Form("/scratch/malara/WorkingArea/IO_file/input_file/test/%s.root", "test" ));
 
 }
 
