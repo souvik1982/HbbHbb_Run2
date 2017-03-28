@@ -34,8 +34,8 @@ for m in ${masses[@]}
 do
     if [ $cleanUp -eq 0 ]; then
 	 echo 'MMR'	
-#        source doBuildInputs_malara.sh $m
-#        source doDatacards_malara.sh $m
+         source doBuildInputs_malara.sh $m
+         source doDatacards_malara.sh $m
        #./runLimits.sh $debug $m
     fi
     

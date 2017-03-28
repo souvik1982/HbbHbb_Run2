@@ -6,6 +6,8 @@ mass=$1
 dir_preselection="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/Data/PreselectedWithRegression"
 dir_selection="../../MMR"
 dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR/fit"
+background_type="fit_crystal_malara.c" #fit_background_malara.c
+Type="Crystal" #GaussExp
 #Modify also in /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_chi2/fit_background_malara.c
 
 file_histograms="Histograms_MMR_chi2_tree_GluGluToBulkGravitonToHHTo4B_M-"
@@ -18,7 +20,7 @@ mkdir $folder
 echo
 
 rm -f test.c
-echo " { gSystem->Load(\"/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/ExpGaussExp_cxx.so\"); 
+echo " { gSystem->Load(\"/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/ExpGaussExp_cxx.so\"); gSystem->Load(\"/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/RevCrystalBall_cxx.so\");
 gROOT->LoadMacro(\"Display_SignalFits_malara.cc\");
 Display_SignalFits_malara(\"$dir_preselection\",\"reg\",\"$dir_selection\",\"$dest_dir\",\"$file_histograms\",${mass},\"true\"); }" > test.c
 
@@ -28,10 +30,10 @@ mv ${dest_dir}/SignalFitsreg/*${mass}* $folder/
 mv ${dest_dir}/SignalFitsreg/index.html $folder/
 
 echo "done"
-echo "root -x -b -l -q PreselectedWithRegression/MMRSelection_chi2/fit_background_malara.c "
+echo "root -x -b -l -q PreselectedWithRegression/MMRSelection_chi2/"$background_type
 echo
-root -x -b -l -q /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_chi2/fit_background_malara.c > $folder/data_bkg.log
+root -x -b -l -q /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_chi2/$background_type > $folder/data_bkg.log
 
-mv $dest_dir/w_background_GaussExp.root $folder/
+mv $dest_dir/w_background_$Type.root $folder/
 mv $dest_dir/w_data.root $folder/ 
 echo "end"
