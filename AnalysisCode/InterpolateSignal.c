@@ -85,7 +85,7 @@ bool flag_crystal = 1; //1 for CrystalBall 0 for ExpGaussExp
 
 void InterpolateSignal() {
     gSystem->Load("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/ExpGaussExp_cxx.so");
-    bool flag_MMR = 1; //1 for MMR 0 for LMR
+    bool flag_MMR = 0; //1 for MMR 0 for LMR
     interpolation_normalization(flag_MMR);
     // I m p o r t   p d f   s h a p e s
     // ------------------------------------------------------
@@ -94,7 +94,7 @@ void InterpolateSignal() {
     RooRealVar x("x","x",0,1000);
     
     std::string dir;
-    const double step = 10;
+    double step = 10;
     std::vector<double> masses;
     if (flag_MMR) {
         dir = "MMR";
@@ -182,6 +182,12 @@ void InterpolateSignal() {
     for (unsigned int iPoint = 0; iPoint<nMCpoints-1; iPoint++) {
         
         RooIntegralMorph lmorph("lmorph","lmorph",*PDF_mass[iPoint+1],*PDF_mass[iPoint],x,alpha) ;
+        if (masses[iPoint]<300){
+            step=5;
+        }
+        else{
+            step=10;
+        }
         
         frame1[iPoint] = x.frame() ;
         PDF_mass[iPoint]->plotOn(frame1[iPoint]) ;
@@ -303,7 +309,7 @@ void interpolation_normalization(bool flag_MMR=0){
     else{
         dir = "LMR";
         std::vector<double> mass_0_temp= {260, 270, 300, 350, 400, 450, 500, 550};
-        std::vector<double> mass_temp={260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550};
+        std::vector<double> mass_temp={260, 265, 270, 275, 280, 285, 290, 295, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550};
         for (unsigned int i = 0 ; i< mass_0_temp.size(); i++) {
             mass_0.push_back(mass_0_temp[i]);
         }

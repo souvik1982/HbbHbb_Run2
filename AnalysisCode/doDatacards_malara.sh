@@ -3,7 +3,7 @@ cards=""
 dirName="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR/fit/MMR_${mass}"
 dcardName="datacard_${mass}.txt"
 bgLogName="data_bkg.log"
-sig_norm=`grep 'norm =' ${dirName}/index.html | awk '{print $3}'`    
+sig_norm=`grep 'norm =' ${dirName}/index.html | awk '{print $3/10}'`    
 Type="Crystal" #GaussExp
 data_file="w_background_Crystal.root" #w_data.root 
 
@@ -33,6 +33,7 @@ rate                  ${sig_norm} ${bkg_norm}
 lumi_13TeV  lnN   1.062       -     
 bTag      lnN     1.10    -
 trigger   lnN     1.10    -
+bgFloat   lnU     -          1.80
 EOF
 #bgFloat   lnU     -          2.00
 

@@ -33,6 +33,7 @@ rate                  ${sig_norm} ${bkg_norm}
 lumi_13TeV  lnN   1.062       -     
 bTag      lnN     1.10    -
 trigger   lnN     1.10    -
+bgFloat   lnU     -          1.80
 EOF
 #bgFloat   lnU     -          2.00
 
