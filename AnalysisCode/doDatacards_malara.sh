@@ -41,7 +41,11 @@ EOF
 #grep 'signal_' ${dirName}/index.html | awk '{print $1 " " $2 " " $3 " " $4}' >>  ${dirName}/${dcardName}
 
 #grep 'bias_term_' ${dirName}/${bgLogName} | grep ' param ' >> ${dirName}/${dcardName}
-grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
+grep 'param' ${dirName}/${bgLogName}  >> ${dirName}/${dcardName}
+sed -i 's/crystalball_mean/bg_p2/g' ${dirName}/${dcardName}
+sed -i 's/crystalball_width/bg_p3/g' ${dirName}/${dcardName}
+sed -i 's/crystalball_switch/bg_p0/g' ${dirName}/${dcardName}
+sed -i 's/crystalball_exponent/bg_p1/g' ${dirName}/${dcardName}
 
 #grep 'bg_' ${dirName}/${bgLogName} | grep ' param ' >> ${dirName}/${dcardName}
 #grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
