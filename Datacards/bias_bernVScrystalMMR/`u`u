@@ -1,0 +1,9 @@
+combine datacard_alt_270.txt -M GenerateOnly -m 270 -t 250 --saveToys -s 334477 --expectSignal=1 -n biasTest 
+combine datacard_270.txt -M MaxLikelihoodFit -m 270 --expectSignal=1.0 --noErrors --minos none --rMin=-25000 --rMax=25000 -t 250 --toysFile=higgsCombinebiasTest.GenerateOnly.mH270.334477.root -s 334477 -n output270
+
+
+combine datacard_alt_300.txt -M GenerateOnly -m 300 -t 250 --saveToys -s 334477 --expectSignal=1 -n biasTest
+combine datacard_300.txt -M MaxLikelihoodFit -m 300 --expectSignal=1.0 --noErrors --minos none --rMin=-25000 --rMax=25000 -t 250 --toysFile=higgsCombinebiasTest.GenerateOnly.mH300.334477.root -s 334477 -n output300 
+
+combine datacard_alt_350.txt -M GenerateOnly -m 350 -t 250 --saveToys -s 334477 --expectSignal=1 -n biasTest
+combine datacard_350.txt -M MaxLikelihoodFit -m 350 --expectSignal=1.0 --noErrors --minos none --rMin=-25000 --rMax=25000 -t 250 --toysFile=higgsCombinebiasTest.GenerateOnly.mH350.334477.root -s 334477 -n output350 
