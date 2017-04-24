@@ -3,10 +3,16 @@ cards=""
 dirName="MMR_${mass}"
 dcardName="datacard_${mass}.txt"
 bgLogName="data_bkg.log"
-sig_norm=`grep 'norm =' ${dirName}/index.html | awk '{print $3}'`    
-
+pdfLogName="pdf.log"
+sig_norm=`grep 'norm =' ${dirName}/signal${mass}_sig.log | awk '{print $3}'`
+jec_norm=`grep 'JEC       lnN' ${dirName}/signal${mass}_sig.log | awk '{print $3}'`
+jer_norm=`grep 'JER       lnN' ${dirName}/signal${mass}_sig.log | awk '{print $3}'`
+btag_norm=`grep 'btag lnN' ${dirName}/signal${mass}_sig.log | awk '{print $3}'`
+pdf_norm=`grep 'PDF lnN' ${dirName}/${pdfLogName} | awk '{print $3}'`
 echo ${sig_norm}
-echo "norm"
+echo ${jec_norm}
+echo ${jer_norm}
+echo ${btag_norm}
 bkg_norm=`grep ' Background number of events = ' ${dirName}/${bgLogName} | awk '{print $6}'`
 
 #let's build a datacard!
@@ -16,7 +22,7 @@ jmax * number of backgrounds
 kmax * number of systematic uncertainty sources
 ----------
 shapes signal     HbbHbb w_signal_${mass}.root      HbbHbb:signal_fixed
-shapes background HbbHbb w_background_GaussExp.root HbbHbb:background
+shapes background HbbHbb w_background_Crystal.root HbbHbb:background
 shapes data_obs   HbbHbb w_data.root                HbbHbb:data_obs
 ----------
 ## Observation
@@ -27,10 +33,12 @@ bin                   HbbHbb          HbbHbb
 process               signal      background
 process               0           1
 rate                  ${sig_norm} ${bkg_norm}
-lumi_13TeV  lnN   1.062       -     
-bTag      lnN     1.10    -
+lumi_13TeV  lnN   1.026       -     
+bTag      lnN     ${btag_norm}    -
+JER       lnN     ${jer_norm}   - 
+JEC       lnN     ${jec_norm}   -
 trigger   lnN     1.10    -
-bgFloat   lnU     -          2.00
+PDF       lnN     ${pdf_norm}   -
 EOF
 
 
