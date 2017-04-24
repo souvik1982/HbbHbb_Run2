@@ -6,8 +6,8 @@ mass=$1
 dir_preselection="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/Data/PreselectedWithRegression"
 dir_selection="../../LMR"
 dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/fit"
-background_type="fit_crystal_malara.c" #fit_background_malara.c
-Type="Crystal" #GaussExp
+background_type="fit_crystal_malara.c" #"fit_convolution_malara.c" "fit_crystal_malara.c" fit_background_malara.c
+Type="Crystal" #"Convolution" Crystal GaussExp
 #Modify also in /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/LMRSelection_chi2/fit_background_malara.c
 
 file_histograms="Histograms_LMR_chi2_tree_GluGluToBulkGravitonToHHTo4B_M-"

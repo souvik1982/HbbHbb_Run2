@@ -1,11 +1,12 @@
 mass=$1
 cards=""
 dirName="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/fit/LMR_${mass}"
-dcardName="datacard_${mass}.txt"
+dcardName="datacard_${mass}.txt" #conv bern
 bgLogName="data_bkg.log"
 sig_norm=`grep 'norm =' ${dirName}/index.html | awk '{print $3}'`    
-Type="Crystal" #GaussExp
-data_file="w_background_Crystal.root" #w_data.root 
+Type="Crystal" #"Convolution" "Crystal" #GaussExp
+datacardtype="background" #"Convolution" "background"
+data_file="w_background_Convolution.root" #"w_background_Crystal.root" #w_data.root 
 
 echo ${sig_norm}
 echo "norm"
@@ -19,7 +20,7 @@ jmax * number of backgrounds
 kmax * number of systematic uncertainty sources
 ----------
 shapes signal     HbbHbb w_signal_${mass}.root      HbbHbb:signal_fixed
-shapes background HbbHbb w_background_$Type.root    HbbHbb:background
+shapes background HbbHbb w_background_$Type.root    HbbHbb:$datacardtype
 shapes data_obs   HbbHbb $data_file                 HbbHbb:data_obs
 ----------
 ## Observation
@@ -41,10 +42,17 @@ EOF
 #grep 'signal_' ${dirName}/index.html | awk '{print $1 " " $2 " " $3 " " $4}' >>  ${dirName}/${dcardName}
 
 #grep 'bias_term_' ${dirName}/${bgLogName} | grep ' param ' >> ${dirName}/${dcardName}
-grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
+#grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
 
 #grep 'bg_' ${dirName}/${bgLogName} | grep ' param ' >> ${dirName}/${dcardName}
 #grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
+grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
+
+sed -i 's/crystalball_mean/bg_p2/g' ${dirName}/${dcardName}
+sed -i 's/crystalball_width/bg_p3/g' ${dirName}/${dcardName}
+sed -i 's/crystalball_switch/bg_p0/g' ${dirName}/${dcardName}
+sed -i 's/crystalball_exponent/bg_p1/g' ${dirName}/${dcardName}
+
 cards+="${dirName}/${dcardName} "
 
 
