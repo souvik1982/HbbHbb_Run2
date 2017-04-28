@@ -269,9 +269,9 @@ void BackgroundPrediction_Kinematic_Bern_malara(double plot_lo, double plot_hi, 
     //RooGaussian bg_gauss("background", "Background Prediction PDF", *x, bg_p0, bg_p1);
     //GaussExp bg("background", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2);
     //GaussExpPol bg("bg", "bg", *x, bg_p0, bg_p1, bg_p2, bg_p3, bg_p4, bg_p5,bg_p6,bg_p7,bg_p8);
-    //RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5, *bg_p6));
+    RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5, *bg_p6));
     //RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5));
-    RooGenericPdf bg("bg","bg",bg_gauss*bg_pol,RooArgSet( *x, bg_p0, bg_p1, bg_p2,*bg_p3, *bg_p4, *bg_p5));
+    //RooGenericPdf bg("bg","bg",bg_gauss*bg_pol,RooArgSet( *x, bg_p0, bg_p1, bg_p2,*bg_p3, *bg_p4, *bg_p5));
     //RooAddPdf bg("bg", "bg", RooArgList(bg_gauss, bg_pol), *bg_p7);
     //bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save(), RooFit::Minimizer("Minuit","simplex"));
     RooFitResult *r_bg=bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
@@ -492,7 +492,12 @@ void BackgroundPrediction_Kinematic_Bern_malara(double plot_lo, double plot_hi, 
     std::cout<<"bg_p5   param   "<<bg_p5->getVal()<<" "<<bg_p5->getError()<<std::endl;
     std::cout<<"bg_p6   param   "<<bg_p6->getVal()<<" "<<bg_p6->getError()<<std::endl;
     
-    
+    std::cout<<" COUNTING = "<<h_mX_SR_fakeData->GetSumOfWeights()<<std::endl;
+    std::cout<<" COUNTING = "<<h_mX_SR_fakeData->Integral(plot_lo,456)<<std::endl;
+    std::cout<<" COUNTING = "<<data_obs.sum(kFALSE) << " " << data_obs.sum(kTRUE) << " " << data_obs.numEntries()<<std::endl;
+    std::cout<<" x " <<  " " << plot_lo << " " << plot_hi <<std::endl;
+    x->Print();
+
 }
 
 

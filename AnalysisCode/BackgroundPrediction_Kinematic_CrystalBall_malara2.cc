@@ -1,10 +1,11 @@
+#include <iostream>
+
 #include <TH1F.h>
 #include <TROOT.h>
 #include <TFile.h>
 #include <TLegend.h>
 #include <TCanvas.h>
 #include <TProfile.h>
-#include <iostream>
 #include <TStyle.h>
 #include <TPaveText.h>
 #include <THStack.h>
@@ -28,7 +29,7 @@ std::string itoa(int i)
     return ret;
 }
 
-void BackgroundPrediction_Kinematic_CrystalBall_malara(
+void BackgroundPrediction_Kinematic_CrystalBall(std::string filename,
                                                 double plot_lo, double plot_hi, double rebin,
                                                 double fit_lo, double fit_hi,
                                                 double crystalball_mean_lo, double crystalball_mean_hi,
@@ -39,7 +40,7 @@ void BackgroundPrediction_Kinematic_CrystalBall_malara(
                                                 double gaussexp_width_lo, double gaussexp_width_hi,
                                                 double gaussexp_exp_lo, double gaussexp_exp_hi,
                                                 std::string hist="h_mX_SB_kinFit",
-                                                std::string log="lin", std::string BTag_file="Histograms_BTagCSV_Skim.root", std::string dest_dir="/scratch/malara/WorkingArea/IO_file/output_file")
+                                                std::string log="lin")
 {
     
     gROOT->SetStyle("Plain");
@@ -50,12 +51,11 @@ void BackgroundPrediction_Kinematic_CrystalBall_malara(
     extraText  = "Preliminary";  // default extra text is "Preliminary"
     lumi_13TeV = "35.9 fb^{-1}";  // default is "5.1 fb^{-1}"
     
-    TFile *f_data=new TFile((BTag_file).c_str());
+    TFile *f_data=new TFile(filename.c_str());
     TH1F *h_mX_SR=(TH1F*)f_data->Get(hist.c_str());
     h_mX_SR->Rebin(rebin);
     TH1F *h_tmp=(TH1F*)f_data->Get("h_mX_SR_kinFit");
-    //double nEventsSR= h_tmp->Integral(h_tmp->FindBin(plot_lo),h_tmp->FindBin(plot_hi));
-    double nEventsSR= h_tmp->Integral();
+    double nEventsSR= h_tmp->Integral(h_tmp->FindBin(fit_lo),h_tmp->FindBin(fit_hi));
     
     RooRealVar *x;
     x=new RooRealVar("x", "m_{X} (GeV)", plot_lo, plot_hi);
@@ -215,8 +215,8 @@ void BackgroundPrediction_Kinematic_CrystalBall_malara(
     string tag;
     if (hist.substr(0,7)=="h_mX_SB") tag="SB";
     else tag="SR";
-    c_Background->SaveAs((dest_dir+"/"+"BackgroundFit_"+tag+"_CrystalBall.png").c_str());
-    c_Background->SaveAs((dest_dir+"/"+"BackgroundFit_"+tag+"_CrystalBall.pdf").c_str());
+    c_Background->SaveAs(("BackgroundFit_"+tag+"_CrystalBall.png").c_str());
+    c_Background->SaveAs(("BackgroundFit_"+tag+"_CrystalBall.pdf").c_str());
     
     
     
@@ -233,22 +233,20 @@ void BackgroundPrediction_Kinematic_CrystalBall_malara(
     std::cout<<" COUNTING = "<<h_mX_SR_fakeData->Integral(h_mX_SR_fakeData->FindBin(fit_lo),h_mX_SR_fakeData->FindBin(fit_hi))<<std::endl;
     std::cout<<" COUNTING = "<<data_obs.sumEntries()<<std::endl;
     
-    RooRealVar nBackground("bg_norm","nbkg",nEventsSR);
-    w_background->import(nBackground);
     w_background->import(data_obs);
-    w_background->SaveAs((dest_dir+"/"+"w_background_Crystal.root").c_str());
+    w_background->SaveAs("w_background_Crystal.root");
     
     RooWorkspace *w_data=new RooWorkspace("HbbHbb");
     w_data->import(data_obs);
-    w_data->SaveAs((dest_dir+"/"+"w_data_Crystal.root").c_str());
+    w_data->SaveAs("w_data.root");
     
     // For the datacard
     std::cout<<" === RooFit data fit result to be entered in datacard === "<<std::endl;
     std::cout<<" Background number of events = "<<nEventsSR<<std::endl;
-    std::cout<<"bg_p0   param   "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
-    std::cout<<"bg_p1   param   "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
-    std::cout<<"bg_p2   param   "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;
-    std::cout<<"bg_p3   param   "<<bg_p3.getVal()<<" "<<bg_p3.getError()<<std::endl;
+    std::cout<<"bg_p2 param "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;
+    std::cout<<"bg_p3 param "<<bg_p3.getVal()<<" "<<bg_p3.getError()<<std::endl;
+    std::cout<<"bg_p0 param "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
+    std::cout<<"bg_p1 param "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
     
 }
 
