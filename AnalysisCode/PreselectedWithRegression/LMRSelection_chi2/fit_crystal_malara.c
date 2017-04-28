@@ -3,7 +3,7 @@
   gSystem->Load("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/RevCrystalBall_cxx.so");
   gROOT->LoadMacro("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/BackgroundPrediction_Kinematic_CrystalBall_malara.cc");
   BackgroundPrediction_Kinematic_CrystalBall_malara(252, 455,3, // plot range
-                                                    252,455,    // fit range
+                                                    252, 455,    // fit range
                                                     240, 280,    // range of crystalBall mean
                                                     3, 30,       // range of crystalBall width
                                                     0.01, 5.1,   // range of crystalBall exponent

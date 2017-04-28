@@ -8,10 +8,6 @@
                                           0.05, 3.1,   // range of gaussExp exponent
                                           "h_mX_SB_kinFit", // histogram
                                           "log",
-
-
-
-               
-                                             "lin", "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/Histograms_LMR_chi2_tree_total.root",
+                                          "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/Histograms_LMR_chi2_tree_total.root",
 					  "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/fit");
 }

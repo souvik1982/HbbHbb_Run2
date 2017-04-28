@@ -831,7 +831,7 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
   masses.push_back(_massstring);
     writeExtraText = true;       // if extra text
     extraText  = "Simulation";  // default extra text is "Preliminary"
-    lumi_13TeV  = "22.0 fb^{-1}"; // default is "19.7 fb^{-1}"
+    lumi_13TeV  = "36.0 fb^{-1}"; // default is "19.7 fb^{-1}"
  
   // masses.push_back("260");
 //  masses.push_back("270");
@@ -1414,7 +1414,7 @@ int Display_SignalFits_malara(std::string dir_preselection="PreselectedWithRegre
       outfile<<"JEC       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JECp1_KinFit->GetSumOfWeights(), h_mX_SR_JECm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
       outfile<<"JER       lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_JERp1_KinFit->GetSumOfWeights(), h_mX_SR_JERm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
       //outfile<<"trig lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_Trigp1_KinFit->GetSumOfWeights(), h_mX_SR_Trigm1_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
-      outfile<<"btag lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_bTagUp_KinFit->GetSumOfWeights(), h_mX_SR_bTagDown_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
+      outfile<<"bTag lnN     "<<lnN(h_mX_SR_KinFit->GetSumOfWeights(), h_mX_SR_bTagUp_KinFit->GetSumOfWeights(), h_mX_SR_bTagDown_KinFit->GetSumOfWeights())<<"  -"<<" <br/>"<<std::endl;
 
       outfile<<"sg_p0     param   "<<par_KinFit.sg_p0<<" -"<<quad(sg_p0_errStat/2., sg_p0_errSyst_min)<<"/+"<<quad(sg_p0_errStat/2., sg_p0_errSyst_max)<<" <br/>"<<std::endl;
       outfile<<"sg_p1     param   "<<par_KinFit.sg_p1<<" -"<<quad(sg_p1_errStat/2., sg_p1_errSyst_min)<<"/+"<<quad(sg_p1_errStat/2., sg_p1_errSyst_max)<<" <br/>"<<std::endl;

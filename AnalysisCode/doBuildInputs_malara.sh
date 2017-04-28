@@ -1,20 +1,21 @@
 #!/bin/bash
 
 mass=$1
-#fitModel=$3
 
+background="_new" # "" "_bern"
+
+#Modify also in /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_chi2/fit_background_malara.c
 dir_preselection="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/Data/PreselectedWithRegression"
 dir_selection="../../MMR"
 dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR/fit"
-background_type="fit_crystal_malara.c" #"fit_convolution_malara.c" "fit_crystal_malara.c" fit_background_malara.c
-Type="Crystal" #"Convolution" Crystal GaussExp
-#Modify also in /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_chi2/fit_background_malara.c
+background_type="fit_crystal_malara.c" #"fit_convolution_malara.c" "fit_crystal_malara.c" fit_background_malara.c fit_bern_malara.c
+Type="Crystal" #"Convolution" Crystal GaussExp Bern
 
 file_histograms="Histograms_MMR_chi2_tree_GluGluToBulkGravitonToHHTo4B_M-"
 
 rm -fr ${dest_dir}"/SignalFitsreg"
 mkdir ${dest_dir}"/SignalFitsreg"
-folder=${dest_dir}/MMR_${mass}
+folder=${dest_dir}/MMR_${mass}${background}
 rm -fr $folder
 mkdir $folder
 echo
@@ -35,5 +36,5 @@ echo
 root -x -b -l -q /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_chi2/$background_type > $folder/data_bkg.log
 
 mv $dest_dir/w_background_$Type.root $folder/
-mv $dest_dir/w_data.root $folder/ 
+mv $dest_dir/w_data_$Type.root $folder/ 
 echo "end"

@@ -1,15 +1,16 @@
 {
-   gSystem->Load("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/HZGRooPdfs_cxx.so");
-   gSystem->Load("../../PDFs/GaussExp_cxx.so");
-   gROOT->LoadMacro("../../BackgroundPrediction_Kinematic_Bern_malara.c");
+  gSystem->Load("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/GaussExp_cxx.so");
+  gSystem->Load("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/HZGRooPdfs_cxx.so");
+  gROOT->LoadMacro("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/BackgroundPrediction_Kinematic_Bern_malara.c");
 
-       BackgroundPrediction_Kinematic_Bern_malara(350, 1200 ,3, // plot range
-                                          400, 1200,    // fit range
-					  400, 550,    // range of gaussExp mean
-                                          50, 120,     // range of gaussExp width
-                                          0.01, 2.1,   // range of gaussExp exponent
-                                          "h_mX_SB_kinFit", // histogram
-                                          "lin",
-                                "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR/Histograms_MMR_chi2_tree_total.root",
-                                          "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR/fit");
+       BackgroundPrediction_Kinematic_Bern_malara(350, 1300 ,10, // plot range
+						  350, 1300,    // fit range
+						  400, 600,    // range of crystalBall mean
+						  10, 200,       // range of crystalBall width
+						  0.01, 5.1,   // range of crystalBall exponent
+						  0.01, 5.1, // range of crystalBall switch
+						  "h_mX_SB_kinFit", // histogram
+						  "lin",
+						  "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR/Histograms_MMR_chi2_tree_total.root",
+						  "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR/fit");
 }

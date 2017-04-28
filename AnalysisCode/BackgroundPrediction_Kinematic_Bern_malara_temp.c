@@ -269,9 +269,8 @@ void BackgroundPrediction_Kinematic_Bern_malara(double plot_lo, double plot_hi, 
     //RooGaussian bg_gauss("background", "Background Prediction PDF", *x, bg_p0, bg_p1);
     //GaussExp bg("background", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2);
     //GaussExpPol bg("bg", "bg", *x, bg_p0, bg_p1, bg_p2, bg_p3, bg_p4, bg_p5,bg_p6,bg_p7,bg_p8);
-    //RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5, *bg_p6));
-    //RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5));
-    RooGenericPdf bg("bg","bg",bg_gauss*bg_pol,RooArgSet( *x, bg_p0, bg_p1, bg_p2,*bg_p3, *bg_p4, *bg_p5));
+    RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5, *bg_p6));
+    //RooGenericPdf bg("bg","bg",bg_gauss*bg_pol,RooArgSet( *x, bg_p0, bg_p1, bg_p2,*bg_p3, *bg_p4, *bg_p5));
     //RooAddPdf bg("bg", "bg", RooArgList(bg_gauss, bg_pol), *bg_p7);
     //bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save(), RooFit::Minimizer("Minuit","simplex"));
     RooFitResult *r_bg=bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
@@ -475,22 +474,17 @@ void BackgroundPrediction_Kinematic_Bern_malara(double plot_lo, double plot_hi, 
     RooDataHist data_obs("data_obs", "Data", RooArgList(*x), h_mX_SR_fakeData);
     
     w_background->import(data_obs);
-    w_background->SaveAs((dest_dir+"/"+"w_background_Bern.root").c_str());
-    
-    RooWorkspace *w_data=new RooWorkspace("HbbHbb");
-    w_data->import(data_obs);
-    w_data->SaveAs((dest_dir+"/"+"w_data_Bern.root").c_str());
-    
+    w_background->SaveAs((dest_dir+"/"+"w_background_Bern.root").c_str()); 
     // For the datacard
     std::cout<<" === RooFit data fit result to be entered in datacard === "<<std::endl;
     std::cout<<" Background number of events = "<<nEventsSR<<std::endl;
-    std::cout<<"bg_p0   param   "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
-    std::cout<<"bg_p1   param   "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
-    std::cout<<"bg_p2   param   "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;
-    std::cout<<"bg_p3   param   "<<bg_p3->getVal()<<" "<<bg_p3->getError()<<std::endl;
-    std::cout<<"bg_p4   param   "<<bg_p4->getVal()<<" "<<bg_p4->getError()<<std::endl;
-    std::cout<<"bg_p5   param   "<<bg_p5->getVal()<<" "<<bg_p5->getError()<<std::endl;
-    std::cout<<"bg_p6   param   "<<bg_p6->getVal()<<" "<<bg_p6->getError()<<std::endl;
+    std::cout<< "bg_p0   param   "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
+    std::cout<< "bg_p1   param   "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
+    std::cout<< "bg_p2   param   "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;
+    std::cout<< "bg_p3   param   "<<bg_p3->getVal()<<" "<<bg_p3->getError()<<std::endl;
+    std::cout<< "bg_p4   param   "<<bg_p4->getVal()<<" "<<bg_p4->getError()<<std::endl;
+    std::cout<< "bg_p5   param   "<<bg_p5->getVal()<<" "<<bg_p5->getError()<<std::endl;
+    std::cout<< "bg_p6   param   "<<bg_p6->getVal()<<" "<<bg_p6->getError()<<std::endl;
     
     
 }

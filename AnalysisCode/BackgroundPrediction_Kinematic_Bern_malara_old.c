@@ -193,16 +193,11 @@ std::string itoa(int i)
 
 void BackgroundPrediction_Kinematic_Bern_malara(double plot_lo, double plot_hi, double rebin,
                                          double fit_lo, double fit_hi,
-                                         double crystalball_mean_lo, double crystalball_mean_hi,
-                                         double crystalball_width_lo, double crystalball_width_hi,
-                                         double crystalball_exp_lo, double crystalball_exp_hi,
-                                         double crystalball_switch_lo, double crystalball_switch_hi,
-                                         /*double gaussexp_mean_lo, double gaussexp_mean_hi,
-                                          double gaussexp_width_lo, double gaussexp_width_hi,
-                                          double gaussexp_exp_lo, double gaussexp_exp_hi,
-                                          */
-                                          std::string hist="h_mX_SB_kinFit",
-                                          std::string log="lin",
+                                         double gaussexp_mean_lo, double gaussexp_mean_hi,
+                                         double gaussexp_width_lo, double gaussexp_width_hi,
+                                         double gaussexp_exp_lo, double gaussexp_exp_hi,
+                                         std::string hist="h_mX_SB_kinFit",
+                                         std::string log="lin",
                                           std::string filename="Histograms_BTagall.root",
                                           std::string dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/fit")
 {
@@ -241,16 +236,16 @@ void BackgroundPrediction_Kinematic_Bern_malara(double plot_lo, double plot_hi, 
      // bg_p10=new RooRealVar("bg_p10", "bg_p10", 0., 5.);
      */ // RooBernstein bg_pol("bg_pol", "bg_pol", *x, RooArgList(*bg_p4, *bg_p5, *bg_p6));
     
-    /*RooRealVar bg_p00("bg_p00", "bg_p00", gaussexp_mean_lo, gaussexp_mean_hi);
-     RooRealVar bg_p11("bg_p11", "bg_p11", gaussexp_width_lo, gaussexp_width_hi);
-     RooRealVar bg_p22("bg_p22", "bg_p22", gaussexp_exp_lo, gaussexp_exp_hi);
-     */
+    RooRealVar bg_p00("bg_p00", "bg_p00", gaussexp_mean_lo, gaussexp_mean_hi);
+    RooRealVar bg_p11("bg_p11", "bg_p11", gaussexp_width_lo, gaussexp_width_hi);
+    RooRealVar bg_p22("bg_p22", "bg_p22", gaussexp_exp_lo, gaussexp_exp_hi);
+    
     
     
     RooRealVar bg_p0("bg_p0", "bg_p0", 0.); //gaussexp_mean_lo, gaussexp_mean_hi);
     bg_p0.setConstant(1);
     RooRealVar bg_p1("bg_p1", "bg_p1",1. , 100.);//gaussexp_width_lo, gaussexp_width_hi);
-    RooRealVar bg_p2("bg_p2", "bg_p2", 160., 600. );//310., 600.); ///210., 300.
+    RooRealVar bg_p2("bg_p2", "bg_p2", 160, 600);//160., 300.); ///310., 600.
     //  RooRealVar bg_p3("bg_p3", "bg_p3",  -5., 5.);
     //  RooRealVar bg_p4("bg_p4", "bg_p4",   -5., 5.);
     /*  bg_p3.setConstant(1);
@@ -269,26 +264,20 @@ void BackgroundPrediction_Kinematic_Bern_malara(double plot_lo, double plot_hi, 
     //RooGaussian bg_gauss("background", "Background Prediction PDF", *x, bg_p0, bg_p1);
     //GaussExp bg("background", "Background Prediction PDF", *x, bg_p0, bg_p1, bg_p2);
     //GaussExpPol bg("bg", "bg", *x, bg_p0, bg_p1, bg_p2, bg_p3, bg_p4, bg_p5,bg_p6,bg_p7,bg_p8);
-    //RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5, *bg_p6));
-    //RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5));
-    RooGenericPdf bg("bg","bg",bg_gauss*bg_pol,RooArgSet( *x, bg_p0, bg_p1, bg_p2,*bg_p3, *bg_p4, *bg_p5));
+    RooGaussStepBernstein bg("bg","bg",*x, bg_p0, bg_p1, bg_p2, RooArgList(*bg_p3, *bg_p4, *bg_p5, *bg_p6));
+    //RooGenericPdf bg("bg","bg",bg_gauss*bg_pol,RooArgSet( *x, bg_p0, bg_p1, bg_p2,*bg_p3, *bg_p4, *bg_p5));
     //RooAddPdf bg("bg", "bg", RooArgList(bg_gauss, bg_pol), *bg_p7);
     //bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save(), RooFit::Minimizer("Minuit","simplex"));
     RooFitResult *r_bg=bg.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
-    /*bg_p1.setConstant(1);
-     bg_p2.setConstant(1);
-     bg_p4->setConstant(1);
-     bg_p5->setConstant(1);
-     bg_p6->setConstant(1);
-     bg_p7->setConstant(1);
-     */
+    bg_p1.setConstant(1);
+    bg_p2.setConstant(1);
+    bg_p4->setConstant(1);
+    bg_p5->setConstant(1);
+    bg_p6->setConstant(1);
+    bg_p7->setConstant(1);
     
-    //GaussExp bg_exp("bg_exp", "Background Prediction PDF", *x, bg_p00, bg_p11, bg_p22);
-    RooRealVar bg_p00("bg_p00", "bg_p00", crystalball_switch_lo, crystalball_switch_hi);
-    RooRealVar bg_p11("bg_p11", "bg_p11", crystalball_exp_lo, crystalball_exp_hi);
-    RooRealVar bg_p22("bg_p22", "bg_p22", crystalball_mean_lo, crystalball_mean_hi);
-    RooRealVar bg_p33("bg_p33", "bg_p33", crystalball_width_lo, crystalball_width_hi);
-    RevCrystalBall bg_exp("bg_exp", "Background Prediction PDF", *x, bg_p00, bg_p11, bg_p22, bg_p33);
+    
+    GaussExp bg_exp("bg_exp", "Background Prediction PDF", *x, bg_p00, bg_p11, bg_p22);
     
     RooPlot *data_plot2=x->frame();
     RooFitResult *r_bg_exp=bg_exp.fitTo(pred, RooFit::Range(fit_lo, fit_hi), RooFit::Save());
@@ -303,7 +292,7 @@ void BackgroundPrediction_Kinematic_Bern_malara(double plot_lo, double plot_hi, 
     RooPlot *data_plot=x->frame();
     pred.plotOn(data_plot);
     bg.plotOn(data_plot, RooFit::VisualizeError(*r_bg, 1), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
-    bg.plotOn(data_plot, RooFit::LineColor(kBlack));
+    bg.plotOn(data_plot, RooFit::LineColor(kRed+1));//Black));
     pred.plotOn(data_plot, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
     
     double fitChi2=data_plot->chiSquare();
@@ -399,17 +388,14 @@ void BackgroundPrediction_Kinematic_Bern_malara(double plot_lo, double plot_hi, 
     leg->SetFillStyle(0);
     h_mX_SR->SetMarkerStyle(20);
     if (hist.substr(0,7)=="h_mX_SB"){
-        h_mX_SR->SetLineColor(kBlack);
         h_mX_SR->SetMarkerColor(kBlack);
-        leg->AddEntry(h_mX_SR, "Data in SB", "ep");
+        leg->AddEntry(h_mX_SR, "Data in SB", "lep");
+        //leg->AddEntry(h_mX_SR, "GaussBern fit", "l");
+        //h_mX_SR->SetMarkerColor(kBlue+1);
+        //leg->AddEntry(h_mX_SR, "GaussExp fit", "l");
         
     }
-    else leg->AddEntry(h_mX_SR, "Data in SR", "ep");
-    TH1F * temp = new TH1F("temp", "temp", 100, 0,1); temp->SetLineWidth(2);  temp->SetLineColor(kBlack);
-    leg->AddEntry(temp, "GaussBern fit", "l");
-    TH1F * temp1 = new TH1F("temp1", "temp1", 100, 0,1); temp1->SetLineWidth(2);
-    temp1->SetLineColor(kBlue+1);
-    leg->AddEntry(temp1, "CrystalBall fit", "l");
+    else leg->AddEntry(h_mX_SR, "Data in SR", "lep");
     leg->Draw();
     
     CMS_lumi( p_1, iPeriod, iPos );
@@ -475,23 +461,15 @@ void BackgroundPrediction_Kinematic_Bern_malara(double plot_lo, double plot_hi, 
     RooDataHist data_obs("data_obs", "Data", RooArgList(*x), h_mX_SR_fakeData);
     
     w_background->import(data_obs);
-    w_background->SaveAs((dest_dir+"/"+"w_background_Bern.root").c_str());
-    
-    RooWorkspace *w_data=new RooWorkspace("HbbHbb");
-    w_data->import(data_obs);
-    w_data->SaveAs((dest_dir+"/"+"w_data_Bern.root").c_str());
-    
+    w_background->SaveAs((dest_dir+"/"+"w_background_Bern.root").c_str()); 
     // For the datacard
     std::cout<<" === RooFit data fit result to be entered in datacard === "<<std::endl;
     std::cout<<" Background number of events = "<<nEventsSR<<std::endl;
-    std::cout<<"bg_p0   param   "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
-    std::cout<<"bg_p1   param   "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
-    std::cout<<"bg_p2   param   "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;
-    std::cout<<"bg_p3   param   "<<bg_p3->getVal()<<" "<<bg_p3->getError()<<std::endl;
-    std::cout<<"bg_p4   param   "<<bg_p4->getVal()<<" "<<bg_p4->getError()<<std::endl;
-    std::cout<<"bg_p5   param   "<<bg_p5->getVal()<<" "<<bg_p5->getError()<<std::endl;
-    std::cout<<"bg_p6   param   "<<bg_p6->getVal()<<" "<<bg_p6->getError()<<std::endl;
-    
+    std::cout<< "bg_p0   param   "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
+    std::cout<< "bg_p1   param   "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
+    std::cout<< "bg_p2   param   "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;
+    std::cout<< "bg_p3   param   "<<bg_p3->getVal()<<" "<<bg_p3->getError()<<std::endl;
+    std::cout<< "bg_p4   param   "<<bg_p4->getVal()<<" "<<bg_p4->getError()<<std::endl;
     
 }
 

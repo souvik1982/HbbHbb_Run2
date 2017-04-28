@@ -752,7 +752,7 @@ std::cout<<"prova"<<std::endl;
   masses.push_back(_massstring);
     writeExtraText = true;       // if extra text
     extraText  = "Simulation";  // default extra text is "Preliminary"
-    lumi_13TeV  = "22.0 fb^{-1}"; // default is "19.7 fb^{-1}"
+    lumi_13TeV  = "36.0 fb^{-1}"; // default is "19.7 fb^{-1}"
 /*	masses.push_back("260");
 //	masses.push_back("270");
 	masses.push_back("300");
