@@ -18,9 +18,13 @@ do
     fi
     file="tree_"$i
     echo $folder$subfolder
+    ln -s ../../HbbHbb_PreSelection.cc .
+    #cd $run
+#    root -b -l -q "TE_presel.cc(\"$run\", \"$folder\", \"$subfolder\", \"$file\" )"
+    root -l -b -q "HbbHbb_PreSelection.cc++(\"$folder$subfolder\",  \"$file\",\"JEC\",\"JER\",\"Trig\",\"bTag\",\"/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode//gravall-v25.weights.xml\")"
     cd $run
 #    root -b -l -q "TE_presel.cc(\"$run\", \"$folder\", \"$subfolder\", \"$file\" )"
-    root -l -b -q "../../HbbHbb_PreSelection.cc++(\"$folder$subfolder\",  \"$file\",\"JEC\",\"JER\",\"Trig\",\"bTag\",\"../grav_all_upTo1400.xml\")"
+    #root -l -b -q "../../HbbHbb_PreSelection.cc++(\"$folder$subfolder\",  \"$file\",\"JEC\",\"JER\",\"Trig\",\"bTag\",\"../grav_all_upTo1400.xml\")"
 done        
 
 

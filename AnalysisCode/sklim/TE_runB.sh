@@ -3,10 +3,10 @@
 run="RunBv2"
 #folder="VHBB_HEPPY_V24_JetHT__Run2016B-PromptReco-v2/160910_205020/"
 #folder="VHBB_HEPPY_V24_JetHT__Run2016B-PromptReco-v2/160912_07022/"
-folder="/eos/uscms/store/user/lpchbb/HeppyNtuples/V25/BTagCSV/VHBB_HEPPY_V25_BTagCSV__Run2016B-23Sep2016-v2/170130_122257/"
+folder="/eos/uscms/store/user/lpchbb/HeppyNtuples/V25rereco/BTagCSV/VHBB_HEPPY_V25b_BTagCSV__Run2016B-03Feb2017_ver1-v1/170226_195930/"
 mkdir $run
 cd $run
-for i in {10..10}
+for i in {1..40}
 do    
     if test $i -lt 1000 
         then subfolder="0000/"
@@ -19,9 +19,10 @@ do
     fi
     file="tree_"$i
     echo $folder$subfolder
+    ln -s ../../HbbHbb_PreSelection.cc .
     #cd $run
 #    root -b -l -q "TE_presel.cc(\"$run\", \"$folder\", \"$subfolder\", \"$file\" )"
-    root -l -b -q "../../HbbHbb_PreSelection.cc++(\"$folder$subfolder\",  \"$file\",\"JEC\",\"JER\",\"Trig\",\"bTag\",\"../grav_all_upTo1400.xml\")"
+    root -l -b -q "HbbHbb_PreSelection.cc++(\"$folder$subfolder\",  \"$file\",\"JEC\",\"JER\",\"Trig\",\"bTag\",\"/uscms_data/d3/cvernier/4b/HbbHbb_2016/HbbHbb_Run2/AnalysisCode//gravall-v25.weights.xml\")"
 done        
 
 
