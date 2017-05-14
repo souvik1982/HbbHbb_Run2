@@ -20,6 +20,13 @@ source processPreSelection_QCD_HT.sh
 source processPreSelection_Data.sh
 </pre>
 
+<h3> HbbHbb_MMRSelection_chi2.cc </h3>
+
+This takes ntuples produced by HbbHbb_PreSelection.cc. It contains our latest Medium Mass Regime event selection criteria. Finds dijet pairs with a minimum chi less than 1, where chi^2 = (mjj1 - mH)^2/sigma^2 + (mjj2 - mH)^2/sigma^2, as events in the signal region. For MMR, mH is set to 115 GeV, and sigma = 23 GeV. It also finds events in the sideband regions that extend up to chi = 2, and require (mjj1 - mH).(mjj2 - mH) < 0. It outputs histograms that can then be used by the fitting and plotting scripts.
+
+We operate it from within the MMRSelection_chi2 directory with the command:
+<pre> MMRSelection_chi2/root -l processMMRSelection_Graviton.c </pre>
+
 <h3> HbbHbb_MMRSelection.cc </h3>
 
 This takes ntuples produced by HbbHbb_PreSelection.cc. It contains our Medium Mass Regime event selection criteria. Finds dijet pairs with the smallest difference in mH1 - mH2, and dR < 1.5 between the jets in a dijet. Corrects and kinematically constrains di-jet masses to mH = 125 GeV. Selects events with (mH1, mH2) within a 17.5 GeV circular window around (125 GeV, 125 GeV) as our signal events. It outputs histograms that can then be used by the fitting and plotting scripts.
@@ -54,6 +61,19 @@ This contains the algorithm for doing the kinematic constraint on the dijet pair
 This contains the algorithm that matches selected reconstructed HH candidate jets to the generator level b quarks from each Higgs. It returns an integer signifying the purity of the reconstructed sample. It is called by HbbHbb_MMRSelection.cc, HbbHbb_LMRSelection.cc and HbbHbb_MeasureResolutionBias.cc.
 
 <h2> 3. Fitting and Plotting Scripts </h2>
+
+<h3> BackgroundPrediction_*_*.cc </h3>
+
+These are the most important scripts. They work on histogram files output by HbbHbb_MMRSelection_chi2.cc (and LMRSelection) to produce fits of the background in the sideband regions (SR). These scripts are run from within the directory that contains the data .root files after all event selections. Several types of fits can be done:
+
+<b>BackgroundPrediction_Kinematic_CrystalBall.cc</b>. Crystal ball fit. Run with:
+<pre> MMRSelection_chi2/fit_background_CrystalBall.c </pre>
+
+<b> BackgroundPrediction_Kinematic_GaussExp.cc</b>. A Gaussian core extended with an exponential tail. Please run it from the directory containing event selected data root files using a .c script as the Crystal Ball.
+
+<b> BackgroundPrediction_Kinematic_LogisticXChebychev3.cc </b> A logistic function to model the trigger turn-on analytically connected to a 3rd order polynomial to model the physics tail. Please run it from the directory containing event selected data root files using a .c script as the Crystal Ball.
+
+<b> BackgroundPrediction_Kinematic_Bern.c </b> Fit to a Bernstein polynomial. 
 
 <h3> DisplayJetProperties.cc </h3>
 
@@ -93,6 +113,7 @@ Displays mH1 vs mH2 plots, that informs our event selection criteria. It works o
 root -l -b -q MMRSelection/../DisplaymH1vsmH2.c++
 root -l -b -q LMRSelection/../DisplaymH1vsmH2.c++
 </pre>
+
 
 
 
