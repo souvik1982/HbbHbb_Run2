@@ -12,7 +12,7 @@
 #include "HbbHbb_Component_SignalPurity.cc"
 #include "HbbHbb_Component_KinFit.cc"
 
-double jet_pT_cut1=30.;
+double jet_pT_cut1=40.;
 
 double mean_H1_mass_=120;//120;
 double sigma_H1_mass_=20;//25;
@@ -114,6 +114,9 @@ void HbbHbb_LMRSelection_chi2_malara_CMVA(std::string type,std::string source_di
    }
 // Book histograms
   
+  TH2F *h_mX_DeltaR = new TH2F("h_mX_DeltaR", "; m_{X} (GeV); Delta R", 3000, 0., 3000., 100, 0., 10.);
+  TH2F *h_mX_Chi2= new TH2F("h_mX_Chi2", "; m_{X} (GeV); Chi^2", 3000, 0., 3000., 100, 0., 3.);
+  TH2F *h_mX_kinFitchi2= new TH2F("h_mX_kinFitchi2", "; m_{X} (GeV); Chi^2", 3000, 0., 3000., 100, 0., 10.);
 	
   TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 100, 50., 250.);
   TH1F *h_H1_pT = new TH1F("h_H1_pT", "; H1 p_{T} (GeV/c)", 800, 0., 800.);
@@ -248,7 +251,7 @@ void HbbHbb_LMRSelection_chi2_malara_CMVA(std::string type,std::string source_di
 
       double chi=pow(chi2_old, 0.5);
       h_chi->Fill(chi, eventWeight);
-      
+ 
       TLorentzVector jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
 	    TLorentzVector jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
 	    TLorentzVector jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
@@ -397,6 +400,12 @@ void HbbHbb_LMRSelection_chi2_malara_CMVA(std::string type,std::string source_di
         h_mX_SB->Fill(X_p4.M(), eventWeight);
         h_mX_SB_biasCorrected->Fill(X_p4_biasCorrected.M(), eventWeight);
         h_mX_SB_kinFit->Fill(X_p4_kinFit.M(), eventWeight);
+        double deltaR1=jet1_p4.DeltaR(jet2_p4);
+        double deltaR2=jet3_p4.DeltaR(jet4_p4);
+        h_mX_DeltaR->Fill(X_p4_kinFit.M(), deltaR1, eventWeight);
+        h_mX_DeltaR->Fill(X_p4_kinFit.M(), deltaR2 ,eventWeight);
+        h_mX_Chi2->Fill(X_p4_kinFit.M(), chi ,eventWeight);
+        h_mX_kinFitchi2->Fill(X_p4_kinFit.M(), kinFitchi2,eventWeight);
       }
       
     }
@@ -451,6 +460,10 @@ void HbbHbb_LMRSelection_chi2_malara_CMVA(std::string type,std::string source_di
 
   h_Cuts.Write();
 
+  h_mX_DeltaR->Write();
+  h_mX_Chi2->Write();
+  h_mX_kinFitchi2->Write();
+
   tFile2->Write();
   tFile2->Close();
   /*std::cout<<"Wrote output file "<<histfilename<<std::endl;
@@ -495,4 +508,7 @@ void HbbHbb_LMRSelection_chi2_malara_CMVA(std::string type,std::string source_di
   delete h_mX_SB;
   delete h_mX_SB_biasCorrected;
   delete h_mX_SB_kinFit;
+  delete h_mX_DeltaR;
+  delete h_mX_Chi2;
+  delete h_mX_kinFitchi2;
 }

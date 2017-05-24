@@ -124,6 +124,17 @@ void BackgroundPrediction_Kinematic_CrystalBall_malara(
     p_2->Draw();
     p_1->cd();
     
+    TLine *line_1=new TLine(324, 0, 324, 700);
+    TLine *line_2=new TLine(285, 0, 285, 700);
+    line_1->SetLineWidth(2);
+    line_1->SetLineColor(kRed);
+    line_2->SetLineWidth(2);
+    TArrow *ar2 = new TArrow(285,350,440,350);//,"|>");
+    TArrow *ar3 = new TArrow(260,300,324,300);//,"<|");
+    ar2->SetLineWidth(2);
+    ar3->SetLineWidth(2);
+    ar3->SetLineColor(kRed);
+
     
     if (log=="log") data_plot->GetYaxis()->SetRangeUser(1e-4, h_mX_SR->GetMaximum()*5.);
     else data_plot->GetYaxis()->SetRangeUser(0, h_mX_SR->GetMaximum()*1.5);
@@ -132,6 +143,10 @@ void BackgroundPrediction_Kinematic_CrystalBall_malara(
     data_plot->GetYaxis()->SetLabelFont(42);
     data_plot->GetYaxis()->SetTitleFont(42);
     data_plot2->Draw("same");
+    line_1->Draw("same");
+    line_2->Draw("same");
+    ar2->Draw("same");
+    ar3->Draw("same");
     data_plot->GetYaxis()->SetTitleOffset(1.25);
     data_plot->SetTitle(("; m_{X} (GeV); Events / "+itoa(h_mX_SR->GetBinWidth(1))+" GeV").c_str());
     if (log=="log") p_1->SetLogy();
@@ -244,7 +259,7 @@ void BackgroundPrediction_Kinematic_CrystalBall_malara(
     
     // For the datacard
     std::cout<<" === RooFit data fit result to be entered in datacard === "<<std::endl;
-    std::cout<<" Background number of events = "<<nEventsSR<<std::endl;
+    std::cout<<" Background number of events = "<<h_mX_SR_fakeData->Integral(h_mX_SR_fakeData->FindBin(fit_lo),h_mX_SR_fakeData->FindBin(fit_hi))<<std::endl;
     std::cout<<"bg_p0   param   "<<bg_p0.getVal()<<" "<<bg_p0.getError()<<std::endl;
     std::cout<<"bg_p1   param   "<<bg_p1.getVal()<<" "<<bg_p1.getError()<<std::endl;
     std::cout<<"bg_p2   param   "<<bg_p2.getVal()<<" "<<bg_p2.getError()<<std::endl;

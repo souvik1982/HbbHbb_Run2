@@ -1,12 +1,12 @@
 mass=$1
 cards=""
-background="_new" # "" "_bern"
+background="_novo_285_550" # "" "_bern"
 dirName="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR/fit/MMR_${mass}${background}"
 dcardName="datacard_${mass}${background}.txt" #conv bern
 bgLogName="data_bkg.log"
-Type="Crystal" #"Convolution" "Crystal" "GaussExp" "Bern"
-datacardtype="background" #"Convolution" "bg" "background"
-data_file="w_data_Crystal.root" #"w_background_Convolution.root" "w_background_Crystal.root" w_data.root w_background_Bern.root
+Type="Split" #"Convolution" "Crystal" "GaussExp" "Bern"
+datacardtype="f_novo" #"Convolution" "bg" "background" "bg_novo_285_550"
+data_file="w_background_novo_285_550.root" #"w_background_Convolution.root" "w_background_Crystal.root" w_data_Crystal.root w_data_Bern.root
 
 sig_norm=`grep 'norm =' ${dirName}/index.html | awk '{print $3/10}'`    
 jec_norm=`grep 'JEC       lnN' ${dirName}/index.html | awk '{print $3}'` 
@@ -22,7 +22,7 @@ echo PDF ${pdf_norm}
 
 echo "norm"
 
-bkg_norm=`grep ' Background number of events = ' ${dirName}/${bgLogName} | awk '{print $6}'`
+bkg_norm=`grep ' Background number of novo_285_550 = ' ${dirName}/${bgLogName} | awk '{print $6}'`
 
 #let's build a datacard!
 cat > ${dirName}/${dcardName} <<EOF
@@ -31,8 +31,8 @@ jmax * number of backgrounds
 kmax * number of systematic uncertainty sources
 ----------
 shapes signal     HbbHbb w_signal_${mass}.root      HbbHbb:signal_fixed
-shapes background HbbHbb w_background_$Type.root    HbbHbb:$datacardtype
-shapes data_obs   HbbHbb $data_file      HbbHbb:data_obs
+shapes background HbbHbb $data_file      HbbHbb:$datacardtype
+shapes data_obs   HbbHbb $data_file      HbbHbb:data_obs$background
 ----------
 ## Observation
 bin                     HbbHbb
@@ -58,7 +58,7 @@ EOF
 
 #grep 'bg_' ${dirName}/${bgLogName} | grep ' param ' >> ${dirName}/${dcardName}
 #grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
-grep 'bg_' ${dirName}/${bgLogName} | grep 'param' >> ${dirName}/${dcardName}
+#grep 'bg_' ${dirName}/${bgLogName} | grep 'param ' >> ${dirName}/${dcardName}
 
 #sed -i 's/crystalball_mean/bg_p2/g' ${dirName}/${dcardName}
 #sed -i 's/crystalball_width/bg_p3/g' ${dirName}/${dcardName}
