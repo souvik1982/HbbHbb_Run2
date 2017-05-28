@@ -8,9 +8,10 @@
 #include <TLorentzVector.h>
 #include <iostream>
 #include <vector>
-#include "/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PDFs/BtagCalibrationStandalone.cc"
+
 #include "HbbHbb_Component_SignalPurity.cc"
 #include "HbbHbb_Component_KinFit.cc"
+
 
 double jet_pT_cut1=30.;
 
@@ -34,17 +35,19 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   return jet_p4;
 }
 
-void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string source_dir, std::string dest_dir, std::string sample )
+void HbbHbb_LMRSelection_chi2_AntiTag(std::string type, std::string sample)
 {
 
-  std::string inputfilename=source_dir+"/PreSelected_"+sample+".root";
+  std::string inputfilename="../PreSelected_"+sample+".root";
   TChain *tree=new TChain("tree");
   tree->Add(inputfilename.c_str());
-  //std::cout<<"Opened input file "<<inputfilename<<std::endl;
+  std::cout<<"Opened input file "<<inputfilename<<std::endl;
   
   // Book variables
   int evt;
   float eventWeight;
+  float HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v;
+  float HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v; 		
   int nJets, nGenBQuarkFromH;
   float jet_btagCSV[100], jet_btagCMVA[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
@@ -56,6 +59,8 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string sou
   // Retrieve variables
   tree->SetBranchAddress("evt", &evt);
   tree->SetBranchAddress("eventWeight", &(eventWeight));                
+  tree->SetBranchAddress("HLT_BIT_HLT_QuadJet45_TripleBTagCSV0p67_v",&(HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v))	;
+  tree->SetBranchAddress("HLT_BIT_HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v",&(HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v));	
   	
   tree->SetBranchAddress("nJet", &(nJets));                       
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));          
@@ -67,16 +72,14 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string sou
   tree->SetBranchAddress("Jet_regressed_pt", &(jet_regressed_pT));
   tree->SetBranchAddress("jetIndex_CentralpT40_CSVOrder", &(jetIndex_CentralpT40_CSVOrder));
   tree->SetBranchAddress("jetIndex_CentralpT40btag_CMVAOrder", &(jetIndex_CentralpT40btag_CMVAOrder));
-  if(type!="Data"){
   tree->SetBranchAddress("nGenBQuarkFromH", &(nGenBQuarkFromH));         
   tree->SetBranchAddress("GenBQuarkFromH_pt", &(genBQuarkFromH_pT));     
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   
   tree->SetBranchAddress("GenBQuarkFromH_phi", &(genBQuarkFromH_phi));   
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));
 
-  }
   // Book histograms
-  TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 100, 50., 250.);
+  TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 300, 0., 300.);
   TH1F *h_H1_pT = new TH1F("h_H1_pT", "; H1 p_{T} (GeV/c)", 800, 0., 800.);
   TH1F *h_H2_mass = new TH1F("h_H2_mass", "; m_{H2} (GeV)", 300, 0., 300.);
   TH1F *h_H2_pT = new TH1F("h_H2_pT", "; H2 p_{T} (GeV/c)", 800, 0., 800.);
@@ -117,13 +120,14 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string sou
   TH1F *h_mX_SB_biasCorrected = new TH1F("h_mX_SB_biasCorrected", "; m_{X} (GeV)", 2000, 0., 2000.);   h_mX_SB_biasCorrected->Sumw2();
   TH1F *h_mX_SB_kinFit        = new TH1F("h_mX_SB_kinFit", "; m_{X} (GeV)", 2000, 0., 2000.);          h_mX_SB_kinFit->Sumw2();
   
-  std::string Old_histfilename=source_dir+"/Histograms_PreSelected_"+sample+".root";
-  std::string histfilename=dest_dir+"/Histograms_LMR_chi2_"+sample+"_l3.root";
-  gSystem->Exec(("cp "+Old_histfilename+" "+histfilename).c_str());
-  TFile *tFile1=new TFile((Old_histfilename).c_str(), "READ");
+  // Get the h_Cuts histogram
+  std::string histfilename="Histograms_"+sample+".root";
+  gSystem->Exec(("cp ../"+histfilename+" "+histfilename).c_str());
+  TFile *tFile1=new TFile((histfilename).c_str(), "READ");
+   	
   TH1F h_Cuts=*((TH1F*)((TH1F*)tFile1->Get("h_Cuts"))->Clone("h_Cuts"));
-  tFile1->Close();
-
+  tFile1->Close();	
+  
   // Event loop
   int nEvents=tree->GetEntries();
   double nCut4=0, nCut5=0, nCutGen=0;
@@ -131,14 +135,15 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string sou
   {
     tree->GetEvent(i);
     
+    //if(HLT_BIT_HLT_DoubleJet90_Double30_TripleCSV0p5_v==1 && HLT_BIT_HLT_QuadJet45_TripleCSV0p5_v ==0) continue;
     
     bool foundHH=false;
     double chi2_old=200.;
-    double m_diff_old=100.;
+    double m_diff_old=100.;	
     int H1jet1_i=-1, H1jet2_i=-1;
     int H2jet1_i=-1, H2jet2_i=-1;
     for (unsigned int j=0; j<jetIndex_CentralpT40btag_CMVAOrder->size(); ++j)
-    {
+    { 	
       unsigned int j_jetIndex=jetIndex_CentralpT40btag_CMVAOrder->at(j);
       TLorentzVector jet1_p4, jet2_p4, jet3_p4, jet4_p4;
       jet1_p4=fillTLorentzVector(jet_regressed_pT[j_jetIndex], jet_eta[j_jetIndex], jet_phi[j_jetIndex], jet_mass[j_jetIndex]);
@@ -161,10 +166,6 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string sou
 //  && jet2_p4.Pt()>jet_pT_cut1 && jet3_p4.Pt()>jet_pT_cut1 && jet4_p4.Pt()>jet_pT_cut1)
                 {
                   jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
-                  swap(jet2_p4,jet3_p4);
-                if (jet4_p4.Pt()>jet1_p4.Pt() && jet4_p4.Pt()>jet2_p4.Pt() && jet4_p4.Pt()>jet3_p4.Pt())
-                { 
-                
                    
                   TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
                   TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
@@ -179,20 +180,18 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string sou
                   double m_diff=fabs(diJet1_p4.M()-diJet2_p4.M());
                   
             //      if (chi2<chi2_old)
+                 if (chi2<chi2_old && ((90.<mH1 && mH1<160.) && (90.<mH2 && mH2<160.)))
             	 //if (chi2<chi2_old && ((81.<mH1 && mH1<149.) && (81.<mH2 && mH2<149.)))
                   // if(m_diff<m_diff_old && ((94.<mH1 && mH1<154.) && (77.<mH2 && mH2<157.)))
-            	 if (chi2<chi2_old && ((80.<mH1 && mH1<160.) && (80.<mH2 && mH2<160.)))
                   {
                     H1jet1_i=j_jetIndex;
                     H1jet2_i=k_jetIndex;
                     H2jet1_i=l_jetIndex;
                     H2jet2_i=m_jetIndex;
-                    swap(H1jet2_i,H2jet1_i);
                     chi2_old=chi2;
                     m_diff_old=m_diff;
                     foundHH=true;
                   }
-                } // Conditions on 4th jet
                 } // Conditions on 4th jet
               } // Loop over 4th jet
             } // Conditions on 3rd jet
@@ -203,10 +202,10 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string sou
     if (foundHH)
     {
       nCut4+=eventWeight;
-
+      
       double chi=pow(chi2_old, 0.5);
       h_chi->Fill(chi, eventWeight);
-      
+	    
       TLorentzVector jet1_p4=fillTLorentzVector(jet_regressed_pT[H1jet1_i], jet_eta[H1jet1_i], jet_phi[H1jet1_i], jet_mass[H1jet1_i]);
 	    TLorentzVector jet2_p4=fillTLorentzVector(jet_regressed_pT[H1jet2_i], jet_eta[H1jet2_i], jet_phi[H1jet2_i], jet_mass[H1jet2_i]);    
 	    TLorentzVector jet3_p4=fillTLorentzVector(jet_regressed_pT[H2jet1_i], jet_eta[H2jet1_i], jet_phi[H2jet1_i], jet_mass[H2jet1_i]);    
@@ -232,7 +231,6 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string sou
       double pTH2=H2_p4.Pt();
       double mH1=H1_p4.M();
       double mH2=H2_p4.M();
-      
       h_H1_mass->Fill(mH1, eventWeight);
       h_H1_pT->Fill(pTH1, eventWeight);
       h_H2_mass->Fill(mH2, eventWeight);
@@ -386,8 +384,7 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string sou
   h_mX_SR_purity2->Write();
   h_mX_SR_purity3->Write();
   h_mX_SR_purity4->Write();
-  //h_mX_SR_kinFit->Write();
-
+  h_mX_SR_kinFit->Write();
   h_HH_balance_kinFit->Write();        
   h_mX_SR_kinFit_purity0->Write();
   h_mX_SR_kinFit_purity1->Write();
@@ -398,8 +395,6 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara_l3(std::string type,std::string sou
   h_mX_SB->Write();
   h_mX_SB_biasCorrected->Write();
   h_mX_SB_kinFit->Write();
-  h_mX_SR_kinFit->Write();
-
   h_Cuts.Write();
 
   tFile2->Write();

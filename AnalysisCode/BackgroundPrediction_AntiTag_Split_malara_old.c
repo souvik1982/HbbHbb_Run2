@@ -795,8 +795,8 @@ RooRealVar* bg_pol0_2 = new RooRealVar("bg_pol0_2", "bg_pol0_2", 1.01772e+03, 2e
    /////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////
 
-    int range_lo = 250; //285; //252;
-    int range_hi = 804; //324 //550; //354; //456;
+    int range_lo = 252; //285; //252;
+    int range_hi = 420; //324 //550; //354; //456;
     string type;
 
     RooRealVar *x_test = new RooRealVar("x", "m_{X} (GeV)", range_lo, range_hi);

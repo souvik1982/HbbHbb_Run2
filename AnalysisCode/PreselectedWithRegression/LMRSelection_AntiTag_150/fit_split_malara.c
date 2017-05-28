@@ -8,8 +8,8 @@
     gROOT->LoadMacro("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/BackgroundPrediction_AntiTag_Split_malara.c");
     //gROOT->LoadMacro("/scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/BackgroundPrediction_AntiTag_Split_malara_old.c");
     
-    BackgroundPrediction_AntiTag_Split_malara(252, 420, 3, // plot range
-                                              252, 420,    // fit range
+    BackgroundPrediction_AntiTag_Split_malara(285, 800,3, // plot range
+                                              455, 650,    // fit range
                                               240, 280,    // range of crystalBall mean
                                               3, 30,       // range of crystalBall width
                                               0.01, 5.1,   // range of crystalBall exponent

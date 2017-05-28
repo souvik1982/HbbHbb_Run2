@@ -301,5 +301,87 @@ TFile *f_data_SR=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/Deep
     leg->Draw("same");
 
 
+
+
+
+
+
+
+
+
+
+    TFile *f_data_SR_AntiTag_caterina=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag/Histograms_LMR_chi2_tree_total_caterina.root");
+    TH1F *h_mX_SR_AntiTag_caterina=(TH1F*)f_data_SR_AntiTag_caterina->Get("h_mX_SR_kinFit");
+    h_mX_SR_AntiTag_caterina->Rebin(3);
+    h_mX_SR_AntiTag_caterina->Scale(1./h_mX_SR_AntiTag_caterina->Integral());
+
+    TFile *f_data_SR_AntiTag_1=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag/Histograms_LMR_chi2_tree_total.root");
+    TH1F *h_mX_SR_AntiTag_1=(TH1F*)f_data_SR_AntiTag_1->Get("h_mX_SR_kinFit");
+    h_mX_SR_AntiTag_1->Rebin(3);
+    h_mX_SR_AntiTag_1->Scale(1./h_mX_SR_AntiTag_1->Integral());
+
+    TFile *f_data_SR_AntiTag_l3=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag/Histograms_LMR_chi2_tree_total_l3.root");
+    TH1F *h_mX_SR_AntiTag_l3=(TH1F*)f_data_SR_AntiTag_l3->Get("h_mX_SR_kinFit");
+    h_mX_SR_AntiTag_l3->Rebin(3);
+    h_mX_SR_AntiTag_l3->Scale(1./h_mX_SR_AntiTag_l3->Integral());
+
+    TFile *f_data_SR_AntiTag_l4=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag/Histograms_LMR_chi2_tree_total_l4.root");
+    TH1F *h_mX_SR_AntiTag_l4=(TH1F*)f_data_SR_AntiTag_l4->Get("h_mX_SR_kinFit");
+    h_mX_SR_AntiTag_l4->Rebin(3);
+    h_mX_SR_AntiTag_l4->Scale(1./h_mX_SR_AntiTag_l4->Integral());
+
+    RooDataHist pred_SR_AntiTag_caterina("pred_SR_caterina", "Data", RooArgList(*x), h_mX_SR_AntiTag_caterina);
+    RooDataHist pred_SR_AntiTag_1("pred_SR", "Data", RooArgList(*x), h_mX_SR_AntiTag_1);
+    RooDataHist pred_SR_AntiTag_l3("pred_SR_l3", "Data", RooArgList(*x), h_mX_SR_AntiTag_l3);
+    RooDataHist pred_SR_AntiTag_l4("pred_SR_l4", "Data", RooArgList(*x), h_mX_SR_AntiTag_l4);
+
+    RooPlot *frame_1=x->frame();
+    pred_SR_AntiTag_caterina.plotOn(frame_1, RooFit::LineColor(kOrange), RooFit::MarkerColor(kOrange));
+    pred_SR_AntiTag_1.plotOn(frame_1, RooFit::LineColor(kAzure), RooFit::MarkerColor(kAzure));
+    pred_SR_AntiTag_l3.plotOn(frame_1, RooFit::LineColor(kViolet-3), RooFit::MarkerColor(kViolet-3));
+    pred_SR_AntiTag_l4.plotOn(frame_1, RooFit::LineColor(kRed), RooFit::MarkerColor(kRed));
+
+    TCanvas *c_overlap_1=new TCanvas("c_overlap_1", "c_overlap_1", 800, 800);
+    frame_1->Draw("same");
+
+    TLegend *leg_1 = new TLegend(0.5,0.6,0.8,0.85,NULL,"brNDC");
+    leg_1->SetBorderSize(0);
+    leg_1->SetTextSize(0.035);
+    leg_1->SetLineColor(1);
+    leg_1->SetLineStyle(1);
+    leg_1->SetLineWidth(2);
+    leg_1->SetFillColor(0);
+    leg_1->SetFillStyle(0);
+    h_mX_SR_AntiTag_caterina->SetMarkerColor(kOrange);
+    h_mX_SR_AntiTag_1->SetMarkerColor(kAzure);
+    h_mX_SR_AntiTag_l3->SetMarkerColor(kViolet-3);
+    h_mX_SR_AntiTag_l4->SetMarkerColor(kRed);
+    h_mX_SR_AntiTag_caterina->SetMarkerStyle(20);
+    h_mX_SR_AntiTag_1->SetMarkerStyle(20);
+    h_mX_SR_AntiTag_l3->SetMarkerStyle(20);
+    h_mX_SR_AntiTag_l4->SetMarkerStyle(20);
+    leg_1->AddEntry(h_mX_SR_AntiTag_caterina, "Data in SR caterina", "ep");
+    leg_1->AddEntry(h_mX_SR_AntiTag_1, "Data in SR 1", "ep");
+    leg_1->AddEntry(h_mX_SR_AntiTag_l3, "Data in SR l3", "ep");
+    leg_1->AddEntry(h_mX_SR_AntiTag_l4, "Data in SR l4", "ep");
+    leg_1->Draw("same");
+
+
+
+    TFile *f_data_SR_AntiTag_150=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag_150/Histograms_LMR_chi2_tree_total_leading.root");
+    TH1F *h_mX_SR_AntiTag_150=(TH1F*)f_data_SR_AntiTag_150->Get("h_mX_SR_kinFit");
+    h_mX_SR_AntiTag_150->Rebin(4);
+    //h_mX_SR_AntiTag_150->Scale(1./h_mX_SR_AntiTag_150->Integral());
+
+    TFile *f_data_SR_AntiTag_2=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag/Histograms_LMR_chi2_tree_total.root");
+    TH1F *h_mX_SR_AntiTag_2=(TH1F*)f_data_SR_AntiTag_2->Get("h_mX_SR_kinFit");
+    h_mX_SR_AntiTag_2->Rebin(4);
+    //h_mX_SR_AntiTag_2->Scale(1./h_mX_SR_AntiTag_2->Integral());
+    //h_mX_SR_AntiTag_150->Divide(h_mX_SR_AntiTag_2);
+    h_mX_SR_AntiTag_2->Divide(h_mX_SR_AntiTag_150);
+    new TCanvas;
+    //h_mX_SR_AntiTag_150->Draw("same");
+    h_mX_SR_AntiTag_2->Draw("same");
+
 }
 

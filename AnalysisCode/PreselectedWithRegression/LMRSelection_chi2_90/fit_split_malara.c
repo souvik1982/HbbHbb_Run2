@@ -16,8 +16,8 @@
                                                0.01, 5.1, // range of crystalBall switch
                                                "h_mX_SB_kinFit", // histogram
                                                "lin",
-                                               "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/Histograms_LMR_chi2_tree_total.root",
-                                               "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/fit");
+                                               "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_90/Histograms_LMR_chi2_tree_total.root",
+                                               "/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_90/fit");
 }
 
 

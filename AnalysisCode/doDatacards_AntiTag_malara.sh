@@ -1,12 +1,12 @@
 mass=$1
 cards=""
-background="_novo_455_854" # "" "_bern"
+background="_novo_252_420" # "" "_bern"
 dirName="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR_AntiTag/fit/MMR_${mass}${background}"
 dcardName="datacard_${mass}${background}.txt" #conv bern
 bgLogName="data_bkg.log"
 Type="Split" #"Convolution" "Crystal" "GaussExp" "Bern"
-datacardtype="f_novo" #"Convolution" "bg" "background" "bg_novo_455_854"
-data_file="w_background_novo_455_854.root" #"w_background_Convolution.root" "w_background_Crystal.root" w_data_Crystal.root w_data_Bern.root
+datacardtype="f_novo" #"Convolution" "bg" "background" "bg_novo_252_420"
+data_file="w_background_novo_252_420.root" #"w_background_Convolution.root" "w_background_Crystal.root" w_data_Crystal.root w_data_Bern.root
 
 sig_norm=`grep 'norm =' ${dirName}/index.html | awk '{print $3/10}'`    
 jec_norm=`grep 'JEC       lnN' ${dirName}/index.html | awk '{print $3}'` 
@@ -22,7 +22,7 @@ echo PDF ${pdf_norm}
 
 echo "norm"
 
-bkg_norm=`grep ' Background number of novo_455_854 = ' ${dirName}/${bgLogName} | awk '{print $6}'`
+bkg_norm=`grep ' Background number of novo_252_420 = ' ${dirName}/${bgLogName} | awk '{print $6}'`
 
 #let's build a datacard!
 cat > ${dirName}/${dcardName} <<EOF

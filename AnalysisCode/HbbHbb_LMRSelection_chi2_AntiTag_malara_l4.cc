@@ -34,7 +34,7 @@ TLorentzVector fillTLorentzVector(double pT, double eta, double phi, double M)
   return jet_p4;
 }
 
-void HbbHbb_LMRSelection_chi2_AntiTag_malara(std::string type,std::string source_dir, std::string dest_dir, std::string sample )
+void HbbHbb_LMRSelection_chi2_AntiTag_malara_l4(std::string type,std::string source_dir, std::string dest_dir, std::string sample )
 {
 
   std::string inputfilename=source_dir+"/PreSelected_"+sample+".root";
@@ -49,13 +49,14 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara(std::string type,std::string source
   float jet_btagCSV[100], jet_btagCMVA[100];
   float jet_pT[100], jet_eta[100], jet_phi[100], jet_mass[100];
   float genBQuarkFromH_pT[100],genBQuarkFromH_eta[100],genBQuarkFromH_phi[100],genBQuarkFromH_mass[100];
-  float jet_regressed_pT[100], jet_flavor[100];
+  float jet_regressed_pT[100];
   std::vector<unsigned int> *jetIndex_CentralpT40_CSVOrder=0;
   std::vector<unsigned int> *jetIndex_CentralpT40btag_CMVAOrder=0;
   
   // Retrieve variables
   tree->SetBranchAddress("evt", &evt);
   tree->SetBranchAddress("eventWeight", &(eventWeight));                
+  	
   tree->SetBranchAddress("nJet", &(nJets));                       
   tree->SetBranchAddress("Jet_btagCSV", &(jet_btagCSV));          
   tree->SetBranchAddress("Jet_btagCMVAV2", &(jet_btagCMVA));        
@@ -72,14 +73,12 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara(std::string type,std::string source
   tree->SetBranchAddress("GenBQuarkFromH_eta", &(genBQuarkFromH_eta));   
   tree->SetBranchAddress("GenBQuarkFromH_phi", &(genBQuarkFromH_phi));   
   tree->SetBranchAddress("GenBQuarkFromH_mass", &(genBQuarkFromH_mass));
-  
-   }
-// Book histograms
-  
-	
+
+  }
+  // Book histograms
   TH1F *h_H1_mass = new TH1F("h_H1_mass", "; m_{H1} (GeV)", 100, 50., 250.);
   TH1F *h_H1_pT = new TH1F("h_H1_pT", "; H1 p_{T} (GeV/c)", 800, 0., 800.);
-  TH1F *h_H2_mass = new TH1F("h_H2_mass", "; m_{H2} (GeV)", 100, 50., 250.);
+  TH1F *h_H2_mass = new TH1F("h_H2_mass", "; m_{H2} (GeV)", 300, 0., 300.);
   TH1F *h_H2_pT = new TH1F("h_H2_pT", "; H2 p_{T} (GeV/c)", 800, 0., 800.);
   TH1F *h_HH_balance = new TH1F("h_HH_balance", "; (#vec{p}_{H1} + #vec{p}_{H2} - #vec{p}_{X}^{gen})_{T} GeV", 200, 0, 200.);
   TH2F *h_mH1_mH2_asym = new TH2F("h_mH1_mH2_asym", "; m_{H1} (GeV); m_{H2} (GeV)", 300, 0., 300., 300, 0., 300.);
@@ -132,6 +131,7 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara(std::string type,std::string source
   {
     tree->GetEvent(i);
     
+    
     bool foundHH=false;
     double chi2_old=200.;
     double m_diff_old=100.;
@@ -157,11 +157,14 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara(std::string type,std::string source
               for (unsigned int m=0; m<jetIndex_CentralpT40_CSVOrder->size(); ++m)
               {
                 unsigned int m_jetIndex=jetIndex_CentralpT40_CSVOrder->at(m);
-                if (m_jetIndex!=j_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=l_jetIndex && jet_btagCMVA[m_jetIndex]<0.18 &&  jet3_p4.Pt()>40.)
+                if (m_jetIndex!=j_jetIndex && m_jetIndex!=k_jetIndex && m_jetIndex!=l_jetIndex && jet_btagCMVA[m_jetIndex]<0.6324 &&  jet3_p4.Pt()>30.)
 //  && jet2_p4.Pt()>jet_pT_cut1 && jet3_p4.Pt()>jet_pT_cut1 && jet4_p4.Pt()>jet_pT_cut1)
                 {
                   jet4_p4=fillTLorentzVector(jet_regressed_pT[m_jetIndex], jet_eta[m_jetIndex], jet_phi[m_jetIndex], jet_mass[m_jetIndex]);
                   swap(jet2_p4,jet4_p4);
+                if (jet4_p4.Pt()>jet1_p4.Pt() && jet4_p4.Pt()>jet2_p4.Pt() && jet4_p4.Pt()>jet3_p4.Pt())
+                { 
+                
                    
                   TLorentzVector diJet1_p4=jet1_p4+jet2_p4;
                   TLorentzVector diJet2_p4=jet3_p4+jet4_p4;
@@ -189,6 +192,7 @@ void HbbHbb_LMRSelection_chi2_AntiTag_malara(std::string type,std::string source
                     m_diff_old=m_diff;
                     foundHH=true;
                   }
+                } // Conditions on 4th jet
                 } // Conditions on 4th jet
               } // Loop over 4th jet
             } // Conditions on 3rd jet

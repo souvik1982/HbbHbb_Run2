@@ -2,12 +2,12 @@
 
 mass=$1
 
-background="_novo_252_420" # "" "_bern"
+background="_novo_252_402" # "" "_bern"
 
 #Modify also in /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_chi2/fit_background_malara.c
 dir_preselection="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/Data/PreselectedWithRegression"
-dir_selection="../../MMR_AntiTag"
-dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR_AntiTag/fit"
+dir_selection="../../MMR_150"
+dest_dir="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR_150/fit"
 background_type="fit_split_malara.c" #"fit_convolution_malara.c" "fit_crystal_malara.c" fit_background_malara.c fit_bern_malara.c
 Type="Split" #"Convolution" Crystal GaussExp Bern
 
@@ -31,9 +31,9 @@ mv ${dest_dir}/SignalFitsreg/*${mass}* $folder/
 mv ${dest_dir}/SignalFitsreg/index.html $folder/
 
 echo "done"
-echo "root -x -b -l -q PreselectedWithRegression/MMRSelection_AntiTag/"$background_type
+echo "root -x -b -l -q PreselectedWithRegression/MMRSelection_chi2_150/"$background_type
 echo
-root -x -b -l -q /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_AntiTag/$background_type > $folder/data_bkg.log
+root -x -b -l -q /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/MMRSelection_chi2_150/$background_type > $folder/data_bkg.log
 
 mv $dest_dir/w_background$background.root $folder/
 mv $dest_dir/w_data_$Type.root $folder/ 

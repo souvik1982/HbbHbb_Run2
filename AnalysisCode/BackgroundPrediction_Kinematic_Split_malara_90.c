@@ -14,24 +14,8 @@
 #include <TF1.h>
 #include <TLine.h>
 #include <RooPolynomial.h>
-#include </scratch/malara/WorkingArea/release/CMSSW_7_4_7/src/HiggsAnalysis/CombinedLimit/interface/RooSpline1D.h>
 
-RooSpline1D* create_spline(std::string file_name, std::string histo_name, std::string spline_name, int rebin, int range_lo, int range_hi, RooRealVar* x){
 
-    TFile *f=new TFile((file_name).c_str());
-    TH1F *h=(TH1F*)f->Get((histo_name).c_str());
-    h->Rebin(rebin);    h->Scale(1./h->Integral());
-
-    int bin_min = h->FindBin(range_lo);
-    int bin_max = h->FindBin(range_hi);
-    std::vector<double> v_x, v_y;
-h->GetXaxis()->SetRangeUser(range_lo,range_hi);
-
-    for (int i = bin_min; i<= bin_max; i++) {	v_y.push_back(h->GetBinContent(i));	v_x.push_back(h->GetBinCenter(i)); }
-
-    RooSpline1D* spline= new RooSpline1D((spline_name).c_str(), (spline_name).c_str(), *x, bin_max-bin_min+1, &v_x[0], &v_y[0], "CSPLINE");
-    return spline;
-}
 
 int iPeriod = 4;
 int iPos = 11;
@@ -230,8 +214,7 @@ void BackgroundPrediction_Kinematic_Split_malara(int range_lo_1, int range_hi_1,
     TFile *f_data=new TFile((filename).c_str());
     TH1F *h_mX_SR=(TH1F*)f_data->Get(hist.c_str());
     h_mX_SR->Rebin(rebin);
-    TFile *f_scale=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/Histograms_LMR_chi2_tree_total.root");
-    TH1F *h_tmp=(TH1F*)f_scale->Get("h_mX_SR_kinFit");
+    TH1F *h_tmp=(TH1F*)f_data->Get("h_mX_SR_kinFit");
     double nEventsSR= h_tmp->Integral();
     
     RooRealVar *x = new RooRealVar("x", "m_{X} (GeV)", 252, 455);
@@ -419,68 +402,14 @@ void BackgroundPrediction_Kinematic_Split_malara(int range_lo_1, int range_hi_1,
     type= "SB_crystal_1_"+to_string(range_lo_2)+"_"+to_string(range_hi_2);
     c_crystal_1->SaveAs((dest_dir+"/"+"BackgroundFit_"+type+".png").c_str());
     
-
-
-    RooRealVar par_gaus_bern_0("par_gaus_bern_0", "par_gaus_bern_0", 0.);
-    par_gaus_bern_0.setConstant(1);
-    RooRealVar par_gaus_bern_1("par_gaus_bern_1", "par_gaus_bern_1", 10, 1. , 100.);
-    RooRealVar par_gaus_bern_2("par_gaus_bern_2", "par_gaus_bern_2", 260, 160., 600. );
-    RooRealVar *par_gaus_bern_3, *par_gaus_bern_4, *par_gaus_bern_5, *par_gaus_bern_6, *par_gaus_bern_7, *bpar_gaus_bern_8;
-    par_gaus_bern_3=new RooRealVar("par_gaus_bern_3", "par_gaus_bern_3", 5.);
-    par_gaus_bern_3->setConstant(1);
-    par_gaus_bern_4=new RooRealVar("par_gaus_bern_4", "par_gaus_bern_4", 3, -10., 10.);
-    par_gaus_bern_5=new RooRealVar("par_gaus_bern_5", "par_gaus_bern_5", 1, -10., 10.);
-    par_gaus_bern_6=new RooRealVar("par_gaus_bern_6", "par_gaus_bern_6", -10., 10.);
-    par_gaus_bern_7=new RooRealVar("par_gaus_bern_7", "par_gaus_bern_7", -10., 10.);
-    par_gaus_bern_8=new RooRealVar("par_gaus_bern_8", "par_gaus_bern_8", -10., 5.);
-
-
-    RooGaussStepBernstein f_gaus_bern("f_gaus_bern","f_gaus_bern",*x_2, par_gaus_bern_0, par_gaus_bern_1, par_gaus_bern_2, RooArgList(*par_gaus_bern_3, *par_gaus_bern_4, *par_gaus_bern_5, *par_gaus_bern_6));
-    RooFitResult *r_gaus_bern=f_gaus_bern.fitTo(pred_2, RooFit::Range(range_lo_2, range_hi_2), RooFit::Save());
-
-    RooPlot *frame_gaus_bern=x_2->frame();
-    pred_2.plotOn(frame_gaus_bern, RooFit::LineColor(kBlack), RooFit::MarkerColor(kBlack));
-    f_gaus_bern.plotOn(frame_gaus_bern, RooFit::VisualizeError(*r_gaus_bern, 0.5), RooFit::FillColor(kGray+1), RooFit::FillStyle(3001));
-    f_gaus_bern.plotOn(frame_gaus_bern, RooFit::LineColor(kBlue+1));
-    double fitChi2_gaus_bern=frame_gaus_bern->chiSquare();
-    RooAbsReal* chi2_gaus_bern = f_gaus_bern.createChi2(pred_2);
-    double pvalue_gaus_bern=TMath::Prob(chi2_gaus_bern->getVal(),int((range_hi_2-range_lo_2)/rebin)-3);
-
-    TCanvas *c_gaus_bern=new TCanvas("c_gaus_bern", "c_gaus_bern", 800, 800);
-    frame_gaus_bern->Draw();
-
-    TPaveText *pave_gaus_bern = new TPaveText(0.90,0.7,0.67,0.9,"NDC");
-    pave_gaus_bern->SetBorderSize(0);
-    pave_gaus_bern->SetTextSize(0.03);
-    pave_gaus_bern->SetLineColor(1);
-    pave_gaus_bern->SetLineStyle(1);
-    pave_gaus_bern->SetLineWidth(2);
-    pave_gaus_bern->SetFillColor(0);
-    pave_gaus_bern->SetFillStyle(0);
-    pave_gaus_bern->AddText("Revgaus_bern");
-    sprintf(value,"par_gaus_bern_0= %2.3f +- %2.3f",par_gaus_bern_0.getVal(),par_gaus_bern_0.getError());
-    pave_gaus_bern->AddText(value);
-    sprintf(value,"par_gaus_bern_1= %2.3f +- %2.3f",par_gaus_bern_1.getVal(),par_gaus_bern_1.getError());
-    pave_gaus_bern->AddText(value);
-    sprintf(value,"par_gaus_bern_2= %2.3f +- %2.3f",par_gaus_bern_2.getVal(),par_gaus_bern_2.getError());
-    pave_gaus_bern->AddText(value);
-    sprintf(value,"par_gaus_bern_3= %2.3f +- %2.3f",par_gaus_bern_3->getVal(),par_gaus_bern_3->getError());
-    pave_gaus_bern->AddText(value);
-    sprintf(value,"range [%d,%d]",range_lo_2,range_hi_2);
-    pave_gaus_bern->AddText(value);
-    sprintf(value,"chi^2 %2.1f",fitChi2_gaus_bern);
-    pave_gaus_bern->AddText(value);
-    pave_gaus_bern->Draw();
-    type= "SB_gaus_bern_"+to_string(range_lo_2)+"_"+to_string(range_hi_2);
-    c_gaus_bern->SaveAs((dest_dir+"/"+"BackgroundFit_"+type+".png").c_str());
- 
     
     
-    TH1* hh_pdf = f_gaus_exp.createHistogram("hh", *x_1, RooFit::Binning(1000,range_hi_1, range_hi_1)) ;
-    TH1* hh_pdf_11 = f_crystal.createHistogram("hh1", *x_1, RooFit::Binning(1000,range_hi_1, range_hi_1)) ;
-    TH1* hh_pdf_2 = f_gaus_exp.createHistogram("difference_1", *x_1, RooFit::Binning(1000,range_hi_1, range_hi_1)) ;
-    TH1* hh_pdf_4 = f_gaus_exp.createHistogram("sum", *x_1, RooFit::Binning(1000,range_hi_1, range_hi_1)) ;
-    TH1* hh_pdf_5 = f_gaus_exp.createHistogram("ratio", *x_1, RooFit::Binning(1000,range_hi_1, range_hi_1)) ;
+    
+    TH1* hh_pdf = f_crystal.createHistogram("hh", *x_1, RooFit::Binning(1000,range_hi_1, range_hi_1)) ;
+    TH1* hh_pdf_11 = f_gaus_exp.createHistogram("hh1", *x_1, RooFit::Binning(1000,range_hi_1, range_hi_1)) ;
+    TH1* hh_pdf_2 = f_crystal.createHistogram("difference_1", *x_1, RooFit::Binning(1000,range_hi_1, range_hi_1)) ;
+    TH1* hh_pdf_4 = f_crystal.createHistogram("sum", *x_1, RooFit::Binning(1000,range_hi_1, range_hi_1)) ;
+    TH1* hh_pdf_5 = f_crystal.createHistogram("ratio", *x_1, RooFit::Binning(1000,range_hi_1, range_hi_1)) ;
     hh_pdf_5->SetLineColor(kRed);
     hh_pdf_2->Add(hh_pdf_11,-1);
     hh_pdf_4->Add(hh_pdf_11,1);
@@ -493,12 +422,11 @@ void BackgroundPrediction_Kinematic_Split_malara(int range_lo_1, int range_hi_1,
  
     
     
-    TH1* hh_pdf_1 = f_novo.createHistogram("hh_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
-    //TH1* hh_pdf_1_1 = f_crystal_1.createHistogram("hh1_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
-    TH1* hh_pdf_1_1 = f_gaus_bern.createHistogram("hh1_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
-    TH1* hh_pdf_2_1 = f_novo.createHistogram("difference_1_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
-    TH1* hh_pdf_4_1 = f_novo.createHistogram("sum_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
-    TH1* hh_pdf_5_1 = f_novo.createHistogram("ratio_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
+    TH1* hh_pdf_1 = f_crystal_1.createHistogram("hh_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
+    TH1* hh_pdf_1_1 = f_novo.createHistogram("hh1_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
+    TH1* hh_pdf_2_1 = f_crystal_1.createHistogram("difference_1_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
+    TH1* hh_pdf_4_1 = f_crystal_1.createHistogram("sum_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
+    TH1* hh_pdf_5_1 = f_crystal_1.createHistogram("ratio_1", *x_2, RooFit::Binning(1000,range_hi_2, range_hi_2)) ;
     hh_pdf_5_1->SetLineColor(kRed);
     hh_pdf_2_1->Add(hh_pdf_1_1,-1);
     hh_pdf_4_1->Add(hh_pdf_1_1,1);
@@ -687,8 +615,8 @@ void BackgroundPrediction_Kinematic_Split_malara(int range_lo_1, int range_hi_1,
     f_crystal_1.plotOn(frame_novo_1, RooFit::LineColor(kRed), RooFit::LineWidth(4), RooFit::LineStyle(kDashed) );
     
     
-    if (log=="log") frame_novo_1->GetYaxis()->SetRangeUser(1e-4, h_mX_SR->GetMaximum()*5);
-    else frame_novo_1->GetYaxis()->SetRangeUser(0, h_mX_SR->GetMaximum()*1.4);
+    if (log=="log") frame_novo_1->GetYaxis()->SetRangeUser(1e-4, h_mX_SR->GetMaximum()*5.);
+    else frame_novo_1->GetYaxis()->SetRangeUser(0, h_mX_SR->GetMaximum()*1.2);
     frame_novo_1->GetXaxis()->SetLabelOffset(0.03);
     frame_novo_1->GetYaxis()->SetLabelFont(42);
     frame_novo_1->GetYaxis()->SetTitleFont(42);
@@ -799,7 +727,6 @@ void BackgroundPrediction_Kinematic_Split_malara(int range_lo_1, int range_hi_1,
     RooDataHist data_obs_gaus_exp(Form("data_obs_gaus_exp_%d_%d",range_lo_1, range_hi_1), "Data", RooArgList(*x_1), h_mX_SR_fakeData);
     RooDataHist data_obs_novo(Form("data_obs_novo_%d_%d",range_lo_2, range_hi_2), "Data", RooArgList(*x_2), h_mX_SR_fakeData);
     RooDataHist data_obs_crystal_1(Form("data_obs_crystal_1_%d_%d",range_lo_2, range_hi_2), "Data", RooArgList(*x_2), h_mX_SR_fakeData);
-    RooDataHist data_obs_gaus_bern(Form("data_obs_gaus_bern_%d_%d",range_lo_2, range_hi_2), "Data", RooArgList(*x_2), h_mX_SR_fakeData);
     
     
     RooWorkspace *w_background_crystal=new RooWorkspace("HbbHbb");
@@ -817,16 +744,11 @@ void BackgroundPrediction_Kinematic_Split_malara(int range_lo_1, int range_hi_1,
     w_background_novo->import(data_obs_novo);
     w_background_novo->import(f_novo);
     w_background_novo->SaveAs((dest_dir+"/"+Form("w_background_novo_%d_%d.root",range_lo_2,range_hi_2)).c_str());
-
+    
     RooWorkspace *w_background_crystal_1=new RooWorkspace("HbbHbb");
     w_background_crystal_1->import(data_obs_crystal_1);
     w_background_crystal_1->import(f_crystal_1);
     w_background_crystal_1->SaveAs((dest_dir+"/"+Form("w_background_crystal_1_%d_%d.root",range_lo_2,range_hi_2)).c_str());
-
-    RooWorkspace *w_background_gaus_bern=new RooWorkspace("HbbHbb");
-    w_background_gaus_bern->import(data_obs_gaus_bern);
-    w_background_gaus_bern->import(f_gaus_bern);
-    w_background_gaus_bern->SaveAs((dest_dir+"/"+Form("w_background_gaus_bern_%d_%d.root",range_lo_2,range_hi_2)).c_str());
     
     
     
@@ -836,7 +758,6 @@ void BackgroundPrediction_Kinematic_Split_malara(int range_lo_1, int range_hi_1,
     std::cout<<Form(" Background number of gaus_exp_%d_%d = ", range_lo_1, range_hi_1)<<h_mX_SR_fakeData->Integral(h_mX_SR_fakeData->FindBin(range_lo_1),h_mX_SR_fakeData->FindBin(range_hi_1))<<std::endl;
     std::cout<<Form(" Background number of novo_%d_%d = ", range_lo_2, range_hi_2)<<h_mX_SR_fakeData->Integral(h_mX_SR_fakeData->FindBin(range_lo_2),h_mX_SR_fakeData->FindBin(range_hi_2))<<std::endl;
     std::cout<<Form(" Background number of crystal_1_%d_%d = ", range_lo_2, range_hi_2)<<h_mX_SR_fakeData->Integral(h_mX_SR_fakeData->FindBin(range_lo_2),h_mX_SR_fakeData->FindBin(range_hi_2))<<std::endl;
-    std::cout<<Form(" Background number of gaus_bern_%d_%d = ", range_lo_2, range_hi_2)<<h_mX_SR_fakeData->Integral(h_mX_SR_fakeData->FindBin(range_lo_2),h_mX_SR_fakeData->FindBin(range_hi_2))<<std::endl;
     
     
     std::cout<<"par_crystal_0   param   "<<par_crystal_0.getVal()<<" "<<par_crystal_0.getError()<<std::endl;
@@ -860,15 +781,8 @@ void BackgroundPrediction_Kinematic_Split_malara(int range_lo_1, int range_hi_1,
     std::cout<<"par_novo_2   param   "<<par_novo_2.getVal()<<" "<<par_novo_2.getError()<<std::endl;
 
 
-    RooSpline1D* spline_SR_AntiTag= create_spline("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag/Histograms_LMR_chi2_tree_total.root", "h_mX_SR_kinFit", "spline_SR_AntiTag", rebin, range_lo_2, range_hi_2, x_2);
-    RooSpline1D* spline_SB_AntiTag= create_spline("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag/Histograms_LMR_chi2_tree_total.root", "h_mX_SB_kinFit", "spline_SB_AntiTag", rebin, range_lo_2, range_hi_2, x_2);
-    RooSpline1D* spline_SB= create_spline("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/Histograms_LMR_chi2_tree_total.root", "h_mX_SB_kinFit", "spline_SB", rebin, range_lo_2, range_hi_2, x_2);
-
-    RooWorkspace *w_spline=new RooWorkspace("HbbHbb");
-    w_spline->import(*spline_SR_AntiTag);
-    w_spline->import(*spline_SB_AntiTag);
-    w_spline->import(*spline_SB);
-    w_spline->SaveAs((dest_dir+"/"+Form("w_spline_%d_%d.root",range_lo_2,range_hi_2)).c_str());
-
+    
+    
+    
 }
 
