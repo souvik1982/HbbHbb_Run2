@@ -2,7 +2,7 @@
 
 mass=$1
 
-background="_novo_285_550" # "" "_bern"
+background="_landau_285_624" # "" "_bern"
 
 #Modify also in /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/LMRSelection_chi2/fit_background_malara.c
 dir_preselection="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/Data/PreselectedWithRegression"
@@ -36,6 +36,7 @@ echo
 root -x -b -l -q /scratch/malara/WorkingArea/HbbHbb_Run2/AnalysisCode/PreselectedWithRegression/LMRSelection_chi2/$background_type > $folder/data_bkg.log
 
 mv $dest_dir/w_background$background.root $folder/
+mv $dest_dir/w_spline.root $folder/
 mv $dest_dir/w_data_$Type.root $folder/ 
 mv $dest_dir/*BackgroundFit_*${background}*.png* $folder/ 
 echo "end"

@@ -1,14 +1,14 @@
 mass=$1
 cards=""
-background="_landau_285_624" # "" "_bern"
-dirName="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_test/fit/LMR_${mass}${background}"
+background="_crystal_1_550_1200" # "" "_bern"
+dirName="/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR_test/fit/MMR_${mass}${background}"
 dcardName="datacard_${mass}${background}.txt" #conv bern
 bgLogName="data_bkg.log"
 Type="Split" #"Convolution" "Crystal" "GaussExp" "Bern"
-datacardtype="f_landau" #"Convolution" "bg" "background" "bg_landau_285_624"
-data_file="w_background_landau_285_624.root" #"w_background_Convolution.root" "w_background_Crystal.root" w_data_Crystal.root w_data_Bern.root
+datacardtype="f_crystal_1" #"Convolution" "bg" "background" "bg_crystal_1_550_1200"
+data_file="w_background_crystal_1_550_1200.root" #"w_background_Convolution.root" "w_background_Crystal.root" w_data_Crystal.root w_data_Bern.root
 
-sig_norm=`grep 'norm =' ${dirName}/index.html | awk '{print $3}'`    
+sig_norm=`grep 'norm =' ${dirName}/index.html | awk '{print $3/50}'`    
 jec_norm=`grep 'JEC       lnN' ${dirName}/index.html | awk '{print $3}'` 
 jer_norm=`grep 'JER       lnN' ${dirName}/index.html | awk '{print $3}'`
 btag_norm=`grep 'btag lnN' ${dirName}/index.html | awk '{print $3}'`
@@ -22,7 +22,7 @@ echo PDF ${pdf_norm}
 
 echo "norm"
 
-bkg_norm=`grep ' Background number of landau_285_624 = ' ${dirName}/${bgLogName} | awk '{print $6}'`
+bkg_norm=`grep ' Background number of crystal_1_550_1200 = ' ${dirName}/${bgLogName} | awk '{print $6}'`
 
 #let's build a datacard!
 cat > ${dirName}/${dcardName} <<EOF

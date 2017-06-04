@@ -33,7 +33,7 @@ Double_t pol2(Double_t *x, Double_t *par){
 }
 
 
-void TransferFunctions(){
+void TransferFunctions_MMR(){
     gROOT->SetStyle("Plain");
     gStyle->SetPadGridX(0);
     gStyle->SetPadGridY(0);
@@ -41,35 +41,35 @@ void TransferFunctions(){
     gStyle->SetOptFit(11111111);
     //gStyle->SetOptStat("SneMRou");
     
-    int rebin = 3;
+    int rebin = 10;
 
-    TFile *f_SR_AntiTag_150=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag_150/Histograms_LMR_chi2_tree_total.root");
+    TFile *f_SR_AntiTag_150=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR_AntiTag_150/Histograms_MMR_chi2_tree_total.root");
     TH1F *h_SR_AntiTag_150=(TH1F*)f_SR_AntiTag_150->Get("h_mX_SR_kinFit");
     h_SR_AntiTag_150->Rebin(rebin);
 
 
 
-    TFile *f_SR_AntiTag=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag/Histograms_LMR_chi2_tree_total.root");
+    TFile *f_SR_AntiTag=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR_AntiTag/Histograms_MMR_chi2_tree_total.root");
     TH1F *h_SR_AntiTag=(TH1F*)f_SR_AntiTag->Get("h_mX_SR_kinFit");
     h_SR_AntiTag->Rebin(rebin);
 
-    TFile *f_SR_150=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_150/Histograms_LMR_chi2_tree_total.root");
+    TFile *f_SR_150=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR_150/Histograms_MMR_chi2_tree_total.root");
     TH1F *h_SR_150=(TH1F*)f_SR_150->Get("h_mX_SR_kinFit");
     h_SR_150->Rebin(rebin);
 
-    TFile *f_SB_AntiTag_150=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag_150/Histograms_LMR_chi2_tree_total.root");
+    TFile *f_SB_AntiTag_150=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR_AntiTag_150/Histograms_MMR_chi2_tree_total.root");
     TH1F *h_SB_AntiTag_150=(TH1F*)f_SB_AntiTag_150->Get("h_mX_SB_kinFit");
     h_SB_AntiTag_150->Rebin(rebin);
 
-    TFile *f_SB_AntiTag=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_AntiTag/Histograms_LMR_chi2_tree_total.root");
+    TFile *f_SB_AntiTag=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR_AntiTag/Histograms_MMR_chi2_tree_total.root");
     TH1F *h_SB_AntiTag=(TH1F*)f_SB_AntiTag->Get("h_mX_SB_kinFit");
     h_SB_AntiTag->Rebin(rebin);
 
-    TFile *f_SB_150=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR_150/Histograms_LMR_chi2_tree_total.root");
+    TFile *f_SB_150=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR_150/Histograms_MMR_chi2_tree_total.root");
     TH1F *h_SB_150=(TH1F*)f_SB_150->Get("h_mX_SB_kinFit");
     h_SB_150->Rebin(rebin);
 
-    TFile *f_SB=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/Histograms_LMR_chi2_tree_total.root");
+    TFile *f_SB=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR/Histograms_MMR_chi2_tree_total.root");
     TH1F *h_SB=(TH1F*)f_SB->Get("h_mX_SB_kinFit");
     h_SB->Rebin(rebin);
 
@@ -123,7 +123,7 @@ void TransferFunctions(){
     //h_SR_test_1->Multiply(h_SB);
 
     TCanvas *c_D1=new TCanvas("c_D1", "c_D1", 800, 800);
-    h_SB_AntiTag_test_1->GetXaxis()->SetRangeUser(240, 700);
+    h_SB_AntiTag_test_1->GetXaxis()->SetRangeUser(350, 1200);
     h_SB_AntiTag_test_1->Draw("same");
     h_SB_AntiTag->Draw("same");
     TLegend *leg_D1 = new TLegend(0.6,0.6,0.8,0.89,NULL,"brNDC");
@@ -141,7 +141,7 @@ void TransferFunctions(){
     leg_D1->Draw("same");
 
     TCanvas *c_D2=new TCanvas("c_D2", "c_D2", 800, 800);
-    h_SB_AntiTag_test_2->GetXaxis()->SetRangeUser(240, 700);
+    h_SB_AntiTag_test_2->GetXaxis()->SetRangeUser(350, 1200);
     h_SB_AntiTag_test_2->Draw("same");
     h_SB_AntiTag->Draw("same");
     TLegend *leg_D2 = new TLegend(0.6,0.6,0.8,0.89,NULL,"brNDC");
@@ -159,7 +159,7 @@ void TransferFunctions(){
     leg_D2->Draw("same");
 
     TCanvas *c_E1=new TCanvas("c_E1", "c_E1", 800, 800);
-    h_SR_150_test_1->GetXaxis()->SetRangeUser(240, 700);
+    h_SR_150_test_1->GetXaxis()->SetRangeUser(350, 1200);
     h_SR_150_test_1->Draw("same");
     h_SB_AntiTag->Draw("same");
     TLegend *leg_E1 = new TLegend(0.6,0.6,0.8,0.89,NULL,"brNDC");
@@ -177,7 +177,7 @@ void TransferFunctions(){
     leg_E1->Draw("same");
 
     TCanvas *c_E2=new TCanvas("c_E2", "c_E2", 800, 800);
-    h_SR_150_test_2->GetXaxis()->SetRangeUser(240, 700);
+    h_SR_150_test_2->GetXaxis()->SetRangeUser(350, 1200);
     h_SR_150_test_2->SetTitle("Test for ABCD Method in SR-150");
     h_SR_150_test_2->Draw("same");
     h_SR_150->Draw("same");
@@ -196,8 +196,8 @@ void TransferFunctions(){
     leg_E2->Draw("same");
 
     TCanvas *c_B1=new TCanvas("c_B1", "c_B1", 800, 800);
-    h_SB_test_1->GetXaxis()->SetRangeUser(240, 700);
-    h_SB->GetXaxis()->SetRangeUser(240, 700);
+    h_SB_test_1->GetXaxis()->SetRangeUser(3500, 1200);
+    h_SB->GetXaxis()->SetRangeUser(350, 1200);
     h_SB->Draw("same");
     h_SB_test_1->Draw("same");
     TLegend *leg_B1 = new TLegend(0.6,0.6,0.8,0.89,NULL,"brNDC");
@@ -216,16 +216,16 @@ void TransferFunctions(){
 
 
 
-    TFile *f_SR=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/LMR/Histograms_LMR_chi2_tree_total.root");
+    TFile *f_SR=new TFile("/scratch/malara/WorkingArea/IO_file/output_file/DeepCSV/MMR/Histograms_MMR_chi2_tree_total.root");
     TH1F *h_SR=(TH1F*)f_SR->Get("h_mX_SR_kinFit");
     h_SR->Rebin(rebin);
     h_SR->Scale(1./h_SR->Integral());
 
     TCanvas *c_A1=new TCanvas("c_A1", "c_A1", 800, 800);
-    h_SR_test_1->GetXaxis()->SetRangeUser(240, 700);
+    h_SR_test_1->GetXaxis()->SetRangeUser(350, 1200);
     h_SR_test_1->SetTitle("Prediction of \"A\"");
     h_SR_test_1->Draw("same");
-    //h_SR->Draw("same");
+    h_SR->Draw("same");
     TLegend *leg_A1 = new TLegend(0.6,0.6,0.8,0.89,NULL,"brNDC");
     leg_A1->SetBorderSize(0);
     leg_A1->SetTextSize(0.02);
@@ -258,7 +258,7 @@ new TCanvas;
     h_SR_150_ratio->SetLineColor(kBlack);
     TF1 *fit_pol = new TF1("fit_pol", pol0, 0., 2000., 1);	
     fit_pol->SetParameter(0, 1.);
-    h_SR_150_ratio->Fit(fit_pol,"","",0.,700.);
+    h_SR_150_ratio->Fit(fit_pol,"","",300.,1300.);
     h_SR_150_ratio->Draw();
 
 
@@ -269,7 +269,7 @@ new TCanvas;
     TF1 *fit1_pol = new TF1("fit1_pol", pol1, 0., 2000., 2);
     fit1_pol->SetParameter(0, 1.);
     fit1_pol->SetParameter(1, 0.);
-    h_SR_150_ratio_1->Fit(fit1_pol,"","",0.,700.);
+    h_SR_150_ratio_1->Fit(fit1_pol,"","",300.,1300.);
     h_SR_150_ratio_1->Draw();
 
 
@@ -281,7 +281,7 @@ new TCanvas;
     fit2_pol->SetParameter(0, 1.);
     fit2_pol->SetParameter(1, 0.);
     fit2_pol->SetParameter(2, 0.);
-    h_SR_150_ratio_2->Fit(fit2_pol,"","",0.,700.);
+    h_SR_150_ratio_2->Fit(fit2_pol,"","",300.,1300.);
     h_SR_150_ratio_2->Draw();
 
 
@@ -296,7 +296,7 @@ new TCanvas;
 TF1 *fit_pol1 = new TF1("fit_pol", pol0, 0., 2000., 1);
         fit_pol1->SetParameter(0, 1.);
 
-        h_SB_AntiTag_ratio->Fit(fit_pol1,"","",0.,700.);
+        h_SB_AntiTag_ratio->Fit(fit_pol1,"","",300.,1300.);
 
 new TCanvas;
     TH1F *h_SB_ratio=(TH1F*)h_SB_test_1->Clone("h_mX_SB_kinFit");
@@ -308,7 +308,7 @@ new TCanvas;
 TF1 *fit_pol2 = new TF1("fit_pol", pol0, 0., 2000., 1);
         fit_pol2->SetParameter(0, 1.);
 
-        h_SB_ratio->Fit(fit_pol2,"","",0.,700.);
+        h_SB_ratio->Fit(fit_pol2,"","",300.,1300.);
 
 
 }
